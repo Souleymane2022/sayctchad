@@ -1,0 +1,129 @@
+1) Identité du site (SAYC Tchad)
+Nom officiel (à afficher)
+Smart Africa Youth Chapter – Tchad
+(Chapitre National de la Jeunesse de Smart Africa – Tchad)
+Cible principale
+Jeunes 15 à 35 ans (plateforme dédiée éducation, collaboration, autonomisation) �
+Youth SADA-Tchad.pdf None
+Vision (à mettre sur la page “À propos”)
+Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l’innovation pour transformer l’Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir un avenir durable. �
+Youth SADA-Tchad.pdf None
+Objectifs stratégiques du SAYC (à afficher en 3 blocs)
+Leadership : former des jeunes leaders capables de piloter l’évolution du chapitre �
+Youth SADA-Tchad.pdf None
+Innovation : plateforme structurée pour concevoir/valider/lancer des solutions numériques �
+Youth SADA-Tchad.pdf None
+Collaboration : activer la collaboration via une plateforme nationale/continentale (formation, réseau, innovation) �
+Youth SADA-Tchad.pdf None
+2) Cahier des charges du site web (SAYC Tchad)
+2.1 Objectifs du site (ce que le site doit accomplir)
+Présenter officiellement le SAYC Tchad (crédibilité institutionnelle)
+Recruter/engager les membres (adhésion, newsletter, appels à projets)
+Valoriser programmes, formations, bootcamps, concours, hackathons (vitrine)
+Publier actualités/communiqués/événements
+Centraliser les ressources (docs, rapports, formulaires, liens)
+2.2 Arborescence (pages indispensables)
+A. Accueil
+Sections recommandées :
+Hero (titre + slogan + bouton “Rejoindre”)
+Vision / Mission (résumé)
+“3 Objectifs” (Leadership / Innovation / Collaboration) �
+Youth SADA-Tchad.pdf None
+Programmes & activités (cards)
+Chiffres clés (ex: membres, formations, événements — à remplir)
+Partenaires
+Dernières actualités
+CTA final + Contact
+B. À propos
+Présentation du Chapitre Jeunes
+Vision (texte officiel) �
+Youth SADA-Tchad.pdf None
+Public cible 15–35 ans + concept plateforme éducation/collaboration/mentorat �
+Youth SADA-Tchad.pdf None
+Gouvernance / Équipe (organigramme simple)
+C. Programmes & Piliers
+Tu peux structurer selon les “piliers” cités :
+Engagement des jeunes dans les politiques numériques
+Renforcement des compétences numériques
+Compétences entrepreneuriales & innovation
+Réseau / collaboration �
+Youth SADA-Tchad.pdf None
+Chaque pilier = une page avec :
+Objectif
+Activités
+Résultats (si dispo)
+Galerie / médias
+CTA “Participer”
+D. Formations
+Page “Formations” avec :
+Catalogues (initiation, avancé, cloud, cybersécurité, etc.)
+Liens vers plateformes/ressources SADA (si vous l’utilisez) �
+Youth SADA-Tchad.pdf None
+Bouton “S’inscrire”
+E. Innovation & Projets
+Appels à projets
+Projets incubés
+Démo Day / Pitch
+Formulaire “Soumettre un projet”
+F. Événements
+Calendrier
+Pages événement (inscription, agenda, speakers)
+G. Actualités / Blog
+Articles + catégories (Communiqués, Opportunités, Événements, Partenariats)
+H. Ressources
+Documents PDF
+Kits médias (logos, charte, photos)
+Rapports / notes
+I. Partenaires
+Logos
+Types de partenariats
+Formulaire “Devenir partenaire”
+J. Contact
+Formulaire
+Email officiel
+Réseaux sociaux
+2.3 Fonctionnalités clés (très pro)
+Multilingue FR/EN (minimum)
+SEO (titres, meta, sitemap)
+Performance (images optimisées)
+Sécurité (anti-spam formulaire, HTTPS)
+Back-office simple (publier articles/événements)
+3) Charte graphique (style “institutionnel tech”)
+Direction artistique
+Très épuré, moderne, institutionnel
+Fond clair + sections alternées + grandes marges
+Icônes linéaires modernes
+Photos haute qualité (jeunesse, tech, ateliers, leadership)
+Palette recommandée (prête à utiliser)
+Bleu nuit (fond header / footer)
+Bleu digital (boutons & liens)
+Blanc / gris clair (fonds)
+Accent orange/vert très discret (CTA secondaires)
+Typographies web (Google Fonts)
+Titres : Poppins ou Montserrat
+Texte : Inter ou Roboto
+4) Réalisation sur Replit (solution simple + solide)
+Je te conseille 2 options “Replit-friendly” :
+Option A (la plus simple & pro) : Next.js + Tailwind + Markdown
+Site ultra rapide
+Blog géré en fichiers Markdown (pas besoin de base de données)
+Déploiement facile
+Idéal si : vous publiez des articles/opportunités souvent.
+Option B : Express + EJS + Tailwind (plus classique)
+Simple à comprendre
+Admin plus compliqué (sauf si on code un mini dashboard)
+Idéal si : site vitrine + peu d’articles.
+Recommandation
+➡️ Option A (Next.js) pour un rendu vraiment premium.
+5) Checklist livrables (ce que ton dev doit te livrer)
+Site complet (desktop + mobile)
+Pages listées + blog
+Formulaires (contact, adhésion, projet)
+SEO + sitemap
+Guide d’utilisation (comment publier un article)
+Fichiers sources + accès Replit
+6) Ton contenu “officiel” prêt à coller (mini textes)
+Texte court “À propos” (page Accueil)
+Le Smart Africa Youth Chapter – Tchad est une plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l’éducation, la collaboration, le mentorat et l’innovation, afin de renforcer le leadership, stimuler l’innovation et activer la collaboration au service de la transformation numérique. � �
+Youth SADA-Tchad.pdf None
+Youth SADA-Tchad.pdf None
