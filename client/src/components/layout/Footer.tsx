@@ -39,7 +39,7 @@ export function Footer() {
               Plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration et l'innovation numérique.
             </p>
             <p className="text-xs text-sidebar-foreground/60 mb-4" data-testid="text-focal-point">
-              Point Focal: Souleymane Mahamat Saleh
+              Point Focal SAYC Tchad: Souleymane Mahamat Saleh
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (

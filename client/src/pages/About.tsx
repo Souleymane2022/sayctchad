@@ -231,13 +231,13 @@ export default function About() {
             <Card className="border-l-4 border-l-primary" data-testid="card-focal-point">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="text-xs">Point Focal</Badge>
+                  <Badge variant="secondary" className="text-xs">Point Focal SAYC Tchad</Badge>
                 </div>
                 <CardTitle className="font-heading text-xl" data-testid="text-focal-point-name">
                   Souleymane Mahamat Saleh
                 </CardTitle>
                 <CardDescription className="text-sm leading-relaxed mt-2">
-                  Chargé de coordonner les initiatives nationales du SAYC et d'assurer le lien avec le réseau continental Smart Africa.
+                  Point Focal du Smart Africa Youth Chapter Tchad, chargé de coordonner les initiatives nationales et d'assurer le lien avec le réseau continental Smart Africa.
                 </CardDescription>
               </CardHeader>
             </Card>
