@@ -13,8 +13,21 @@ import {
   ChevronRight,
   Globe,
   Target,
-  Zap
+  Zap,
+  Eye
 } from "lucide-react";
+
+import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
+import galleryImg2 from "@assets/UniPod_Mamou_J2_70_1770104422781.JPG";
+import galleryImg3 from "@assets/UniPod_Mamou_J2_21_1770104422785.JPG";
+import galleryImg4 from "@assets/604667985_122096798505190973_8462039452349924014_n_1770104422797.jpg";
+
+const galleryImages = [
+  { src: galleryImg1, alt: "Formation en cours" },
+  { src: galleryImg2, alt: "Session de formation" },
+  { src: galleryImg3, alt: "Travail collaboratif" },
+  { src: galleryImg4, alt: "Conférence Smart Africa" },
+];
 
 function PixelGrid({ className = "", variant = "hero" }: { className?: string; variant?: "hero" | "section" | "small" }) {
   if (variant === "small") {
@@ -278,6 +291,39 @@ export default function Home() {
                   </CardDescription>
                 </CardContent>
               </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4" data-testid="badge-gallery-tag">
+              <Eye className="w-3 h-3 mr-1" />
+              En Images
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-gallery-title">
+              Nos Activités
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto" data-testid="text-gallery-description">
+              Découvrez nos formations et événements en images.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {galleryImages.map((image, index) => (
+              <div
+                key={index}
+                className="relative aspect-video overflow-hidden rounded-lg hover-elevate transition-all"
+                data-testid={`img-home-gallery-${index}`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             ))}
           </div>
         </div>

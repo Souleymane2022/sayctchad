@@ -2,7 +2,6 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   ArrowRight, 
   Target, 
@@ -11,48 +10,15 @@ import {
   GraduationCap,
   Briefcase,
   Globe,
-  Heart,
-  ChevronRight
+  Heart
 } from "lucide-react";
 
-const focalPoint = {
-  name: "Souleymane Mahamat Saleh",
-  role: "Point Focal Tchad",
-  initials: "SMS",
-};
-
-const team = [
-  {
-    name: "Dr. Moussa Ibrahim",
-    role: "Président",
-    initials: "MI",
-  },
-  {
-    name: "Fatima Abakar",
-    role: "Vice-Présidente",
-    initials: "FA",
-  },
-  {
-    name: "Hassan Djibrine",
-    role: "Secrétaire Général",
-    initials: "HD",
-  },
-  {
-    name: "Mariam Oumar",
-    role: "Trésorière",
-    initials: "MO",
-  },
-  {
-    name: "Youssouf Ali",
-    role: "Resp. Communication",
-    initials: "YA",
-  },
-  {
-    name: "Adèle Ngarmbaye",
-    role: "Resp. Programmes",
-    initials: "AN",
-  },
-];
+import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
+import galleryImg2 from "@assets/UniPod_Mamou_J2_48_1770104422783.JPG";
+import galleryImg3 from "@assets/UniPod_Mamou_J2_21_1770104422785.JPG";
+import galleryImg4 from "@assets/UniPod_Mamou_J2_15_1770104422788.JPG";
+import galleryImg5 from "@assets/604871340_122096798553190973_93826767380244901_n_1770104422796.jpg";
+import galleryImg6 from "@assets/607158151_122096792241190973_7868278716369897210_n_(1)_1770104422799.jpg";
 
 const values = [
   {
@@ -98,6 +64,15 @@ const pillars = [
     title: "Réseau & collaboration continentale",
     description: "Connexion avec les chapitres Smart Africa pour favoriser les échanges et opportunités.",
   },
+];
+
+const galleryImages = [
+  { src: galleryImg1, alt: "Formation en cours" },
+  { src: galleryImg2, alt: "Participants en formation" },
+  { src: galleryImg3, alt: "Session de travail collaboratif" },
+  { src: galleryImg4, alt: "Photo de groupe des participants" },
+  { src: galleryImg5, alt: "Conférence Smart Africa" },
+  { src: galleryImg6, alt: "Smart Africa Alliance" },
 ];
 
 export default function About() {
@@ -240,52 +215,64 @@ export default function About() {
       <section className="py-16 md:py-24 bg-muted/30">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4" data-testid="badge-team-tag">
+            <Badge variant="outline" className="mb-4" data-testid="badge-governance-tag">
               <Users className="w-3 h-3 mr-1" />
-              Gouvernance
+              Coordination Nationale
             </Badge>
-            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-team-title">
-              Notre Équipe
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-governance-title">
+              Point Focal Tchad
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-team-description">
-              Des leaders engagés pour le développement numérique de la jeunesse tchadienne.
+            <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-governance-description">
+              Le représentant officiel de Smart Africa Youth Chapter au Tchad.
             </p>
           </div>
 
-          <Card className="mb-8 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground" data-testid="card-focal-point">
-            <CardHeader className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
-              <Avatar className="w-24 h-24 border-4 border-accent">
-                <AvatarFallback className="bg-accent text-accent-foreground text-2xl font-heading font-bold">
-                  {focalPoint.initials}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <Badge className="mb-2 bg-accent text-accent-foreground">{focalPoint.role}</Badge>
-                <CardTitle className="font-heading text-2xl text-primary-foreground" data-testid="text-focal-point-name">
-                  {focalPoint.name}
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-l-4 border-l-primary" data-testid="card-focal-point">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="text-xs">Point Focal</Badge>
+                </div>
+                <CardTitle className="font-heading text-xl" data-testid="text-focal-point-name">
+                  Souleymane Mahamat Saleh
                 </CardTitle>
-                <CardDescription className="text-primary-foreground/80 mt-2">
-                  Représentant officiel de Smart Africa Youth Chapter au Tchad, chargé de coordonner les initiatives nationales et de faire le lien avec le réseau continental.
+                <CardDescription className="text-sm leading-relaxed mt-2">
+                  Chargé de coordonner les initiatives nationales du SAYC et d'assurer le lien avec le réseau continental Smart Africa.
                 </CardDescription>
-              </div>
-            </CardHeader>
-          </Card>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {team.map((member, index) => (
-              <Card key={index} className="text-center hover-elevate transition-all" data-testid={`card-team-${index}`}>
-                <CardHeader className="pb-4">
-                  <Avatar className="w-20 h-20 mx-auto mb-4">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xl font-heading font-bold">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="font-heading text-lg">{member.name}</CardTitle>
-                  <CardDescription className="text-accent font-medium">
-                    {member.role}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4" data-testid="badge-gallery-tag">
+              <Eye className="w-3 h-3 mr-1" />
+              Nos Activités
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-gallery-title">
+              En Images
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-gallery-description">
+              Découvrez nos formations, événements et activités à travers l'Afrique.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {galleryImages.map((image, index) => (
+              <div
+                key={index}
+                className="relative aspect-video overflow-hidden rounded-lg hover-elevate transition-all"
+                data-testid={`img-gallery-${index}`}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             ))}
           </div>
         </div>

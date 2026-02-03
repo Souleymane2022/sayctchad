@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Mail, MapPin, Phone, User } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { SiFacebook, SiLinkedin, SiX, SiInstagram, SiYoutube } from "react-icons/si";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
@@ -38,13 +38,9 @@ export function Footer() {
             <p className="text-sm text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-footer-description">
               Plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration et l'innovation numérique.
             </p>
-            <div className="flex items-center gap-2 mb-4 p-2 bg-sidebar-accent rounded-md">
-              <User className="w-4 h-4 text-accent shrink-0" />
-              <div>
-                <p className="text-xs text-sidebar-foreground/60">Point Focal Tchad</p>
-                <p className="text-sm font-medium text-sidebar-foreground" data-testid="text-focal-point">Souleymane Mahamat Saleh</p>
-              </div>
-            </div>
+            <p className="text-xs text-sidebar-foreground/60 mb-4" data-testid="text-focal-point">
+              Point Focal: Souleymane Mahamat Saleh
+            </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a
