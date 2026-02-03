@@ -3,8 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-
-const logoPath = "/favicon.png";
+import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
 const navLinks = [
   { href: "/", label: "Accueil" },
@@ -23,12 +22,8 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4 md:px-6">
-        <Link href="/" className="flex items-center gap-3">
-          <img src={logoPath} alt="SAYC Tchad" className="h-10 w-10" data-testid="img-logo" />
-          <div className="hidden sm:block">
-            <span className="font-heading text-lg font-bold text-foreground" data-testid="text-brand-name">SAYC Tchad</span>
-            <span className="hidden lg:block text-xs text-muted-foreground">Smart Africa Youth Chapter</span>
-          </div>
+        <Link href="/" className="flex items-center gap-2">
+          <img src={logoSayc} alt="SAYC Tchad" className="h-12 w-auto object-contain" data-testid="img-logo" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" data-testid="nav-desktop">
@@ -63,11 +58,7 @@ export function Header() {
             <SheetContent side="right" className="w-[280px] sm:w-[350px]">
               <div className="flex flex-col gap-6 mt-6">
                 <div className="flex items-center gap-3">
-                  <img src={logoPath} alt="SAYC Tchad" className="h-10 w-10" />
-                  <div>
-                    <span className="font-heading text-lg font-bold">SAYC Tchad</span>
-                    <p className="text-xs text-muted-foreground">Smart Africa Youth Chapter</p>
-                  </div>
+                  <img src={logoSayc} alt="SAYC Tchad" className="h-12 w-auto object-contain" />
                 </div>
                 <nav className="flex flex-col gap-1" data-testid="nav-mobile">
                   {navLinks.map((link) => (

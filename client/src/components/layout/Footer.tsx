@@ -1,8 +1,7 @@
 import { Link } from "wouter";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone, User } from "lucide-react";
 import { SiFacebook, SiLinkedin, SiX, SiInstagram, SiYoutube } from "react-icons/si";
-
-const logoPath = "/favicon.png";
+import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
 const footerLinks = {
   navigation: [
@@ -33,16 +32,19 @@ export function Footer() {
       <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <img src={logoPath} alt="SAYC Tchad" className="h-12 w-12" data-testid="img-footer-logo" />
-              <div>
-                <h3 className="font-heading font-bold text-lg" data-testid="text-footer-brand">SAYC Tchad</h3>
-                <p className="text-sm text-sidebar-foreground/70">Smart Africa Youth Chapter</p>
-              </div>
+            <div className="mb-4">
+              <img src={logoSayc} alt="SAYC Tchad" className="h-16 w-auto object-contain bg-white rounded-md p-1" data-testid="img-footer-logo" />
             </div>
-            <p className="text-sm text-sidebar-foreground/80 leading-relaxed mb-6" data-testid="text-footer-description">
+            <p className="text-sm text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-footer-description">
               Plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration et l'innovation numérique.
             </p>
+            <div className="flex items-center gap-2 mb-4 p-2 bg-sidebar-accent rounded-md">
+              <User className="w-4 h-4 text-accent shrink-0" />
+              <div>
+                <p className="text-xs text-sidebar-foreground/60">Point Focal Tchad</p>
+                <p className="text-sm font-medium text-sidebar-foreground" data-testid="text-focal-point">Souleymane Mahamat Saleh</p>
+              </div>
+            </div>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
                 <a

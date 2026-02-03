@@ -16,24 +16,73 @@ import {
   Zap
 } from "lucide-react";
 
+function PixelGrid({ className = "", variant = "hero" }: { className?: string; variant?: "hero" | "section" | "small" }) {
+  if (variant === "small") {
+    return (
+      <div className={`grid grid-cols-3 gap-1 ${className}`}>
+        {Array.from({ length: 9 }).map((_, i) => (
+          <div
+            key={i}
+            className={`w-2 h-2 rounded-sm ${i % 3 === 0 ? "bg-primary" : i % 3 === 1 ? "bg-accent" : "bg-sayc-teal"} ${i % 2 === 0 ? "opacity-100" : "opacity-60"}`}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  if (variant === "section") {
+    const opacities = [1, 0.8, 1, 0.6, 0.8, 1, 0.4, 1, 1, 0.6, 0.8, 1, 0.4, 1, 0.8, 1];
+    return (
+      <div className={`grid grid-cols-4 gap-1.5 ${className}`}>
+        {Array.from({ length: 16 }).map((_, i) => (
+          <div
+            key={i}
+            className={`w-3 h-3 rounded-sm ${i % 4 === 0 ? "bg-primary" : i % 4 === 1 ? "bg-accent" : i % 4 === 2 ? "bg-sayc-teal" : "bg-primary/50"}`}
+            style={{ opacity: opacities[i] }}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  const heroOpacities = [0.8, 0.6, 0.9, 0.4, 0.7, 0.5, 0.8, 0.3, 0.9, 0.6, 0.7, 0.4, 0.8, 0.5, 0.9, 0.3, 0.6, 0.8, 0.4, 0.7, 0.9, 0.5, 0.8, 0.6, 0.4];
+  
+  return (
+    <div className={`absolute pointer-events-none ${className}`}>
+      <div className="grid grid-cols-5 gap-2">
+        {Array.from({ length: 25 }).map((_, i) => (
+          <div
+            key={i}
+            className={`w-4 h-4 rounded-sm ${i % 5 === 0 ? "bg-primary" : i % 5 === 1 ? "bg-accent" : i % 5 === 2 ? "bg-sayc-teal" : i % 5 === 3 ? "bg-primary/60" : "bg-accent/50"}`}
+            style={{ opacity: heroOpacities[i] }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const objectives = [
   {
     icon: Users,
     title: "Leadership",
     description: "Former des jeunes leaders capables de piloter l'évolution du chapitre et de transformer leurs communautés.",
     color: "bg-primary/10 text-primary",
+    borderColor: "border-l-primary",
   },
   {
     icon: Lightbulb,
     title: "Innovation",
     description: "Plateforme structurée pour concevoir, valider et lancer des solutions numériques innovantes.",
     color: "bg-accent/10 text-accent",
+    borderColor: "border-l-accent",
   },
   {
     icon: Handshake,
     title: "Collaboration",
     description: "Activer la collaboration via une plateforme nationale et continentale de formation et réseau.",
-    color: "bg-chart-3/10 text-chart-3",
+    color: "bg-sayc-teal/10 text-sayc-teal",
+    borderColor: "border-l-sayc-teal",
   },
 ];
 
@@ -104,7 +153,10 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <section className="relative overflow-hidden bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground py-20 md:py-28 lg:py-36">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djItSDI0di0yaDEyek0zNiAzMHYySDI0di0yaDEyeiIvPjwvZz48L2c+PC9zdmc+')] opacity-50" />
+        <PixelGrid className="top-10 left-10 opacity-40" variant="hero" />
+        <PixelGrid className="top-20 right-16 opacity-30" variant="hero" />
+        <PixelGrid className="bottom-32 left-1/4 opacity-25" variant="hero" />
+        <PixelGrid className="bottom-20 right-1/3 opacity-35" variant="hero" />
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-hero-tag">
@@ -136,13 +188,23 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
-      <section className="py-16 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4 md:px-6">
+      <section className="py-16 md:py-24 bg-muted/30 relative overflow-hidden">
+        <div className="absolute top-8 right-8 opacity-20">
+          <PixelGrid variant="section" />
+        </div>
+        <div className="absolute bottom-8 left-8 opacity-15">
+          <PixelGrid variant="section" />
+        </div>
+        <div className="container mx-auto px-4 md:px-6 relative">
           <div className="text-center mb-12">
-            <Badge variant="outline" className="mb-4" data-testid="badge-objectives-tag">
-              <Target className="w-3 h-3 mr-1" />
-              Nos Objectifs
-            </Badge>
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <PixelGrid variant="small" />
+              <Badge variant="outline" data-testid="badge-objectives-tag">
+                <Target className="w-3 h-3 mr-1" />
+                Nos Objectifs
+              </Badge>
+              <PixelGrid variant="small" />
+            </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-objectives-title">
               Trois Piliers Stratégiques
             </h2>

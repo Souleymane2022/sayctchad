@@ -15,6 +15,12 @@ import {
   ChevronRight
 } from "lucide-react";
 
+const focalPoint = {
+  name: "Souleymane Mahamat Saleh",
+  role: "Point Focal Tchad",
+  initials: "SMS",
+};
+
 const team = [
   {
     name: "Dr. Moussa Ibrahim",
@@ -245,6 +251,25 @@ export default function About() {
               Des leaders engagés pour le développement numérique de la jeunesse tchadienne.
             </p>
           </div>
+
+          <Card className="mb-8 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground" data-testid="card-focal-point">
+            <CardHeader className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
+              <Avatar className="w-24 h-24 border-4 border-accent">
+                <AvatarFallback className="bg-accent text-accent-foreground text-2xl font-heading font-bold">
+                  {focalPoint.initials}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <Badge className="mb-2 bg-accent text-accent-foreground">{focalPoint.role}</Badge>
+                <CardTitle className="font-heading text-2xl text-primary-foreground" data-testid="text-focal-point-name">
+                  {focalPoint.name}
+                </CardTitle>
+                <CardDescription className="text-primary-foreground/80 mt-2">
+                  Représentant officiel de Smart Africa Youth Chapter au Tchad, chargé de coordonner les initiatives nationales et de faire le lien avec le réseau continental.
+                </CardDescription>
+              </div>
+            </CardHeader>
+          </Card>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
             {team.map((member, index) => (
