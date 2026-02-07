@@ -10,7 +10,9 @@ import {
   GraduationCap,
   Briefcase,
   Globe,
-  Heart
+  Heart,
+  ExternalLink,
+  Rocket
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
@@ -86,13 +88,21 @@ export default function About() {
               À propos de nous
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-about-title">
-              Le Chapitre Jeunes de{" "}
+              Le Chapitre Jeunesse de{" "}
               <span className="text-primary">Smart Africa</span> au Tchad
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-about-description">
-              Le Smart Africa Youth Chapter – Tchad est une plateforme dédiée aux jeunes de 15 à 35 ans, 
-              axée sur l'éducation, la collaboration, le mentorat et l'innovation, afin de renforcer le leadership, 
-              stimuler l'innovation et activer la collaboration au service de la transformation numérique.
+            <p className="text-lg text-muted-foreground leading-relaxed mb-4" data-testid="text-about-description">
+              Le Smart Africa Youth Chapter – Tchad (SAYC Tchad) est la branche jeunesse de{" "}
+              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+                Smart Africa Alliance
+              </a>
+              {" "}au Tchad. C'est une plateforme dédiée aux jeunes de 15 à 35 ans, 
+              axée sur l'éducation, la collaboration, le mentorat et l'innovation numérique.
+            </p>
+            <p className="text-muted-foreground leading-relaxed" data-testid="text-about-description-2">
+              En tant que chapitre national, le SAYC Tchad travaille en coordination avec Smart Africa
+              pour renforcer le leadership des jeunes, stimuler l'innovation et activer la collaboration
+              au service de la transformation numérique du continent africain.
             </p>
           </div>
         </div>
@@ -278,6 +288,100 @@ export default function About() {
         </div>
       </section>
 
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4" data-testid="badge-smart-africa-about-tag">
+              <Globe className="w-3 h-3 mr-1" />
+              Smart Africa
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-smart-africa-about-title">
+              Notre Organisation M&egrave;re
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-smart-africa-about-description">
+              Smart Africa est une alliance panafricaine dont la vision est de transformer l'Afrique en un
+              march&eacute; num&eacute;rique unique. Le SAYC Tchad est son chapitre jeunesse au Tchad.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 items-start mb-10">
+            <div>
+              <h3 className="font-heading text-xl font-semibold mb-4">
+                &Agrave; propos de Smart Africa Alliance
+              </h3>
+              <p className="text-muted-foreground leading-relaxed mb-4">
+                Smart Africa est un engagement audacieux pris par les chefs d'&Eacute;tat et de gouvernement
+                africains pour acc&eacute;l&eacute;rer la transformation socio-&eacute;conomique durable du continent
+                gr&acirc;ce aux technologies de l'information et de la communication (TIC).
+              </p>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                L'alliance r&eacute;unit plus de 36 pays membres et travaille avec le secteur priv&eacute; et les
+                organisations internationales pour connecter, innover et transformer l'Afrique.
+              </p>
+              <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" data-testid="button-about-visit-sa">
+                  Visiter smartafrica.org
+                  <ExternalLink className="ml-1 h-4 w-4" />
+                </Button>
+              </a>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              <Card className="hover-elevate" data-testid="card-sa-sada">
+                <CardHeader className="flex flex-row items-start gap-4 pb-2">
+                  <div className="w-10 h-10 rounded-lg bg-sayc-teal/10 text-sayc-teal flex items-center justify-center shrink-0">
+                    <GraduationCap className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base mb-1">
+                      <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                        SADA - Acad&eacute;mie Num&eacute;rique <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                      </a>
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Formations certifiantes en comp&eacute;tences num&eacute;riques pour les jeunes africains.
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+              </Card>
+              <Card className="hover-elevate" data-testid="card-sa-tas">
+                <CardHeader className="flex flex-row items-start gap-4 pb-2">
+                  <div className="w-10 h-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                    <Rocket className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base mb-1">
+                      <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                        Transform Africa Summit <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                      </a>
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Le sommet annuel pour acc&eacute;l&eacute;rer la transformation digitale de l'Afrique.
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+              </Card>
+              <Card className="hover-elevate" data-testid="card-sa-blueprints">
+                <CardHeader className="flex flex-row items-start gap-4 pb-2">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <Briefcase className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base mb-1">
+                      <a href="https://smartafrica.org/blueprint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                        Plans Directeurs <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                      </a>
+                    </CardTitle>
+                    <CardDescription className="text-sm">
+                      Strat&eacute;gies sectorielles pour le d&eacute;veloppement num&eacute;rique africain.
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-20 md:py-28 bg-gradient-to-br from-primary to-primary/90 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
@@ -295,7 +399,7 @@ export default function About() {
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10" data-testid="button-cta-contact">
+                <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground" data-testid="button-cta-contact">
                   Nous contacter
                 </Button>
               </Link>

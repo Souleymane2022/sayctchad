@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema } from "@shared/schema";
+import { insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema, insertOpportunitySchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(
@@ -80,6 +80,43 @@ export async function registerRoutes(
       }
       console.error("Error creating newsletter subscriber:", error);
       res.status(500).json({ error: "Erreur lors de l'inscription à la newsletter" });
+    }
+  });
+
+  app.get("/api/opportunities", async (_req, res) => {
+    try {
+      const opportunities = await storage.getActiveOpportunities();
+      res.json(opportunities);
+    } catch (error) {
+      console.error("Error fetching opportunities:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des opportunités" });
+    }
+  });
+
+  app.get("/api/opportunities/:id", async (req, res) => {
+    try {
+      const opportunity = await storage.getOpportunityById(req.params.id);
+      if (!opportunity) {
+        return res.status(404).json({ error: "Opportunité non trouvée" });
+      }
+      res.json(opportunity);
+    } catch (error) {
+      console.error("Error fetching opportunity:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération de l'opportunité" });
+    }
+  });
+
+  app.post("/api/opportunities", async (req, res) => {
+    try {
+      const validatedData = insertOpportunitySchema.parse(req.body);
+      const opportunity = await storage.createOpportunity(validatedData);
+      res.status(201).json(opportunity);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Données invalides", details: error.errors });
+      }
+      console.error("Error creating opportunity:", error);
+      res.status(500).json({ error: "Erreur lors de la création de l'opportunité" });
     }
   });
 

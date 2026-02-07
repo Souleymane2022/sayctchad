@@ -13,6 +13,7 @@ import Events from "@/pages/Events";
 import News from "@/pages/News";
 import Contact from "@/pages/Contact";
 import Join from "@/pages/Join";
+import Opportunities from "@/pages/Opportunities";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -26,6 +27,7 @@ function Router() {
       <Route path="/actualites" component={News} />
       <Route path="/contact" component={Contact} />
       <Route path="/rejoindre" component={Join} />
+      <Route path="/opportunites" component={Opportunities} />
       <Route component={NotFound} />
     </Switch>
   );

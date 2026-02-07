@@ -21,7 +21,7 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite for development and production builds
 
 The frontend is organized in `client/src/` with:
-- `pages/` - Route components (Home, About, Programs, Trainings, Events, News, Contact, Join)
+- `pages/` - Route components (Home, About, Programs, Trainings, Events, News, Contact, Join, Opportunities)
 - `components/ui/` - Reusable shadcn/ui components
 - `components/layout/` - Header and Footer components
 - `hooks/` - Custom React hooks
@@ -50,6 +50,7 @@ Database tables:
 - `members` - Member registrations with demographics and interests
 - `contact_messages` - Contact form submissions
 - `newsletter_subscribers` - Email subscriptions
+- `opportunities` - Dynamic calls for tenders/opportunities (title, description, category, organization, deadline, location, link, isActive)
 
 ### Shared Code
 The `shared/` directory contains schema definitions and types used by both frontend and backend, ensuring type safety across the stack.

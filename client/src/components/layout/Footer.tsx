@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { SiFacebook, SiLinkedin, SiX, SiInstagram, SiYoutube } from "react-icons/si";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
@@ -9,12 +9,12 @@ const footerLinks = {
     { href: "/a-propos", label: "À propos" },
     { href: "/programmes", label: "Programmes" },
     { href: "/formations", label: "Formations" },
+    { href: "/opportunites", label: "Opportunités" },
   ],
   resources: [
     { href: "/evenements", label: "Événements" },
     { href: "/actualites", label: "Actualités" },
-    { href: "/ressources", label: "Ressources" },
-    { href: "/partenaires", label: "Partenaires" },
+    { href: "/contact", label: "Contact" },
   ],
 };
 
@@ -89,6 +89,24 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li className="pt-2 border-t border-sidebar-border mt-2">
+                <h5 className="text-xs text-sidebar-foreground/50 mb-2">Smart Africa</h5>
+              </li>
+              <li>
+                <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-smart-africa">
+                  Smart Africa Alliance <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-sada">
+                  SADA (Acad&eacute;mie) <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-tas">
+                  Transform Africa Summit <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
             </ul>
           </div>
 

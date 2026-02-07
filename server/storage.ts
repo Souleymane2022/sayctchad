@@ -7,13 +7,16 @@ import {
   type InsertContactMessage,
   type NewsletterSubscriber,
   type InsertNewsletterSubscriber,
+  type Opportunity,
+  type InsertOpportunity,
   users,
   members,
   contactMessages,
-  newsletterSubscribers
+  newsletterSubscribers,
+  opportunities
 } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -30,6 +33,13 @@ export interface IStorage {
   
   createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
   getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
+
+  createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity>;
+  getAllOpportunities(): Promise<Opportunity[]>;
+  getActiveOpportunities(): Promise<Opportunity[]>;
+  getOpportunityById(id: string): Promise<Opportunity | undefined>;
+  updateOpportunity(id: string, data: Partial<InsertOpportunity>): Promise<Opportunity | undefined>;
+  deleteOpportunity(id: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -79,6 +89,33 @@ export class DatabaseStorage implements IStorage {
   async getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined> {
     const [subscriber] = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
     return subscriber;
+  }
+
+  async createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity> {
+    const [newOpportunity] = await db.insert(opportunities).values(opportunity).returning();
+    return newOpportunity;
+  }
+
+  async getAllOpportunities(): Promise<Opportunity[]> {
+    return db.select().from(opportunities).orderBy(desc(opportunities.createdAt));
+  }
+
+  async getActiveOpportunities(): Promise<Opportunity[]> {
+    return db.select().from(opportunities).where(eq(opportunities.isActive, true)).orderBy(desc(opportunities.createdAt));
+  }
+
+  async getOpportunityById(id: string): Promise<Opportunity | undefined> {
+    const [opportunity] = await db.select().from(opportunities).where(eq(opportunities.id, id));
+    return opportunity;
+  }
+
+  async updateOpportunity(id: string, data: Partial<InsertOpportunity>): Promise<Opportunity | undefined> {
+    const [updated] = await db.update(opportunities).set(data).where(eq(opportunities.id, id)).returning();
+    return updated;
+  }
+
+  async deleteOpportunity(id: string): Promise<void> {
+    await db.delete(opportunities).where(eq(opportunities.id, id));
   }
 }
 
