@@ -11,46 +11,32 @@ const seedPartners = [
     sortOrder: 1,
   },
   {
-    name: "Smart Africa Alliance",
-    logoUrl: "/images/partners/smart-africa-logo.png",
-    websiteUrl: "https://smartafrica.org/fr/page-daccueil/",
-    description: "Alliance panafricaine de 40 États membres pour accélérer le développement socio-économique durable par les TIC.",
-    sortOrder: 2,
-  },
-  {
-    name: "SADA - Smart Africa Digital Academy",
-    logoUrl: "/images/partners/sada-logo.jpg",
-    websiteUrl: "https://sada.smartafrica.org",
-    description: "Académie numérique panafricaine visant à améliorer les compétences numériques et l'employabilité des jeunes.",
-    sortOrder: 3,
-  },
-  {
     name: "Thunderbird School - Arizona State University",
     logoUrl: "/images/partners/thunderbird-logo.png",
     websiteUrl: "https://thunderbird.asu.edu",
     description: "N°1 mondial pour le commerce international. Partenaire du programme 100 millions d'apprenants.",
-    sortOrder: 4,
+    sortOrder: 2,
   },
   {
     name: "Transform Africa Summit",
     logoUrl: "/images/partners/transform-africa-logo.png",
     websiteUrl: "https://transformafricasummit.org",
     description: "Sommet annuel rassemblant les leaders africains pour la transformation digitale du continent.",
-    sortOrder: 5,
+    sortOrder: 3,
   },
   {
     name: "Amazon Web Services (AWS)",
     logoUrl: "/images/partners/aws-logo.png",
     websiteUrl: "https://aws.amazon.com",
     description: "Leader mondial du cloud computing. Partenaire de Smart Africa pour la formation des jeunes africains aux technologies cloud et à l'innovation numérique.",
-    sortOrder: 6,
+    sortOrder: 4,
   },
   {
     name: "Mastercard Foundation",
     logoUrl: "/images/partners/mastercard-logo.jpg",
     websiteUrl: "https://mastercardfdn.org",
     description: "Fondation mondiale engagée pour l'inclusion financière et l'autonomisation des jeunes africains. Partenaire stratégique de Smart Africa pour le développement des compétences numériques.",
-    sortOrder: 7,
+    sortOrder: 5,
   },
 ];
 
@@ -194,6 +180,11 @@ export async function seedDatabase() {
         await seedTable("trainings", trainings, seedTrainings, "title");
         await seedTable("opportunities", opportunities, seedOpportunities, "title");
         await seedTable("news_articles", newsArticles, seedNews, "title");
+
+        await db.update(partners)
+          .set({ isActive: false })
+          .where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
+
         console.log("Database seed check complete.");
       } finally {
         await tx.execute(sql`SELECT pg_advisory_unlock(42)`);
