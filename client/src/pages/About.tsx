@@ -2,6 +2,9 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import type { Partner } from "@shared/schema";
 import { 
   ArrowRight, 
   Target, 
@@ -12,7 +15,9 @@ import {
   Globe,
   Heart,
   ExternalLink,
-  Rocket
+  Rocket,
+  Building2,
+  Link as LinkIcon
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
@@ -49,22 +54,17 @@ const pillars = [
   {
     icon: GraduationCap,
     title: "Engagement des jeunes dans les politiques numériques",
-    description: "Impliquer les jeunes dans la conception et la mise en œuvre des politiques numériques au Tchad.",
+    description: "Encourager la participation des jeunes dans l'élaboration des politiques numériques. Plaider pour des politiques inclusives et centrées sur les jeunes.",
   },
   {
     icon: Target,
     title: "Renforcement des compétences numériques",
-    description: "Programmes de formation pour développer les compétences techniques et digitales des jeunes.",
+    description: "Déployer des formations nationales et régionales en compétences numériques de base et avancées. Fournir des parcours de certification alignés sur les besoins du marché.",
   },
   {
     icon: Briefcase,
     title: "Compétences entrepreneuriales & innovation",
-    description: "Accompagnement des jeunes entrepreneurs dans le développement de solutions innovantes.",
-  },
-  {
-    icon: Globe,
-    title: "Réseau & collaboration continentale",
-    description: "Connexion avec les chapitres Smart Africa pour favoriser les échanges et opportunités.",
+    description: "Organiser des bootcamps, concours de pitchs locaux et internationaux. Faciliter l'accès au financement et à l'accompagnement.",
   },
 ];
 
@@ -78,6 +78,10 @@ const galleryImages = [
 ];
 
 export default function About() {
+  const { data: partnersList = [], isLoading: partnersLoading } = useQuery<Partner[]>({
+    queryKey: ["/api/partners"],
+  });
+
   return (
     <div className="flex flex-col">
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
@@ -160,14 +164,14 @@ export default function About() {
               Nos Piliers
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-pillars-title">
-              Les 4 Piliers du SAYC
+              Les 3 Piliers du SAYC
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-pillars-description">
-              Notre action repose sur quatre piliers fondamentaux pour accompagner les jeunes.
+              Notre action repose sur trois piliers fondamentaux pour accompagner les jeunes.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {pillars.map((pillar, index) => (
               <Card key={index} className="hover-elevate transition-all" data-testid={`card-pillar-${index}`}>
                 <CardHeader className="flex flex-row items-start gap-4 pb-3">
@@ -238,7 +242,7 @@ export default function About() {
           </div>
 
           <div className="max-w-2xl mx-auto">
-            <Card className="border-l-4 border-l-primary" data-testid="card-focal-point">
+            <Card data-testid="card-focal-point">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge variant="secondary" className="text-xs">Point Focal SAYC Tchad</Badge>
@@ -288,7 +292,73 @@ export default function About() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-muted/30">
+      {(partnersLoading || partnersList.length > 0) && (
+        <section className="py-16 md:py-24 bg-muted/30" data-testid="section-about-partners">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4" data-testid="badge-about-partners-tag">
+                <LinkIcon className="w-3 h-3 mr-1" />
+                Partenaires
+              </Badge>
+              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-about-partners-title">
+                Nos Partenaires
+              </h2>
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Les organisations qui soutiennent le développement numérique de la jeunesse au Tchad.
+              </p>
+            </div>
+
+            {partnersLoading ? (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i} className="text-center">
+                    <CardHeader>
+                      <Skeleton className="w-16 h-16 rounded-lg mx-auto mb-3" />
+                      <Skeleton className="h-5 w-3/4 mx-auto" />
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-4 w-full mb-1" />
+                      <Skeleton className="h-4 w-2/3 mx-auto" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {partnersList.map((partner) => (
+                  <Card key={partner.id} className="hover-elevate transition-all text-center" data-testid={`card-about-partner-${partner.id}`}>
+                    <CardHeader className="pb-3">
+                      {partner.logoUrl ? (
+                        <img src={partner.logoUrl} alt={partner.name} className="h-16 w-auto mx-auto mb-3 object-contain" />
+                      ) : (
+                        <div className="w-16 h-16 rounded-lg bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                          <Building2 className="w-8 h-8" />
+                        </div>
+                      )}
+                      <CardTitle className="font-heading text-base">{partner.name}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      {partner.description && (
+                        <CardDescription className="text-xs leading-relaxed mb-3">
+                          {partner.description.length > 100 ? partner.description.slice(0, 100) + "..." : partner.description}
+                        </CardDescription>
+                      )}
+                      {partner.websiteUrl && (
+                        <a href={partner.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-xs font-medium">
+                          Visiter
+                          <ExternalLink className="ml-1 h-3 w-3" />
+                        </a>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-smart-africa-about-tag">
@@ -315,7 +385,7 @@ export default function About() {
                 gr&acirc;ce aux technologies de l'information et de la communication (TIC).
               </p>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                L'alliance r&eacute;unit plus de 36 pays membres et travaille avec le secteur priv&eacute; et les
+                L'alliance r&eacute;unit 40 &Eacute;tats membres et travaille avec le secteur priv&eacute; et les
                 organisations internationales pour connecter, innover et transformer l'Afrique.
               </p>
               <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">

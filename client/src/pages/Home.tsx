@@ -3,7 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import type { Opportunity } from "@shared/schema";
+import { Skeleton } from "@/components/ui/skeleton";
+import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
 import { 
   ArrowRight, 
   Users, 
@@ -11,7 +12,6 @@ import {
   Handshake, 
   GraduationCap, 
   Rocket, 
-  Calendar,
   ChevronRight,
   Globe,
   Target,
@@ -20,7 +20,10 @@ import {
   ExternalLink,
   Briefcase,
   Building2,
-  MapPin
+  TrendingUp,
+  BookOpen,
+  Award,
+  Link as LinkIcon
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
@@ -29,9 +32,9 @@ import galleryImg3 from "@assets/UniPod_Mamou_J2_21_1770104422785.JPG";
 import galleryImg4 from "@assets/604667985_122096798505190973_8462039452349924014_n_1770104422797.jpg";
 
 const galleryImages = [
-  { src: galleryImg1, alt: "Formation en cours" },
-  { src: galleryImg2, alt: "Session de formation" },
-  { src: galleryImg3, alt: "Travail collaboratif" },
+  { src: galleryImg1, alt: "Formation SADA4Youth en cours" },
+  { src: galleryImg2, alt: "Session de renforcement de compétences" },
+  { src: galleryImg3, alt: "Travail collaboratif des jeunes" },
   { src: galleryImg4, alt: "Conférence Smart Africa" },
 ];
 
@@ -85,99 +88,74 @@ const objectives = [
   {
     icon: Users,
     title: "Leadership",
-    description: "Former des jeunes leaders capables de piloter l'évolution du chapitre et de transformer leurs communautés.",
+    description: "Favoriser le leadership au sein du chapitre et former des jeunes leaders capables de piloter son évolution.",
     color: "bg-primary/10 text-primary",
-    borderColor: "border-l-primary",
   },
   {
     icon: Lightbulb,
     title: "Innovation",
-    description: "Plateforme structurée pour concevoir, valider et lancer des solutions numériques innovantes.",
+    description: "Fournir une plateforme structurée où les jeunes innovateurs peuvent concevoir, valider et lancer des solutions numériques innovantes.",
     color: "bg-accent/10 text-accent",
-    borderColor: "border-l-accent",
   },
   {
     icon: Handshake,
     title: "Collaboration",
-    description: "Activer la collaboration via une plateforme nationale et continentale de formation et réseau.",
+    description: "Activer la collaboration entre les jeunes via une plateforme nationale et continentale pour la formation, la mise en réseau et l'innovation.",
     color: "bg-sayc-teal/10 text-sayc-teal",
-    borderColor: "border-l-sayc-teal",
   },
 ];
 
-const programs = [
+const activities = [
   {
     icon: GraduationCap,
-    title: "Formations Numériques",
-    description: "Programmes de renforcement des compétences en technologie, cloud et cybersécurité.",
-    badge: "Populaire",
+    title: "Développer vos compétences",
+    description: "Programmes de renforcement des compétences numériques de base et avancées via la plateforme SADA.",
+  },
+  {
+    icon: Users,
+    title: "Programme de mentorat",
+    description: "Accompagnement personnalisé par des mentors expérimentés du réseau Smart Africa.",
   },
   {
     icon: Rocket,
-    title: "Incubation de Projets",
-    description: "Accompagnement des jeunes entrepreneurs dans le développement de leurs startups.",
-    badge: "Nouveau",
-  },
-  {
-    icon: Calendar,
     title: "Hackathons & Bootcamps",
-    description: "Événements intensifs pour résoudre des défis locaux avec des solutions tech.",
-    badge: null,
+    description: "Concours de pitchs, bootcamps et hackathons locaux et internationaux pour les jeunes innovateurs.",
   },
   {
     icon: Globe,
-    title: "Réseau Continental",
-    description: "Connexion avec les chapitres Smart Africa à travers l'Afrique.",
-    badge: null,
+    title: "Opportunités de réseautage",
+    description: "Connexion avec les 6 autres chapitres Smart Africa à travers l'Afrique pour partager les meilleures pratiques.",
   },
-];
-
-const stats = [
-  { value: "500+", label: "Membres actifs" },
-  { value: "25+", label: "Formations" },
-  { value: "10+", label: "Partenaires" },
-  { value: "15+", label: "Événements" },
+  {
+    icon: BookOpen,
+    title: "Ressources pédagogiques",
+    description: "Accès à plus de 130 formations sur la plateforme SADA, incluant des cours d'universités internationales.",
+  },
+  {
+    icon: Award,
+    title: "Présentation de projets",
+    description: "Opportunités de présenter vos projets devant des investisseurs et des décideurs politiques.",
+  },
 ];
 
 const smartAfricaInitiatives = [
   {
     title: "Smart Africa Alliance",
-    description: "Alliance panafricaine pour la transformation numérique du continent. Vision: un marché numérique unique en Afrique.",
+    description: "Alliance panafricaine de 40 États membres représentant plus de 1,2 milliard de personnes, pour accélérer le développement socio-économique par les TIC.",
     link: "https://smartafrica.org/fr/page-daccueil/",
     icon: Globe,
   },
   {
     title: "SADA - Académie Numérique",
-    description: "La Smart Africa Digital Academy offre des formations certifiantes en compétences numériques.",
+    description: "Écosystème d'apprentissage panafricain visant à améliorer les compétences numériques et l'employabilité. Objectif : 100 millions de citoyens africains d'ici 2030.",
     link: "https://sada.smartafrica.org",
     icon: GraduationCap,
   },
   {
     title: "Transform Africa Summit",
-    description: "Le sommet annuel qui rassemble les leaders africains pour accélérer la transformation digitale.",
+    description: "Le sommet annuel qui rassemble les leaders africains pour accélérer la transformation digitale du continent.",
     link: "https://transformafricasummit.org",
     icon: Rocket,
-  },
-];
-
-const news = [
-  {
-    title: "Lancement du programme de formation en cybersécurité",
-    date: "25 Jan 2026",
-    category: "Formation",
-    excerpt: "Un nouveau programme intensif pour former les jeunes aux enjeux de la sécurité numérique.",
-  },
-  {
-    title: "Hackathon Smart Cities Tchad 2026",
-    date: "18 Jan 2026",
-    category: "Événement",
-    excerpt: "48 heures pour imaginer les solutions urbaines de demain avec la technologie.",
-  },
-  {
-    title: "Partenariat stratégique avec l'Union Africaine",
-    date: "10 Jan 2026",
-    category: "Partenariat",
-    excerpt: "Renforcement de la collaboration pour l'inclusion numérique des jeunes africains.",
   },
 ];
 
@@ -186,7 +164,24 @@ export default function Home() {
     queryKey: ["/api/opportunities"],
   });
 
+  const { data: achievementsList = [], isLoading: achievementsLoading } = useQuery<Achievement[]>({
+    queryKey: ["/api/achievements"],
+  });
+
+  const { data: partnersList = [] } = useQuery<Partner[]>({
+    queryKey: ["/api/partners"],
+  });
+
+  const { data: trainingsList = [] } = useQuery<Training[]>({
+    queryKey: ["/api/trainings"],
+  });
+
+  const { data: newsList = [] } = useQuery<NewsArticle[]>({
+    queryKey: ["/api/news"],
+  });
+
   const latestOpportunities = opportunities.slice(0, 3);
+  const latestTrainings = trainingsList.slice(0, 3);
 
   return (
     <div className="flex flex-col">
@@ -199,19 +194,19 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-hero-tag">
               <Zap className="w-3 h-3 mr-1" />
-              Chapitre Jeunesse de Smart Africa au Tchad
+              7e Chapitre Jeunesse de Smart Africa
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-testid="text-hero-title">
               Smart Africa Youth Chapter{" "}
               <span className="text-accent">Tchad</span>
             </h1>
             <p className="text-lg md:text-xl text-sidebar-foreground/80 mb-4 max-w-2xl mx-auto leading-relaxed" data-testid="text-hero-description">
-              Le chapitre jeunesse de Smart Africa au Tchad. Inspirer une nouvelle génération
-              de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique.
+              Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie
+              et l'innovation pour transformer l'Afrique, créer des opportunités et bâtir un avenir durable.
             </p>
             <p className="text-sm text-sidebar-foreground/60 mb-8 max-w-xl mx-auto" data-testid="text-hero-tagline">
-              Connecter - Innover - Transformer | Une initiative de{" "}
-              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2">
+              Jeunes de 15 à 35 ans | Une initiative de{" "}
+              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2" data-testid="link-hero-smart-africa">
                 Smart Africa Alliance
               </a>
             </p>
@@ -238,15 +233,15 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm">
             <span className="font-medium">Smart Africa Alliance</span>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
-            <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 hover:text-primary-foreground transition-colors" data-testid="link-bar-sada">
+            <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-sada">
               SADA <ExternalLink className="w-3 h-3" />
             </a>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
-            <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 hover:text-primary-foreground transition-colors" data-testid="link-bar-tas">
+            <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-tas">
               Transform Africa Summit <ExternalLink className="w-3 h-3" />
             </a>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
-            <a href="https://smartafrica.org/blueprint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 hover:text-primary-foreground transition-colors" data-testid="link-bar-blueprints">
+            <a href="https://smartafrica.org/blueprint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-blueprints">
               Plans directeurs <ExternalLink className="w-3 h-3" />
             </a>
           </div>
@@ -266,7 +261,7 @@ export default function Home() {
               <PixelGrid variant="small" />
               <Badge variant="outline" data-testid="badge-objectives-tag">
                 <Target className="w-3 h-3 mr-1" />
-                Nos Objectifs
+                Objectifs du SAYC
               </Badge>
               <PixelGrid variant="small" />
             </div>
@@ -274,7 +269,7 @@ export default function Home() {
               Trois Piliers Stratégiques
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-objectives-description">
-              Notre mission repose sur trois objectifs fondamentaux pour transformer la jeunesse tchadienne.
+              Le chapitre jeunesse de Smart Africa repose sur trois objectifs fondamentaux pour transformer la jeunesse tchadienne.
             </p>
           </div>
 
@@ -302,44 +297,37 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
             <div>
-              <Badge variant="outline" className="mb-4" data-testid="badge-programs-tag">
+              <Badge variant="outline" className="mb-4" data-testid="badge-activities-tag">
                 <Rocket className="w-3 h-3 mr-1" />
-                Programmes
+                Activités SAYC
               </Badge>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-programs-title">
-                Nos Programmes & Activités
+              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-activities-title">
+                Ce Que Nous Offrons
               </h2>
-              <p className="text-muted-foreground max-w-xl" data-testid="text-programs-description">
-                Découvrez nos initiatives pour accompagner les jeunes dans leur parcours numérique.
+              <p className="text-muted-foreground max-w-xl" data-testid="text-activities-description">
+                Une plateforme dédiée à l'éducation, à la collaboration et à l'autonomisation des jeunes tchadiens.
               </p>
             </div>
             <Link href="/programmes">
-              <Button variant="outline" className="shrink-0" data-testid="button-programs-view-all">
-                Voir tous les programmes
+              <Button variant="outline" className="shrink-0" data-testid="button-activities-view-all">
+                En savoir plus
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             </Link>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {programs.map((program, index) => (
-              <Card key={index} className="group hover-elevate cursor-pointer transition-all duration-300" data-testid={`card-program-${index}`}>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activities.map((activity, index) => (
+              <Card key={index} className="group hover-elevate transition-all duration-300" data-testid={`card-activity-${index}`}>
                 <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-2 mb-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <program.icon className="w-6 h-6" />
-                    </div>
-                    {program.badge && (
-                      <Badge variant="secondary" className="text-xs">
-                        {program.badge}
-                      </Badge>
-                    )}
+                  <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+                    <activity.icon className="w-6 h-6" />
                   </div>
-                  <CardTitle className="font-heading text-lg">{program.title}</CardTitle>
+                  <CardTitle className="font-heading text-lg">{activity.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-sm leading-relaxed">
-                    {program.description}
+                    {activity.description}
                   </CardDescription>
                 </CardContent>
               </Card>
@@ -367,7 +355,7 @@ export default function Home() {
             {galleryImages.map((image, index) => (
               <div
                 key={index}
-                className="relative aspect-video overflow-hidden rounded-lg hover-elevate transition-all"
+                className="relative aspect-video overflow-hidden rounded-md"
                 data-testid={`img-home-gallery-${index}`}
               >
                 <img
@@ -383,23 +371,95 @@ export default function Home() {
 
       <section className="py-16 md:py-24 bg-sidebar text-sidebar-foreground">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center" data-testid={`stat-${index}`}>
-                <div className="font-heading text-4xl md:text-5xl font-bold text-accent mb-2">
-                  {stat.value}
+          {achievementsLoading ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="text-center">
+                  <Skeleton className="h-12 w-24 mx-auto mb-2 bg-sidebar-foreground/10" />
+                  <Skeleton className="h-4 w-32 mx-auto bg-sidebar-foreground/10" />
                 </div>
-                <div className="text-sidebar-foreground/70 text-sm md:text-base">
-                  {stat.label}
+              ))}
+            </div>
+          ) : achievementsList.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
+              {achievementsList.map((achievement, index) => (
+                <div key={achievement.id} className="text-center" data-testid={`stat-${index}`}>
+                  <div className="font-heading text-4xl md:text-5xl font-bold text-accent mb-2">
+                    {achievement.metricValue}
+                  </div>
+                  <div className="text-sidebar-foreground/70 text-sm md:text-base">
+                    {achievement.metricLabel}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-sidebar-foreground/60">
+              <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
+              <p>Les statistiques seront bientôt disponibles.</p>
+            </div>
+          )}
         </div>
       </section>
 
+      {latestTrainings.length > 0 && (
+        <section className="py-16 md:py-24" data-testid="section-trainings-preview">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+              <div>
+                <Badge variant="outline" className="mb-4" data-testid="badge-trainings-home-tag">
+                  <GraduationCap className="w-3 h-3 mr-1" />
+                  Formations SADA
+                </Badge>
+                <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-trainings-home-title">
+                  Formations & Programmes
+                </h2>
+                <p className="text-muted-foreground max-w-xl" data-testid="text-trainings-home-description">
+                  Programmes certifiants de la Smart Africa Digital Academy et de ses partenaires.
+                </p>
+              </div>
+              <Link href="/formations">
+                <Button variant="outline" className="shrink-0" data-testid="button-trainings-view-all">
+                  Toutes les formations
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {latestTrainings.map((training) => (
+                <Card key={training.id} className="group hover-elevate transition-all duration-300" data-testid={`card-training-preview-${training.id}`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                      <Badge variant="secondary" className="text-xs">
+                        {training.level || "Formation"}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">{training.provider}</span>
+                    </div>
+                    <CardTitle className="font-heading text-lg leading-snug">
+                      {training.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-sm leading-relaxed mb-3">
+                      {training.description.length > 150 ? training.description.slice(0, 150) + "..." : training.description}
+                    </CardDescription>
+                    {training.link && (
+                      <a href={training.link} target="_blank" rel="noopener noreferrer" className="flex items-center text-primary text-sm font-medium">
+                        Accéder à la formation
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {latestOpportunities.length > 0 && (
-        <section className="py-16 md:py-24" data-testid="section-opportunities-preview">
+        <section className="py-16 md:py-24 bg-muted/30" data-testid="section-opportunities-preview">
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
               <div>
@@ -426,7 +486,7 @@ export default function Home() {
               {latestOpportunities.map((opp) => (
                 <Card key={opp.id} className="group hover-elevate transition-all duration-300" data-testid={`card-opp-preview-${opp.id}`}>
                   <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
                       <Badge variant="secondary" className="text-xs">
                         {opp.category}
                       </Badge>
@@ -447,7 +507,7 @@ export default function Home() {
                     <Link href="/opportunites">
                       <span className="flex items-center text-primary text-sm font-medium cursor-pointer">
                         Voir les détails
-                        <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        <ChevronRight className="ml-1 h-4 w-4" />
                       </span>
                     </Link>
                   </CardContent>
@@ -458,7 +518,7 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-16 md:py-24 bg-muted/30">
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-smart-africa-tag">
@@ -469,9 +529,9 @@ export default function Home() {
               Smart Africa Alliance
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-smart-africa-description">
-              Le SAYC Tchad est le chapitre jeunesse de Smart Africa au Tchad.
-              Smart Africa est une alliance panafricaine dont la vision est de transformer
-              l'Afrique en un marché numérique unique.
+              Le SAYC Tchad est le 7e chapitre jeunesse de Smart Africa.
+              Smart Africa est un engagement des chefs d'État africains pour accélérer le développement
+              socio-économique durable par les technologies de l'information.
             </p>
           </div>
 
@@ -483,13 +543,14 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
+                data-testid={`link-sa-initiative-${index}`}
               >
                 <Card className="h-full group hover-elevate transition-all duration-300" data-testid={`card-sa-initiative-${index}`}>
                   <CardHeader className="pb-3">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
                       <initiative.icon className="w-6 h-6" />
                     </div>
-                    <CardTitle className="font-heading text-lg flex items-center gap-2">
+                    <CardTitle className="font-heading text-lg flex items-center gap-2 flex-wrap">
                       {initiative.title}
                       <ExternalLink className="w-4 h-4 text-muted-foreground" />
                     </CardTitle>
@@ -515,81 +576,128 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-            <div>
-              <Badge variant="outline" className="mb-4" data-testid="badge-news-tag">
-                <Calendar className="w-3 h-3 mr-1" />
-                Actualités
+      {partnersList.length > 0 && (
+        <section className="py-16 md:py-24 bg-muted/30" data-testid="section-partners">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center mb-12">
+              <Badge variant="outline" className="mb-4" data-testid="badge-partners-tag">
+                <LinkIcon className="w-3 h-3 mr-1" />
+                Partenaires
               </Badge>
-              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-news-title">
-                Dernières Actualités
+              <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-partners-title">
+                Nos Partenaires
               </h2>
-              <p className="text-muted-foreground max-w-xl" data-testid="text-news-description">
-                Restez informé des dernières nouvelles et opportunités du SAYC Tchad.
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                Les organisations et institutions qui soutiennent le développement numérique de la jeunesse.
               </p>
             </div>
-            <Link href="/actualites">
-              <Button variant="outline" className="shrink-0" data-testid="button-news-view-all">
-                Toutes les actualités
-                <ChevronRight className="ml-1 h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {news.map((article, index) => (
-              <Card key={index} className="group hover-elevate cursor-pointer transition-all duration-300" data-testid={`card-news-${index}`}>
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <Badge variant="secondary" className="text-xs">
-                      {article.category}
-                    </Badge>
-                    <span className="text-xs text-muted-foreground">{article.date}</span>
-                  </div>
-                  <CardTitle className="font-heading text-lg leading-snug group-hover:text-primary transition-colors">
-                    {article.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm leading-relaxed">
-                    {article.excerpt}
-                  </CardDescription>
-                  <div className="mt-4 flex items-center text-primary text-sm font-medium">
-                    Lire la suite
-                    <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {partnersList.map((partner) => (
+                <Card key={partner.id} className="hover-elevate transition-all duration-300 text-center" data-testid={`card-partner-${partner.id}`}>
+                  <CardHeader className="pb-3">
+                    {partner.logoUrl ? (
+                      <img src={partner.logoUrl} alt={partner.name} className="h-16 w-auto mx-auto mb-3 object-contain" />
+                    ) : (
+                      <div className="w-16 h-16 rounded-lg bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+                        <Building2 className="w-8 h-8" />
+                      </div>
+                    )}
+                    <CardTitle className="font-heading text-base">{partner.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {partner.description && (
+                      <CardDescription className="text-xs leading-relaxed mb-3">
+                        {partner.description.length > 100 ? partner.description.slice(0, 100) + "..." : partner.description}
+                      </CardDescription>
+                    )}
+                    {partner.websiteUrl && (
+                      <a href={partner.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-xs font-medium">
+                        Visiter
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </a>
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="py-20 md:py-28 bg-gradient-to-br from-primary to-primary/90 text-primary-foreground">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
-              Prêt à rejoindre le mouvement?
-            </h2>
-            <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto" data-testid="text-cta-description">
-              Rejoignez des centaines de jeunes Tchadiens engagés pour la transformation numérique de l'Afrique
-              avec Smart Africa.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/rejoindre">
-                <Button size="lg" variant="secondary" className="min-w-[200px]" data-testid="button-cta-join">
-                  Devenir membre
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/contact">
-                <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground" data-testid="button-cta-contact">
-                  Nous contacter
+      {newsList.length > 0 && (
+        <section className="py-16 md:py-24" data-testid="section-news">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+              <div>
+                <Badge variant="outline" className="mb-4" data-testid="badge-news-tag">
+                  <Zap className="w-3 h-3 mr-1" />
+                  Actualités
+                </Badge>
+                <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-news-title">
+                  Dernières Actualités
+                </h2>
+                <p className="text-muted-foreground max-w-xl">
+                  Les nouvelles récentes du SAYC Tchad et de Smart Africa.
+                </p>
+              </div>
+              <Link href="/actualites">
+                <Button variant="outline" className="shrink-0" data-testid="button-news-view-all">
+                  Toutes les actualités
+                  <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
             </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              {newsList.slice(0, 3).map((article) => (
+                <Card key={article.id} className="group hover-elevate transition-all duration-300" data-testid={`card-news-${article.id}`}>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                      <Badge variant="secondary" className="text-xs">
+                        {article.category}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground">{article.publishedAt}</span>
+                    </div>
+                    <CardTitle className="font-heading text-lg leading-snug">
+                      {article.title}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-sm leading-relaxed">
+                      {article.excerpt}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary via-primary to-sidebar text-primary-foreground relative overflow-hidden">
+        <PixelGrid className="top-10 right-10 opacity-20" variant="hero" />
+        <PixelGrid className="bottom-10 left-10 opacity-15" variant="hero" />
+        <div className="container mx-auto px-4 md:px-6 text-center relative">
+          <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
+            Rejoignez le mouvement
+          </h2>
+          <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8 text-lg" data-testid="text-cta-description">
+            Participez à la transformation numérique du Tchad. Le SAYC est ouvert à tous les jeunes
+            de 15 à 35 ans passionnés par la technologie et l'innovation.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/rejoindre">
+              <Button size="lg" className="bg-accent text-accent-foreground border-accent-border min-w-[200px]" data-testid="button-cta-join">
+                Devenir membre
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/contact">
+              <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground" data-testid="button-cta-contact">
+                Nous contacter
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

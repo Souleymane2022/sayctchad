@@ -2,68 +2,21 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useQuery } from "@tanstack/react-query";
+import type { NewsArticle } from "@shared/schema";
 import { 
   Newspaper, 
   Calendar,
-  ChevronRight,
   ArrowRight,
-  Clock
+  FileText
 } from "lucide-react";
 
-const newsCategories = ["Tous", "Communiqués", "Opportunités", "Événements", "Partenariats"];
-
-const newsArticles = [
-  {
-    title: "Lancement du programme de formation en cybersécurité 2026",
-    excerpt: "Le SAYC Tchad lance un nouveau programme intensif pour former les jeunes aux enjeux de la sécurité numérique. Ce programme de 10 semaines permettra aux participants d'acquérir les compétences essentielles.",
-    date: "25 Janvier 2026",
-    readTime: "5 min",
-    category: "Communiqués",
-    featured: true,
-  },
-  {
-    title: "Hackathon Smart Cities Tchad 2026 : Inscriptions ouvertes",
-    excerpt: "48 heures pour imaginer les solutions urbaines de demain avec la technologie. Le hackathon se tiendra du 15 au 17 mars et accueillera 50 participants.",
-    date: "18 Janvier 2026",
-    readTime: "3 min",
-    category: "Événements",
-    featured: true,
-  },
-  {
-    title: "Partenariat stratégique avec l'Union Africaine",
-    excerpt: "Le SAYC Tchad renforce sa collaboration avec l'Union Africaine pour l'inclusion numérique des jeunes africains à travers de nouveaux programmes.",
-    date: "10 Janvier 2026",
-    readTime: "4 min",
-    category: "Partenariats",
-    featured: false,
-  },
-  {
-    title: "Appel à candidatures : Incubateur de startups 2026",
-    excerpt: "Vous avez un projet innovant? Rejoignez notre programme d'incubation de 6 mois avec mentorat, financement et accès aux investisseurs.",
-    date: "5 Janvier 2026",
-    readTime: "3 min",
-    category: "Opportunités",
-    featured: false,
-  },
-  {
-    title: "Bilan 2025 : Une année de croissance pour le SAYC Tchad",
-    excerpt: "Retour sur les réalisations de l'année 2025 : formations, événements, partenariats et impact sur la jeunesse tchadienne.",
-    date: "28 Décembre 2025",
-    readTime: "8 min",
-    category: "Communiqués",
-    featured: false,
-  },
-  {
-    title: "Bourses d'études en technologie : Postulez maintenant",
-    excerpt: "20 bourses d'études complètes disponibles pour les jeunes Tchadiens souhaitant se former aux métiers du numérique.",
-    date: "20 Décembre 2025",
-    readTime: "4 min",
-    category: "Opportunités",
-    featured: false,
-  },
-];
-
 export default function News() {
+  const { data: newsArticles = [], isLoading } = useQuery<NewsArticle[]>({
+    queryKey: ["/api/news"],
+  });
+
   return (
     <div className="flex flex-col">
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
@@ -78,25 +31,8 @@ export default function News() {
               <span className="text-primary">actualités</span>
             </h1>
             <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-news-description">
-              Restez informé des dernières nouvelles, communiqués, opportunités et événements du SAYC Tchad.
+              Restez informé des dernières nouvelles du SAYC Tchad et de Smart Africa.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-8 border-b">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="flex flex-wrap gap-2">
-            {newsCategories.map((category, index) => (
-              <Badge
-                key={category}
-                variant={index === 0 ? "default" : "outline"}
-                className="cursor-pointer hover-elevate"
-                data-testid={`badge-category-${category.toLowerCase()}`}
-              >
-                {category}
-              </Badge>
-            ))}
           </div>
         </div>
       </section>
@@ -109,99 +45,67 @@ export default function News() {
                 Dernières actualités
               </h2>
               
-              {newsArticles.map((article, index) => (
-                <Card 
-                  key={index} 
-                  className={`group hover-elevate cursor-pointer transition-all ${article.featured ? 'border-primary/30' : ''}`}
-                  data-testid={`card-news-${index}`}
-                >
-                  <CardHeader className="pb-3">
-                    <div className="flex flex-wrap items-center gap-2 mb-2">
-                      <Badge variant={article.featured ? "default" : "secondary"} className="text-xs">
-                        {article.category}
-                      </Badge>
-                      {article.featured && (
-                        <Badge variant="outline" className="text-xs border-accent text-accent">
-                          À la une
+              {isLoading ? (
+                <div className="space-y-6">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Card key={i}>
+                      <CardHeader>
+                        <Skeleton className="h-5 w-20 mb-2" />
+                        <Skeleton className="h-6 w-3/4" />
+                      </CardHeader>
+                      <CardContent>
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-2/3" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : newsArticles.length > 0 ? (
+                newsArticles.map((article) => (
+                  <Card 
+                    key={article.id} 
+                    className="group hover-elevate transition-all"
+                    data-testid={`card-news-${article.id}`}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {article.category}
                         </Badge>
-                      )}
-                    </div>
-                    <CardTitle className="font-heading text-xl leading-snug group-hover:text-primary transition-colors">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-sm leading-relaxed mb-4">
-                      {article.excerpt}
-                    </CardDescription>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
-                          {article.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {article.readTime}
+                          {article.publishedAt}
                         </span>
                       </div>
-                      <span className="flex items-center text-primary text-sm font-medium">
-                        Lire la suite
-                        <ChevronRight className="ml-1 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-
-              <div className="text-center pt-6">
-                <Button variant="outline" data-testid="button-load-more">
-                  Charger plus d'articles
-                </Button>
-              </div>
+                      <CardTitle className="font-heading text-xl leading-snug">
+                        {article.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-sm leading-relaxed">
+                        {article.excerpt}
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-center py-16">
+                  <FileText className="w-16 h-16 mx-auto mb-4 text-muted-foreground/40" />
+                  <h3 className="font-heading text-xl font-bold mb-2">Actualités à venir</h3>
+                  <p className="text-muted-foreground max-w-md mx-auto mb-6">
+                    Les actualités du SAYC Tchad seront publiées prochainement. 
+                    En attendant, suivez Smart Africa pour les dernières nouvelles.
+                  </p>
+                  <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">
+                    <Button data-testid="button-visit-sa-news">
+                      Actualités Smart Africa
+                    </Button>
+                  </a>
+                </div>
+              )}
             </div>
 
             <div className="space-y-6">
-              <Card data-testid="card-newsletter">
-                <CardHeader>
-                  <CardTitle className="font-heading text-xl">Newsletter</CardTitle>
-                  <CardDescription>
-                    Recevez nos actualités directement dans votre boîte mail.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <form className="space-y-4">
-                    <input
-                      type="email"
-                      placeholder="Votre email"
-                      className="w-full px-4 py-2 rounded-md border bg-background"
-                      data-testid="input-newsletter-email"
-                    />
-                    <Button className="w-full" data-testid="button-subscribe-newsletter">
-                      S'abonner
-                    </Button>
-                  </form>
-                </CardContent>
-              </Card>
-
-              <Card data-testid="card-categories">
-                <CardHeader>
-                  <CardTitle className="font-heading text-xl">Catégories</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {newsCategories.slice(1).map((category) => (
-                    <div
-                      key={category}
-                      className="flex items-center justify-between p-2 rounded-md hover-elevate cursor-pointer"
-                      data-testid={`link-category-${category.toLowerCase()}`}
-                    >
-                      <span className="text-sm">{category}</span>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-
               <Card className="bg-primary text-primary-foreground" data-testid="card-join-cta">
                 <CardHeader>
                   <CardTitle className="font-heading text-xl">Rejoignez-nous</CardTitle>
@@ -216,6 +120,27 @@ export default function News() {
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
+                </CardContent>
+              </Card>
+
+              <Card data-testid="card-smart-africa-news">
+                <CardHeader>
+                  <CardTitle className="font-heading text-xl">Smart Africa</CardTitle>
+                  <CardDescription>
+                    Suivez les actualités de Smart Africa Alliance et SADA.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full" data-testid="button-sa-site">
+                      Smart Africa Alliance
+                    </Button>
+                  </a>
+                  <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="w-full" data-testid="button-sada-site">
+                      Plateforme SADA
+                    </Button>
+                  </a>
                 </CardContent>
               </Card>
             </div>

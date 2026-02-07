@@ -51,6 +51,26 @@ Database tables:
 - `contact_messages` - Contact form submissions
 - `newsletter_subscribers` - Email subscriptions
 - `opportunities` - Dynamic calls for tenders/opportunities (title, description, category, organization, deadline, location, link, isActive)
+- `partners` - Partner organizations (name, description, logoUrl, websiteUrl, partnerType, isActive)
+- `trainings` - Training programs from SADA and partners (title, description, provider, level, duration, link, isActive)
+- `news_articles` - News and announcements (title, excerpt, content, category, author, publishedAt, imageUrl, isActive)
+- `events` - Events and activities (title, description, date, time, location, type, registrationLink, isActive)
+- `achievements` - Statistics/metrics (title, description, metricValue, metricLabel, icon, isActive)
+
+### Content Architecture
+- All pages are fully dynamic, fetching content from API endpoints
+- Static organizational content (3 SAYC pillars, activities list, Smart Africa initiatives) is kept as constants in page components since it represents fixed organizational structure from SADA4Youth documentation
+- All variable content (trainings, news, events, partners, achievements, opportunities) is database-backed for future dashboard management
+- Empty states shown when no content is available in the database
+- Loading skeletons displayed during data fetching
+
+### API Endpoints (GET)
+- `/api/trainings` - Active training programs
+- `/api/news` - Active news articles
+- `/api/events` - Active events
+- `/api/achievements` - Active achievements/stats
+- `/api/partners` - Active partners
+- `/api/opportunities` - Active opportunities
 
 ### Shared Code
 The `shared/` directory contains schema definitions and types used by both frontend and backend, ensuring type safety across the stack.
