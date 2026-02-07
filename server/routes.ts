@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { 
@@ -7,11 +7,38 @@ import {
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema
 } from "@shared/schema";
 import { z } from "zod";
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
+
+declare module "express-session" {
+  interface SessionData {
+    isAdmin: boolean;
+  }
+}
+
+function requireAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.session.isAdmin) {
+    return res.status(401).json({ error: "Non autorisé" });
+  }
+  next();
+}
 
 export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+
+  const PgStore = connectPgSimple(session);
+  app.use(
+    session({
+      store: new PgStore({ pool, createTableIfMissing: true }),
+      secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
+      resave: false,
+      saveUninitialized: false,
+      cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
+    })
+  );
   
   app.post("/api/members", async (req, res) => {
     try {
@@ -107,7 +134,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/opportunities", async (req, res) => {
+  app.post("/api/opportunities", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertOpportunitySchema.parse(req.body);
       const opportunity = await storage.createOpportunity(validatedData);
@@ -132,7 +159,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/partners", async (req, res) => {
+  app.post("/api/partners", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertPartnerSchema.parse(req.body);
       const partner = await storage.createPartner(validatedData);
@@ -157,7 +184,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/trainings", async (req, res) => {
+  app.post("/api/trainings", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertTrainingSchema.parse(req.body);
       const training = await storage.createTraining(validatedData);
@@ -182,7 +209,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/news", async (req, res) => {
+  app.post("/api/news", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertNewsArticleSchema.parse(req.body);
       const article = await storage.createNewsArticle(validatedData);
@@ -207,7 +234,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/events", async (req, res) => {
+  app.post("/api/events", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertEventSchema.parse(req.body);
       const event = await storage.createEvent(validatedData);
@@ -232,7 +259,7 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/achievements", async (req, res) => {
+  app.post("/api/achievements", requireAdmin, async (req, res) => {
     try {
       const validatedData = insertAchievementSchema.parse(req.body);
       const achievement = await storage.createAchievement(validatedData);
@@ -244,6 +271,159 @@ export async function registerRoutes(
       console.error("Error creating achievement:", error);
       res.status(500).json({ error: "Erreur lors de la création de la réalisation" });
     }
+  });
+
+  app.get("/sitemap.xml", (req, res) => {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const pages = [
+      { path: "/", priority: "1.0", changefreq: "weekly" },
+      { path: "/a-propos", priority: "0.8", changefreq: "monthly" },
+      { path: "/programmes", priority: "0.8", changefreq: "monthly" },
+      { path: "/formations", priority: "0.8", changefreq: "weekly" },
+      { path: "/opportunites", priority: "0.8", changefreq: "weekly" },
+      { path: "/evenements", priority: "0.7", changefreq: "weekly" },
+      { path: "/actualites", priority: "0.7", changefreq: "daily" },
+      { path: "/contact", priority: "0.6", changefreq: "monthly" },
+      { path: "/rejoindre", priority: "0.9", changefreq: "monthly" },
+    ];
+    const today = new Date().toISOString().split("T")[0];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(p => `  <url>
+    <loc>${baseUrl}${p.path}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join("\n")}
+</urlset>`;
+    res.header("Content-Type", "application/xml");
+    res.send(xml);
+  });
+
+  app.get("/robots.txt", (req, res) => {
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const robotsTxt = `User-agent: *
+Allow: /
+
+Sitemap: ${baseUrl}/sitemap.xml`;
+    res.header("Content-Type", "text/plain");
+    res.send(robotsTxt);
+  });
+
+  // Admin Authentication
+  app.post("/api/admin/login", (req, res) => {
+    const { password } = req.body;
+    const adminPassword = process.env.ADMIN_PASSWORD || "admin2024";
+    if (password === adminPassword) {
+      req.session.isAdmin = true;
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ error: "Mot de passe incorrect" });
+    }
+  });
+
+  app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy(() => {
+      res.json({ success: true });
+    });
+  });
+
+  app.get("/api/admin/check", (req, res) => {
+    res.json({ isAdmin: !!req.session.isAdmin });
+  });
+
+  // Admin CRUD routes
+  app.get("/api/admin/opportunities", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllOpportunities()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/opportunities/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updateOpportunity(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/opportunities/:id", requireAdmin, async (req, res) => {
+    try { await storage.deleteOpportunity(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/partners", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllPartners()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/partners/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updatePartner(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/partners/:id", requireAdmin, async (req, res) => {
+    try { await storage.deletePartner(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/trainings", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllTrainings()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/trainings/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updateTraining(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/trainings/:id", requireAdmin, async (req, res) => {
+    try { await storage.deleteTraining(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/news", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllNewsArticles()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/news/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updateNewsArticle(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/news/:id", requireAdmin, async (req, res) => {
+    try { await storage.deleteNewsArticle(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/events", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllEvents()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/events/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updateEvent(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/events/:id", requireAdmin, async (req, res) => {
+    try { await storage.deleteEvent(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/achievements", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllAchievements()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.put("/api/admin/achievements/:id", requireAdmin, async (req, res) => {
+    try { const updated = await storage.updateAchievement(req.params.id as string, req.body); res.json(updated); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+  app.delete("/api/admin/achievements/:id", requireAdmin, async (req, res) => {
+    try { await storage.deleteAchievement(req.params.id as string); res.json({ success: true }); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/members", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllMembers()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/contact", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllContactMessages()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.get("/api/admin/newsletter", requireAdmin, async (_req, res) => {
+    try { res.json(await storage.getAllNewsletterSubscribers()); }
+    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
 
   return httpServer;

@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -82,8 +84,23 @@ export default function About() {
     queryKey: ["/api/partners"],
   });
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "À propos de SAYC Tchad",
+    description: "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance, ses missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
+    url: `${window.location.origin}/a-propos`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="À propos de SAYC Tchad | 7ème Chapitre Jeunesse de Smart Africa"
+        description="Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance. Notre mission : éduquer, collaborer et innover pour la jeunesse tchadienne de 15 à 35 ans."
+        path="/a-propos"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">

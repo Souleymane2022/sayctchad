@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -183,8 +185,38 @@ export default function Home() {
   const latestOpportunities = opportunities.slice(0, 3);
   const latestTrainings = trainingsList.slice(0, 3);
 
+  const organizationJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "SAYC Tchad - Smart Africa Youth Chapter",
+    description: "7ème chapitre jeunesse de Smart Africa au Tchad, dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique.",
+    url: window.location.origin,
+    logo: `${window.location.origin}/favicon.png`,
+    parentOrganization: {
+      "@type": "Organization",
+      name: "Smart Africa Alliance",
+      url: "https://smartafrica.org",
+    },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "Point Focal",
+      name: "Souleymane Mahamat Saleh",
+    },
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "N'Djamena",
+      addressCountry: "TD",
+    },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="SAYC Tchad - Smart Africa Youth Chapter | Innovation Numérique pour la Jeunesse"
+        description="Smart Africa Youth Chapter Tchad - 7ème chapitre jeunesse de Smart Africa dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique au Tchad."
+        path="/"
+        jsonLd={organizationJsonLd}
+      />
       <section className="relative overflow-hidden bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground py-20 md:py-28 lg:py-36">
         <PixelGrid className="top-10 left-10 opacity-40" variant="hero" />
         <PixelGrid className="top-20 right-16 opacity-30" variant="hero" />

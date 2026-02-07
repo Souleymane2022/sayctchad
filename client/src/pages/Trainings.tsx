@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +27,23 @@ export default function Trainings() {
     queryKey: ["/api/achievements"],
   });
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Formations SAYC Tchad",
+    description: "Formations certifiantes SADA, AWS, cybersécurité et intelligence artificielle pour les jeunes tchadiens.",
+    url: `${window.location.origin}/formations`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Formations SAYC Tchad | SADA, AWS, Cybersécurité, IA"
+        description="Accédez aux formations certifiantes de la Smart Africa Digital Academy (SADA) et de ses partenaires : AWS, cybersécurité, intelligence artificielle et compétences numériques."
+        path="/formations"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">

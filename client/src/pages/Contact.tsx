@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -106,8 +108,23 @@ export default function Contact() {
     contactMutation.mutate(data);
   };
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Contact SAYC Tchad",
+    description: "Contactez le SAYC Tchad pour toute question, partenariat ou demande d'information.",
+    url: `${window.location.origin}/contact`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Contact SAYC Tchad | Nous Joindre"
+        description="Contactez le SAYC Tchad pour toute question sur nos programmes, partenariats ou adhésion. Basé à N'Djamena, Tchad."
+        path="/contact"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">

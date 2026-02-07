@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -56,8 +58,23 @@ export default function Programs() {
     queryKey: ["/api/trainings"],
   });
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Programmes SAYC Tchad",
+    description: "Programmes de formation et d'innovation numérique du SAYC Tchad : engagement politique, compétences numériques et entrepreneuriat.",
+    url: `${window.location.origin}/programmes`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Programmes SAYC Tchad | Formation et Innovation Numérique"
+        description="Découvrez les programmes du SAYC Tchad : engagement des jeunes dans les politiques numériques, renforcement des compétences et entrepreneuriat innovant."
+        path="/programmes"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">

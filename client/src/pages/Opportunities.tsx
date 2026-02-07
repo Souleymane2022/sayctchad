@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -59,8 +61,23 @@ export default function Opportunities() {
     { label: "Organisations", value: new Set(opportunities.map(o => o.organization)).size.toString(), icon: Building2 },
   ];
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Opportunités SAYC Tchad",
+    description: "Opportunités de formation, bourses, appels d'offres et incubation via Smart Africa pour les jeunes tchadiens.",
+    url: `${window.location.origin}/opportunites`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Opportunités SAYC Tchad | Appels d'offres Smart Africa"
+        description="Découvrez les opportunités de formation, bourses, appels d'offres, recrutement et incubation disponibles via Smart Africa et le SAYC Tchad pour les jeunes tchadiens."
+        path="/opportunites"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 border-2 border-accent/30 rounded-full" />

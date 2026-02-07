@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -137,8 +138,23 @@ export default function Join() {
     memberMutation.mutate({ ...data, interests: selectedInterests });
   };
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Rejoindre SAYC Tchad",
+    description: "Rejoignez le SAYC Tchad et bénéficiez de formations gratuites, mentorat et opportunités pour les jeunes de 15 à 35 ans.",
+    url: `${window.location.origin}/rejoindre`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Rejoindre SAYC Tchad | Adhésion Jeunesse 15-35 ans"
+        description="Rejoignez le SAYC Tchad et bénéficiez de formations gratuites en compétences numériques, mentorat personnalisé et connexion au réseau continental Smart Africa. Ouvert aux jeunes de 15 à 35 ans."
+        path="/rejoindre"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary/10 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl mx-auto text-center">

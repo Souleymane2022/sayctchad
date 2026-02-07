@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,8 +21,23 @@ export default function Events() {
     queryKey: ["/api/events"],
   });
 
+  const webPageJsonLd = useMemo(() => ({
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: "Événements SAYC Tchad",
+    description: "Hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa.",
+    url: `${window.location.origin}/evenements`,
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+  }), []);
+
   return (
     <div className="flex flex-col">
+      <SEOHead
+        title="Événements SAYC Tchad | Activités et Rencontres"
+        description="Participez aux hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa pour développer vos compétences et élargir votre réseau."
+        path="/evenements"
+        jsonLd={webPageJsonLd}
+      />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">

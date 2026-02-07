@@ -29,6 +29,7 @@ export interface IStorage {
   
   createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
   getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
+  getAllNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
 
   createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity>;
   getAllOpportunities(): Promise<Opportunity[]>;
@@ -115,6 +116,10 @@ export class DatabaseStorage implements IStorage {
   async getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined> {
     const [subscriber] = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
     return subscriber;
+  }
+
+  async getAllNewsletterSubscribers(): Promise<NewsletterSubscriber[]> {
+    return db.select().from(newsletterSubscribers);
   }
 
   async createOpportunity(opportunity: InsertOpportunity): Promise<Opportunity> {
