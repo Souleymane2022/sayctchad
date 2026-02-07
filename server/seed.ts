@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { partners, achievements, trainings, opportunities } from "@shared/schema";
+import { partners, achievements, trainings, opportunities, newsArticles } from "@shared/schema";
 import { sql } from "drizzle-orm";
 
 const seedPartners = [
@@ -153,6 +153,17 @@ const seedOpportunities = [
   },
 ];
 
+const seedNews = [
+  {
+    title: "Formation en Intelligence Artificielle pour 200 jeunes Tchadiens",
+    excerpt: "Un événement majeur de formation en Intelligence Artificielle a été organisé au Tchad, réunissant 200 jeunes Tchadiens pour les initier aux technologies de l'IA.",
+    content: "Un événement de formation en Intelligence Artificielle a été organisé au Tchad, réunissant 200 jeunes Tchadiens passionnés par les nouvelles technologies. Cet événement s'inscrit dans le cadre des initiatives de Smart Africa et de ses partenaires pour le développement des compétences numériques en Afrique. La formation a couvert les fondamentaux de l'intelligence artificielle, ses applications pratiques et les opportunités qu'elle offre aux jeunes africains. Plusieurs partenaires institutionnels et privés ont soutenu cette initiative, notamment l'ENASTIC, le PATN, Airtel, la Chaire UNESCO, la Banque Mondiale et l'ADETIC.",
+    category: "Formation",
+    imageUrl: "/images/news-ia-formation-tchad.jpg",
+    publishedAt: new Date("2026-01-15"),
+  },
+];
+
 async function seedTable<T extends Record<string, any>>(
   tableName: string,
   table: any,
@@ -182,6 +193,7 @@ export async function seedDatabase() {
         await seedTable("achievements", achievements, seedAchievements, "title");
         await seedTable("trainings", trainings, seedTrainings, "title");
         await seedTable("opportunities", opportunities, seedOpportunities, "title");
+        await seedTable("news_articles", newsArticles, seedNews, "title");
         console.log("Database seed check complete.");
       } finally {
         await tx.execute(sql`SELECT pg_advisory_unlock(42)`);
