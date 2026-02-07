@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, boolean, integer } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -101,6 +101,7 @@ export const partners = pgTable("partners", {
   logoUrl: text("logo_url"),
   websiteUrl: text("website_url"),
   description: text("description"),
+  sortOrder: integer("sort_order").notNull().default(99),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });

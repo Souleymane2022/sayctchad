@@ -13,7 +13,7 @@ import {
   opportunities, partners, trainings, newsArticles, events, achievements
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, asc } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -150,11 +150,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActivePartners(): Promise<Partner[]> {
-    return db.select().from(partners).where(eq(partners.isActive, true)).orderBy(desc(partners.createdAt));
+    return db.select().from(partners).where(eq(partners.isActive, true)).orderBy(asc(partners.sortOrder));
   }
 
   async getAllPartners(): Promise<Partner[]> {
-    return db.select().from(partners).orderBy(desc(partners.createdAt));
+    return db.select().from(partners).orderBy(asc(partners.sortOrder));
   }
 
   async updatePartner(id: string, data: Partial<InsertPartner>): Promise<Partner | undefined> {
