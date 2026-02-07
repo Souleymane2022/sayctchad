@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiX, SiInstagram, SiYoutube } from "react-icons/si";
+import { SiFacebook, SiLinkedin, SiYoutube } from "react-icons/si";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
 const footerLinks = {
@@ -19,11 +19,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-  { icon: SiFacebook, href: "#", label: "Facebook" },
-  { icon: SiX, href: "#", label: "X (Twitter)" },
-  { icon: SiLinkedin, href: "#", label: "LinkedIn" },
-  { icon: SiInstagram, href: "#", label: "Instagram" },
-  { icon: SiYoutube, href: "#", label: "YouTube" },
+  { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
+  { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
+  { icon: SiYoutube, href: "https://www.youtube.com/@RealSmartAfrica", label: "YouTube" },
 ];
 
 export function Footer() {
