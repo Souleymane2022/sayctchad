@@ -101,32 +101,38 @@ export default function About() {
         path="/a-propos"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-32 h-32 border-2 border-accent/30 rounded-full" />
+          <div className="absolute top-20 right-20 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
+          <div className="absolute bottom-16 left-1/4 w-16 h-16 bg-accent/20 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-6" data-testid="badge-about-tag">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-about-tag">
               <Eye className="w-3 h-3 mr-1" />
-              À propos de nous
+              A propos de nous
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-about-title">
               Le Chapitre Jeunesse de{" "}
-              <span className="text-primary">Smart Africa</span> au Tchad
+              <span className="text-accent">Smart Africa</span> au Tchad
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-4" data-testid="text-about-description">
-              Le Smart Africa Youth Chapter – Tchad (SAYC Tchad) est la branche jeunesse de{" "}
-              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-primary underline underline-offset-2">
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-about-description">
+              Le Smart Africa Youth Chapter - Tchad (SAYC Tchad) est la branche jeunesse de{" "}
+              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2">
                 Smart Africa Alliance
               </a>
-              {" "}au Tchad. C'est une plateforme dédiée aux jeunes de 15 à 35 ans, 
-              axée sur l'éducation, la collaboration, le mentorat et l'innovation numérique.
+              {" "}au Tchad. C'est une plateforme dediee aux jeunes de 15 a 35 ans, 
+              axee sur l'education, la collaboration, le mentorat et l'innovation numerique.
             </p>
-            <p className="text-muted-foreground leading-relaxed" data-testid="text-about-description-2">
+            <p className="text-sidebar-foreground/70 leading-relaxed" data-testid="text-about-description-2">
               En tant que chapitre national, le SAYC Tchad travaille en coordination avec Smart Africa
               pour renforcer le leadership des jeunes, stimuler l'innovation et activer la collaboration
-              au service de la transformation numérique du continent africain.
+              au service de la transformation numerique du continent africain.
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="py-16 md:py-24">

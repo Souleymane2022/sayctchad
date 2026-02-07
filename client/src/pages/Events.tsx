@@ -38,29 +38,35 @@ export default function Events() {
         path="/evenements"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-14 left-12 w-28 h-28 border-2 border-accent/30 rounded-full" />
+          <div className="absolute bottom-20 right-16 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
+          <div className="absolute top-1/2 right-1/4 w-14 h-14 bg-accent/20 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-6" data-testid="badge-events-header">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-events-header">
               <Calendar className="w-3 h-3 mr-1" />
               SAYC Tchad
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-events-title">
               Nos{" "}
-              <span className="text-primary">événements</span>
+              <span className="text-accent">evenements</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-8" data-testid="text-events-description">
-              Participez aux hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad
-              et Smart Africa pour développer vos compétences et élargir votre réseau.
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed mb-8" data-testid="text-events-description">
+              Participez aux hackathons, bootcamps, conferences et ateliers organises par le SAYC Tchad
+              et Smart Africa pour developper vos competences et elargir votre reseau.
             </p>
             <Link href="/rejoindre">
-              <Button size="lg" data-testid="button-events-join">
+              <Button size="lg" className="bg-accent text-accent-foreground border-accent-border" data-testid="button-events-join">
                 Devenir membre
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="py-16 md:py-24">

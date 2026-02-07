@@ -36,22 +36,27 @@ export default function News() {
         path="/actualites"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-16 w-28 h-28 border-2 border-accent/30 rounded-full" />
+          <div className="absolute bottom-16 left-10 w-20 h-20 border-2 border-sayc-teal/30 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-6" data-testid="badge-news-header">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-news-header">
               <Newspaper className="w-3 h-3 mr-1" />
-              Actualités
+              Actualites
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-news-title">
               Nos{" "}
-              <span className="text-primary">actualités</span>
+              <span className="text-accent">actualites</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-news-description">
-              Restez informé des dernières nouvelles du SAYC Tchad et de Smart Africa.
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-news-description">
+              Restez informe des dernieres nouvelles du SAYC Tchad et de Smart Africa.
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="py-16 md:py-24">

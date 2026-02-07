@@ -44,33 +44,38 @@ export default function Trainings() {
         path="/formations"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-12 left-16 w-28 h-28 border-2 border-sayc-teal/30 rounded-full" />
+          <div className="absolute top-24 right-12 w-20 h-20 border-2 border-accent/30 rounded-full" />
+          <div className="absolute bottom-20 left-1/3 w-16 h-16 bg-sayc-teal/20 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-6" data-testid="badge-trainings-header">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-trainings-header">
               <GraduationCap className="w-3 h-3 mr-1" />
               SADA4Youth
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-trainings-title">
               Formations &{" "}
-              <span className="text-primary">Programmes</span>
+              <span className="text-accent">Programmes</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed mb-4" data-testid="text-trainings-description">
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-trainings-description">
               Programmes certifiants de la Smart Africa Digital Academy (SADA) et de ses partenaires.
-              Renforcez vos compétences numériques pour innover et être compétitifs dans l'économie mondiale.
+              Renforcez vos competences numeriques pour innover et etre competitifs dans l'economie mondiale.
             </p>
-            <p className="text-sm text-muted-foreground mb-8">
+            <p className="text-sm text-sidebar-foreground/60 mb-8">
               Objectif SADA : Avoir un impact sur 100 millions de citoyens africains d'ici 2030
             </p>
             <div className="flex flex-wrap gap-3">
               <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
-                <Button size="lg" data-testid="button-trainings-sada">
-                  Accéder à la plateforme SADA
+                <Button size="lg" className="bg-accent text-accent-foreground border-accent-border" data-testid="button-trainings-sada">
+                  Acceder a la plateforme SADA
                   <ExternalLink className="ml-2 h-4 w-4" />
                 </Button>
               </a>
               <Link href="/rejoindre">
-                <Button size="lg" variant="outline" data-testid="button-trainings-join">
+                <Button size="lg" variant="outline" className="border-sidebar-foreground/20 text-sidebar-foreground" data-testid="button-trainings-join">
                   Rejoindre le SAYC
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -78,6 +83,7 @@ export default function Trainings() {
             </div>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       {achievements.length > 0 && (

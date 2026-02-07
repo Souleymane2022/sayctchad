@@ -155,23 +155,29 @@ export default function Join() {
         path="/rejoindre"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-primary/10 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-12 left-10 w-32 h-32 border-2 border-accent/30 rounded-full" />
+          <div className="absolute top-20 right-16 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
+          <div className="absolute bottom-16 left-1/3 w-16 h-16 bg-accent/20 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="outline" className="mb-6" data-testid="badge-join-header">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-join-header">
               <Users className="w-3 h-3 mr-1" />
               Devenir Membre
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-join-title">
               Rejoignez le{" "}
-              <span className="text-primary">SAYC Tchad</span>
+              <span className="text-accent">SAYC Tchad</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-join-description">
-              Faites partie d'une communauté de jeunes Tchadiens engagés pour la transformation 
-              numérique de l'Afrique. L'adhésion est gratuite et ouverte aux jeunes de 15 à 35 ans.
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-join-description">
+              Faites partie d'une communaute de jeunes Tchadiens engages pour la transformation 
+              numerique de l'Afrique. L'adhesion est gratuite et ouverte aux jeunes de 15 a 35 ans.
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="py-12 md:py-16 bg-muted/30">

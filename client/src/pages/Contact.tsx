@@ -125,23 +125,28 @@ export default function Contact() {
         path="/contact"
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-muted/50 to-background overflow-hidden">
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-28 h-28 border-2 border-accent/30 rounded-full" />
+          <div className="absolute bottom-16 left-16 w-20 h-20 border-2 border-sayc-teal/30 rounded-full" />
+        </div>
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-6" data-testid="badge-contact-header">
+            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-contact-header">
               <MessageSquare className="w-3 h-3 mr-1" />
               Contact
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-contact-title">
               Entrons en{" "}
-              <span className="text-primary">contact</span>
+              <span className="text-accent">contact</span>
             </h1>
-            <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-contact-description">
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-contact-description">
               Une question, une suggestion ou envie de collaborer? 
-              N'hésitez pas à nous contacter. Notre équipe est là pour vous accompagner.
+              N'hesitez pas a nous contacter. Notre equipe est la pour vous accompagner.
             </p>
           </div>
         </div>
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
       </section>
 
       <section className="py-16 md:py-24">
