@@ -683,7 +683,17 @@ export default function Home() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {newsList.slice(0, 3).map((article) => (
-                <Card key={article.id} className="group hover-elevate transition-all duration-300" data-testid={`card-news-${article.id}`}>
+                <Card key={article.id} className="group hover-elevate transition-all duration-300 overflow-hidden" data-testid={`card-news-${article.id}`}>
+                  {article.imageUrl && (
+                    <div className="aspect-video overflow-hidden">
+                      <img
+                        src={article.imageUrl}
+                        alt={article.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        data-testid={`img-news-${article.id}`}
+                      />
+                    </div>
+                  )}
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
                       <Badge variant="secondary" className="text-xs">

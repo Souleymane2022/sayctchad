@@ -86,9 +86,19 @@ export default function News() {
                 newsArticles.map((article) => (
                   <Card 
                     key={article.id} 
-                    className="group hover-elevate transition-all"
+                    className="group hover-elevate transition-all overflow-hidden"
                     data-testid={`card-news-${article.id}`}
                   >
+                    {article.imageUrl && (
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={article.imageUrl}
+                          alt={article.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          data-testid={`img-news-${article.id}`}
+                        />
+                      </div>
+                    )}
                     <CardHeader className="pb-3">
                       <div className="flex flex-wrap items-center gap-2 mb-2">
                         <Badge variant="secondary" className="text-xs">
