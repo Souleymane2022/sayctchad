@@ -19,17 +19,50 @@ import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, M
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLocked, setIsLocked] = useState(false);
+  const [lockTimer, setLockTimer] = useState("");
   const { toast } = useToast();
+
   const loginMutation = useMutation({
     mutationFn: async (pw: string) => {
-      await apiRequest("POST", "/api/admin/login", { password: pw });
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw data;
+      return data;
     },
     onSuccess: () => {
+      setErrorMessage("");
+      setIsLocked(false);
       onLogin();
-      toast({ title: "Connecté", description: "Bienvenue dans le panneau d'administration" });
+      toast({ title: "Connecte", description: "Bienvenue dans le panneau d'administration" });
     },
-    onError: () => {
-      toast({ title: "Erreur", description: "Mot de passe incorrect", variant: "destructive" });
+    onError: (err: any) => {
+      setPassword("");
+      const message = err?.error || "Mot de passe incorrect";
+      setErrorMessage(message);
+
+      if (err?.lockedUntil) {
+        setIsLocked(true);
+        const updateTimer = () => {
+          const remaining = err.lockedUntil - Date.now();
+          if (remaining <= 0) {
+            setIsLocked(false);
+            setErrorMessage("");
+            setLockTimer("");
+            return;
+          }
+          const mins = Math.floor(remaining / 60000);
+          const secs = Math.floor((remaining % 60000) / 1000);
+          setLockTimer(`${mins}:${secs.toString().padStart(2, "0")}`);
+          setTimeout(updateTimer, 1000);
+        };
+        updateTimer();
+      }
     },
   });
 
@@ -41,10 +74,18 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
           <h1 className="text-2xl font-bold" data-testid="text-admin-title">Administration SAYC Tchad</h1>
           <p className="text-sm text-muted-foreground">Entrez le mot de passe administrateur</p>
         </div>
+        {errorMessage && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive text-center" data-testid="text-login-error">
+            {errorMessage}
+            {isLocked && lockTimer && (
+              <p className="mt-1 font-mono font-semibold">{lockTimer}</p>
+            )}
+          </div>
+        )}
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            loginMutation.mutate(password);
+            if (!isLocked) loginMutation.mutate(password);
           }}
           className="space-y-4"
         >
@@ -59,12 +100,13 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="pl-10"
                 placeholder="Entrez le mot de passe"
+                disabled={isLocked}
                 data-testid="input-admin-password"
               />
             </div>
           </div>
-          <Button type="submit" className="w-full" disabled={loginMutation.isPending} data-testid="button-admin-login">
-            {loginMutation.isPending ? "Connexion..." : "Se connecter"}
+          <Button type="submit" className="w-full" disabled={loginMutation.isPending || isLocked} data-testid="button-admin-login">
+            {isLocked ? "Verrouille" : loginMutation.isPending ? "Connexion..." : "Se connecter"}
           </Button>
         </form>
       </Card>

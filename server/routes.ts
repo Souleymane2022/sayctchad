@@ -310,15 +310,61 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     res.send(robotsTxt);
   });
 
-  // Admin Authentication
+  // Admin Authentication with brute-force protection
+  const loginAttempts = new Map<string, { count: number; lastAttempt: number; lockedUntil: number }>();
+  const MAX_ATTEMPTS = 5;
+  const LOCK_DURATION = 15 * 60 * 1000; // 15 minutes
+  const ATTEMPT_WINDOW = 10 * 60 * 1000; // 10 minutes
+
   app.post("/api/admin/login", (req, res) => {
+    const ip = req.ip || req.socket.remoteAddress || "unknown";
+    const now = Date.now();
+    let record = loginAttempts.get(ip);
+
+    if (record && record.lockedUntil > now) {
+      const remainingMinutes = Math.ceil((record.lockedUntil - now) / 60000);
+      return res.status(429).json({
+        error: `Trop de tentatives. Réessayez dans ${remainingMinutes} minute${remainingMinutes > 1 ? "s" : ""}.`,
+        lockedUntil: record.lockedUntil,
+        remainingMinutes,
+      });
+    }
+
+    if (record && (now - record.lastAttempt) > ATTEMPT_WINDOW) {
+      loginAttempts.delete(ip);
+      record = undefined;
+    }
+
     const { password } = req.body;
     const adminPassword = process.env.ADMIN_PASSWORD || "admin2024";
+
     if (password === adminPassword) {
+      loginAttempts.delete(ip);
       req.session.isAdmin = true;
       res.json({ success: true });
     } else {
-      res.status(401).json({ error: "Mot de passe incorrect" });
+      if (!record) {
+        record = { count: 0, lastAttempt: now, lockedUntil: 0 };
+      }
+      record.count += 1;
+      record.lastAttempt = now;
+
+      if (record.count >= MAX_ATTEMPTS) {
+        record.lockedUntil = now + LOCK_DURATION;
+        loginAttempts.set(ip, record);
+        return res.status(429).json({
+          error: "Trop de tentatives. Compte verrouillé pour 15 minutes.",
+          lockedUntil: record.lockedUntil,
+          remainingMinutes: 15,
+        });
+      }
+
+      loginAttempts.set(ip, record);
+      const remaining = MAX_ATTEMPTS - record.count;
+      res.status(401).json({
+        error: `Mot de passe incorrect. ${remaining} tentative${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}.`,
+        remainingAttempts: remaining,
+      });
     }
   });
 
