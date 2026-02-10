@@ -190,8 +190,8 @@ export default function Home() {
     "@type": "Organization",
     name: "SAYC Tchad - Smart Africa Youth Chapter",
     description: "7ème chapitre jeunesse de Smart Africa au Tchad, dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique.",
-    url: window.location.origin,
-    logo: `${window.location.origin}/favicon.png`,
+    url: "https://sayctchad.org",
+    logo: "https://sayctchad.org/favicon.png",
     parentOrganization: {
       "@type": "Organization",
       name: "Smart Africa Alliance",

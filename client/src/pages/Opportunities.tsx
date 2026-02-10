@@ -66,8 +66,8 @@ export default function Opportunities() {
     "@type": "WebPage",
     name: "Opportunités SAYC Tchad",
     description: "Opportunités de formation, bourses, appels d'offres et incubation via Smart Africa pour les jeunes tchadiens.",
-    url: `${window.location.origin}/opportunites`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/opportunites",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

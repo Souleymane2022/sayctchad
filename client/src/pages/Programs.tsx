@@ -63,8 +63,8 @@ export default function Programs() {
     "@type": "WebPage",
     name: "Programmes SAYC Tchad",
     description: "Programmes de formation et d'innovation numérique du SAYC Tchad : engagement politique, compétences numériques et entrepreneuriat.",
-    url: `${window.location.origin}/programmes`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/programmes",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

@@ -31,14 +31,15 @@ function setLinkTag(rel: string, href: string) {
 
 export default function SEOHead({ title, description, path, type = "website", jsonLd }: SEOHeadProps) {
   useEffect(() => {
-    const baseUrl = window.location.origin;
+    const baseUrl = "https://sayctchad.org";
     const url = `${baseUrl}${path}`;
-    const imageUrl = `${baseUrl}/favicon.png`;
+    const imageUrl = `${baseUrl}/images/og-image.png`;
     const siteName = "SAYC Tchad - Smart Africa Youth Chapter";
 
     document.title = title;
 
     setMetaTag("description", description, true);
+    setMetaTag("keywords", `SAYC Tchad, Smart Africa, ${title}, jeunesse, innovation numérique, Tchad, formation`, true);
 
     setLinkTag("canonical", url);
 
@@ -47,6 +48,9 @@ export default function SEOHead({ title, description, path, type = "website", js
     setMetaTag("og:url", url);
     setMetaTag("og:type", type);
     setMetaTag("og:image", imageUrl);
+    setMetaTag("og:image:width", "1200");
+    setMetaTag("og:image:height", "675");
+    setMetaTag("og:image:alt", title);
     setMetaTag("og:locale", "fr_TD");
     setMetaTag("og:site_name", siteName);
 
@@ -54,6 +58,35 @@ export default function SEOHead({ title, description, path, type = "website", js
     setMetaTag("twitter:title", title, true);
     setMetaTag("twitter:description", description, true);
     setMetaTag("twitter:image", imageUrl, true);
+    setMetaTag("twitter:image:alt", title, true);
+
+    const breadcrumbJsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": baseUrl,
+        },
+        ...(path !== "/" ? [{
+          "@type": "ListItem",
+          "position": 2,
+          "name": title.split("|")[0].trim(),
+          "item": url,
+        }] : []),
+      ],
+    };
+
+    let breadcrumbEl = document.querySelector('script[data-seo-breadcrumb]') as HTMLScriptElement | null;
+    if (!breadcrumbEl) {
+      breadcrumbEl = document.createElement("script");
+      breadcrumbEl.setAttribute("type", "application/ld+json");
+      breadcrumbEl.setAttribute("data-seo-breadcrumb", "true");
+      document.head.appendChild(breadcrumbEl);
+    }
+    breadcrumbEl.textContent = JSON.stringify(breadcrumbJsonLd);
 
     let scriptEl = document.querySelector('script[data-seo-jsonld]') as HTMLScriptElement | null;
     if (jsonLd) {
@@ -71,6 +104,8 @@ export default function SEOHead({ title, description, path, type = "website", js
     return () => {
       const existingScript = document.querySelector('script[data-seo-jsonld]');
       if (existingScript) existingScript.remove();
+      const existingBreadcrumb = document.querySelector('script[data-seo-breadcrumb]');
+      if (existingBreadcrumb) existingBreadcrumb.remove();
     };
   }, [title, description, path, type, jsonLd]);
 

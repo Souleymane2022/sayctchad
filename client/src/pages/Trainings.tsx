@@ -32,8 +32,8 @@ export default function Trainings() {
     "@type": "WebPage",
     name: "Formations SAYC Tchad",
     description: "Formations certifiantes SADA, AWS, cybersécurité et intelligence artificielle pour les jeunes tchadiens.",
-    url: `${window.location.origin}/formations`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/formations",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

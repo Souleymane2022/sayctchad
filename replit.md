@@ -64,6 +64,16 @@ Database tables:
 - Empty states shown when no content is available in the database
 - Loading skeletons displayed during data fetching
 
+### SEO Implementation
+- **robots.txt**: `client/public/robots.txt` - allows all crawlers, links to sitemap
+- **sitemap.xml**: Dynamic route in `server/routes.ts` - auto-generates with all pages and current date
+- **OG Image**: `client/public/images/og-image.png` - branded social sharing image (16:9)
+- **Web Manifest**: `client/public/manifest.json` - PWA support with theme colors
+- **Meta Tags**: Comprehensive meta tags in `client/index.html` (geo, author, robots, OG, Twitter Cards)
+- **JSON-LD**: Organization and WebSite schemas in index.html, page-specific schemas via `SEOHead` component
+- **SEOHead Component**: `client/src/components/SEOHead.tsx` - dynamically sets title, meta tags, canonical URL, breadcrumb JSON-LD per page
+- **Canonical URLs**: All pages use absolute `https://sayctchad.org` URLs
+
 ### API Endpoints (GET)
 - `/api/trainings` - Active training programs
 - `/api/news` - Active news articles

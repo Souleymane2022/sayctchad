@@ -86,11 +86,21 @@ export default function About() {
 
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": "AboutPage",
     name: "À propos de SAYC Tchad",
     description: "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance, ses missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
-    url: `${window.location.origin}/a-propos`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/a-propos",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
+    mainEntity: {
+      "@type": "Organization",
+      name: "SAYC Tchad - Smart Africa Youth Chapter",
+      foundingDate: "2024",
+      parentOrganization: {
+        "@type": "Organization",
+        name: "Smart Africa Alliance",
+        url: "https://smartafrica.org",
+      },
+    },
   }), []);
 
   return (

@@ -40,6 +40,33 @@ export async function registerRoutes(
     })
   );
   
+  app.get("/sitemap.xml", async (_req, res) => {
+    const baseUrl = "https://sayctchad.org";
+    const pages = [
+      { url: "/", priority: "1.0", changefreq: "weekly" },
+      { url: "/a-propos", priority: "0.8", changefreq: "monthly" },
+      { url: "/programmes", priority: "0.8", changefreq: "monthly" },
+      { url: "/formations", priority: "0.8", changefreq: "weekly" },
+      { url: "/evenements", priority: "0.7", changefreq: "weekly" },
+      { url: "/actualites", priority: "0.9", changefreq: "daily" },
+      { url: "/contact", priority: "0.6", changefreq: "monthly" },
+      { url: "/rejoindre", priority: "0.8", changefreq: "monthly" },
+      { url: "/opportunites", priority: "0.9", changefreq: "daily" },
+    ];
+    const today = new Date().toISOString().split("T")[0];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages.map(p => `  <url>
+    <loc>${baseUrl}${p.url}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`).join("\n")}
+</urlset>`;
+    res.set("Content-Type", "application/xml");
+    res.send(xml);
+  });
+
   app.post("/api/members", async (req, res) => {
     try {
       const validatedData = insertMemberSchema.parse(req.body);

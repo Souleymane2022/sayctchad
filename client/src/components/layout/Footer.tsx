@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
+import { ExternalLink, Mail, MapPin } from "lucide-react";
 import { SiFacebook, SiLinkedin, SiYoutube } from "react-icons/si";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
@@ -120,21 +120,11 @@ export function Footer() {
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent shrink-0" />
                 <a 
-                  href="mailto:contact@sayc-tchad.org" 
+                  href="/contact" 
                   className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
-                  data-testid="link-footer-email"
+                  data-testid="link-footer-contact-form"
                 >
-                  contact@sayc-tchad.org
-                </a>
-              </li>
-              <li className="flex items-center gap-3">
-                <Phone className="w-4 h-4 text-accent shrink-0" />
-                <a 
-                  href="tel:+23566000000" 
-                  className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
-                  data-testid="link-footer-phone"
-                >
-                  +235 66 00 00 00
+                  Formulaire de contact
                 </a>
               </li>
             </ul>

@@ -24,8 +24,8 @@ export default function News() {
     "@type": "WebPage",
     name: "Actualités SAYC Tchad",
     description: "Dernières nouvelles et annonces du SAYC Tchad et de Smart Africa.",
-    url: `${window.location.origin}/actualites`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/actualites",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

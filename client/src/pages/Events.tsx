@@ -26,8 +26,8 @@ export default function Events() {
     "@type": "WebPage",
     name: "Événements SAYC Tchad",
     description: "Hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa.",
-    url: `${window.location.origin}/evenements`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/evenements",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

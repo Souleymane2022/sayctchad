@@ -143,8 +143,8 @@ export default function Join() {
     "@type": "WebPage",
     name: "Rejoindre SAYC Tchad",
     description: "Rejoignez le SAYC Tchad et bénéficiez de formations gratuites, mentorat et opportunités pour les jeunes de 15 à 35 ans.",
-    url: `${window.location.origin}/rejoindre`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/rejoindre",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), []);
 
   return (

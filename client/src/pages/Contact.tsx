@@ -16,47 +16,44 @@ import { insertContactMessageSchema, type InsertContactMessage } from "@shared/s
 import { 
   Mail, 
   MapPin, 
-  Phone, 
   Send,
   Clock,
   MessageSquare,
   Users,
   Briefcase
 } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiX, SiInstagram } from "react-icons/si";
+import { SiFacebook, SiLinkedin } from "react-icons/si";
 
 const contactInfo = [
   {
     icon: MapPin,
-    title: "Adresse",
+    title: "Localisation",
     content: "N'Djamena, Tchad",
-    detail: "Quartier Moursal, Avenue Charles de Gaulle",
+    detail: "Siège du chapitre national",
+  },
+  {
+    icon: MessageSquare,
+    title: "Point Focal",
+    content: "Souleymane Mahamat Saleh",
+    detail: "Point Focal National SAYC Tchad",
   },
   {
     icon: Mail,
-    title: "Email",
-    content: "contact@sayc-tchad.org",
-    detail: "Réponse sous 24-48h",
-  },
-  {
-    icon: Phone,
-    title: "Téléphone",
-    content: "+235 66 00 00 00",
-    detail: "Lun-Ven: 8h-17h",
+    title: "Formulaire de contact",
+    content: "Utilisez le formulaire ci-contre",
+    detail: "Réponse sous 48h ouvrables",
   },
   {
     icon: Clock,
     title: "Horaires",
     content: "Lun-Ven: 8h-17h",
-    detail: "Fermé les weekends et jours fériés",
+    detail: "Heure de N'Djamena (UTC+1)",
   },
 ];
 
 const socialLinks = [
-  { icon: SiFacebook, href: "#", label: "Facebook" },
-  { icon: SiX, href: "#", label: "X (Twitter)" },
-  { icon: SiLinkedin, href: "#", label: "LinkedIn" },
-  { icon: SiInstagram, href: "#", label: "Instagram" },
+  { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
+  { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
 ];
 
 const subjects = [
@@ -110,11 +107,26 @@ export default function Contact() {
 
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
-    "@type": "WebPage",
+    "@type": "ContactPage",
     name: "Contact SAYC Tchad",
     description: "Contactez le SAYC Tchad pour toute question, partenariat ou demande d'information.",
-    url: `${window.location.origin}/contact`,
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: window.location.origin },
+    url: "https://sayctchad.org/contact",
+    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
+    mainEntity: {
+      "@type": "Organization",
+      name: "SAYC Tchad",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "N'Djamena",
+        addressCountry: "TD",
+      },
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "Point Focal National",
+        name: "Souleymane Mahamat Saleh",
+        availableLanguage: ["fr", "ar"],
+      },
+    },
   }), []);
 
   return (
