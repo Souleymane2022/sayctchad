@@ -37,8 +37,10 @@
 
     <title>SAYC Tchad - Smart Africa Youth Chapter | Innovation Numérique pour la Jeunesse</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
-    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,15 +50,15 @@
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "SAYC Tchad - Smart Africa Youth Chapter",
-      "alternateName": "SAYC Tchad",
+      "name": "SAYC Tchad",
+      "alternateName": ["Smart Africa Youth Chapter Tchad", "SAYC Chad"],
       "url": "https://sayctchad.org",
       "description": "7ème chapitre jeunesse de Smart Africa au Tchad, dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique.",
       "inLanguage": "fr",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://sayctchad.org/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
+      "publisher": {
+        "@type": "Organization",
+        "name": "SAYC Tchad",
+        "url": "https://sayctchad.org"
       }
     }
     </script>
@@ -65,26 +67,35 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "SAYC Tchad - Smart Africa Youth Chapter",
-      "alternateName": "SAYC Tchad",
+      "alternateName": ["SAYC Tchad", "Smart Africa Youth Chapter Chad"],
       "url": "https://sayctchad.org",
-      "logo": "https://sayctchad.org/favicon.png",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://sayctchad.org/icon-512.png",
+        "width": 512,
+        "height": 512
+      },
       "image": "https://sayctchad.org/images/og-image.png",
-      "description": "7ème chapitre jeunesse de Smart Africa au Tchad, plateforme dédiée aux jeunes de 15 à 35 ans.",
+      "description": "Le 7ème chapitre jeunesse de Smart Africa au Tchad. Plateforme dédiée aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique en Afrique.",
       "foundingDate": "2024",
+      "knowsAbout": ["innovation numérique", "formation des jeunes", "leadership", "transformation digitale", "Smart Africa", "SADA4Youth"],
       "areaServed": {
         "@type": "Country",
-        "name": "Tchad"
+        "name": "Tchad",
+        "sameAs": "https://fr.wikipedia.org/wiki/Tchad"
       },
       "parentOrganization": {
         "@type": "Organization",
         "name": "Smart Africa Alliance",
-        "url": "https://smartafrica.org"
+        "url": "https://smartafrica.org",
+        "description": "Alliance panafricaine pour la transformation numérique de l'Afrique"
       },
       "contactPoint": {
         "@type": "ContactPoint",
         "contactType": "Point Focal National",
         "name": "Souleymane Mahamat Saleh",
-        "availableLanguage": ["fr", "ar"]
+        "availableLanguage": ["fr", "ar"],
+        "url": "https://sayctchad.org/contact"
       },
       "address": {
         "@type": "PostalAddress",
@@ -92,7 +103,67 @@
         "addressCountry": "TD"
       },
       "sameAs": [
+        "https://www.facebook.com/profile.php?id=61585729201040",
+        "https://www.linkedin.com/company/110439974",
         "https://smartafrica.org"
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Qu'est-ce que SAYC Tchad ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "SAYC Tchad (Smart Africa Youth Chapter Tchad) est le 7ème chapitre jeunesse de Smart Africa, dédié aux jeunes tchadiens de 15 à 35 ans. Il s'inscrit dans l'initiative SADA4Youth de la Smart Africa Digital Academy pour promouvoir l'éducation numérique, la collaboration et le leadership chez les jeunes en Afrique."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment rejoindre SAYC Tchad ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pour rejoindre SAYC Tchad, rendez-vous sur la page 'Rejoindre' du site sayctchad.org et remplissez le formulaire d'adhésion. L'adhésion est ouverte à tous les jeunes tchadiens âgés de 15 à 35 ans intéressés par l'innovation numérique et le leadership."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels sont les 3 piliers de SAYC ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les trois piliers de SAYC sont : 1) Éducation - formations et certifications en compétences numériques via la SADA, 2) Collaboration - création d'un réseau panafricain de jeunes leaders, et 3) Innovation - soutien aux projets numériques et à l'entrepreneuriat technologique des jeunes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qui est le Point Focal de SAYC Tchad ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le Point Focal National de SAYC Tchad est Souleymane Mahamat Saleh. Il coordonne les activités du chapitre et assure la liaison avec Smart Africa Alliance et les partenaires au niveau national et international."
+          }
+        }
+      ]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SiteNavigationElement",
+      "name": ["Accueil", "À Propos", "Programmes", "Formations", "Actualités", "Événements", "Opportunités", "Contact", "Rejoindre"],
+      "url": [
+        "https://sayctchad.org/",
+        "https://sayctchad.org/a-propos",
+        "https://sayctchad.org/programmes",
+        "https://sayctchad.org/formations",
+        "https://sayctchad.org/actualites",
+        "https://sayctchad.org/evenements",
+        "https://sayctchad.org/opportunites",
+        "https://sayctchad.org/contact",
+        "https://sayctchad.org/rejoindre"
       ]
     }
     </script>

@@ -5,6 +5,7 @@ interface SEOHeadProps {
   description: string;
   path: string;
   type?: "website" | "article";
+  keywords?: string;
   jsonLd?: Record<string, unknown>;
 }
 
@@ -29,7 +30,7 @@ function setLinkTag(rel: string, href: string) {
   el.setAttribute("href", href);
 }
 
-export default function SEOHead({ title, description, path, type = "website", jsonLd }: SEOHeadProps) {
+export default function SEOHead({ title, description, path, type = "website", keywords, jsonLd }: SEOHeadProps) {
   useEffect(() => {
     const baseUrl = "https://sayctchad.org";
     const url = `${baseUrl}${path}`;
@@ -39,7 +40,8 @@ export default function SEOHead({ title, description, path, type = "website", js
     document.title = title;
 
     setMetaTag("description", description, true);
-    setMetaTag("keywords", `SAYC Tchad, Smart Africa, ${title}, jeunesse, innovation numérique, Tchad, formation`, true);
+    const defaultKeywords = "SAYC Tchad, Smart Africa, Youth Chapter, jeunesse tchadienne, innovation numérique, formation, SADA, leadership, Tchad, N'Djamena";
+    setMetaTag("keywords", keywords ? `${defaultKeywords}, ${keywords}` : defaultKeywords, true);
 
     setLinkTag("canonical", url);
 
@@ -107,7 +109,7 @@ export default function SEOHead({ title, description, path, type = "website", js
       const existingBreadcrumb = document.querySelector('script[data-seo-breadcrumb]');
       if (existingBreadcrumb) existingBreadcrumb.remove();
     };
-  }, [title, description, path, type, jsonLd]);
+  }, [title, description, path, type, keywords, jsonLd]);
 
   return null;
 }
