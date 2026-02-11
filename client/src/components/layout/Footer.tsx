@@ -136,11 +136,11 @@ export function Footer() {
             © {new Date().getFullYear()} SAYC Tchad. Tous droits réservés.
           </p>
           <div className="flex items-center gap-6">
-            <Link href="/mentions-legales" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-              Mentions légales
+            <Link href="/a-propos" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+              À propos
             </Link>
-            <Link href="/confidentialite" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-              Confidentialité
+            <Link href="/contact" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+              Contact
             </Link>
           </div>
         </div>
