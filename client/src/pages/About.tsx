@@ -88,7 +88,7 @@ export default function About() {
     "@context": "https://schema.org",
     "@type": "AboutPage",
     name: "À propos de SAYC Tchad",
-    description: "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance, ses missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
+    description: "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance. Point Focal National : Souleymane Mahamat Saleh. Missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
     url: "https://sayctchad.org/a-propos",
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
     mainEntity: {
@@ -100,6 +100,12 @@ export default function About() {
         name: "Smart Africa Alliance",
         url: "https://smartafrica.org",
       },
+      employee: {
+        "@type": "Person",
+        name: "Souleymane Mahamat Saleh",
+        jobTitle: "Point Focal National SAYC Tchad",
+        description: "Représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad",
+      },
     },
   }), []);
 
@@ -107,8 +113,9 @@ export default function About() {
     <div className="flex flex-col">
       <SEOHead
         title="À propos de SAYC Tchad | 7ème Chapitre Jeunesse de Smart Africa"
-        description="Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance. Notre mission : éduquer, collaborer et innover pour la jeunesse tchadienne de 15 à 35 ans."
+        description="SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Point Focal National : Souleymane Mahamat Saleh. Éducation, collaboration et innovation numérique pour les jeunes de 15 à 35 ans."
         path="/a-propos"
+        keywords="Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse"
         jsonLd={webPageJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
@@ -267,10 +274,10 @@ export default function About() {
               Coordination Nationale
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-governance-title">
-              Point Focal Tchad
+              Point Focal National SAYC Tchad
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-governance-description">
-              Le représentant officiel de Smart Africa Youth Chapter au Tchad.
+              Le représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad.
             </p>
           </div>
 
@@ -278,13 +285,13 @@ export default function About() {
             <Card data-testid="card-focal-point">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="text-xs">Point Focal SAYC Tchad</Badge>
+                  <Badge variant="secondary" className="text-xs">Point Focal National</Badge>
                 </div>
-                <CardTitle className="font-heading text-xl" data-testid="text-focal-point-name">
+                <CardTitle className="font-heading text-2xl" data-testid="text-focal-point-name">
                   Souleymane Mahamat Saleh
                 </CardTitle>
                 <CardDescription className="text-sm leading-relaxed mt-2">
-                  Point Focal du Smart Africa Youth Chapter Tchad, chargé de coordonner les initiatives nationales et d'assurer le lien avec le réseau continental Smart Africa.
+                  Souleymane Mahamat Saleh est le Point Focal National du Smart Africa Youth Chapter Tchad (SAYC Tchad). Il est le représentant officiel du 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Basé à N'Djamena, il coordonne l'ensemble des initiatives nationales, les programmes de formation en compétences numériques, et assure la liaison avec le réseau continental Smart Africa et ses partenaires stratégiques.
                 </CardDescription>
               </CardHeader>
             </Card>
