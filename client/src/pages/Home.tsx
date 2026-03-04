@@ -7,13 +7,13 @@ import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
-import { 
-  ArrowRight, 
-  Users, 
-  Lightbulb, 
-  Handshake, 
-  GraduationCap, 
-  Rocket, 
+import {
+  ArrowRight,
+  Users,
+  Lightbulb,
+  Handshake,
+  GraduationCap,
+  Rocket,
   ChevronRight,
   Globe,
   Target,
@@ -70,7 +70,7 @@ function PixelGrid({ className = "", variant = "hero" }: { className?: string; v
   }
 
   const heroOpacities = [0.8, 0.6, 0.9, 0.4, 0.7, 0.5, 0.8, 0.3, 0.9, 0.6, 0.7, 0.4, 0.8, 0.5, 0.9, 0.3, 0.6, 0.8, 0.4, 0.7, 0.9, 0.5, 0.8, 0.6, 0.4];
-  
+
   return (
     <div className={`absolute pointer-events-none ${className}`}>
       <div className="grid grid-cols-5 gap-2">
@@ -197,15 +197,24 @@ export default function Home() {
       name: "Smart Africa Alliance",
       url: "https://smartafrica.org",
     },
+    founder: {
+      "@type": "Person",
+      "name": "Souleymane Mahamat Saleh",
+      "jobTitle": "Point Focal National SAYC Tchad",
+      "sameAs": [
+        "https://www.linkedin.com/company/110439974/"
+      ]
+    },
     contactPoint: {
       "@type": "ContactPoint",
-      contactType: "Point Focal",
-      name: "Souleymane Mahamat Saleh",
+      "contactType": "Point Focal National",
+      "name": "Souleymane Mahamat Saleh",
+      "availableLanguage": ["fr", "ar"]
     },
     address: {
       "@type": "PostalAddress",
-      addressLocality: "N'Djamena",
-      addressCountry: "TD",
+      "addressLocality": "N'Djamena",
+      "addressCountry": "TD",
     },
   }), []);
 

@@ -61,8 +61,8 @@ export function Footer() {
             <ul className="space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
                     data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
@@ -78,8 +78,8 @@ export function Footer() {
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
-                  <Link 
-                    href={link.href} 
+                  <Link
+                    href={link.href}
                     className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
                     data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
@@ -119,13 +119,13 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent shrink-0" />
-                <a 
-                  href="/contact" 
+                <Link
+                  href="/contact"
                   className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
                   data-testid="link-footer-contact-form"
                 >
                   Formulaire de contact
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
