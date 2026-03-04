@@ -29,10 +29,22 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  const PgStore = connectPgSimple(session);
+  const isVercel = process.env.VERCEL === "1" || !pool;
+  let sessionStore;
+
+  if (isVercel) {
+    const MemoryStore = require("memorystore")(session);
+    sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
+  } else {
+    const PgStore = connectPgSimple(session);
+    sessionStore = new PgStore({ pool, createTableIfMissing: true });
+  }
+
   app.use(
     session({
-      store: new PgStore({ pool, createTableIfMissing: true }),
+      store: sessionStore,
       secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
       resave: false,
       saveUninitialized: false,
