@@ -122,7 +122,7 @@ export default function About() {
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="À propos de SAYC Tchad | 7ème Chapitre Jeunesse de Smart Africa"
+        title="À propos de SAYC Tchad | Souleymane Mahamat Saleh - Point Focal"
         description="SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Point Focal National : Souleymane Mahamat Saleh. Éducation, collaboration et innovation numérique pour les jeunes de 15 à 35 ans."
         path="/a-propos"
         keywords="Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse"
