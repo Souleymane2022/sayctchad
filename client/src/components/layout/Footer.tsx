@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { ExternalLink, Mail, MapPin } from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { SiFacebook, SiLinkedin, SiYoutube } from "react-icons/si";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
@@ -116,6 +116,16 @@ export function Footer() {
                 <span className="text-sm text-sidebar-foreground/70" data-testid="text-footer-address">
                   N'Djamena, Tchad
                 </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-accent shrink-0" />
+                <a
+                  href="tel:+23566161753"
+                  className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
+                  data-testid="link-footer-phone"
+                >
+                  +235 66 16 17 53
+                </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-accent shrink-0" />

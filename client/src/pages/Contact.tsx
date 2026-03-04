@@ -13,9 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { insertContactMessageSchema, type InsertContactMessage } from "@shared/schema";
-import { 
-  Mail, 
-  MapPin, 
+import {
+  Mail,
+  MapPin,
   Send,
   Clock,
   MessageSquare,
@@ -39,9 +39,15 @@ const contactInfo = [
   },
   {
     icon: Mail,
-    title: "Formulaire de contact",
-    content: "Utilisez le formulaire ci-contre",
+    title: "Email",
+    content: "contact@sayctchad.org",
     detail: "Réponse sous 48h ouvrables",
+  },
+  {
+    icon: Send,
+    title: "Téléphone",
+    content: "+235 66 16 17 53",
+    detail: "Appel & WhatsApp",
   },
   {
     icon: Clock,
@@ -124,6 +130,7 @@ export default function Contact() {
         "@type": "ContactPoint",
         contactType: "Point Focal National",
         name: "Souleymane Mahamat Saleh",
+        telephone: "+23566161753",
         availableLanguage: ["fr", "ar"],
       },
     },
@@ -153,7 +160,7 @@ export default function Contact() {
               <span className="text-accent">contact</span>
             </h1>
             <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-contact-description">
-              Une question, une suggestion ou envie de collaborer? 
+              Une question, une suggestion ou envie de collaborer?
               N'hesitez pas a nous contacter. Notre equipe est la pour vous accompagner.
             </p>
           </div>
@@ -183,9 +190,9 @@ export default function Contact() {
                             <FormItem>
                               <FormLabel>Prénom *</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="Votre prénom" 
-                                  {...field} 
+                                <Input
+                                  placeholder="Votre prénom"
+                                  {...field}
                                   data-testid="input-first-name"
                                 />
                               </FormControl>
@@ -200,9 +207,9 @@ export default function Contact() {
                             <FormItem>
                               <FormLabel>Nom *</FormLabel>
                               <FormControl>
-                                <Input 
-                                  placeholder="Votre nom" 
-                                  {...field} 
+                                <Input
+                                  placeholder="Votre nom"
+                                  {...field}
                                   data-testid="input-last-name"
                                 />
                               </FormControl>
@@ -220,10 +227,10 @@ export default function Contact() {
                             <FormItem>
                               <FormLabel>Email *</FormLabel>
                               <FormControl>
-                                <Input 
+                                <Input
                                   type="email"
-                                  placeholder="votre@email.com" 
-                                  {...field} 
+                                  placeholder="votre@email.com"
+                                  {...field}
                                   data-testid="input-email"
                                 />
                               </FormControl>
@@ -238,10 +245,10 @@ export default function Contact() {
                             <FormItem>
                               <FormLabel>Téléphone</FormLabel>
                               <FormControl>
-                                <Input 
+                                <Input
                                   type="tel"
-                                  placeholder="+235 66 00 00 00" 
-                                  {...field} 
+                                  placeholder="+235 66 00 00 00"
+                                  {...field}
                                   value={field.value || ""}
                                   data-testid="input-phone"
                                 />
@@ -297,9 +304,9 @@ export default function Contact() {
                         )}
                       />
 
-                      <Button 
-                        type="submit" 
-                        size="lg" 
+                      <Button
+                        type="submit"
+                        size="lg"
                         className="w-full sm:w-auto"
                         disabled={contactMutation.isPending}
                         data-testid="button-submit-contact"

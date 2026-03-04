@@ -209,6 +209,7 @@ export default function Home() {
       "@type": "ContactPoint",
       "contactType": "Point Focal National",
       "name": "Souleymane Mahamat Saleh",
+      "telephone": "+23566161753",
       "availableLanguage": ["fr", "ar"]
     },
     address: {

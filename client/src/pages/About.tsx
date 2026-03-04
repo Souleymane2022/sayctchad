@@ -112,6 +112,7 @@ export default function About() {
         "@type": "ContactPoint",
         "contactType": "Point Focal National",
         "name": "Souleymane Mahamat Saleh",
+        "telephone": "+23566161753",
         "description": "Représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad",
         "availableLanguage": ["fr", "ar"]
       },
