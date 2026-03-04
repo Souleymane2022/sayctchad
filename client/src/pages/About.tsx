@@ -99,6 +99,11 @@ export default function About() {
         "@type": "Person",
         "name": "Souleymane Mahamat Saleh",
         "jobTitle": "Point Focal National SAYC Tchad & Tech Leader",
+        "image": [
+          "https://sayctchad.org/images/souleymane-1.jpg",
+          "https://sayctchad.org/images/souleymane-2.jpg",
+          "https://sayctchad.org/images/souleymane-3.jpg"
+        ],
         "description": "Expert en Ingénierie Logicielle et Acteur de la Transformation Digitale en Afrique",
         "knowsAbout": ["Ingénierie Logicielle", "Transformation Digitale", "Leadership", "Smart Africa", "Jeunesse"],
         "sameAs": [
