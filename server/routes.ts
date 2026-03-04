@@ -9,6 +9,7 @@ import {
 import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
+import rateLimit from "express-rate-limit";
 import { pool } from "./db";
 import { sendNotificationEmail, sendAutoReplyEmail, debugSmtpConnection } from "./email";
 declare module "express-session" {
@@ -41,6 +42,16 @@ export async function registerRoutes(
     const PgStore = connectPgSimple(session);
     sessionStore = new PgStore({ pool, createTableIfMissing: true });
   }
+
+  app.set("trust proxy", 1);
+
+  const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limit each IP to 5 requests per windowMs
+    message: { error: "Trop de requêtes depuis cette adresse IP, veuillez réessayer plus tard." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
 
   app.use(
     session({
@@ -79,7 +90,7 @@ ${pages.map(p => `  <url>
     res.send(xml);
   });
 
-  app.post("/api/members", async (req, res) => {
+  app.post("/api/members", apiLimiter, async (req, res) => {
     try {
       const validatedData = insertMemberSchema.parse(req.body);
       const existingMember = await storage.getMemberByEmail(validatedData.email);
@@ -119,7 +130,7 @@ ${pages.map(p => `  <url>
     }
   });
 
-  app.post("/api/contact", async (req, res) => {
+  app.post("/api/contact", apiLimiter, async (req, res) => {
     try {
       const validatedData = insertContactMessageSchema.parse(req.body);
       const message = await storage.createContactMessage(validatedData);
