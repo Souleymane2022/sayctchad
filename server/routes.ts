@@ -10,7 +10,7 @@ import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
-
+import { sendNotificationEmail, sendAutoReplyEmail } from "./email";
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -87,6 +87,18 @@ ${pages.map(p => `  <url>
         return res.status(400).json({ error: "Un membre avec cet email existe déjà" });
       }
       const member = await storage.createMember(validatedData);
+
+      await sendNotificationEmail(
+        "Nouvelle Adhésion - SAYC Tchad",
+        `Nouvelle adhésion de ${member.firstName} ${member.lastName} (${member.email}).\nMotivation: ${member.motivation || 'Non spécifiée'}`
+      );
+
+      await sendAutoReplyEmail(
+        member.email,
+        "Confirmation de votre adhésion - SAYC Tchad",
+        `Bonjour ${member.firstName},\n\nNous confirmons la bonne réception de votre demande d'adhésion au Smart Africa Youth Chapter Tchad (SAYC Tchad).\n\nNotre équipe étudiera votre demande et vous contactera très prochainement avec la suite des instructions.\n\nCordialement,\nL'équipe SAYC Tchad`
+      );
+
       res.status(201).json(member);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -111,6 +123,18 @@ ${pages.map(p => `  <url>
     try {
       const validatedData = insertContactMessageSchema.parse(req.body);
       const message = await storage.createContactMessage(validatedData);
+
+      await sendNotificationEmail(
+        "Nouveau Message de Contact - SAYC Tchad",
+        `Nouveau message de ${message.firstName} ${message.lastName} (${message.email}).\nSujet: ${message.subject}\nMessage: ${message.message}`
+      );
+
+      await sendAutoReplyEmail(
+        message.email,
+        "Accusé de réception de votre message - SAYC Tchad",
+        `Bonjour ${message.firstName},\n\nNous avons bien reçu votre message concernant "${message.subject}".\n\nNotre équipe vous répondra dans les plus brefs délais (généralement sous 48h ouvrables).\n\nCordialement,\nL'équipe SAYC Tchad`
+      );
+
       res.status(201).json(message);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -316,32 +340,6 @@ ${pages.map(p => `  <url>
     }
   });
 
-  app.get("/sitemap.xml", (req, res) => {
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const pages = [
-      { path: "/", priority: "1.0", changefreq: "weekly" },
-      { path: "/a-propos", priority: "0.8", changefreq: "monthly" },
-      { path: "/programmes", priority: "0.8", changefreq: "monthly" },
-      { path: "/formations", priority: "0.8", changefreq: "weekly" },
-      { path: "/opportunites", priority: "0.8", changefreq: "weekly" },
-      { path: "/evenements", priority: "0.7", changefreq: "weekly" },
-      { path: "/actualites", priority: "0.7", changefreq: "daily" },
-      { path: "/contact", priority: "0.6", changefreq: "monthly" },
-      { path: "/rejoindre", priority: "0.9", changefreq: "monthly" },
-    ];
-    const today = new Date().toISOString().split("T")[0];
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(p => `  <url>
-    <loc>${baseUrl}${p.path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`).join("\n")}
-</urlset>`;
-    res.header("Content-Type", "application/xml");
-    res.send(xml);
-  });
 
   app.get("/robots.txt", (req, res) => {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
