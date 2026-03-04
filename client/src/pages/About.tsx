@@ -7,11 +7,11 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type { Partner } from "@shared/schema";
-import { 
-  ArrowRight, 
-  Target, 
-  Eye, 
-  Users, 
+import {
+  ArrowRight,
+  Target,
+  Eye,
+  Users,
   GraduationCap,
   Briefcase,
   Globe,
@@ -95,16 +95,25 @@ export default function About() {
       "@type": "Organization",
       name: "SAYC Tchad - Smart Africa Youth Chapter",
       foundingDate: "2024",
+      founder: {
+        "@type": "Person",
+        "name": "Souleymane Mahamat Saleh",
+        "jobTitle": "Point Focal National SAYC Tchad",
+        "sameAs": [
+          "https://www.linkedin.com/company/110439974/"
+        ]
+      },
       parentOrganization: {
         "@type": "Organization",
         name: "Smart Africa Alliance",
         url: "https://smartafrica.org",
       },
-      employee: {
-        "@type": "Person",
-        name: "Souleymane Mahamat Saleh",
-        jobTitle: "Point Focal National SAYC Tchad",
-        description: "Représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad",
+      contactPoint: {
+        "@type": "ContactPoint",
+        "contactType": "Point Focal National",
+        "name": "Souleymane Mahamat Saleh",
+        "description": "Représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad",
+        "availableLanguage": ["fr", "ar"]
       },
     },
   }), []);
@@ -139,7 +148,7 @@ export default function About() {
               <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2">
                 Smart Africa Alliance
               </a>
-              {" "}au Tchad. C'est une plateforme dediee aux jeunes de 15 a 35 ans, 
+              {" "}au Tchad. C'est une plateforme dediee aux jeunes de 15 a 35 ans,
               axee sur l'education, la collaboration, le mentorat et l'innovation numerique.
             </p>
             <p className="text-sidebar-foreground/70 leading-relaxed" data-testid="text-about-description-2">
@@ -164,12 +173,12 @@ export default function About() {
                 Transformer l'Afrique par la jeunesse et l'innovation
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6" data-testid="text-vision-description">
-                Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation 
-                pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir 
+                Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation
+                pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir
                 un avenir durable.
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
-                Notre vision est de faire du Tchad un hub d'innovation numérique où chaque jeune a accès 
+                Notre vision est de faire du Tchad un hub d'innovation numérique où chaque jeune a accès
                 aux compétences et ressources nécessaires pour réussir dans l'économie digitale.
               </p>
               <Link href="/programmes">
