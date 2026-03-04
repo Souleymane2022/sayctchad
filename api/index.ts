@@ -1,32 +1,48 @@
 import express from 'express';
-import { storage } from '../server/storage';
-import { registerRoutes } from '../server/routes';
-import { createServer } from 'http';
-
-const app = express();
-const httpServer = createServer(app);
-
-app.use(express.json());
-
-app.get('/api/test-storage', async (req, res) => {
-    try {
-        const partners = await storage.getAllPartners();
-        res.json({ message: 'Storage working (HTTP)', partnersCount: partners.length });
-    } catch (err: any) {
-        res.status(500).json({ error: 'Storage failure', details: err.message });
-    }
-});
-
-let initialized = false;
 
 export default async function handler(req: any, res: any) {
-    if (!initialized) {
+    try {
+        const app = express();
+        app.use(express.json());
+
+        app.get('/api/diagnostic', (req, res) => {
+            res.json({
+                status: 'ok',
+                env: {
+                    NODE_ENV: process.env.NODE_ENV,
+                    VERCEL: process.env.VERCEL
+                }
+            });
+        });
+
+        // Try to import our modules inside the handler to catch errors
         try {
-            await registerRoutes(httpServer, app);
-            initialized = true;
-        } catch (err: any) {
-            return res.status(500).json({ error: 'Registration Error', details: err.message });
+            const { storage } = await import('../server/storage');
+            const { registerRoutes } = await import('../server/routes');
+            const { createServer } = await import('http');
+
+            const server = createServer(app);
+            await registerRoutes(server, app);
+
+            console.log('Routes and storage loaded successfully');
+        } catch (importError: any) {
+            console.error('Project module import failed:', importError);
+            // Even if project modules fail, our diagnostic route above might have been hit 
+            // if Vercel routes correctly, but since we are using app(req, res) at the end,
+            // let's just return the error here.
+            return res.status(500).json({
+                error: 'Import Error',
+                message: importError.message,
+                stack: importError.stack
+            });
         }
+
+        return app(req, res);
+    } catch (globalError: any) {
+        return res.status(500).json({
+            error: 'Global Handler Error',
+            message: globalError.message,
+            stack: globalError.stack
+        });
     }
-    return app(req, res);
 }
