@@ -192,9 +192,13 @@ ${pages.map(p => `  <url>
     try {
       const partnersList = await storage.getActivePartners();
       res.json(partnersList);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching partners:", error);
-      res.status(500).json({ error: "Erreur lors de la récupération des partenaires" });
+      res.status(500).json({
+        error: "Erreur lors de la récupération des partenaires",
+        details: error.message,
+        stack: error.stack
+      });
     }
   });
 

@@ -45315,7 +45315,11 @@ ${pages.map((p) => `  <url>
       res.json(partnersList);
     } catch (error) {
       console.error("Error fetching partners:", error);
-      res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des partenaires" });
+      res.status(500).json({
+        error: "Erreur lors de la r\xE9cup\xE9ration des partenaires",
+        details: error.message,
+        stack: error.stack
+      });
     }
   });
   app2.post("/api/partners", requireAdmin, async (req, res) => {
