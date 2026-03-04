@@ -66,3 +66,21 @@ export async function sendAutoReplyEmail(to: string, subject: string, text: stri
         return false;
     }
 }
+
+export async function debugSmtpConnection() {
+    try {
+        if (!process.env.SMTP_PASS) {
+            return { success: false, error: "SMTP_PASS is missing in Vercel Environment Variables" };
+        }
+
+        const info = await transporter.sendMail({
+            from: process.env.SMTP_USER || "sayctchad@gmail.com",
+            to: process.env.SMTP_USER || "sayctchad@gmail.com",
+            subject: "Vercel Diagnostic Test",
+            text: "Testing Vercel Serverless Outbound SMTP"
+        });
+        return { success: true, messageId: info.messageId };
+    } catch (error: any) {
+        return { success: false, error: error.message || String(error), stack: error.stack, code: error.code };
+    }
+}

@@ -10,7 +10,7 @@ import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
-import { sendNotificationEmail, sendAutoReplyEmail } from "./email";
+import { sendNotificationEmail, sendAutoReplyEmail, debugSmtpConnection } from "./email";
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -143,6 +143,11 @@ ${pages.map(p => `  <url>
       console.error("Error creating contact message:", error);
       res.status(500).json({ error: "Erreur lors de l'envoi du message" });
     }
+  });
+
+  app.get("/api/debug-email", async (req, res) => {
+    const result = await debugSmtpConnection();
+    res.json(result);
   });
 
   app.get("/api/contact", async (_req, res) => {
