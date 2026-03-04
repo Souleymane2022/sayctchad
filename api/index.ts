@@ -1,54 +1,37 @@
-import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "../server/routes";
-import { createServer } from "http";
+import express from 'express';
+import { registerRoutes } from '../server/routes';
+import { createServer } from 'http';
 
 const app = express();
 const httpServer = createServer(app);
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
-// Health check route that doesn't use the DB
-app.get("/api/health", (_req, res) => {
-    res.json({ status: "ok", time: new Date().toISOString() });
+// Very simple route
+app.get('/api/test', (req, res) => {
+    res.json({ message: 'Minimal express working' });
 });
 
-let isInitialized = false;
-
-async function bootstrap() {
-    if (isInitialized) return;
-
-    console.log("Initializing Express app for Vercel...");
-    try {
-        await registerRoutes(httpServer, app);
-
-        // Global error handler
-        app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-            const status = err.status || err.statusCode || 500;
-            const message = err.message || "Internal Server Error";
-            console.error("Vercel Runtime Error:", err);
-            if (res.headersSent) return next(err);
-            res.status(status).json({ message });
-        });
-
-        isInitialized = true;
-        console.log("Initialization complete.");
-    } catch (error) {
-        console.error("Failed to initialize app:", error);
-        throw error;
-    }
-}
+let initialized = false;
 
 export default async function handler(req: any, res: any) {
-    try {
-        await bootstrap();
-        return app(req, res);
-    } catch (error: any) {
-        console.error("Handler Error:", error);
-        res.status(500).json({
-            error: "Initialization Failed",
-            message: error.message,
-            stack: process.env.NODE_ENV === "development" ? error.stack : undefined
-        });
+    console.log('Handler invoked:', req.url);
+
+    if (req.url === '/api/plain-test') {
+        return res.status(200).json({ message: 'Plain Vercel function working' });
     }
+
+    if (!initialized) {
+        try {
+            console.log('Registering routes...');
+            await registerRoutes(httpServer, app);
+            initialized = true;
+            console.log('Routes registered');
+        } catch (err: any) {
+            console.error('Registration failed:', err);
+            return res.status(500).json({ error: 'Registration Error', details: err.message });
+        }
+    }
+
+    return app(req, res);
 }
