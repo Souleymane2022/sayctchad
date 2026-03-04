@@ -5,8 +5,8 @@ import nodemailer from "nodemailer";
 // in the SMTP_PASS environment variable.
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
-    port: 587,
-    secure: false, // true for 465, false for 587
+    port: 465,
+    secure: true, // true for 465, false for 587
     tls: {
         rejectUnauthorized: false
     },
