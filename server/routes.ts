@@ -1,11 +1,11 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { 
-  insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema, 
+import {
+  insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema
-} from "@shared/schema";
+} from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
@@ -39,7 +39,7 @@ export async function registerRoutes(
       cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
     })
   );
-  
+
   app.get("/sitemap.xml", async (_req, res) => {
     const baseUrl = "https://sayctchad.org";
     const pages = [

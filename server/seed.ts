@@ -1,5 +1,5 @@
 import { db } from "./db";
-import { partners, achievements, trainings, opportunities, newsArticles } from "@shared/schema";
+import { partners, achievements, trainings, opportunities, newsArticles } from "../shared/schema";
 import { sql } from "drizzle-orm";
 
 const seedPartners = [

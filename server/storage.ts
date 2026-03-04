@@ -1,4 +1,4 @@
-import { 
+import {
   type User, type InsertUser,
   type Member, type InsertMember,
   type ContactMessage, type InsertContactMessage,
@@ -11,7 +11,7 @@ import {
   type Achievement, type InsertAchievement,
   users, members, contactMessages, newsletterSubscribers,
   opportunities, partners, trainings, newsArticles, events, achievements
-} from "@shared/schema";
+} from "../shared/schema";
 import { db } from "./db";
 import { eq, desc, asc } from "drizzle-orm";
 
@@ -19,14 +19,14 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
+
   createMember(member: InsertMember): Promise<Member>;
   getMemberByEmail(email: string): Promise<Member | undefined>;
   getAllMembers(): Promise<Member[]>;
-  
+
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
   getAllContactMessages(): Promise<ContactMessage[]>;
-  
+
   createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
   getNewsletterSubscriberByEmail(email: string): Promise<NewsletterSubscriber | undefined>;
   getAllNewsletterSubscribers(): Promise<NewsletterSubscriber[]>;
