@@ -46,6 +46,7 @@ async function buildAll() {
     ...Object.keys(pkg.devDependencies || {}),
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
+  console.log("EXTERNALS:", externals);
 
   await esbuild({
     entryPoints: ["server/index.ts"],
@@ -72,7 +73,6 @@ async function buildAll() {
       "process.env.NODE_ENV": '"production"',
     },
     minify: false, // keep it readable for now
-    external: externals,
     logLevel: "info",
     banner: {
       js: 'import { createRequire } from "module"; const require = createRequire(import.meta.url);',
