@@ -98,9 +98,13 @@ export default function About() {
       founder: {
         "@type": "Person",
         "name": "Souleymane Mahamat Saleh",
-        "jobTitle": "Point Focal National SAYC Tchad",
+        "jobTitle": "Point Focal National SAYC Tchad & Tech Leader",
+        "description": "Expert en Ingénierie Logicielle et Acteur de la Transformation Digitale en Afrique",
+        "knowsAbout": ["Ingénierie Logicielle", "Transformation Digitale", "Leadership", "Smart Africa", "Jeunesse"],
         "sameAs": [
-          "https://www.linkedin.com/company/110439974/"
+          "https://www.linkedin.com/in/souleymane-mahamat-saleh-559097359/",
+          "https://github.com/Souleymane2022/",
+          "https://www.facebook.com/souleymane.mhtsaleh"
         ]
       },
       parentOrganization: {
@@ -108,6 +112,10 @@ export default function About() {
         name: "Smart Africa Alliance",
         url: "https://smartafrica.org",
       },
+      "sameAs": [
+        "https://www.linkedin.com/company/smart-africa-youth-chapter-tchad/",
+        "https://www.facebook.com/profile.php?id=61585729201040"
+      ],
       contactPoint: {
         "@type": "ContactPoint",
         "contactType": "Point Focal National",

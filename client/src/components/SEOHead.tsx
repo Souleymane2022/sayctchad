@@ -15,7 +15,7 @@ export default function SEOHead({ title, description, path, type = "website", ke
   const imageUrl = `${baseUrl}/images/og-image.png`;
   const siteName = "SAYC Tchad - Smart Africa Youth Chapter";
 
-  const defaultKeywords = "SAYC Tchad, Smart Africa, Youth Chapter, jeunesse tchadienne, innovation numérique, formation, SADA, leadership, Tchad, N'Djamena";
+  const defaultKeywords = "Souleymane Mahamat Saleh, SAYC Tchad, Smart Africa, Youth Chapter, jeunesse tchadienne, innovation numérique Tchad, Ingénierie logicielle, tech leader Tchad, formation, SADA, leadership jeunesse, N'Djamena, transformation digitale Afrique";
   const finalKeywords = keywords ? `${defaultKeywords}, ${keywords}` : defaultKeywords;
 
   const breadcrumbJsonLd = {
