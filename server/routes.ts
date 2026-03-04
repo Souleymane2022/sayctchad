@@ -1,14 +1,15 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import {
-  insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
+import { 
+  insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema, 
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema
 } from "@shared/schema";
 import { z } from "zod";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
 
 declare module "express-session" {
   interface SessionData {
@@ -28,17 +29,17 @@ export async function registerRoutes(
   app: Express
 ): Promise<Server> {
 
-  const MemoryStore = createMemoryStore(session);
+  const PgStore = connectPgSimple(session);
   app.use(
     session({
-      store: new MemoryStore({ checkPeriod: 86400000 }),
+      store: new PgStore({ pool, createTableIfMissing: true }),
       secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
       resave: false,
       saveUninitialized: false,
       cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
     })
   );
-
+  
   app.get("/sitemap.xml", async (_req, res) => {
     const baseUrl = "https://sayctchad.org";
     const pages = [

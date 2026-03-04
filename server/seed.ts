@@ -146,7 +146,7 @@ const seedNews = [
     content: "Un événement de formation en Intelligence Artificielle a été organisé au Tchad, réunissant 200 jeunes Tchadiens passionnés par les nouvelles technologies. Cet événement s'inscrit dans le cadre des initiatives de Smart Africa et de ses partenaires pour le développement des compétences numériques en Afrique. La formation a couvert les fondamentaux de l'intelligence artificielle, ses applications pratiques et les opportunités qu'elle offre aux jeunes africains. Plusieurs partenaires institutionnels et privés ont soutenu cette initiative, notamment l'ENASTIC, le PATN, Airtel, la Chaire UNESCO, la Banque Mondiale et l'ADETIC.",
     category: "Formation",
     imageUrl: "/images/news-ia-formation-tchad.jpg",
-    publishedAt: "2026-01-15",
+    publishedAt: new Date("2026-01-15"),
   },
 ];
 
@@ -159,9 +159,7 @@ async function seedTable<T extends Record<string, any>>(
   const existing = await db.select().from(table);
   if (existing.length === 0) {
     console.log(`Seeding ${tableName}...`);
-    for (const item of data) {
-      await db.insert(table).values(item);
-    }
+    await db.insert(table).values(data);
     console.log(`${tableName} seeded: ${data.length} rows.`);
   }
 }
@@ -169,17 +167,28 @@ async function seedTable<T extends Record<string, any>>(
 export async function seedDatabase() {
   try {
     await db.transaction(async (tx) => {
-      await seedTable("partners", partners, seedPartners);
-      await seedTable("achievements", achievements, seedAchievements, "title");
-      await seedTable("trainings", trainings, seedTrainings, "title");
-      await seedTable("opportunities", opportunities, seedOpportunities, "title");
-      await seedTable("news_articles", newsArticles, seedNews, "title");
+      const lockResult = await tx.execute(sql`SELECT pg_try_advisory_lock(42) as locked`);
+      const locked = (lockResult as any).rows?.[0]?.locked ?? (lockResult as any)[0]?.locked;
+      if (!locked) {
+        console.log("Another instance is seeding, skipping.");
+        return;
+      }
 
-      await db.update(partners)
-        .set({ isActive: 0 })
-        .where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = 1`);
+      try {
+        await seedTable("partners", partners, seedPartners);
+        await seedTable("achievements", achievements, seedAchievements, "title");
+        await seedTable("trainings", trainings, seedTrainings, "title");
+        await seedTable("opportunities", opportunities, seedOpportunities, "title");
+        await seedTable("news_articles", newsArticles, seedNews, "title");
 
-      console.log("Database seed check complete.");
+        await db.update(partners)
+          .set({ isActive: false })
+          .where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
+
+        console.log("Database seed check complete.");
+      } finally {
+        await tx.execute(sql`SELECT pg_advisory_unlock(42)`);
+      }
     });
   } catch (error) {
     console.error("Error seeding database:", error);
