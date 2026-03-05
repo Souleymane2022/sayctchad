@@ -166,30 +166,21 @@ async function seedTable<T extends Record<string, any>>(
 
 export async function seedDatabase() {
   try {
-    await db.transaction(async (tx) => {
-      const lockResult = await tx.execute(sql`SELECT pg_try_advisory_lock(42) as locked`);
-      const locked = (lockResult as any).rows?.[0]?.locked ?? (lockResult as any)[0]?.locked;
-      if (!locked) {
-        console.log("Another instance is seeding, skipping.");
-        return;
-      }
+    try {
+      await seedTable("partners", partners, seedPartners);
+      await seedTable("achievements", achievements, seedAchievements, "title");
+      await seedTable("trainings", trainings, seedTrainings, "title");
+      await seedTable("opportunities", opportunities, seedOpportunities, "title");
+      await seedTable("news_articles", newsArticles, seedNews, "title");
 
-      try {
-        await seedTable("partners", partners, seedPartners);
-        await seedTable("achievements", achievements, seedAchievements, "title");
-        await seedTable("trainings", trainings, seedTrainings, "title");
-        await seedTable("opportunities", opportunities, seedOpportunities, "title");
-        await seedTable("news_articles", newsArticles, seedNews, "title");
+      await db.update(partners)
+        .set({ isActive: false })
+        .where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
 
-        await db.update(partners)
-          .set({ isActive: false })
-          .where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
-
-        console.log("Database seed check complete.");
-      } finally {
-        await tx.execute(sql`SELECT pg_advisory_unlock(42)`);
-      }
-    });
+      console.log("Database seed check complete.");
+    } catch (e) {
+      console.error("Failed to seed tables:", e);
+    }
   } catch (error) {
     console.error("Error seeding database:", error);
   }

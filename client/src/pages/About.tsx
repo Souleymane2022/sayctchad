@@ -311,50 +311,20 @@ export default function About() {
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <Card data-testid="card-focal-point" className="h-full flex flex-col justify-center shadow-lg border-primary/10">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary" className="text-xs">Point Focal National</Badge>
-                  </div>
-                  <CardTitle className="font-heading text-2xl" data-testid="text-focal-point-name">
-                    Souleymane Mahamat Saleh
-                  </CardTitle>
-                  <CardDescription className="text-sm leading-relaxed mt-4">
-                    Souleymane Mahamat Saleh est le Point Focal National du Smart Africa Youth Chapter Tchad (SAYC Tchad). Il est le représentant officiel du 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Basé à N'Djamena, il coordonne l'ensemble des initiatives nationales, les programmes de formation en compétences numériques, et assure la liaison avec le réseau continental Smart Africa et ses partenaires stratégiques.
-                  </CardDescription>
-                </CardHeader>
-              </Card>
-
-              <div className="px-12 md:px-6">
-                <Carousel
-                  opts={{ align: "start", loop: true }}
-                  className="w-full max-w-sm mx-auto"
-                >
-                  <CarouselContent>
-                    {[1, 2, 3].map((index) => (
-                      <CarouselItem key={index}>
-                        <div className="p-1">
-                          <Card className="overflow-hidden border-0 shadow-lg bg-transparent">
-                            <CardContent className="flex aspect-[4/3] items-center justify-center p-0">
-                              <img
-                                src={`/images/souleymane-${index}.jpg`}
-                                alt={`Souleymane Mahamat Saleh - Photo ${index}`}
-                                className="w-full h-full object-cover rounded-xl"
-                                loading="lazy"
-                              />
-                            </CardContent>
-                          </Card>
-                        </div>
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                  <CarouselPrevious />
-                  <CarouselNext />
-                </Carousel>
-              </div>
-            </div>
+          <div className="max-w-2xl mx-auto">
+            <Card data-testid="card-focal-point">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge variant="secondary" className="text-xs">Point Focal National</Badge>
+                </div>
+                <CardTitle className="font-heading text-2xl" data-testid="text-focal-point-name">
+                  Souleymane Mahamat Saleh
+                </CardTitle>
+                <CardDescription className="text-sm leading-relaxed mt-2">
+                  Souleymane Mahamat Saleh est le Point Focal National du Smart Africa Youth Chapter Tchad (SAYC Tchad). Il est le représentant officiel du 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Basé à N'Djamena, il coordonne l'ensemble des initiatives nationales, les programmes de formation en compétences numériques, et assure la liaison avec le réseau continental Smart Africa et ses partenaires stratégiques.
+                </CardDescription>
+              </CardHeader>
+            </Card>
           </div>
         </div>
       </section>

@@ -34,10 +34,7 @@ export async function registerRoutes(
   let sessionStore;
 
   if (isVercel) {
-    const MemoryStore = require("memorystore")(session);
-    sessionStore = new MemoryStore({
-      checkPeriod: 86400000 // prune expired entries every 24h
-    });
+    sessionStore = new session.MemoryStore();
   } else {
     const PgStore = connectPgSimple(session);
     sessionStore = new PgStore({ pool, createTableIfMissing: true });
