@@ -369,7 +369,18 @@ ${pages.map(p => `  <url>
       // Notify Admins
       await sendNotificationEmail(
         "Nouvelle Candidature Thunderbird - SAYC Tchad",
-        `Nouvelle candidature Thunderbird de ${application.fullName} (${application.email}).\nVille: ${application.city}\nMotivation: ${application.motivation}`
+        `Nouvelle candidature Thunderbird de ${application.fullName} (${application.email}).
+Sexe: ${application.gender}
+Date de naissance: ${application.dateOfBirth}
+Ville: ${application.city}
+WhatsApp: ${application.phone}
+Niveau d'étude: ${application.educationLevel}
+Domaine: ${application.fieldOfStudy}
+Institution/École: ${application.schoolOrUniversity}
+Niveau d'Anglais: ${application.englishLevel}
+Parcours souhaité: ${application.targetPathway}
+
+Motivation: ${application.motivation}`
       );
 
       // Auto-reply to Candidate

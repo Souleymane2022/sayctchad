@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { GraduationCap, Send, CheckCircle2, Info } from "lucide-react";
+import { GraduationCap, Send, CheckCircle2, Info, Globe, ShieldCheck, Zap } from "lucide-react";
 
 export default function ThunderbirdProgram() {
     const { toast } = useToast();
@@ -42,11 +42,14 @@ export default function ThunderbirdProgram() {
             educationLevel: "",
             schoolOrUniversity: "",
             fieldOfStudy: "",
+            englishLevel: "Débutant",
             hasOnlineExperience: false,
             experienceFields: [],
+            targetPathway: "Foundational",
             motivation: "",
             expectations: "",
             communityImpact: "",
+            timeCommitment: "5-10h",
             readyForOnline: false,
             readyForCohort: false,
             projectIdea: "",
@@ -65,14 +68,15 @@ export default function ThunderbirdProgram() {
         onSuccess: () => {
             toast({
                 title: "Candidature envoyée !",
-                description: "Merci pour votre engagement. Vous recevrez un e-mail de confirmation sous peu.",
+                description: "Merci pour votre engagement. Votre dossier est en cours d'examen.",
             });
             form.reset();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         onError: (error: Error) => {
             toast({
-                title: "Erreur",
-                description: error.message || "Une erreur est survenue lors de l'envoi.",
+                title: "Erreur de soumission",
+                description: error.message || "Une erreur est survenue lors de l'envoi. Veuillez réessayer.",
                 variant: "destructive",
             });
         },
@@ -86,52 +90,138 @@ export default function ThunderbirdProgram() {
         <div className="flex flex-col min-h-screen">
             <SEOHead
                 title="Candidature Thunderbird | Najafi 100 Million Learners"
-                description="Rejoignez la cohorte Tchadienne de la Thunderbird School of Global Management. Postulez dès maintenant pour transformer votre avenir."
+                description="Rejoignez la cohorte Tchadienne de la Thunderbird School of Global Management. Initiative Najafi 100 Million Learners."
                 path="/programmes/thunderbird"
             />
 
-            <section className="py-20 bg-gradient-to-br from-sidebar to-sidebar/95 text-sidebar-foreground">
+            {/* Hero Section */}
+            <section className="py-20 bg-gradient-to-br from-[#0c1b33] to-[#1a3a5f] text-white">
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <GraduationCap className="w-4 h-4" />
-                        <span className="text-sm font-medium">Programme Excellence</span>
+                        <span className="text-sm font-medium">Excellence Académique Mondiale</span>
                     </div>
-                    <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6">
-                        Thunderbird <span className="text-accent">Global Management</span>
+                    <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6">
+                        Najafi <span className="text-accent underline decoration-2 underline-offset-8">100 Million Learners</span>
                     </h1>
-                    <p className="text-lg text-sidebar-foreground/80 max-w-2xl mx-auto leading-relaxed">
-                        Intégrez la cohorte Tchadienne de l'initiative Najafi 100 Million Learners.
-                        Une formation de classe mondiale pour les futurs leaders de la transformation numérique.
+                    <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+                        Une initiative de la Thunderbird School of Global Management (ASU) pour démocratiser l'éducation de classe mondiale au Tchad.
                     </p>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
+                            <h4 className="font-bold text-accent text-2xl">100M</h4>
+                            <p className="text-xs uppercase tracking-wider">Apprenants Mondiaux</p>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
+                            <h4 className="font-bold text-accent text-2xl">40</h4>
+                            <p className="text-xs uppercase tracking-wider">Langues Disponibles</p>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
+                            <h4 className="font-bold text-accent text-2xl">TOP 1</h4>
+                            <p className="text-xs uppercase tracking-wider">Management Global</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <section className="py-16 bg-background">
+            {/* Information Section */}
+            <section className="py-16 bg-muted/30">
+                <div className="container mx-auto px-4">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div className="space-y-6">
+                            <h2 className="text-3xl font-heading font-bold color-text-primary">Pourquoi nous rejoindre ?</h2>
+                            <p className="text-muted-foreground leading-relaxed">
+                                L'initiative mondiale Francis et Dionne Najafi 100 Million Learners offre une formation en ligne accréditée
+                                en gestion mondiale et en entrepreneuriat, sans aucun coût pour les apprenants.
+                            </p>
+                            <div className="space-y-4">
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                                        <Zap className="w-5 h-5 text-accent" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold">Compétences du 21e Siècle</h4>
+                                        <p className="text-sm text-muted-foreground">Maîtrisez l'entrepreneuriat, le leadership stratégique et la transformation numérique.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                                        <Globe className="w-5 h-5 text-accent" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold">Reconnaissance Internationale</h4>
+                                        <p className="text-sm text-muted-foreground">Obtenez des badges numériques et des certificats accrédités par ASU/Thunderbird.</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                                        <ShieldCheck className="w-5 h-5 text-accent" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold">Parcours Académiques</h4>
+                                        <p className="text-sm text-muted-foreground">Possibilité de crédits académiques pour des diplômes universitaires futurs.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="bg-card p-8 rounded-3xl shadow-xl border border-accent/10">
+                            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+                                <Info className="w-6 h-6 text-accent" />
+                                Les 3 Parcours
+                            </h3>
+                            <div className="space-y-6 text-sm">
+                                <div className="p-4 rounded-xl bg-accent/5 border-l-4 border-accent">
+                                    <h5 className="font-bold text-accent mb-1">1. Foundational (Fondamental)</h5>
+                                    <p className="text-muted-foreground italic">Pour tous les niveaux.</p>
+                                    <p className="mt-2">Contenu : Fondamentaux des affaires, culture numérique, compétences interculturelles.</p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-primary/5 border-l-4 border-primary">
+                                    <h5 className="font-bold text-primary mb-1">2. Intermediate (Intermédiaire)</h5>
+                                    <p className="text-muted-foreground italic">Niveau Licence / Professionnel.</p>
+                                    <p className="mt-2">Contenu : Leadership stratégique, transformation numérique, négociations éthiques.</p>
+                                </div>
+                                <div className="p-4 rounded-xl bg-sidebar/5 border-l-4 border-sidebar">
+                                    <h5 className="font-bold text-sidebar mb-1">3. Advanced (Avancé)</h5>
+                                    <p className="text-muted-foreground italic">Niveau Master / Exécutif.</p>
+                                    <p className="mt-2">Contenu : Innovation numérique, durabilité, prise de décision complexe.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Form Section */}
+            <section className="py-20 bg-background">
                 <div className="container mx-auto px-4 max-w-4xl">
-                    <Card className="border-t-4 border-t-accent shadow-xl">
-                        <CardHeader className="space-y-1 pb-8">
-                            <CardTitle className="text-3xl font-heading">Formulaire de Candidature</CardTitle>
-                            <CardDescription>
-                                Veuillez remplir ce formulaire avec soin. Nous recherchons des profils hautement engagés pour cette cohorte d'excellence.
+                    <Card className="border-t-8 border-t-accent shadow-2xl">
+                        <CardHeader className="space-y-4 pb-10 text-center">
+                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-2">
+                                <CheckCircle2 className="w-10 h-10 text-accent" />
+                            </div>
+                            <CardTitle className="text-4xl font-heading">Postuler à la Cohorte Tchad</CardTitle>
+                            <CardDescription className="text-lg">
+                                Ce programme est sélectif. Vos réponses doivent démontrer votre engagement
+                                et votre vision pour le développement du Tchad.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <Form {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                    {/* Section 1: Informations Personnelles */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
-                                            Informations Personnelles
+                                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
+                                    {/* Section 1: Identité */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b pb-3">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg">1</span>
+                                            Identité & Contact
                                         </h3>
-                                        <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="grid md:grid-cols-2 gap-8">
                                             <FormField
                                                 control={form.control}
                                                 name="fullName"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Nom et Prénom</FormLabel>
-                                                        <FormControl><Input placeholder="Ex: Souleymane Mahamat" {...field} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Nom Complet</FormLabel>
+                                                        <FormControl><Input placeholder="Prénom et Nom" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -141,11 +231,11 @@ export default function ThunderbirdProgram() {
                                                 name="gender"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Sexe</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Sexe</FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Sélectionnez" />
+                                                                <SelectTrigger className="h-12">
+                                                                    <SelectValue placeholder="Choisir" />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
@@ -162,8 +252,8 @@ export default function ThunderbirdProgram() {
                                                 name="dateOfBirth"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Date de naissance</FormLabel>
-                                                        <FormControl><Input type="date" {...field} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Date de Naissance</FormLabel>
+                                                        <FormControl><Input type="date" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -173,8 +263,8 @@ export default function ThunderbirdProgram() {
                                                 name="city"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Ville de résidence</FormLabel>
-                                                        <FormControl><Input {...field} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Ville de Résidence</FormLabel>
+                                                        <FormControl><Input className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -184,8 +274,8 @@ export default function ThunderbirdProgram() {
                                                 name="phone"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Numéro WhatsApp / Téléphone</FormLabel>
-                                                        <FormControl><Input placeholder="+235 ..." {...field} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Numéro WhatsApp</FormLabel>
+                                                        <FormControl><Input placeholder="+235 ..." className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -195,8 +285,8 @@ export default function ThunderbirdProgram() {
                                                 name="email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Adresse Email</FormLabel>
-                                                        <FormControl><Input type="email" placeholder="example@gmail.com" {...field} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Email Professionnel</FormLabel>
+                                                        <FormControl><Input type="email" placeholder="nom@exemple.com" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -204,29 +294,29 @@ export default function ThunderbirdProgram() {
                                         </div>
                                     </div>
 
-                                    {/* Section 2: Profil académique */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
-                                            Profil Académique & Professionnel
+                                    {/* Section 2: Profil & Niveau */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b pb-3">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg">2</span>
+                                            Profil & Compétences
                                         </h3>
-                                        <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="grid md:grid-cols-2 gap-8">
                                             <FormField
                                                 control={form.control}
                                                 name="educationLevel"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Niveau d’étude</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Niveau d'Étude Actuel</FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Sélectionnez votre niveau" />
+                                                                <SelectTrigger className="h-12">
+                                                                    <SelectValue placeholder="Sélectionnez" />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="Lycée">Lycée</SelectItem>
-                                                                <SelectItem value="Licence">Licence</SelectItem>
-                                                                <SelectItem value="Master">Master</SelectItem>
+                                                                <SelectItem value="Lycée">Lycée / BAC</SelectItem>
+                                                                <SelectItem value="Licence">Licence (L1, L2, L3)</SelectItem>
+                                                                <SelectItem value="Master">Master / Ingénieur</SelectItem>
                                                                 <SelectItem value="Doctorat">Doctorat</SelectItem>
                                                                 <SelectItem value="Autre">Autre</SelectItem>
                                                             </SelectContent>
@@ -237,11 +327,34 @@ export default function ThunderbirdProgram() {
                                             />
                                             <FormField
                                                 control={form.control}
+                                                name="englishLevel"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel className="text-base font-semibold">Niveau d'Anglais</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value || "Débutant"}>
+                                                            <FormControl>
+                                                                <SelectTrigger className="h-12">
+                                                                    <SelectValue placeholder="Auto-évaluation" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="Débutant">Débutant (A1-A2)</SelectItem>
+                                                                <SelectItem value="Intermédiaire">Intermédiaire (B1-B2)</SelectItem>
+                                                                <SelectItem value="Avancé">Avancé / Courant (C1-C2)</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription>La plateforme Thunderbird est accessible en plusieurs langues.</FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
                                                 name="fieldOfStudy"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Domaine d'étude ou profession</FormLabel>
-                                                        <FormControl><Input placeholder="Ex: Informatique, Gestion..." {...field} value={field.value ?? ""} /></FormControl>
+                                                        <FormLabel className="text-base font-semibold">Spécialité / Profession</FormLabel>
+                                                        <FormControl><Input placeholder="Ex: Finance, Développement Web..." className="h-12" {...field} value={field.value ?? ""} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -250,8 +363,9 @@ export default function ThunderbirdProgram() {
                                                 control={form.control}
                                                 name="schoolOrUniversity"
                                                 render={({ field }) => (
-                                                    <FormItem className="md:col-span-2">
-                                                        <FormControl><Input {...field} value={field.value ?? ""} /></FormControl>
+                                                    <FormItem>
+                                                        <FormLabel className="text-base font-semibold">Institution / Université</FormLabel>
+                                                        <FormControl><Input placeholder="Ex: Université de N'Djamena" className="h-12" {...field} value={field.value ?? ""} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -259,62 +373,40 @@ export default function ThunderbirdProgram() {
                                         </div>
                                     </div>
 
-                                    {/* Section 3: Expérience */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
-                                            Expérience et Compétences
+                                    {/* Section 3: Choix du Parcours */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b pb-3">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg">3</span>
+                                            Parcours Najafi Souhaité
                                         </h3>
                                         <FormField
                                             control={form.control}
-                                            name="hasOnlineExperience"
-                                            render={({ field }) => (
-                                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                                                    <FormControl>
-                                                        <Checkbox
-                                                            checked={field.value}
-                                                            onCheckedChange={field.onChange}
-                                                        />
-                                                    </FormControl>
-                                                    <div className="space-y-1 leading-none">
-                                                        <FormLabel>Avez-vous déjà suivi une formation en ligne ?</FormLabel>
-                                                    </div>
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="experienceFields"
+                                            name="targetPathway"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Dans quels domaines avez-vous déjà une expérience ?</FormLabel>
-                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2">
-                                                        {["Entrepreneuriat", "Technologie", "Leadership", "Gestion de projet"].map((item) => (
-                                                            <FormItem key={item} className="flex flex-row items-start space-x-3 space-y-0">
-                                                                <FormControl>
-                                                                    <Checkbox
-                                                                        checked={field.value?.includes(item)}
-                                                                        onCheckedChange={(checked) => {
-                                                                            return checked
-                                                                                ? field.onChange([...(field.value || []), item])
-                                                                                : field.onChange(field.value?.filter((value) => value !== item));
-                                                                        }}
-                                                                    />
-                                                                </FormControl>
-                                                                <FormLabel className="font-normal">{item}</FormLabel>
-                                                            </FormItem>
-                                                        ))}
-                                                    </div>
+                                                    <FormLabel className="text-base font-semibold">Lequel des 3 parcours vous intéresse le plus ?</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value || "Foundational"}>
+                                                        <FormControl>
+                                                            <SelectTrigger className="h-14">
+                                                                <SelectValue placeholder="Sélectionnez un parcours" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            <SelectItem value="Foundational">1. Foundational (Débutants / Tous niveaux)</SelectItem>
+                                                            <SelectItem value="Intermediate">2. Intermediate (Étudiants / Professionals)</SelectItem>
+                                                            <SelectItem value="Advanced">3. Advanced (Leaders / Exécutifs)</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                     </div>
 
-                                    {/* Section 4: Motivation (Exigent) */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">4</span>
+                                    {/* Section 4: Motivation Rigoureuse */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b pb-3">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg">4</span>
                                             Motivation & Impact
                                         </h3>
                                         <FormField
@@ -322,19 +414,19 @@ export default function ThunderbirdProgram() {
                                             name="motivation"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Pourquoi souhaitez-vous rejoindre cette cohorte au Tchad ?</FormLabel>
-                                                    <FormControl><Textarea className="min-h-[100px]" {...field} /></FormControl>
+                                                    <FormLabel className="text-base font-semibold">Quelles sont vos motivations réelles pour suivre ce programme international ?</FormLabel>
+                                                    <FormControl><Textarea className="min-h-[120px] text-base" placeholder="Détaillez votre vision..." {...field} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                         <FormField
                                             control={form.control}
-                                            name="expectations"
+                                            name="projectIdea"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Qu’espérez-vous apprendre dans cette formation ?</FormLabel>
-                                                    <FormControl><Textarea className="min-h-[100px]" {...field} /></FormControl>
+                                                    <FormLabel className="text-base font-semibold">Décrivez un projet ou une initiative que vous aimeriez lancer ou améliorer grâce à ces cours.</FormLabel>
+                                                    <FormControl><Textarea className="min-h-[150px] text-base" placeholder="Soyez le plus explicite possible..." {...field} value={field.value ?? ""} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -344,8 +436,8 @@ export default function ThunderbirdProgram() {
                                             name="communityImpact"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel>Comment pensez-vous utiliser ces connaissances dans votre communauté ?</FormLabel>
-                                                    <FormControl><Textarea className="min-h-[100px]" {...field} /></FormControl>
+                                                    <FormLabel className="text-base font-semibold">Comment votre participation bénéficiera-t-elle à la communauté locale au Tchad ?</FormLabel>
+                                                    <FormControl><Textarea className="min-h-[120px] text-base" {...field} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -353,86 +445,79 @@ export default function ThunderbirdProgram() {
                                     </div>
 
                                     {/* Section 5: Engagement */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span>
-                                            Engagement & Disponibilité
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b pb-3">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg">5</span>
+                                            Engagement & Discipline
                                         </h3>
-                                        <div className="space-y-4">
+                                        <div className="space-y-6">
                                             <FormField
                                                 control={form.control}
-                                                name="readyForOnline"
+                                                name="timeCommitment"
                                                 render={({ field }) => (
-                                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-sayc-teal/5">
-                                                        <FormControl>
-                                                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                                        </FormControl>
-                                                        <div className="space-y-1 leading-none">
-                                                            <FormLabel>Êtes-vous prêt à suivre les modules de formation en ligne jusqu’à la fin ?</FormLabel>
-                                                        </div>
+                                                    <FormItem>
+                                                        <FormLabel className="text-base font-semibold">Disponibilité hebdomadaire pour l'étude en ligne</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value || "5-10h"}>
+                                                            <FormControl>
+                                                                <SelectTrigger className="h-12">
+                                                                    <SelectValue placeholder="Heures par semaine" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="3-5h">3 à 5 heures / semaine</SelectItem>
+                                                                <SelectItem value="5-10h">5 à 10 heures / semaine</SelectItem>
+                                                                <SelectItem value="10h+">Plus de 10 heures / semaine</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormMessage />
                                                     </FormItem>
                                                 )}
                                             />
-                                            <FormField
-                                                control={form.control}
-                                                name="readyForCohort"
-                                                render={({ field }) => (
-                                                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 bg-sayc-teal/5">
-                                                        <FormControl>
-                                                            <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                                                        </FormControl>
-                                                        <div className="space-y-1 leading-none">
-                                                            <FormLabel>Êtes-vous disponible pour participer aux sessions de cohorte (rencontres, mentorat) ?</FormLabel>
-                                                        </div>
-                                                    </FormItem>
-                                                )}
-                                            />
+                                            <div className="grid gap-4">
+                                                <FormField
+                                                    control={form.control}
+                                                    name="readyForOnline"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center space-x-4 space-y-0 rounded-xl border-2 p-5 bg-accent/5 border-accent/10">
+                                                            <FormControl>
+                                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                            <FormLabel className="text-base font-medium">Je m'engage à suivre tous les cours en ligne jusqu'à l'obtention du certificat.</FormLabel>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="readyForCohort"
+                                                    render={({ field }) => (
+                                                        <FormItem className="flex flex-row items-center space-x-4 space-y-0 rounded-xl border-2 p-5 bg-accent/5 border-accent/10">
+                                                            <FormControl>
+                                                                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                                                            </FormControl>
+                                                            <FormLabel className="text-base font-medium">Je souhaite participer activement aux rencontres de cohorte organisées à N'Djamena.</FormLabel>
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Section 6: Compléments */}
-                                    <div className="space-y-6">
-                                        <h3 className="text-xl font-bold flex items-center gap-2 border-b pb-2">
-                                            <span className="bg-primary/10 text-primary w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span>
-                                            Informations Complémentaires
-                                        </h3>
-                                        <FormField
-                                            control={form.control}
-                                            name="projectIdea"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Avez-vous une idée de projet ou une initiative que vous souhaitez développer ? (Facultatif)</FormLabel>
-                                                    <FormControl><Textarea {...field} value={field.value ?? ""} /></FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="discoverySource"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormControl><Input {...field} value={field.value ?? ""} /></FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                    </div>
-
-                                    {/* Section 7: Consentement */}
-                                    <div className="space-y-6 pt-6">
+                                    {/* Section 6: Consentement Final */}
+                                    <div className="space-y-8 pt-8 border-t">
                                         <FormField
                                             control={form.control}
                                             name="consent"
                                             render={({ field }) => (
-                                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md bg-accent/5 p-4 border border-accent/20">
+                                                <FormItem className="flex flex-row items-start space-x-4 space-y-0 rounded-xl bg-sidebar/5 p-6 border-2 border-sidebar/10">
                                                     <FormControl>
                                                         <Checkbox checked={field.value} onCheckedChange={field.onChange} />
                                                     </FormControl>
-                                                    <div className="space-y-1 leading-none">
-                                                        <FormLabel className="text-sm font-medium leading-relaxed">
+                                                    <div className="space-y-2 leading-none">
+                                                        <FormLabel className="text-sm font-semibold leading-relaxed">
                                                             J’accepte que mes informations soient utilisées pour la gestion du programme de formation
-                                                            organisé par Smart Africa et le Smart Africa Youth Chapter Tchad.
+                                                            organisé par <span className="text-sidebar font-bold">Smart Africa</span> et le
+                                                            <span className="text-sidebar font-bold"> Smart Africa Youth Chapter Tchad</span> (chapitre de Smart Africa mère)
+                                                            en partenariat avec la <span className="text-sidebar font-bold">Thunderbird School of Global Management</span>.
                                                         </FormLabel>
                                                         <FormMessage />
                                                     </div>
@@ -444,15 +529,18 @@ export default function ThunderbirdProgram() {
                                     <Button
                                         type="submit"
                                         size="lg"
-                                        className="w-full h-14 text-lg bg-accent hover:bg-accent/90 text-accent-foreground"
+                                        className="w-full h-16 text-xl font-bold bg-accent hover:bg-accent/90 text-accent-foreground shadow-2xl transition-all hover:scale-[1.01]"
                                         disabled={mutation.isPending}
                                     >
                                         {mutation.isPending ? (
-                                            "Envoi en cours..."
+                                            <>
+                                                <Zap className="mr-2 h-6 w-6 animate-pulse" />
+                                                Traitement de votre dossier...
+                                            </>
                                         ) : (
                                             <>
-                                                Soumettre ma candidature
-                                                <Send className="ml-2 h-5 w-5" />
+                                                Soumettre ma Candidature Officielle
+                                                <Send className="ml-3 h-6 w-6" />
                                             </>
                                         )}
                                     </Button>
@@ -461,14 +549,19 @@ export default function ThunderbirdProgram() {
                         </CardContent>
                     </Card>
 
-                    <div className="mt-12 p-6 rounded-2xl bg-primary/5 border border-primary/10 flex items-start gap-4">
-                        <Info className="w-6 h-6 text-primary shrink-0 mt-1" />
-                        <div>
-                            <h4 className="font-bold mb-1">Processus de sélection</h4>
+                    <div className="mt-16 grid md:grid-cols-2 gap-8">
+                        <div className="p-8 rounded-2xl bg-primary/5 border border-primary/10">
+                            <h4 className="font-bold text-xl mb-3">Soutien Local</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Après soumission de votre formulaire, notre comité de sélection examinera votre dossier.
-                                Les candidats retenus seront contactés par e-mail et WhatsApp pour la suite du programme.
-                                Assurez-vous de fournir des coordonnées valides.
+                                Le Smart Africa Youth Chapter Tchad assure l'accompagnement local
+                                des apprenants tchadiens pour garantir le succès de cette cohorte nationale.
+                            </p>
+                        </div>
+                        <div className="p-8 rounded-2xl bg-secondary/5 border border-secondary/10">
+                            <h4 className="font-bold text-xl mb-3">Admission</h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                                Les dossiers sont examinés en continu. Vous recevrez une notification
+                                officielle par Email et WhatsApp suite à votre présélection.
                             </p>
                         </div>
                     </div>
