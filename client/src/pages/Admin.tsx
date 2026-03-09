@@ -728,6 +728,10 @@ function ThunderbirdApplicationsTab() {
                             <p className="text-sm font-medium">{app.hasOnlineExperience ? "Oui" : "Non"}</p>
                           </div>
                           <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Champs d'expérience (si applicable)</Label>
+                            <p className="text-sm font-medium">{app.experienceFields?.length ? app.experienceFields.join(", ") : "Aucun"}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
                             <Label className="text-xs text-muted-foreground">Motivation</Label>
                             <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.motivation}</p>
                           </div>
@@ -744,12 +748,30 @@ function ThunderbirdApplicationsTab() {
                             <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.projectIdea}</p>
                           </div>
                           <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Prêt pour formation en ligne ?</Label>
+                            <p className="text-sm font-medium">{app.readyForOnline ? "Oui" : "Non"}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Prêt pour travail en cohorte ?</Label>
+                            <p className="text-sm font-medium">{app.readyForCohort ? "Oui" : "Non"}</p>
+                          </div>
+                          <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Disponibilité (h/semaine)</Label>
                             <p className="text-sm font-medium">{app.timeCommitment}</p>
                           </div>
                           <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Source de découverte</Label>
                             <p className="text-sm font-medium">{app.discoverySource}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Cohorte / Session</Label>
+                            <p className="text-sm font-medium">{app.cohort}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Statut administratif</Label>
+                            <Badge variant={app.status === "pending" ? "outline" : "default"}>
+                              {app.status}
+                            </Badge>
                           </div>
                         </div>
                       </DialogContent>
