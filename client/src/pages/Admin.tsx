@@ -649,6 +649,122 @@ function NewsletterTab() {
   );
 }
 
+function ThunderbirdApplicationsTab() {
+  const { data: applications = [], isLoading } = useQuery<ThunderbirdApplication[]>({
+    queryKey: ["/api/admin", "thunderbird-applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/thunderbird-applications", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+  });
+
+  if (isLoading) return <LoadingTable />;
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold" data-testid="text-title-thunderbird">Candidatures Thunderbird ({applications.length})</h2>
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom Complet</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Téléphone</TableHead>
+              <TableHead>Ville</TableHead>
+              <TableHead>Niveau d'anglais</TableHead>
+              <TableHead>Parcours</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {applications.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucune candidature</TableCell>
+              </TableRow>
+            ) : (
+              applications.map((app) => (
+                <TableRow key={app.id} data-testid={`row-thunderbird-${app.id}`}>
+                  <TableCell className="font-medium">{app.fullName}</TableCell>
+                  <TableCell>{app.email}</TableCell>
+                  <TableCell>{app.phone}</TableCell>
+                  <TableCell>{app.city}</TableCell>
+                  <TableCell>{app.englishLevel}</TableCell>
+                  <TableCell>{app.targetPathway}</TableCell>
+                  <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">Détails</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Détails de la candidature - {app.fullName}</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Sexe</Label>
+                            <p className="text-sm font-medium">{app.gender}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Date de naissance</Label>
+                            <p className="text-sm font-medium">{app.dateOfBirth}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Niveau d'étude</Label>
+                            <p className="text-sm font-medium">{app.educationLevel}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Institution/École</Label>
+                            <p className="text-sm font-medium">{app.schoolOrUniversity}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Domaine d'étude</Label>
+                            <p className="text-sm font-medium">{app.fieldOfStudy}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Expérience formations en ligne</Label>
+                            <p className="text-sm font-medium">{app.hasOnlineExperience ? "Oui" : "Non"}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Motivation</Label>
+                            <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.motivation}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Attentes</Label>
+                            <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.expectations}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Impact communautaire</Label>
+                            <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.communityImpact}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Idée de projet numérique</Label>
+                            <p className="text-sm font-medium border p-2 rounded bg-muted/30">{app.projectIdea}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Disponibilité (h/semaine)</Label>
+                            <p className="text-sm font-medium">{app.timeCommitment}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Source de découverte</Label>
+                            <p className="text-sm font-medium">{app.discoverySource}</p>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const { toast } = useToast();
   const logoutMutation = useMutation({
@@ -685,6 +801,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="news" data-testid="tab-news">Actualités</TabsTrigger>
             <TabsTrigger value="events" data-testid="tab-events">Événements</TabsTrigger>
             <TabsTrigger value="achievements" data-testid="tab-achievements">Réalisations</TabsTrigger>
+            <TabsTrigger value="thunderbird" data-testid="tab-thunderbird">Candidatures Thunderbird</TabsTrigger>
             <TabsTrigger value="members" data-testid="tab-members">Membres</TabsTrigger>
             <TabsTrigger value="messages" data-testid="tab-messages">Messages</TabsTrigger>
             <TabsTrigger value="newsletter" data-testid="tab-newsletter">Newsletter</TabsTrigger>
@@ -696,6 +813,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             </TabsContent>
           ))}
 
+          <TabsContent value="thunderbird">
+            <ThunderbirdApplicationsTab />
+          </TabsContent>
           <TabsContent value="members">
             <MembersTab />
           </TabsContent>
