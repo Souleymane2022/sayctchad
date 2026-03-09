@@ -14,6 +14,7 @@ import News from "@/pages/News";
 import Contact from "@/pages/Contact";
 import Join from "@/pages/Join";
 import Opportunities from "@/pages/Opportunities";
+import ThunderbirdProgram from "@/pages/ThunderbirdProgram";
 import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/rejoindre" component={Join} />
       <Route path="/opportunites" component={Opportunities} />
+      <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>

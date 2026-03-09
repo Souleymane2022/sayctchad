@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type { Training, Achievement } from "@shared/schema";
-import { 
-  GraduationCap, 
+import {
+  GraduationCap,
   Clock,
   Users,
   Award,
@@ -106,7 +106,38 @@ export default function Trainings() {
       )}
 
       <section className="py-16 md:py-24">
+
         <div className="container mx-auto px-4 md:px-6">
+          <Card className="mb-16 border-2 border-accent/20 bg-accent/5 overflow-hidden">
+            <div className="grid md:grid-cols-3 gap-0">
+              <div className="md:col-span-2 p-8 md:p-12">
+                <Badge className="mb-4 bg-accent text-accent-foreground">Nouveau & Exclusif</Badge>
+                <h3 className="text-3xl font-heading font-bold mb-4">Programme Thunderbird - Najafi 100 Million Learners</h3>
+                <p className="text-muted-foreground text-lg mb-8 leading-relaxed">
+                  Rejoignez l'élite mondiale management et de l'innovation. Une opportunité unique pour
+                  100 000 jeunes tchadiens de se former avec les meilleurs experts internationaux.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <Link href="/programmes/thunderbird">
+                    <Button size="lg" className="bg-accent text-accent-foreground">
+                      Postuler à la cohorte
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="hidden md:flex bg-sidebar items-center justify-center p-8">
+                <div className="text-center">
+                  <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-4">
+                    <TrendingUp className="w-10 h-10 text-accent" />
+                  </div>
+                  <p className="text-sidebar-foreground font-bold">100 000</p>
+                  <p className="text-sidebar-foreground/60 text-sm">Jeunes ciblés</p>
+                </div>
+              </div>
+            </div>
+          </Card>
+
           <div className="text-center mb-12">
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-catalog-title">
               Catalogue des Formations
@@ -200,7 +231,7 @@ export default function Trainings() {
             </div>
           )}
         </div>
-      </section>
+      </section >
 
       <section className="py-20 md:py-28 bg-gradient-to-br from-primary to-primary/90 text-primary-foreground">
         <div className="container mx-auto px-4 md:px-6">
@@ -228,6 +259,6 @@ export default function Trainings() {
           </div>
         </div>
       </section>
-    </div>
+    </div >
   );
 }

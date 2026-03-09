@@ -193,3 +193,36 @@ export const insertAchievementSchema = createInsertSchema(achievements).omit({
 
 export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
 export type Achievement = typeof achievements.$inferSelect;
+export const thunderbirdApplications = pgTable("thunderbird_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fullName: text("full_name").notNull(),
+  gender: text("gender").notNull(),
+  dateOfBirth: text("date_of_birth").notNull(),
+  city: text("city").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  educationLevel: text("education_level").notNull(),
+  schoolOrUniversity: text("school_university"),
+  fieldOfStudy: text("field_study"),
+  hasOnlineExperience: boolean("has_online_experience").notNull(),
+  experienceFields: text("experience_fields").array(),
+  motivation: text("motivation").notNull(),
+  expectations: text("expectations").notNull(),
+  communityImpact: text("community_impact").notNull(),
+  readyForOnline: boolean("ready_online").notNull(),
+  readyForCohort: boolean("ready_cohort").notNull(),
+  projectIdea: text("project_idea"),
+  discoverySource: text("discovery_source"),
+  consent: boolean("consent").notNull(),
+  cohort: text("cohort").notNull().default("Tchad 2024"),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertThunderbirdApplicationSchema = createInsertSchema(thunderbirdApplications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertThunderbirdApplication = z.infer<typeof insertThunderbirdApplicationSchema>;
+export type ThunderbirdApplication = typeof thunderbirdApplications.$inferSelect;

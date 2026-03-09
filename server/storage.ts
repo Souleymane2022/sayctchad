@@ -9,8 +9,10 @@ import {
   type NewsArticle, type InsertNewsArticle,
   type Event, type InsertEvent,
   type Achievement, type InsertAchievement,
+  type ThunderbirdApplication, type InsertThunderbirdApplication,
   users, members, contactMessages, newsletterSubscribers,
-  opportunities, partners, trainings, newsArticles, events, achievements
+  opportunities, partners, trainings, newsArticles, events, achievements,
+  thunderbirdApplications
 } from "../shared/schema";
 import { db } from "./db";
 import { eq, desc, asc } from "drizzle-orm";
@@ -67,6 +69,10 @@ export interface IStorage {
   getAllAchievements(): Promise<Achievement[]>;
   updateAchievement(id: string, data: Partial<InsertAchievement>): Promise<Achievement | undefined>;
   deleteAchievement(id: string): Promise<void>;
+
+  createThunderbirdApplication(application: InsertThunderbirdApplication): Promise<ThunderbirdApplication>;
+  getThunderbirdApplicationByEmail(email: string): Promise<ThunderbirdApplication | undefined>;
+  getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -257,6 +263,20 @@ export class DatabaseStorage implements IStorage {
 
   async deleteAchievement(id: string): Promise<void> {
     await db.delete(achievements).where(eq(achievements.id, id));
+  }
+
+  async createThunderbirdApplication(application: InsertThunderbirdApplication): Promise<ThunderbirdApplication> {
+    const [newApp] = await db.insert(thunderbirdApplications).values(application).returning();
+    return newApp;
+  }
+
+  async getThunderbirdApplicationByEmail(email: string): Promise<ThunderbirdApplication | undefined> {
+    const [app] = await db.select().from(thunderbirdApplications).where(eq(thunderbirdApplications.email, email));
+    return app;
+  }
+
+  async getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
+    return db.select().from(thunderbirdApplications).orderBy(desc(thunderbirdApplications.createdAt));
   }
 }
 

@@ -4,7 +4,8 @@ import { storage } from "./storage";
 import {
   insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
-  insertNewsArticleSchema, insertEventSchema, insertAchievementSchema
+  insertNewsArticleSchema, insertEventSchema, insertAchievementSchema,
+  insertThunderbirdApplicationSchema
 } from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
@@ -353,6 +354,50 @@ ${pages.map(p => `  <url>
     }
   });
 
+  // Thunderbird Training Applications
+  app.post("/api/thunderbird-applications", apiLimiter, async (req, res) => {
+    try {
+      const validatedData = insertThunderbirdApplicationSchema.parse(req.body);
+      const existingApp = await storage.getThunderbirdApplicationByEmail(validatedData.email);
+
+      if (existingApp) {
+        return res.status(400).json({ error: "Une candidature avec cet email a déjà été enregistrée." });
+      }
+
+      const application = await storage.createThunderbirdApplication(validatedData);
+
+      // Notify Admins
+      await sendNotificationEmail(
+        "Nouvelle Candidature Thunderbird - SAYC Tchad",
+        `Nouvelle candidature Thunderbird de ${application.fullName} (${application.email}).\nVille: ${application.city}\nMotivation: ${application.motivation}`
+      );
+
+      // Auto-reply to Candidate
+      await sendAutoReplyEmail(
+        application.email,
+        "Confirmation de réception de votre candidature Thunderbird - Smart Africa Youth Chapter Tchad",
+        `Bonjour ${application.fullName},\n\nNous avons bien reçu votre candidature pour la cohorte Thunderbird (initiative Najafi 100 Million Learners).\n\nNotre équipe étudiera votre profil avec attention et vous contactera prochainement pour la suite du processus de sélection.\n\nCordialement,\n\nL'équipe SAYC Tchad`
+      );
+
+      res.status(201).json(application);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Données invalides", details: error.errors });
+      }
+      console.error("Error creating Thunderbird application:", error);
+      res.status(500).json({ error: "Erreur lors de l'enregistrement de votre candidature." });
+    }
+  });
+
+  app.get("/api/admin/thunderbird-applications", requireAdmin, async (_req, res) => {
+    try {
+      const applications = await storage.getAllThunderbirdApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching Thunderbird applications:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des candidatures." });
+    }
+  });
 
   app.get("/robots.txt", (req, res) => {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
