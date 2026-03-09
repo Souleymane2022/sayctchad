@@ -14,8 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield } from "lucide-react";
-import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber } from "@shared/schema";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download } from "lucide-react";
+import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication } from "@shared/schema";
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
@@ -659,11 +659,51 @@ function ThunderbirdApplicationsTab() {
     },
   });
 
+  const exportToExcel = () => {
+    const headers = [
+      "Nom Complet", "Email", "Téléphone", "Sexe", "Date de Naissance",
+      "Ville", "Niveau Étude", "Institution", "Domaine", "Niveau Anglais",
+      "Expérience En Ligne", "Détails Expérience", "Parcours", "Motivation",
+      "Attentes", "Impact Communautaire", "Idée Projet", "Prêt Online",
+      "Prêt Cohorte", "Disponibilité", "Source", "Date Inscription"
+    ];
+
+    const rows = applications.map(app => [
+      app.fullName, app.email, app.phone, app.gender, app.dateOfBirth,
+      app.city, app.educationLevel, app.schoolOrUniversity, app.fieldOfStudy, app.englishLevel,
+      app.hasOnlineExperience ? "Oui" : "Non", app.experienceFields?.join("; "), app.targetPathway, app.motivation,
+      app.expectations, app.communityImpact, app.projectIdea, app.readyForOnline ? "Oui" : "Non",
+      app.readyForCohort ? "Oui" : "Non", app.timeCommitment, app.discoverySource, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Candidatures_Thunderbird_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) return <LoadingTable />;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold" data-testid="text-title-thunderbird">Candidatures Thunderbird ({applications.length})</h2>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h2 className="text-lg font-semibold" data-testid="text-title-thunderbird">
+          Candidatures Thunderbird ({applications.length})
+        </h2>
+        <Button variant="outline" onClick={exportToExcel} disabled={applications.length === 0}>
+          <Download className="h-4 w-4 mr-2" />
+          Exporter Excel (CSV)
+        </Button>
+      </div>
       <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
