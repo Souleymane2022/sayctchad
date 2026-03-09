@@ -23,6 +23,7 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/a-propos" component={About} />
+      <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
       <Route path="/programmes" component={Programs} />
       <Route path="/formations" component={Trainings} />
       <Route path="/evenements" component={Events} />
@@ -30,7 +31,6 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/rejoindre" component={Join} />
       <Route path="/opportunites" component={Opportunities} />
-      <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>
