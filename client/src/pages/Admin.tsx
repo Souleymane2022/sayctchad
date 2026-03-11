@@ -556,8 +556,8 @@ function MembersTab() {
                       <DialogTrigger asChild>
                         <Button variant="outline" size="sm">Voir Carte</Button>
                       </DialogTrigger>
-                      <DialogContent className="max-w-md">
-                        <DialogHeader>
+                      <DialogContent className="max-w-2xl border-none p-0 bg-transparent shadow-none shadow-transparent">
+                        <DialogHeader className="hidden">
                           <DialogTitle>Carte de Membre - {m.firstName}</DialogTitle>
                         </DialogHeader>
                         <MemberCard member={m} />

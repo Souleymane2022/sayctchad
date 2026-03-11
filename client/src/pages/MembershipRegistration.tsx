@@ -118,7 +118,11 @@ export default function MembershipRegistration() {
     if (step === "success" && createdMember) {
         return (
             <div className="container mx-auto px-4 py-12 flex flex-col items-center">
-                <SEOHead title="Ma Carte Membre SAYC" description="Félicitations ! Votre carte de membre SAYC Tchad est prête." />
+                <SEOHead
+                    title="Ma Carte Membre SAYC"
+                    description="Félicitations ! Votre carte de membre SAYC Tchad est prête."
+                    path="/devenir-membre-sayc/succes"
+                />
                 <div className="max-w-2xl w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-5">
                     <div className="flex justify-center">
                         <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
@@ -135,19 +139,11 @@ export default function MembershipRegistration() {
                         <MemberCard member={createdMember} />
                     </div>
 
-                    <div className="flex flex-wrap justify-center gap-4 no-print">
-                        <Button onClick={handlePrint} variant="outline" className="gap-2">
-                            <Download className="w-4 h-4" />
-                            Télécharger / Imprimer la carte
-                        </Button>
+                    <div className="no-print mt-6">
                         <Button onClick={() => setStep("form")} variant="ghost">
-                            Nouvelle inscription
+                            Effectuer une autre inscription
                         </Button>
                     </div>
-
-                    <p className="text-xs text-muted-foreground no-print italic">
-                        Astuce : Pour sauvegarder sur mobile, faites une capture d'écran nette de chaque côté de la carte.
-                    </p>
                 </div>
             </div>
         );
@@ -155,7 +151,11 @@ export default function MembershipRegistration() {
 
     return (
         <div className="container mx-auto px-4 py-12">
-            <SEOHead title="Inscription Membre SAYC Tchad" description="Rejoignez la communauté SAYC Tchad et obtenez votre carte de membre." />
+            <SEOHead
+                title="Inscription Membre SAYC Tchad"
+                description="Rejoignez la communauté SAYC Tchad et obtenez votre carte de membre."
+                path="/devenir-membre-sayc"
+            />
             <div className="max-w-2xl mx-auto">
                 <Card className="border-accent/20 shadow-xl overflow-hidden">
                     <div className="h-2 bg-gradient-to-r from-[#1e3a8a] via-accent to-sayc-teal" />
