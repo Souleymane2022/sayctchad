@@ -3,10 +3,11 @@ import { Member } from "@shared/schema";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MapPin, Phone, Mail, Award, RotateCw, Download } from "lucide-react";
+import { MapPin, Phone, Mail, Award, RotateCw, Download, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { QRCodeCanvas } from "qrcode.react";
 import { toJpeg } from 'html-to-image';
+import { jsPDF } from "jspdf";
 
 interface MemberCardProps {
     member: Member;
@@ -41,6 +42,43 @@ export function MemberCard({ member }: MemberCardProps) {
         }
     };
 
+    const downloadPDF = async () => {
+        const recto = document.getElementById(`card-recto-${member.id}`);
+        const verso = document.getElementById(`card-verso-${member.id}`);
+        if (!recto || !verso) return;
+
+        setIsDownloading(true);
+        try {
+            // Capture both sides
+            const rectoData = await toJpeg(recto, { quality: 1, pixelRatio: 3, style: { transform: 'none', webkitTransform: 'none' } });
+            const versoData = await toJpeg(verso, { quality: 1, pixelRatio: 3, style: { transform: 'none', webkitTransform: 'none' } });
+
+            const pdf = new jsPDF('p', 'mm', 'a4');
+
+            // Add Recto
+            pdf.setFontSize(16);
+            pdf.setTextColor(30, 58, 138); // #1e3a8a
+            pdf.text("CARTE DE MEMBRE SAYC TCHAD", 105, 20, { align: 'center' });
+
+            // Recto Image (Card is 85x54mm standard roughly, but we use the ratio from our design)
+            // Our card is 400x250px -> 1.6 ratio. Let's make it 100mm wide -> 62.5mm high.
+            pdf.addImage(rectoData, 'JPEG', 55, 40, 100, 62.5);
+
+            // Add Verso
+            pdf.addImage(versoData, 'JPEG', 55, 115, 100, 62.5);
+
+            pdf.setFontSize(10);
+            pdf.setTextColor(100);
+            pdf.text("Smart Africa Youth Chapter Tchad - Connecter. Innover. Transformer.", 105, 200, { align: 'center' });
+
+            pdf.save(`SAYC_Carte_${member.lastName}.pdf`);
+        } catch (err) {
+            console.error("PDF generation failed", err);
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
     return (
         <div className="flex flex-col items-center gap-6 py-4">
             <div
@@ -56,8 +94,8 @@ export function MemberCard({ member }: MemberCardProps) {
                     <div className="absolute inset-0 backface-hidden" id={`card-recto-${member.id}`}>
                         <Card className="w-full h-full overflow-hidden border-none bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] text-white shadow-2xl relative">
                             {/* Background Shapes */}
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl" />
-                            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl" />
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl text-[#1e3a8a]" />
+                            <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-accent/20 rounded-full blur-3xl text-[#1e3a8a]" />
 
                             <div className="relative h-full p-6 flex flex-col justify-between">
                                 {/* Header */}
@@ -76,7 +114,7 @@ export function MemberCard({ member }: MemberCardProps) {
 
                                 {/* Content */}
                                 <div className="flex gap-4 items-center">
-                                    <div className="w-24 h-24 rounded-xl border-2 border-accent/30 overflow-hidden bg-white/5 backdrop-blur-sm">
+                                    <div className="w-24 h-24 rounded-xl border-2 border-accent/30 overflow-hidden bg-white/5 backdrop-blur-sm grayscale-[0.2]">
                                         {member.photoUrl ? (
                                             <img src={member.photoUrl} alt={member.firstName} className="w-full h-full object-cover" />
                                         ) : (
@@ -101,7 +139,7 @@ export function MemberCard({ member }: MemberCardProps) {
                                 <div className="flex justify-between items-end border-t border-white/10 pt-2">
                                     <div className="text-[9px] opacity-70">
                                         <p className="font-medium">Membre depuis {member.createdAt ? new Date(member.createdAt).getFullYear() : '2026'}</p>
-                                        <p>Innovation & Transformation</p>
+                                        <p>Compétences Numériques & Innovation</p>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[10px] font-bold tracking-tighter italic">SAYC TCHAD</p>
@@ -124,7 +162,7 @@ export function MemberCard({ member }: MemberCardProps) {
                                     <p className="text-sm italic font-medium leading-tight">"Connecter. Innover. Transformer."</p>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-1 w-full max-w-[220px]">
+                                <div className="grid grid-cols-1 gap-2 w-full max-w-[200px]">
                                     <div className="flex items-center justify-center gap-2 text-[9px] text-white/70">
                                         <MapPin className="w-3 h-3 text-accent" />
                                         <span>N'Djamena, Tchad</span>
@@ -139,7 +177,7 @@ export function MemberCard({ member }: MemberCardProps) {
                                     </div>
                                 </div>
 
-                                <div className="p-2 bg-white rounded-xl shadow-inner mb-2">
+                                <div className="p-2 bg-white rounded-xl shadow-inner mb-4">
                                     <QRCodeCanvas
                                         value={`https://sayctchad.org/verify/${member.membershipId}`}
                                         size={64}
@@ -157,27 +195,35 @@ export function MemberCard({ member }: MemberCardProps) {
             </div>
 
             <div className="flex flex-col gap-3 w-full max-w-[400px]">
+                <Button
+                    className="w-full gap-2 bg-sayc-teal hover:bg-sayc-teal/90 text-white font-bold"
+                    onClick={(e) => { e.stopPropagation(); downloadPDF(); }}
+                    disabled={isDownloading}
+                >
+                    <FileText className="w-4 h-4" />
+                    Télécharger la Carte (PDF - Recto/Verso)
+                </Button>
+
                 <div className="flex gap-2">
                     <Button
-                        className="flex-1 gap-2 bg-[#1e3a8a] hover:bg-[#1e40af] h-11"
+                        variant="outline"
+                        className="flex-1 gap-2 text-[10px] h-9"
                         onClick={(e) => { e.stopPropagation(); downloadSide(`card-recto-${member.id}`, 'Recto'); }}
                         disabled={isDownloading}
                     >
-                        <Download className="w-4 h-4" />
-                        Recto
+                        <Download className="w-3 h-3" />
+                        Image Recto
                     </Button>
                     <Button
-                        className="flex-1 gap-2 bg-[#0f172a] hover:bg-black h-11"
+                        variant="outline"
+                        className="flex-1 gap-2 text-[10px] h-9"
                         onClick={(e) => { e.stopPropagation(); downloadSide(`card-verso-${member.id}`, 'Verso'); }}
                         disabled={isDownloading}
                     >
-                        <Download className="w-4 h-4" />
-                        Verso
+                        <Download className="w-3 h-3" />
+                        Image Verso
                     </Button>
                 </div>
-                <p className="text-[10px] text-center text-muted-foreground">
-                    Astuce : La carte téléchargée sera en haute résolution (4K) pour impression.
-                </p>
             </div>
 
             <style dangerouslySetInnerHTML={{
