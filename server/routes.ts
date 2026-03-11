@@ -410,6 +410,34 @@ Motivation: ${application.motivation}`
     }
   });
 
+  // Membership Registration
+  app.post("/api/members", apiLimiter, async (req, res) => {
+    try {
+      const validatedData = insertMemberSchema.parse(req.body);
+      const existingMember = await storage.getMemberByEmail(validatedData.email);
+
+      if (existingMember) {
+        return res.status(400).json({ error: "Un membre avec cet email est déjà enregistré." });
+      }
+
+      const member = await storage.createMember(validatedData);
+
+      // Notify Admins
+      await sendNotificationEmail(
+        "Nouveau Membre SAYC - SAYC Tchad",
+        `Un nouveau membre s'est inscrit : ${member.firstName} ${member.lastName} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}`
+      );
+
+      res.status(201).json(member);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Données invalides", details: error.errors });
+      }
+      console.error("Error creating member:", error);
+      res.status(500).json({ error: "Erreur lors de l'enregistrement." });
+    }
+  });
+
   app.get("/robots.txt", (req, res) => {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const robotsTxt = `User-agent: *
