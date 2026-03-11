@@ -25,7 +25,10 @@ export function MemberCard({ member }: MemberCardProps) {
             const dataUrl = await toJpeg(node, {
                 quality: 1,
                 pixelRatio: 4, // Ultra high quality for printing
-                backgroundColor: '#0f172a'
+                style: {
+                    transform: 'none',
+                    webkitTransform: 'none',
+                }
             });
             const link = document.createElement('a');
             link.download = `SAYC_Carte_${member.lastName}_${side}.jpg`;
