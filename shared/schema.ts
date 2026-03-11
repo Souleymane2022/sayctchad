@@ -29,6 +29,8 @@ export const members = pgTable("members", {
   occupation: text("occupation"),
   interests: text("interests").array(),
   motivation: text("motivation"),
+  photoUrl: text("photo_url"),
+  membershipId: text("membership_id").unique(),
   acceptTerms: boolean("accept_terms").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });

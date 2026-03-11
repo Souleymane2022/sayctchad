@@ -15,6 +15,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download } from "lucide-react";
+import { MemberCard } from "@/components/MemberCard";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication } from "@shared/schema";
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
@@ -530,23 +531,39 @@ function MembersTab() {
               <TableHead>Téléphone</TableHead>
               <TableHead>Ville</TableHead>
               <TableHead>Tranche d'âge</TableHead>
+              <TableHead>ID Membre</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {members.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">Aucun membre</TableCell>
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucun membre</TableCell>
               </TableRow>
             ) : (
               members.map((m) => (
                 <TableRow key={m.id} data-testid={`row-member-${m.id}`}>
-                  <TableCell>{m.firstName} {m.lastName}</TableCell>
+                  <TableCell className="font-medium">{m.firstName} {m.lastName}</TableCell>
                   <TableCell>{m.email}</TableCell>
                   <TableCell>{m.phone}</TableCell>
                   <TableCell>{m.city}</TableCell>
                   <TableCell>{m.ageRange}</TableCell>
+                  <TableCell className="font-mono text-xs">{m.membershipId}</TableCell>
                   <TableCell>{m.createdAt ? new Date(m.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">Voir Carte</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Carte de Membre - {m.firstName}</DialogTitle>
+                        </DialogHeader>
+                        <MemberCard member={m} />
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
                 </TableRow>
               ))
             )}

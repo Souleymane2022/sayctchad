@@ -16,6 +16,7 @@ import Join from "@/pages/Join";
 import Opportunities from "@/pages/Opportunities";
 import ThunderbirdProgram from "@/pages/ThunderbirdProgram";
 import Admin from "@/pages/Admin";
+import MembershipRegistration from "@/pages/MembershipRegistration";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/rejoindre" component={Join} />
       <Route path="/opportunites" component={Opportunities} />
       <Route path="/admin" component={Admin} />
+      <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -92,7 +92,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMember(member: InsertMember): Promise<Member> {
-    const [newMember] = await db.insert(members).values(member).returning();
+    const membershipId = `SAYC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+    const [newMember] = await db.insert(members).values({ ...member, membershipId }).returning();
     return newMember;
   }
 
