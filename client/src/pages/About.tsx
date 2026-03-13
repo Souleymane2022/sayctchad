@@ -473,7 +473,7 @@ export default function About() {
                   </div>
                   <div>
                     <CardTitle className="text-base mb-1">
-                      <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                      <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
                         SADA - Acad&eacute;mie Num&eacute;rique <ExternalLink className="w-3 h-3 text-muted-foreground" />
                       </a>
                     </CardTitle>

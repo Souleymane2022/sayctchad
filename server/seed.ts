@@ -74,7 +74,7 @@ const seedTrainings = [
     provider: "Thunderbird School / Arizona State University",
     level: "Fondamental",
     duration: "Auto-rythmé",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
   {
     title: "Programme Thunderbird - Niveau Intermédiaire",
@@ -82,7 +82,7 @@ const seedTrainings = [
     provider: "Thunderbird School / Arizona State University",
     level: "Intermédiaire",
     duration: "Auto-rythmé",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
   {
     title: "Programme Thunderbird - Niveau Avancé",
@@ -90,7 +90,7 @@ const seedTrainings = [
     provider: "Thunderbird School / Arizona State University",
     level: "Avancé",
     duration: "Auto-rythmé",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
   {
     title: "Plateforme SADA - Formations en ligne",
@@ -98,7 +98,7 @@ const seedTrainings = [
     provider: "SADA - Smart Africa Digital Academy",
     level: "Tous niveaux",
     duration: "Variable",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
   {
     title: "Formation Cloud AWS",
@@ -106,7 +106,7 @@ const seedTrainings = [
     provider: "Smart Africa / AWS",
     level: "Intermédiaire",
     duration: "Variable",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
   {
     title: "Cybersécurité et Intelligence Artificielle",
@@ -114,7 +114,7 @@ const seedTrainings = [
     provider: "Smart Africa / ÉSATIC",
     level: "Avancé",
     duration: "Variable",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
   },
 ];
 

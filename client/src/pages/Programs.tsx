@@ -106,7 +106,7 @@ export default function Programs() {
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+              <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="outline" className="border-sidebar-foreground/20 text-sidebar-foreground" data-testid="button-sada-programs">
                   Plateforme SADA
                   <ExternalLink className="ml-2 h-4 w-4" />
@@ -256,7 +256,7 @@ export default function Programs() {
             <div className="text-center py-12">
               <GraduationCap className="w-12 h-12 mx-auto mb-4 text-muted-foreground/40" />
               <p className="text-muted-foreground">Les formations seront bientôt disponibles.</p>
-              <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="inline-block mt-4">
+              <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="inline-block mt-4">
                 <Button variant="outline" data-testid="button-empty-sada-programs">
                   Plateforme SADA
                   <ExternalLink className="ml-1 h-4 w-4" />

@@ -68,7 +68,7 @@ export default function Trainings() {
               Objectif SADA : Avoir un impact sur 100 millions de citoyens africains d'ici 2030
             </p>
             <div className="flex flex-wrap gap-3">
-              <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+              <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" className="bg-accent text-accent-foreground border-accent-border" data-testid="button-trainings-sada">
                   Acceder a la plateforme SADA
                   <ExternalLink className="ml-2 h-4 w-4" />
@@ -222,7 +222,7 @@ export default function Trainings() {
               <p className="text-muted-foreground max-w-md mx-auto mb-6">
                 Notre catalogue de formations est en cours de préparation. En attendant, accédez aux formations sur la plateforme SADA.
               </p>
-              <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+              <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer">
                 <Button data-testid="button-empty-sada">
                   Plateforme SADA
                   <ExternalLink className="ml-1 h-4 w-4" />
@@ -244,7 +244,7 @@ export default function Trainings() {
               des universités internationales. Gratuit et accessible à tous.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+              <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer">
                 <Button size="lg" variant="secondary" className="min-w-[200px]" data-testid="button-cta-sada">
                   Plateforme SADA
                   <ExternalLink className="ml-2 h-4 w-4" />

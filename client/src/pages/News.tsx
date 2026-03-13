@@ -168,7 +168,7 @@ export default function News() {
                       Smart Africa Alliance
                     </Button>
                   </a>
-                  <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer">
+                  <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="w-full" data-testid="button-sada-site">
                       Plateforme SADA
                     </Button>

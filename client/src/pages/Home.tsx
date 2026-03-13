@@ -150,7 +150,7 @@ const smartAfricaInitiatives = [
   {
     title: "SADA - Académie Numérique",
     description: "Écosystème d'apprentissage panafricain visant à améliorer les compétences numériques et l'employabilité. Objectif : 100 millions de citoyens africains d'ici 2030.",
-    link: "https://sada.smartafrica.org",
+    link: "https://sada.smart.africa",
     icon: GraduationCap,
   },
   {
@@ -275,7 +275,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm">
             <span className="font-medium">Smart Africa Alliance</span>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
-            <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-sada">
+            <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-sada">
               SADA <ExternalLink className="w-3 h-3" />
             </a>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>

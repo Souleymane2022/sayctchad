@@ -96,7 +96,7 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <a href="https://sada.smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-sada">
+                <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-sada">
                   SADA (Acad&eacute;mie) <ExternalLink className="w-3 h-3" />
                 </a>
               </li>

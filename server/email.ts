@@ -72,7 +72,7 @@ export async function sendAutoReplyEmail(to: string, subject: string, messageBod
                 C'est une plateforme panafricaine dédiée au développement des compétences numériques pour tous (entrepreneurs, jeunes, décideurs).
             </p>
             <p style="margin-bottom: 0;">
-                <a href="https://sada.atingi.org/" target="_blank" style="display: inline-block; padding: 10px 18px; background-color: #1976d2; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 14px;">Découvrir les formations gratuites SADA</a>
+                <a href="https://sada.smart.africa" target="_blank" style="display: inline-block; padding: 10px 18px; background-color: #1976d2; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 14px;">Découvrir les formations gratuites SADA</a>
             </p>
         </div>
         ` : '';
