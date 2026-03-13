@@ -17,6 +17,7 @@ import Opportunities from "@/pages/Opportunities";
 import ThunderbirdProgram from "@/pages/ThunderbirdProgram";
 import Admin from "@/pages/Admin";
 import MembershipRegistration from "@/pages/MembershipRegistration";
+import VerifyMember from "@/pages/VerifyMember";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/opportunites" component={Opportunities} />
       <Route path="/admin" component={Admin} />
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
+      <Route path="/verify/:membershipId" component={VerifyMember} />
       <Route component={NotFound} />
     </Switch>
   );

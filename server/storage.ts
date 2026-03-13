@@ -24,6 +24,7 @@ export interface IStorage {
 
   createMember(member: InsertMember): Promise<Member>;
   getMemberByEmail(email: string): Promise<Member | undefined>;
+  getMemberByMembershipId(membershipId: string): Promise<Member | undefined>;
   getAllMembers(): Promise<Member[]>;
 
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
@@ -99,6 +100,11 @@ export class DatabaseStorage implements IStorage {
 
   async getMemberByEmail(email: string): Promise<Member | undefined> {
     const [member] = await db.select().from(members).where(eq(members.email, email));
+    return member;
+  }
+
+  async getMemberByMembershipId(membershipId: string): Promise<Member | undefined> {
+    const [member] = await db.select().from(members).where(eq(members.membershipId, membershipId));
     return member;
   }
 

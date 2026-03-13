@@ -118,6 +118,26 @@ ${pages.map(p => `  <url>
     }
   });
 
+  app.get("/api/members/verify/:membershipId", async (req, res) => {
+    try {
+      const member = await storage.getMemberByMembershipId(req.params.membershipId);
+      if (!member) {
+        return res.status(404).json({ error: "Membre non trouvé" });
+      }
+      // Return public info only
+      res.json({
+        firstName: member.firstName,
+        lastName: member.lastName,
+        membershipId: member.membershipId,
+        createdAt: member.createdAt,
+        chapter: "Tchad"
+      });
+    } catch (error) {
+      console.error("Error verifying member:", error);
+      res.status(500).json({ error: "Erreur lors de la vérification" });
+    }
+  });
+
   app.get("/api/members", async (_req, res) => {
     try {
       const members = await storage.getAllMembers();
