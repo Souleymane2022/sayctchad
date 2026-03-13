@@ -13,7 +13,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MemberCard } from "@/components/MemberCard";
-import { Loader2, Camera, Download, Share2, CheckCircle2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2, Camera, Download, Share2, CheckCircle2, Target, ShieldCheck, Info, Heart, Users, Star } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
 const ageRanges = [
@@ -156,14 +157,136 @@ export default function MembershipRegistration() {
                 description="Rejoignez la communauté SAYC Tchad et obtenez votre carte de membre."
                 path="/devenir-membre-sayc"
             />
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-4xl mx-auto space-y-12">
+                {/* Information Strategy Section */}
+                <section className="grid md:grid-cols-5 gap-8 items-start">
+                    <div className="md:col-span-2 space-y-6">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent font-semibold text-xs border border-accent/20">
+                            <Star className="w-3 h-3" />
+                            Engagement & Missions
+                        </div>
+                        <h2 className="text-3xl font-heading font-bold text-[#1e3a8a] leading-tight">
+                            Pourquoi rejoindre le <span className="text-accent underline underline-offset-4 decoration-sayc-teal/50">SAYC Tchad</span> ?
+                        </h2>
+                        <p className="text-muted-foreground leading-relaxed">
+                            Le Smart Africa Youth Chapter est bien plus qu'une simple plateforme. C'est un mouvement panafricain pour transformer l'avenir de notre continent par le numérique.
+                        </p>
+                        
+                        <div className="space-y-4">
+                            <div className="flex gap-4 p-4 rounded-2xl bg-white border shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="w-12 h-12 rounded-xl bg-sayc-teal/10 text-sayc-teal flex items-center justify-center shrink-0 group-hover:bg-sayc-teal group-hover:text-white transition-colors">
+                                    <Target className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-[#1e3a8a]">Vision Claire</h4>
+                                    <p className="text-xs text-muted-foreground">Une ambition commune pour la transformation digitale du Tchad.</p>
+                                </div>
+                            </div>
+                            <div className="flex gap-4 p-4 rounded-2xl bg-white border shadow-sm hover:shadow-md transition-shadow group">
+                                <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 group-hover:bg-accent group-hover:text-white transition-colors">
+                                    <ShieldCheck className="w-6 h-6" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-[#1e3a8a]">Réseau Officiel</h4>
+                                    <p className="text-xs text-muted-foreground">Représentation officielle de Smart Africa Alliance au Tchad.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="md:col-span-3">
+                        <Card className="border-accent/10 shadow-2xl overflow-hidden bg-sidebar text-sidebar-foreground">
+                            <div className="p-1 bg-gradient-to-r from-sayc-teal via-accent to-[#1e3a8a]" />
+                            <CardHeader className="pb-4">
+                                <CardTitle className="text-xl flex items-center gap-2">
+                                    <Info className="w-5 h-5 text-accent" />
+                                    Charte du Membre
+                                </CardTitle>
+                                <CardDescription className="text-sidebar-foreground/70">
+                                    Découvrez nos missions, vos engagements et les conditions d'adhésion.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="pt-2">
+                                <Tabs defaultValue="missions" className="w-full">
+                                    <TabsList className="grid grid-cols-3 bg-white/5 p-1 rounded-xl">
+                                        <TabsTrigger value="missions" className="text-xs rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white">Missions</TabsTrigger>
+                                        <TabsTrigger value="engagements" className="text-xs rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white">Engagements</TabsTrigger>
+                                        <TabsTrigger value="conditions" className="text-xs rounded-lg data-[state=active]:bg-accent data-[state=active]:text-white">Conditions</TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value="missions" className="mt-6 space-y-4">
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                            <ul className="space-y-3">
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center shrink-0 mt-0.5"><div className="w-2 h-2 rounded-full bg-accent" /></div>
+                                                    Promouvoir le leadership numérique chez les jeunes Tchadiens.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center shrink-0 mt-0.5"><div className="w-2 h-2 rounded-full bg-accent" /></div>
+                                                    Encourager l'innovation et l'entrepreneuriat technologique local.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center shrink-0 mt-0.5"><div className="w-2 h-2 rounded-full bg-accent" /></div>
+                                                    Faciliter la collaboration entre les talents pour des solutions locales.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </TabsContent>
+                                    <TabsContent value="engagements" className="mt-6 space-y-4">
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                            <ul className="space-y-3">
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <CheckCircle2 className="w-5 h-5 text-sayc-teal shrink-0" />
+                                                    Participer activement aux programmes et événements du chapitre.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <CheckCircle2 className="w-5 h-5 text-sayc-teal shrink-0" />
+                                                    Respecter l'éthique et les valeurs de Smart Africa Alliance.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <CheckCircle2 className="w-5 h-5 text-sayc-teal shrink-0" />
+                                                    Servir d'ambassadeur de la transformation numérique.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </TabsContent>
+                                    <TabsContent value="conditions" className="mt-6 space-y-4">
+                                        <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                                            <ul className="space-y-3">
+                                                <li className="flex items-center gap-3 text-sm font-semibold">
+                                                    <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center text-accent">15+</div>
+                                                    Âge requis : entre 15 et 35 ans.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <Users className="w-5 h-5 text-accent shrink-0" />
+                                                    Résider au Tchad ou faire partie de la diaspora tchadienne.
+                                                </li>
+                                                <li className="flex items-start gap-3 text-sm">
+                                                    <Star className="w-5 h-5 text-accent shrink-0" />
+                                                    Passion pour la technologie et le développement de l'Afrique.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
+                                <div className="mt-6 pt-6 border-t border-white/10 text-center">
+                                    <p className="text-[10px] text-sidebar-foreground/50 italic capitalize">
+                                        Le respect de cette charte est essentiel pour maintenir l'integrité du réseau.
+                                    </p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </section>
+
+                <hr className="border-muted" />
+
                 <Card className="border-accent/20 shadow-xl overflow-hidden">
                     <div className="h-2 bg-gradient-to-r from-[#1e3a8a] via-accent to-sayc-teal" />
-                    <CardHeader className="text-center space-y-2">
+                    <CardHeader className="text-center space-y-2 pb-8">
                         <img src="/favicon.png" alt="SAYC" className="w-16 h-16 mx-auto mb-2" />
-                        <CardTitle className="text-3xl font-heading font-bold text-[#1e3a8a]">Devenir Membre SAYC</CardTitle>
-                        <CardDescription className="text-lg">
-                            Complétez ce formulaire pour obtenir votre carte de membre officielle.
+                        <CardTitle className="text-3xl font-heading font-bold text-[#1e3a8a]">Formulaire d'Inscription</CardTitle>
+                        <CardDescription className="text-base max-w-lg mx-auto">
+                            Rejoignez la plus grande communauté panafricaine de jeunes leaders du numérique.
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
