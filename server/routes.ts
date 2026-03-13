@@ -109,12 +109,16 @@ ${pages.map(p => `  <url>
       );
 
       res.status(201).json(member);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
       console.error("Error creating member:", error);
-      res.status(500).json({ error: "Erreur lors de l'inscription" });
+      res.status(500).json({ 
+        error: "Erreur lors de l'inscription", 
+        message: error.message,
+        details: error.toString()
+      });
     }
   });
 
