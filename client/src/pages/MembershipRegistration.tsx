@@ -78,25 +78,66 @@ export default function MembershipRegistration() {
         },
     });
 
-    const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const compressImage = (file: File): Promise<string> => {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    const MAX_WIDTH = 1024;
+                    const MAX_HEIGHT = 1024;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext("2d");
+                    ctx?.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL("image/jpeg", 0.7));
+                };
+            };
+        });
+    };
+
+    const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > 2 * 1024 * 1024) {
+            // Increase to 10MB as we will compress it anyway
+            if (file.size > 10 * 1024 * 1024) {
                 toast({
                     title: "Image trop lourde",
-                    description: "Veuillez choisir une image de moins de 2 Mo.",
+                    description: "Veuillez choisir une image de moins de 10 Mo.",
                     variant: "destructive",
                 });
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result as string;
-                setPhotoPreview(base64String);
-                form.setValue("photoUrl", base64String);
-            };
-            reader.readAsDataURL(file);
+            try {
+                const compressedBase64 = await compressImage(file);
+                setPhotoPreview(compressedBase64);
+                form.setValue("photoUrl", compressedBase64);
+            } catch (error) {
+                toast({
+                    title: "Erreur",
+                    description: "Impossible de traiter l'image.",
+                    variant: "destructive",
+                });
+            }
         }
     };
 

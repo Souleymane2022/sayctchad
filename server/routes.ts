@@ -98,8 +98,8 @@ ${pages.map(p => `  <url>
       const member = await storage.createMember(validatedData);
 
       await sendNotificationEmail(
-        "Nouvelle Adhésion - SAYC Tchad",
-        `Nouvelle adhésion de ${member.firstName} ${member.lastName} (${member.email}).\nMotivation: ${member.motivation || 'Non spécifiée'}`
+        "Nouveau Membre SAYC - SAYC Tchad",
+        `Nouvelle adhésion de ${member.firstName} ${member.lastName} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}\nMotivation: ${member.motivation || 'Non spécifiée'}`
       );
 
       await sendAutoReplyEmail(
@@ -427,34 +427,6 @@ Motivation: ${application.motivation}`
     } catch (error) {
       console.error("Error fetching Thunderbird applications:", error);
       res.status(500).json({ error: "Erreur lors de la récupération des candidatures." });
-    }
-  });
-
-  // Membership Registration
-  app.post("/api/members", apiLimiter, async (req, res) => {
-    try {
-      const validatedData = insertMemberSchema.parse(req.body);
-      const existingMember = await storage.getMemberByEmail(validatedData.email);
-
-      if (existingMember) {
-        return res.status(400).json({ error: "Un membre avec cet email est déjà enregistré." });
-      }
-
-      const member = await storage.createMember(validatedData);
-
-      // Notify Admins
-      await sendNotificationEmail(
-        "Nouveau Membre SAYC - SAYC Tchad",
-        `Un nouveau membre s'est inscrit : ${member.firstName} ${member.lastName} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}`
-      );
-
-      res.status(201).json(member);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ error: "Données invalides", details: error.errors });
-      }
-      console.error("Error creating member:", error);
-      res.status(500).json({ error: "Erreur lors de l'enregistrement." });
     }
   });
 
