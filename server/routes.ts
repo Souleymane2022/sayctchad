@@ -600,10 +600,14 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
       res.status(201).json(candidate);
     } catch (error) {
+      console.error("Error in /api/elections/apply:", error);
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
-      res.status(500).json({ error: "Erreur lors du dépôt de candidature" });
+      res.status(500).json({ 
+        error: "Erreur lors du dépôt de candidature",
+        message: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
