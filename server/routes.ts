@@ -620,13 +620,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
 
       // 1. Verify membership
-      const member = await storage.getMemberByMembershipId(membershipId);
-      if (!member || member.email !== email) {
+      const trimmedId = membershipId.trim().toUpperCase();
+      const trimmedEmail = email.trim().toLowerCase();
+
+      const member = await storage.getMemberByMembershipId(trimmedId);
+      if (!member || member.email.toLowerCase() !== trimmedEmail) {
         return res.status(401).json({ error: "ID de membre ou email invalide. Seuls les membres inscrits peuvent voter." });
       }
 
       // 2. Check if already voted for this role
-      const voterKey = `${membershipId}-${email}`;
+      const voterKey = `${trimmedId}-${trimmedEmail}`;
       const alreadyVoted = await storage.hasVoted(voterKey, role);
       if (alreadyVoted) {
         return res.status(400).json({ error: "Vous avez déjà voté pour ce poste." });

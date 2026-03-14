@@ -73,8 +73,8 @@ export default function VotingInterface() {
     const handleVote = (candidateId: string) => {
         const role = roles[currentRoleIndex];
         voteMutation.mutate({
-            membershipId: voterInfo.membershipId,
-            email: voterInfo.email,
+            membershipId: voterInfo.membershipId.trim().toUpperCase(),
+            email: voterInfo.email.trim(),
             candidateId,
             role,
             voterId: "" // backend handles this properly
