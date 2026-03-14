@@ -118,7 +118,7 @@ export default function VotingInterface() {
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div className="space-y-2">
                         <Badge variant="outline" className="text-sayc-teal border-sayc-teal uppercase tracking-wider text-[10px] font-bold">
-                            Scrutin National 2024
+                            Scrutin National 2026
                         </Badge>
                         <h1 className="text-3xl font-heading font-bold text-[#1e3a8a]">Espace de Vote Numérique</h1>
                     </div>

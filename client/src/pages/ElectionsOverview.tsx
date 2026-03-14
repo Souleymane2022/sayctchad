@@ -97,8 +97,8 @@ export default function ElectionsOverview() {
             {/* Hero Section */}
             <div className="bg-[#1e3a8a] text-white py-20 px-4">
                 <div className="container mx-auto max-w-5xl text-center space-y-6">
-                    <Badge variant="secondary" className="bg-sayc-teal/20 text-sayc-teal border-sayc-teal/30 px-4 py-1">
-                        Élections 2024-2026
+                    <Badge variant="outline" className="text-blue-100 border-blue-100/30 uppercase tracking-widest text-[10px] font-bold">
+                        Scrutin National 2026
                     </Badge>
                     <h1 className="text-4xl md:text-6xl font-heading font-bold">
                         Bâtissons le Futur Numérique <br /> 
