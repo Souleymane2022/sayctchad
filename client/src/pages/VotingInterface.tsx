@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Loader2, Vote, CheckCircle2, AlertCircle, ShieldCheck, User, ExternalLink, ChevronRight, ChevronLeft } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "wouter";
