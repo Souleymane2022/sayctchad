@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
-import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication } from "@shared/schema";
+import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
@@ -881,6 +881,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="events" data-testid="tab-events">Événements</TabsTrigger>
             <TabsTrigger value="achievements" data-testid="tab-achievements">Réalisations</TabsTrigger>
             <TabsTrigger value="thunderbird" data-testid="tab-thunderbird">Candidatures Thunderbird</TabsTrigger>
+            <TabsTrigger value="elections" data-testid="tab-elections">Candidatures Élections</TabsTrigger>
             <TabsTrigger value="members" data-testid="tab-members">Membres</TabsTrigger>
             <TabsTrigger value="messages" data-testid="tab-messages">Messages</TabsTrigger>
             <TabsTrigger value="newsletter" data-testid="tab-newsletter">Newsletter</TabsTrigger>
@@ -895,6 +896,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           <TabsContent value="thunderbird">
             <ThunderbirdApplicationsTab />
           </TabsContent>
+          <TabsContent value="elections">
+            <ElectionCandidatesTab />
+          </TabsContent>
           <TabsContent value="members">
             <MembersTab />
           </TabsContent>
@@ -905,6 +909,128 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <NewsletterTab />
           </TabsContent>
         </Tabs>
+      </div>
+    </div>
+  );
+}
+
+function ElectionCandidatesTab() {
+  const { toast } = useToast();
+  const { data: candidates = [], isLoading } = useQuery<(ElectionCandidate)[]>({
+    queryKey: ["/api/admin/elections/candidates"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/elections/candidates", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      await apiRequest("PATCH", `/api/admin/elections/candidates/${id}/status`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/elections/candidates"] });
+      toast({ title: "Statut mis à jour" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    },
+  });
+
+  if (isLoading) return <LoadingTable />;
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Candidatures Élections ({candidates.length})</h2>
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Candidat</TableHead>
+              <TableHead>Poste</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Votes</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {candidates.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucune candidature</TableCell>
+              </TableRow>
+            ) : (
+              candidates.map((c) => (
+                <TableRow key={c.id}>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <img src={c.photoUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+                      {c.firstName} {c.lastName}
+                    </div>
+                  </TableCell>
+                  <TableCell>{c.role}</TableCell>
+                  <TableCell>{c.email}</TableCell>
+                  <TableCell>
+                    <Badge variant={c.status === "approved" ? "default" : c.status === "rejected" ? "destructive" : "outline"}>
+                      {c.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{c.votesCount}</TableCell>
+                  <TableCell>{c.createdAt ? new Date(c.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">Détails</Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl">
+                          <DialogHeader>
+                            <DialogTitle>Dossier de Candidature - {c.firstName} {c.lastName}</DialogTitle>
+                          </DialogHeader>
+                          <div className="grid grid-cols-2 gap-4 py-4">
+                            <div className="col-span-2 flex justify-center py-4">
+                                <img src={c.photoUrl} alt="" className="w-32 h-32 rounded-2xl object-cover border" />
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">Poste</Label>
+                              <p className="font-bold">{c.role}</p>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">Email</Label>
+                              <p>{c.email}</p>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">CV (Lien)</Label>
+                              <a href={c.cvUrl} target="_blank" className="text-blue-600 hover:underline block truncate">Voir le CV</a>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">Motivation (Lien)</Label>
+                              <a href={c.motivationUrl} target="_blank" className="text-blue-600 hover:underline block truncate">Voir la motivation</a>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">Vidéo (Lien)</Label>
+                              <a href={c.videoUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">Voir la vidéo</a>
+                            </div>
+                            <div className="space-y-1">
+                              <Label className="text-xs text-muted-foreground">Vision/Programme (Lien)</Label>
+                              <a href={c.programUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">Voir le programme</a>
+                            </div>
+                          </div>
+                          <div className="flex justify-end gap-2 border-t pt-4">
+                            <Button variant="outline" className="text-destructive" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "rejected" })}>Rejeter</Button>
+                            <Button className="bg-sayc-teal hover:bg-sayc-teal/90" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "approved" })}>Approuver</Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
