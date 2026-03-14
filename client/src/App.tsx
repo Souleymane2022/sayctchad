@@ -18,6 +18,9 @@ import ThunderbirdProgram from "@/pages/ThunderbirdProgram";
 import Admin from "@/pages/Admin";
 import MembershipRegistration from "@/pages/MembershipRegistration";
 import VerifyMember from "@/pages/VerifyMember";
+import ElectionsOverview from "@/pages/ElectionsOverview";
+import CandidateApplication from "@/pages/CandidateApplication";
+import VotingInterface from "@/pages/VotingInterface";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -33,6 +36,9 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/rejoindre" component={Join} />
       <Route path="/opportunites" component={Opportunities} />
+      <Route path="/elections" component={ElectionsOverview} />
+      <Route path="/elections/postuler" component={CandidateApplication} />
+      <Route path="/elections/voter" component={VotingInterface} />
       <Route path="/admin" component={Admin} />
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route path="/verify/:membershipId" component={VerifyMember} />

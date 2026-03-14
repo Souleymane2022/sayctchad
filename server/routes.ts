@@ -5,7 +5,7 @@ import {
   insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema,
-  insertThunderbirdApplicationSchema
+  insertThunderbirdApplicationSchema, insertCandidateSchema, insertVoteSchema
 } from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
@@ -576,6 +576,93 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   app.delete("/api/admin/events/:id", requireAdmin, async (req, res) => {
     try { await storage.deleteEvent(req.params.id as string); res.json({ success: true }); }
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  // Elections API
+  app.get("/api/elections/candidates", async (_req, res) => {
+    try {
+      const candidates = await storage.getApprovedCandidates();
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la récupération des candidats" });
+    }
+  });
+
+  app.post("/api/elections/apply", async (req, res) => {
+    try {
+      const validatedData = insertCandidateSchema.parse(req.body);
+      const candidate = await storage.createCandidate(validatedData);
+
+      await sendNotificationEmail(
+        "Nouvelle Candidature Election - SAYC Tchad",
+        `Nouvelle candidature de ${candidate.firstName} ${candidate.lastName} pour le poste de ${candidate.role}.\nEmail: ${candidate.email}`
+      );
+
+      res.status(201).json(candidate);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Données invalides", details: error.errors });
+      }
+      res.status(500).json({ error: "Erreur lors du dépôt de candidature" });
+    }
+  });
+
+  app.post("/api/elections/vote", async (req, res) => {
+    try {
+      const { membershipId, email, candidateId, role } = req.body;
+
+      if (!membershipId || !email || !candidateId || !role) {
+        return res.status(400).json({ error: "Informations manquantes" });
+      }
+
+      // 1. Verify membership
+      const member = await storage.getMemberByMembershipId(membershipId);
+      if (!member || member.email !== email) {
+        return res.status(401).json({ error: "ID de membre ou email invalide. Seuls les membres inscrits peuvent voter." });
+      }
+
+      // 2. Check if already voted for this role
+      const voterKey = `${membershipId}-${email}`;
+      const alreadyVoted = await storage.hasVoted(voterKey, role);
+      if (alreadyVoted) {
+        return res.status(400).json({ error: "Vous avez déjà voté pour ce poste." });
+      }
+
+      // 3. Cast vote
+      const vote = await storage.castVote({
+        voterId: voterKey,
+        candidateId,
+        role
+      });
+
+      res.status(201).json({ success: true, message: "Votre vote a été enregistré." });
+    } catch (error) {
+      console.error("Error voting:", error);
+      res.status(500).json({ error: "Erreur lors du vote." });
+    }
+  });
+
+  // Admin Election Management
+  app.get("/api/admin/elections/candidates", requireAdmin, async (_req, res) => {
+    try {
+      const candidates = await storage.getAllCandidates();
+      res.json(candidates);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.patch("/api/admin/elections/candidates/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!["approved", "rejected", "pending"].includes(status)) {
+        return res.status(400).json({ error: "Statut invalide" });
+      }
+      const updated = await storage.updateCandidateStatus(req.params.id as string, status);
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
   });
 
   app.get("/api/admin/achievements", requireAdmin, async (_req, res) => {

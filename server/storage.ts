@@ -10,12 +10,14 @@ import {
   type Event, type InsertEvent,
   type Achievement, type InsertAchievement,
   type ThunderbirdApplication, type InsertThunderbirdApplication,
+  type ElectionCandidate, type InsertCandidate,
+  type ElectionVote, type InsertVote,
   users, members, contactMessages, newsletterSubscribers,
   opportunities, partners, trainings, newsArticles, events, achievements,
-  thunderbirdApplications
+  thunderbirdApplications, electionCandidates, electionVotes
 } from "../shared/schema";
 import { db } from "./db";
-import { eq, desc, asc } from "drizzle-orm";
+import { eq, desc, asc, sql } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -74,6 +76,16 @@ export interface IStorage {
   createThunderbirdApplication(application: InsertThunderbirdApplication): Promise<ThunderbirdApplication>;
   getThunderbirdApplicationByEmail(email: string): Promise<ThunderbirdApplication | undefined>;
   getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
+
+  createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
+  getApprovedCandidates(): Promise<ElectionCandidate[]>;
+  getAllCandidates(): Promise<ElectionCandidate[]>;
+  updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined>;
+  getCandidateById(id: string): Promise<ElectionCandidate | undefined>;
+
+  castVote(vote: InsertVote): Promise<ElectionVote>;
+  hasVoted(voterId: string, role: string): Promise<boolean>;
+  getVotesForRole(role: string): Promise<ElectionVote[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -284,6 +296,49 @@ export class DatabaseStorage implements IStorage {
 
   async getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
     return db.select().from(thunderbirdApplications).orderBy(desc(thunderbirdApplications.createdAt));
+  }
+
+  async createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate> {
+    const [newCandidate] = await db.insert(electionCandidates).values(candidate).returning();
+    return newCandidate;
+  }
+
+  async getApprovedCandidates(): Promise<ElectionCandidate[]> {
+    return db.select().from(electionCandidates).where(eq(electionCandidates.status, "approved")).orderBy(asc(electionCandidates.lastName));
+  }
+
+  async getAllCandidates(): Promise<ElectionCandidate[]> {
+    return db.select().from(electionCandidates).orderBy(desc(electionCandidates.createdAt));
+  }
+
+  async updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined> {
+    const [updated] = await db.update(electionCandidates).set({ status }).where(eq(electionCandidates.id, id)).returning();
+    return updated;
+  }
+
+  async getCandidateById(id: string): Promise<ElectionCandidate | undefined> {
+    const [candidate] = await db.select().from(electionCandidates).where(eq(electionCandidates.id, id));
+    return candidate;
+  }
+
+  async castVote(vote: InsertVote): Promise<ElectionVote> {
+    const [newVote] = await db.insert(electionVotes).values(vote).returning();
+    // Increment candidate vote count
+    await db.update(electionCandidates)
+      .set({ votesCount: sql`${electionCandidates.votesCount} + 1` })
+      .where(eq(electionCandidates.id, vote.candidateId));
+    return newVote;
+  }
+
+  async hasVoted(voterId: string, role: string): Promise<boolean> {
+    const [existingVote] = await db.select()
+      .from(electionVotes)
+      .where(sql`${electionVotes.voterId} = ${voterId} AND ${electionVotes.role} = ${role}`);
+    return !!existingVote;
+  }
+
+  async getVotesForRole(role: string): Promise<ElectionVote[]> {
+    return db.select().from(electionVotes).where(eq(electionVotes.role, role));
   }
 }
 

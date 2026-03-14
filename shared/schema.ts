@@ -231,3 +231,45 @@ export const insertThunderbirdApplicationSchema = createInsertSchema(thunderbird
 
 export type InsertThunderbirdApplication = z.infer<typeof insertThunderbirdApplicationSchema>;
 export type ThunderbirdApplication = typeof thunderbirdApplications.$inferSelect;
+
+export const electionCandidates = pgTable("election_candidates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  email: text("email").notNull(),
+  role: text("role").notNull(), // One of the 5 roles
+  photoUrl: text("photo_url").notNull(),
+  cvUrl: text("cv_url").notNull(),
+  motivationUrl: text("motivation_url").notNull(),
+  videoUrl: text("video_url"),
+  programUrl: text("program_url"),
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  votesCount: integer("votes_count").notNull().default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCandidateSchema = createInsertSchema(electionCandidates).omit({
+  id: true,
+  votesCount: true,
+  status: true,
+  createdAt: true,
+});
+
+export type InsertCandidate = z.infer<typeof insertCandidateSchema>;
+export type ElectionCandidate = typeof electionCandidates.$inferSelect;
+
+export const electionVotes = pgTable("election_votes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  voterId: text("voter_id").notNull(), // Member's email or Membership ID
+  candidateId: varchar("candidate_id").notNull(),
+  role: text("role").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertVoteSchema = createInsertSchema(electionVotes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertVote = z.infer<typeof insertVoteSchema>;
+export type ElectionVote = typeof electionVotes.$inferSelect;
