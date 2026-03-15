@@ -57,7 +57,9 @@ export default function VotingInterface() {
         },
     });
 
-    const handleVerify = (e: React.FormEvent) => {
+    const [isVerifying, setIsVerifying] = useState(false);
+
+    const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!voterInfo.membershipId || !voterInfo.email) {
             toast({
@@ -67,7 +69,33 @@ export default function VotingInterface() {
             });
             return;
         }
-        setStep("vote");
+
+        setIsVerifying(true);
+        try {
+            const res = await apiRequest("POST", "/api/elections/check-votes", {
+                membershipId: voterInfo.membershipId.trim().toUpperCase(),
+                email: voterInfo.email.trim()
+            });
+            const { votedRoles } = await res.json();
+            
+            // Find the first role not yet voted for
+            const nextRoleIndex = roles.findIndex(role => !votedRoles.includes(role));
+            
+            if (nextRoleIndex === -1) {
+                setStep("done");
+            } else {
+                setCurrentRoleIndex(nextRoleIndex);
+                setStep("vote");
+            }
+        } catch (error: any) {
+            toast({
+                title: "Erreur de vérification",
+                description: error.message || "Impossible de vérifier votre statut de vote.",
+                variant: "destructive",
+            });
+        } finally {
+            setIsVerifying(false);
+        }
     };
 
     const handleVote = (candidateId: string) => {
@@ -168,8 +196,16 @@ export default function VotingInterface() {
                                         />
                                     </div>
                                 </div>
-                                <Button type="submit" className="w-full h-14 bg-[#1e3a8a] hover:bg-[#1e40af] text-lg font-bold rounded-2xl shadow-lg">
-                                    Accéder au vote <ChevronRight className="ml-2 w-5 h-5" />
+                                <Button 
+                                    type="submit" 
+                                    disabled={isVerifying}
+                                    className="w-full h-14 bg-[#1e3a8a] hover:bg-[#1e40af] text-lg font-bold rounded-2xl shadow-lg"
+                                >
+                                    {isVerifying ? (
+                                        <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Vérification...</>
+                                    ) : (
+                                        <><ShieldCheck className="mr-2 w-5 h-5" /> Accéder au vote <ChevronRight className="ml-2 w-5 h-5" /></>
+                                    )}
                                 </Button>
                                 <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
                                     <AlertCircle className="w-3 h-3" /> Votre vote est strictement personnel et sécurisé.

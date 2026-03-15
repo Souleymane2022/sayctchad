@@ -611,6 +611,29 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  app.post("/api/elections/check-votes", async (req, res) => {
+    try {
+      const { membershipId, email } = req.body;
+      if (!membershipId || !email) {
+        return res.status(400).json({ error: "Informations manquantes" });
+      }
+
+      const trimmedId = membershipId.trim().toUpperCase();
+      const trimmedEmail = email.trim().toLowerCase();
+
+      const member = await storage.getMemberByMembershipId(trimmedId);
+      if (!member || member.email.toLowerCase() !== trimmedEmail) {
+        return res.status(401).json({ error: "ID de membre ou email invalide." });
+      }
+
+      const voterKey = `${trimmedId}-${trimmedEmail}`;
+      const votedRoles = await storage.getVotedRoles(voterKey);
+      res.json({ votedRoles });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   app.post("/api/elections/vote", async (req, res) => {
     try {
       const { membershipId, email, candidateId, role } = req.body;

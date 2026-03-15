@@ -340,6 +340,13 @@ export class DatabaseStorage implements IStorage {
   async getVotesForRole(role: string): Promise<ElectionVote[]> {
     return db.select().from(electionVotes).where(eq(electionVotes.role, role));
   }
+
+  async getVotedRoles(voterId: string): Promise<string[]> {
+    const votes = await db.select({ role: electionVotes.role })
+      .from(electionVotes)
+      .where(eq(electionVotes.voterId, voterId));
+    return votes.map(v => v.role);
+  }
 }
 
 export const storage = new DatabaseStorage();
