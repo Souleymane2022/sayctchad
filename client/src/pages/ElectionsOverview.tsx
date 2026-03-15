@@ -21,12 +21,21 @@ import SEOHead from "@/components/SEOHead";
 const electionPhases = [
     {
         title: "Appel à Candidature",
-        status: "En cours",
+        status: "Bientôt",
         date: "7 à 10 jours",
         description: "Lancement officiel et réception des dossiers des candidats sur la plateforme.",
         icon: UserPlus,
         color: "text-blue-600",
         bgColor: "bg-blue-50"
+    },
+    {
+        title: "Lancement Officiel",
+        status: "À venir",
+        date: "Prochainement",
+        description: "Ouverture solennelle du portail de candidature pour tous les membres.",
+        icon: Target,
+        color: "text-sayc-teal",
+        bgColor: "bg-sayc-teal/10"
     },
     {
         title: "Filtrage & Validation",
@@ -111,12 +120,12 @@ export default function ElectionsOverview() {
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
                         <Link href="/elections/postuler">
                             <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-white px-8 h-14 rounded-xl text-lg font-bold shadow-lg shadow-sayc-teal/20">
-                                Postuler à un rôle
+                                Postuler (Bientôt)
                             </Button>
                         </Link>
                         <Link href="/elections/voter">
                             <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm">
-                                <Vote className="mr-2 h-5 w-5" /> Voter maintenant
+                                <Vote className="mr-2 h-5 w-5" /> Voter (Bientôt)
                             </Button>
                         </Link>
                     </div>
@@ -221,7 +230,7 @@ export default function ElectionsOverview() {
                         <div className="pt-6">
                             <Link href="/elections/postuler">
                                 <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-blue-50 px-10 h-14 rounded-xl text-lg font-bold group">
-                                    Soumettre ma candidature <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                    Candidater (Bientôt) <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
