@@ -723,5 +723,43 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
 
+  app.post("/api/admin/mass-email", requireAdmin, async (req, res) => {
+    try {
+      const { target, subject, message, includeSada } = req.body;
+      if (!subject || !message) {
+        return res.status(400).json({ error: "Sujet et message requis" });
+      }
+
+      let recipients: string[] = [];
+
+      if (target === "members") {
+        const members = await storage.getAllMembers();
+        recipients = members.map(m => m.email);
+      } else if (target === "thunderbird") {
+        const apps = await storage.getThunderbirdApplications();
+        recipients = apps.map(a => a.email);
+      } else if (target === "elections_candidates") {
+        const candidates = await storage.getAllCandidates();
+        recipients = candidates.map(c => c.email);
+      } else if (target === "newsletter") {
+        const subs = await storage.getAllNewsletterSubscribers();
+        recipients = subs.map(s => s.email);
+      }
+
+      // Remove duplicates and empty emails
+      recipients = [...new Set(recipients)].filter(e => e && e.includes("@"));
+
+      if (recipients.length === 0) {
+        return res.status(400).json({ error: "Aucun destinataire trouvé pour ce groupe" });
+      }
+
+      const result = await sendMassEmail(recipients, subject, message, includeSada);
+      res.json(result);
+    } catch (error) {
+      console.error("Error in mass-email route:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi" });
+    }
+  });
+
   return httpServer;
 }

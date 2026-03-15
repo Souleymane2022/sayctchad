@@ -517,11 +517,39 @@ function MembersTab() {
     },
   });
 
+  const exportToExcel = () => {
+    const headers = ["Prénom", "Nom", "Email", "Téléphone", "Ville", "Tranche d'âge", "ID Membre", "Date Inscription"];
+    const rows = members.map(m => [
+      m.firstName, m.lastName, m.email, m.phone, m.city, m.ageRange, m.membershipId, 
+      m.createdAt ? new Date(m.createdAt).toLocaleString() : ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Membres_SAYC_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (isLoading) return <LoadingTable />;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({members.length})</h2>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({members.length})</h2>
+        <Button variant="outline" onClick={exportToExcel} disabled={members.length === 0}>
+          <Download className="h-4 w-4 mr-2" />
+          Exporter Excel (CSV)
+        </Button>
+      </div>
       <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
@@ -885,6 +913,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="members" data-testid="tab-members">Membres</TabsTrigger>
             <TabsTrigger value="messages" data-testid="tab-messages">Messages</TabsTrigger>
             <TabsTrigger value="newsletter" data-testid="tab-newsletter">Newsletter</TabsTrigger>
+            <TabsTrigger value="mass-email" data-testid="tab-mass-email">Email en Masse</TabsTrigger>
           </TabsList>
 
           {resourceConfigs.map((config) => (
@@ -907,6 +936,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
           </TabsContent>
           <TabsContent value="newsletter">
             <NewsletterTab />
+          </TabsContent>
+          <TabsContent value="mass-email">
+            <MassEmailTab />
           </TabsContent>
         </Tabs>
       </div>
@@ -1031,6 +1063,103 @@ function ElectionCandidatesTab() {
             )}
           </TableBody>
         </Table>
+      </div>
+    </div>
+  );
+}
+
+function MassEmailTab() {
+  const { toast } = useToast();
+  const [target, setTarget] = useState("members");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [includeSada, setIncludeSada] = useState(true);
+
+  const massEmailMutation = useMutation({
+    mutationFn: async (data: { target: string; subject: string; message: string; includeSada: boolean }) => {
+      const res = await apiRequest("POST", "/api/admin/mass-email", data);
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({ title: "Emails envoyés", description: `${data.sent} emails ont été envoyés avec succès.` });
+      setSubject("");
+      setMessage("");
+    },
+    onError: (error: Error) => {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    },
+  });
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold">Envoi d'Email en Masse</h2>
+        <p className="text-sm text-muted-foreground">Envoyez une communication officielle à un groupe ciblé de contacts.</p>
+      </div>
+
+      <Card>
+        <CardContent className="pt-6 space-y-4">
+          <div className="space-y-2">
+            <Label>Groupe Cible</Label>
+            <select 
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={target}
+              onChange={(e) => setTarget(e.target.value)}
+            >
+              <option value="members">Tous les Membres</option>
+              <option value="thunderbird">Candidats Thunderbird</option>
+              <option value="elections_candidates">Candidats Élections</option>
+              <option value="newsletter">Abonnés Newsletter</option>
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Objet de l'email</Label>
+            <Input 
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="Ex: Mise à jour importante sur les activités du SAYC"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Message (Texte simple ou paragraphes)</Label>
+            <Textarea 
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Écrivez votre message ici..."
+              className="min-h-[200px]"
+            />
+          </div>
+
+          <div className="flex items-center space-x-2 pt-2">
+            <Switch 
+              id="include-sada" 
+              checked={includeSada} 
+              onCheckedChange={setIncludeSada} 
+            />
+            <Label htmlFor="include-sada">Inclure la bannière SADA (Promotion des formations)</Label>
+          </div>
+
+          <Button 
+            className="w-full h-12 bg-sayc-teal hover:bg-sayc-teal/90"
+            onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
+            disabled={massEmailMutation.isPending || !subject || !message}
+          >
+            {massEmailMutation.isPending ? (
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
+            ) : (
+              "Envoyer les emails"
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+      
+      <div className="p-4 bg-blue-50 text-blue-800 rounded-lg text-xs space-y-2">
+        <div className="flex items-center gap-2 font-bold uppercase">
+          <AlertCircle className="w-4 h-4" /> Note Importante
+        </div>
+        <p>L'envoi peut prendre quelques minutes selon le nombre de destinataires. Un délai de sécurité est appliqué entre chaque email pour éviter d'être marqué comme spam.</p>
       </div>
     </div>
   );
