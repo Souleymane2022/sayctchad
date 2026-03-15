@@ -1131,6 +1131,27 @@ function MassEmailTab() {
     },
   });
 
+  const debugSmtpMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("GET", "/api/admin/debug-smtp");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      if (data.success) {
+        toast({ title: "SMTP OK", description: "La connexion au serveur Gmail est opérationnelle." });
+      } else {
+        toast({ 
+          title: "Erreur SMTP", 
+          description: data.error || "Problème de configuration", 
+          variant: "destructive" 
+        });
+      }
+    },
+    onError: (error: Error) => {
+      toast({ title: "Erreur de diagnostic", description: error.message, variant: "destructive" });
+    },
+  });
+
   return (
     <div className="max-w-2xl space-y-6">
       <div className="space-y-2">
