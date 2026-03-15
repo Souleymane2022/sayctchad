@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
 
@@ -509,6 +509,10 @@ function ResourceTab({ config }: { config: ResourceConfig }) {
 
 function MembersTab() {
   const { toast } = useToast();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cityFilter, setCityFilter] = useState("all");
+  const [ageFilter, setAgeFilter] = useState("all");
+
   const { data: members = [], isLoading } = useQuery<Member[]>({
     queryKey: ["/api/admin", "members"],
     queryFn: async () => {
@@ -553,16 +557,83 @@ function MembersTab() {
     document.body.removeChild(link);
   };
 
+  const filteredMembers = members.filter(m => {
+    const matchesSearch = 
+      m.firstName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.lastName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      m.membershipId?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCity = cityFilter === "all" || m.city === cityFilter;
+    const matchesAge = ageFilter === "all" || m.ageRange === ageFilter;
+
+    return matchesSearch && matchesCity && matchesAge;
+  });
+
+  const cities = Array.from(new Set(members.map(m => m.city).filter(Boolean)));
+  const ageRangesSet = Array.from(new Set(members.map(m => m.ageRange).filter(Boolean)));
+
   if (isLoading) return <LoadingTable />;
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({members.length})</h2>
-        <Button variant="outline" onClick={exportToExcel} disabled={members.length === 0}>
+        <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({filteredMembers.length} / {members.length})</h2>
+        <Button variant="outline" onClick={exportToExcel} disabled={filteredMembers.length === 0}>
           <Download className="h-4 w-4 mr-2" />
           Exporter Excel (CSV)
         </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-1">
+          <Label className="text-xs">Rechercher</Label>
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Nom, email, ID..." 
+              className="pl-8" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Ville</Label>
+          <select 
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+          >
+            <option value="all">Toutes les villes</option>
+            {cities.map(city => <option key={city} value={city}>{city}</option>)}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs">Tranche d'âge</Label>
+          <select 
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            value={ageFilter}
+            onChange={(e) => setAgeFilter(e.target.value)}
+          >
+            <option value="all">Tous les âges</option>
+            {ageRangesSet.map(age => <option key={age} value={age}>{age}</option>)}
+          </select>
+        </div>
+        <div className="flex items-end">
+          <Button 
+            variant="ghost" 
+            className="text-xs w-full" 
+            onClick={() => {
+              setSearchTerm("");
+              setCityFilter("all");
+              setAgeFilter("all");
+            }}
+          >
+            <XCircle className="h-4 w-4 mr-2" />
+            Réinitialiser
+          </Button>
+        </div>
       </div>
       <div className="rounded-md border overflow-x-auto">
         <Table>
@@ -579,12 +650,14 @@ function MembersTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {members.length === 0 ? (
+            {filteredMembers.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucun membre</TableCell>
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-12">
+                  <p>Aucun membre trouvé {searchTerm || cityFilter !== "all" || ageFilter !== "all" ? "avec ces filtres" : ""}</p>
+                </TableCell>
               </TableRow>
             ) : (
-              members.map((m) => (
+              filteredMembers.map((m) => (
                 <TableRow key={m.id} data-testid={`row-member-${m.id}`}>
                   <TableCell className="font-medium">{m.firstName} {m.lastName}</TableCell>
                   <TableCell>{m.email}</TableCell>
