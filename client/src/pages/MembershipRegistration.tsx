@@ -75,13 +75,19 @@ export default function MembershipRegistration() {
             });
         },
         onError: async (error: any) => {
-            if (error.code === "MEMBER_EXISTS") {
+            if (error.code === "MEMBER_EXISTS" || (error.message && error.message.includes("existence"))) {
                 setExistingEmail(form.getValues("email"));
-                setMembershipIdInput(error.membershipId || ""); // Auto-fill if provided by server
+                setMembershipIdInput(error.membershipId || "");
                 setShowUpdateMode(true);
                 toast({
                     title: "Déjà membre !",
                     description: "Cet email est déjà enregistré. Vous pouvez mettre à jour votre photo pour générer votre carte.",
+                });
+            } else if (error.status === 413) {
+                toast({
+                    title: "Image trop grande",
+                    description: "Veuillez choisir une image plus petite ou contactez le support.",
+                    variant: "destructive",
                 });
             } else {
                 toast({
@@ -106,12 +112,20 @@ export default function MembershipRegistration() {
                 description: "Votre photo a été mise à jour et votre carte est prête.",
             });
         },
-        onError: (error: Error) => {
-            toast({
-                title: "Échec de la mise à jour",
-                description: "Veuillez vérifier votre ID Membre et réessayer.",
-                variant: "destructive",
-            });
+        onError: (error: any) => {
+            if (error.status === 413) {
+                toast({
+                    title: "Image trop grande",
+                    description: "Veuillez choisir une image plus petite.",
+                    variant: "destructive",
+                });
+            } else {
+                toast({
+                    title: "Échec de la mise à jour",
+                    description: error.message || "Veuillez vérifier votre ID Membre et réessayer.",
+                    variant: "destructive",
+                });
+            }
         },
     });
 
@@ -124,8 +138,8 @@ export default function MembershipRegistration() {
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement("canvas");
-                    const MAX_WIDTH = 1024;
-                    const MAX_HEIGHT = 1024;
+                    const MAX_WIDTH = 800;
+                    const MAX_HEIGHT = 800;
                     let width = img.width;
                     let height = img.height;
 
@@ -145,7 +159,7 @@ export default function MembershipRegistration() {
                     canvas.height = height;
                     const ctx = canvas.getContext("2d");
                     ctx?.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL("image/jpeg", 0.7));
+                    resolve(canvas.toDataURL("image/jpeg", 0.6));
                 };
             };
         });
