@@ -1134,7 +1134,19 @@ function MassEmailTab() {
   return (
     <div className="max-w-2xl space-y-6">
       <div className="space-y-2">
-        <h2 className="text-lg font-semibold">Envoi d'Email en Masse</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Envoi d'Email en Masse</h2>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => debugSmtpMutation.mutate()}
+            disabled={debugSmtpMutation.isPending}
+            className="text-xs text-muted-foreground hover:text-sayc-teal"
+          >
+            {debugSmtpMutation.isPending ? <Loader2 className="h-3 w-3 animate-spin mr-1" /> : <Shield className="h-3 w-3 mr-1" />}
+            Tester la connexion SMTP
+          </Button>
+        </div>
         <p className="text-sm text-muted-foreground">Envoyez une communication officielle à un groupe ciblé de contacts.</p>
       </div>
 

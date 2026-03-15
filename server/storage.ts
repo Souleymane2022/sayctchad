@@ -79,6 +79,7 @@ export interface IStorage {
   createThunderbirdApplication(application: InsertThunderbirdApplication): Promise<ThunderbirdApplication>;
   getThunderbirdApplicationByEmail(email: string): Promise<ThunderbirdApplication | undefined>;
   getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
+  getThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
 
   createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
   getApprovedCandidates(): Promise<ElectionCandidate[]>;
@@ -320,6 +321,10 @@ export class DatabaseStorage implements IStorage {
 
   async getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
     return db.select().from(thunderbirdApplications).orderBy(desc(thunderbirdApplications.createdAt));
+  }
+
+  async getThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
+    return this.getAllThunderbirdApplications();
   }
 
   async createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate> {

@@ -12,7 +12,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
 import { pool } from "./db";
-import { sendNotificationEmail, sendAutoReplyEmail, debugSmtpConnection } from "./email";
+import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection } from "./email";
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -775,7 +775,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
 
       // Remove duplicates and empty emails
-      recipients = [...new Set(recipients)].filter(e => e && e.includes("@"));
+      recipients = Array.from(new Set(recipients)).filter(e => e && e.includes("@"));
 
       if (recipients.length === 0) {
         return res.status(400).json({ error: "Aucun destinataire trouvé pour ce groupe" });
@@ -783,9 +783,22 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
       const result = await sendMassEmail(recipients, subject, message, includeSada);
       res.json(result);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error in mass-email route:", error);
-      res.status(500).json({ error: "Erreur lors de l'envoi" });
+      res.status(500).json({ 
+        error: "Erreur lors de l'envoi", 
+        message: error.message,
+        code: error.code 
+      });
+    }
+  });
+
+  app.get("/api/admin/debug-smtp", requireAdmin, async (_req, res) => {
+    try {
+      const result = await debugSmtpConnection();
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
     }
   });
 
