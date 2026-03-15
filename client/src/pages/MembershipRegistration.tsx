@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { MemberCard } from "@/components/MemberCard";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Loader2, Camera, Download, Share2, CheckCircle2, Target, ShieldCheck, Info, Heart, Users, Star } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
@@ -56,6 +57,10 @@ export default function MembershipRegistration() {
         },
     });
 
+    const [showUpdateMode, setShowUpdateMode] = useState(false);
+    const [membershipIdInput, setMembershipIdInput] = useState("");
+    const [existingEmail, setExistingEmail] = useState("");
+
     const registrationMutation = useMutation({
         mutationFn: async (data: InsertMember) => {
             const res = await apiRequest("POST", "/api/members", data);
@@ -69,17 +74,49 @@ export default function MembershipRegistration() {
                 description: "Votre carte de membre a été générée avec succès.",
             });
         },
+        onError: async (error: any) => {
+            if (error.code === "MEMBER_EXISTS") {
+                setExistingEmail(form.getValues("email"));
+                setMembershipIdInput(error.membershipId || ""); // Auto-fill if provided by server
+                setShowUpdateMode(true);
+                toast({
+                    title: "Déjà membre !",
+                    description: "Cet email est déjà enregistré. Vous pouvez mettre à jour votre photo pour générer votre carte.",
+                });
+            } else {
+                toast({
+                    title: "Erreur",
+                    description: error.message || "Une erreur est survenue lors de l'inscription.",
+                    variant: "destructive",
+                });
+            }
+        },
+    });
+
+    const updatePhotoMutation = useMutation({
+        mutationFn: async (data: { email: string; membershipId: string; photoUrl: string }) => {
+            const res = await apiRequest("POST", "/api/members/update-photo", data);
+            return res.json();
+        },
+        onSuccess: (data: Member) => {
+            setCreatedMember(data);
+            setStep("success");
+            toast({
+                title: "Carte mise à jour !",
+                description: "Votre photo a été mise à jour et votre carte est prête.",
+            });
+        },
         onError: (error: Error) => {
             toast({
-                title: "Erreur",
-                description: error.message || "Une erreur est survenue lors de l'inscription.",
+                title: "Échec de la mise à jour",
+                description: "Veuillez vérifier votre ID Membre et réessayer.",
                 variant: "destructive",
             });
         },
     });
 
     const compressImage = (file: File): Promise<string> => {
-        return new Promise((resolve) => {
+        return new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = (event) => {
@@ -153,6 +190,22 @@ export default function MembershipRegistration() {
         registrationMutation.mutate(data);
     };
 
+    const handleUpdateSubmit = () => {
+        if (!membershipIdInput || !photoPreview) {
+            toast({
+                title: "Informations manquantes",
+                description: "Veuillez fournir votre ID Membre et une nouvelle photo.",
+                variant: "destructive",
+            });
+            return;
+        }
+        updatePhotoMutation.mutate({
+            email: existingEmail,
+            membershipId: membershipIdInput,
+            photoUrl: photoPreview
+        });
+    };
+
     const handlePrint = () => {
         window.print();
     };
@@ -181,9 +234,13 @@ export default function MembershipRegistration() {
                         <MemberCard member={createdMember} />
                     </div>
 
-                    <div className="no-print mt-6">
-                        <Button onClick={() => setStep("form")} variant="ghost">
-                            Effectuer une autre inscription
+                    <div className="no-print mt-6 flex gap-4 justify-center">
+                        <Button onClick={() => setStep("form")} variant="outline">
+                            Retour au formulaire
+                        </Button>
+                        <Button onClick={() => window.print()} className="bg-[#1e3a8a]">
+                            <Download className="w-4 h-4 mr-2" />
+                            Télécharger / Imprimer
                         </Button>
                     </div>
                 </div>
@@ -198,6 +255,45 @@ export default function MembershipRegistration() {
                 description="Rejoignez la communauté SAYC Tchad et obtenez votre carte de membre."
                 path="/devenir-membre-sayc"
             />
+            
+            <Dialog open={showUpdateMode} onOpenChange={setShowUpdateMode}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Mettre à jour mon profil</DialogTitle>
+                        <DialogDescription>
+                            Cet email est déjà enregistré. Saisissez votre ID Membre (SAYC-202X-XXXX) pour mettre à jour votre photo et générer votre carte.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label>Email</Label>
+                            <Input value={existingEmail} disabled className="bg-muted" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>ID Membre (Reçu par email)</Label>
+                            <Input 
+                                placeholder="SAYC-2024-XXXX" 
+                                value={membershipIdInput}
+                                onChange={(e) => setMembershipIdInput(e.target.value.toUpperCase())}
+                            />
+                        </div>
+                        <div className="p-4 bg-sayc-teal/5 rounded-lg border border-sayc-teal/20 text-xs text-sayc-teal">
+                            Votre ID Membre a été envoyé lors de votre première inscription. Si vous ne le trouvez pas, vérifiez vos spams ou contactez le support.
+                        </div>
+                    </div>
+                    <div className="flex justify-end gap-3">
+                        <Button variant="ghost" onClick={() => setShowUpdateMode(false)}>Annuler</Button>
+                        <Button 
+                            className="bg-sayc-teal hover:bg-sayc-teal/90" 
+                            disabled={updatePhotoMutation.isPending}
+                            onClick={handleUpdateSubmit}
+                        >
+                            {updatePhotoMutation.isPending ? "Mise à jour..." : "Générer la carte"}
+                        </Button>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
             <div className="max-w-4xl mx-auto space-y-12">
                 {/* Information Strategy Section */}
                 <section className="grid md:grid-cols-5 gap-8 items-start">

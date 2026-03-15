@@ -91,9 +91,13 @@ ${pages.map(p => `  <url>
   app.post("/api/members", apiLimiter, async (req, res) => {
     try {
       const validatedData = insertMemberSchema.parse(req.body);
-      const existingMember = await storage.getMemberByEmail(validatedData.email);
+      const existingMember = await storage.getMemberByEmailCaseInsensitive(validatedData.email);
       if (existingMember) {
-        return res.status(400).json({ error: "Un membre avec cet email existe déjà" });
+        return res.status(400).json({ 
+          error: "Un membre avec cet email existe déjà",
+          code: "MEMBER_EXISTS",
+          membershipId: existingMember.membershipId // Provide this so they know they are registered
+        });
       }
       const member = await storage.createMember(validatedData);
 
@@ -105,7 +109,7 @@ ${pages.map(p => `  <url>
       await sendAutoReplyEmail(
         member.email,
         "Confirmation de votre adhésion - SAYC Tchad",
-        `Bonjour ${member.firstName},\n\nNous confirmons la bonne réception de votre demande d'adhésion au Smart Africa Youth Chapter Tchad (SAYC Tchad).\n\nNotre équipe étudiera votre demande et vous contactera très prochainement avec la suite des instructions.\n\nCordialement,\nL'équipe SAYC Tchad`
+        `Bonjour ${member.firstName},\n\nNous confirmons la bonne réception de votre demande d'adhésion au Smart Africa Youth Chapter Tchad (SAYC Tchad).\n\nVotre ID Membre est : ${member.membershipId}\n\nNotre équipe étudiera votre demande et vous contactera très prochainement.\n\nCordialement,\nL'équipe SAYC Tchad`
       );
 
       res.status(201).json(member);
@@ -114,11 +118,35 @@ ${pages.map(p => `  <url>
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
       console.error("Error creating member:", error);
-      res.status(500).json({ 
-        error: "Erreur lors de l'inscription", 
-        message: error.message,
-        details: error.toString()
-      });
+      res.status(500).json({ error: "Erreur lors de l'inscription" });
+    }
+  });
+
+  app.post("/api/members/update-photo", apiLimiter, async (req, res) => {
+    try {
+      const { email, membershipId, photoUrl } = req.body;
+      if (!email || !membershipId || !photoUrl) {
+        return res.status(400).json({ error: "Email, ID Membre et Photo requis" });
+      }
+
+      const updated = await storage.updateMemberPhoto(membershipId, email, photoUrl);
+      if (!updated) {
+        return res.status(404).json({ error: "Membre non trouvé avec ces informations" });
+      }
+
+      res.json(updated);
+    } catch (error) {
+      console.error("Error updating photo:", error);
+      res.status(500).json({ error: "Erreur lors de la mise à jour" });
+    }
+  });
+
+  app.delete("/api/admin/members/:id", requireAdmin, async (req, res) => {
+    try {
+      await storage.deleteMember(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur lors de la suppression" });
     }
   });
 

@@ -508,12 +508,26 @@ function ResourceTab({ config }: { config: ResourceConfig }) {
 }
 
 function MembersTab() {
+  const { toast } = useToast();
   const { data: members = [], isLoading } = useQuery<Member[]>({
     queryKey: ["/api/admin", "members"],
     queryFn: async () => {
       const res = await fetch("/api/admin/members", { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
+    },
+  });
+
+  const deleteMemberMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest("DELETE", `/api/admin/members/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin", "members"] });
+      toast({ title: "Membre supprimé" });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
     },
   });
 
@@ -580,17 +594,44 @@ function MembersTab() {
                   <TableCell className="font-mono text-xs">{m.membershipId}</TableCell>
                   <TableCell>{m.createdAt ? new Date(m.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
                   <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">Voir Carte</Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl border-none p-0 bg-transparent shadow-none shadow-transparent">
-                        <DialogHeader className="hidden">
-                          <DialogTitle>Carte de Membre - {m.firstName}</DialogTitle>
-                        </DialogHeader>
-                        <MemberCard member={m} />
-                      </DialogContent>
-                    </Dialog>
+                    <div className="flex items-center gap-2">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline" size="sm">Carte</Button>
+                        </DialogTrigger>
+                        <DialogContent className="max-w-2xl border-none p-0 bg-transparent shadow-none shadow-transparent">
+                          <DialogHeader className="hidden">
+                            <DialogTitle>Carte de Membre - {m.firstName}</DialogTitle>
+                          </DialogHeader>
+                          <MemberCard member={m} />
+                        </DialogContent>
+                      </Dialog>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Supprimer le membre ?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Cette action est irréversible. Toutes les données de <strong>{m.firstName} {m.lastName}</strong> seront supprimées de la base de données.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Annuler</AlertDialogCancel>
+                            <AlertDialogAction 
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              onClick={() => deleteMemberMutation.mutate(m.id)}
+                            >
+                              Supprimer
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))

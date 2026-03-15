@@ -26,8 +26,11 @@ export interface IStorage {
 
   createMember(member: InsertMember): Promise<Member>;
   getMemberByEmail(email: string): Promise<Member | undefined>;
+  getMemberByEmailCaseInsensitive(email: string): Promise<Member | undefined>;
   getMemberByMembershipId(membershipId: string): Promise<Member | undefined>;
   getAllMembers(): Promise<Member[]>;
+  updateMemberPhoto(membershipId: string, email: string, photoUrl: string): Promise<Member | undefined>;
+  deleteMember(id: string): Promise<void>;
 
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
   getAllContactMessages(): Promise<ContactMessage[]>;
@@ -115,13 +118,34 @@ export class DatabaseStorage implements IStorage {
     return member;
   }
 
+  async getMemberByEmailCaseInsensitive(email: string): Promise<Member | undefined> {
+    const [member] = await db.select()
+      .from(members)
+      .where(sql`lower(${members.email}) = lower(${email.trim()})`);
+    return member;
+  }
+
   async getMemberByMembershipId(membershipId: string): Promise<Member | undefined> {
-    const [member] = await db.select().from(members).where(eq(members.membershipId, membershipId));
+    const [member] = await db.select()
+      .from(members)
+      .where(eq(members.membershipId, membershipId.trim()));
     return member;
   }
 
   async getAllMembers(): Promise<Member[]> {
-    return db.select().from(members);
+    return db.select().from(members).orderBy(desc(members.createdAt));
+  }
+
+  async updateMemberPhoto(membershipId: string, email: string, photoUrl: string): Promise<Member | undefined> {
+    const [updated] = await db.update(members)
+      .set({ photoUrl })
+      .where(sql`${members.membershipId} = ${membershipId.trim()} AND lower(${members.email}) = lower(${email.trim()})`)
+      .returning();
+    return updated;
+  }
+
+  async deleteMember(id: string): Promise<void> {
+    await db.delete(members).where(eq(members.id, id));
   }
 
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
