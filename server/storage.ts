@@ -90,6 +90,7 @@ export interface IStorage {
   castVote(vote: InsertVote): Promise<ElectionVote>;
   hasVoted(voterId: string, role: string): Promise<boolean>;
   getVotesForRole(role: string): Promise<ElectionVote[]>;
+  generateMissingMembershipIds(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -375,6 +376,23 @@ export class DatabaseStorage implements IStorage {
       .from(electionVotes)
       .where(eq(electionVotes.voterId, voterId));
     return votes.map(v => v.role);
+  }
+
+  async generateMissingMembershipIds(): Promise<number> {
+    const missingMembers = await db.select()
+      .from(members)
+      .where(sql`${members.membershipId} IS NULL OR ${members.membershipId} = ''`);
+
+    let count = 0;
+    for (const member of missingMembers) {
+      // Reuse the same logic as in createMember
+      const membershipId = `SAYC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+      await db.update(members)
+        .set({ membershipId })
+        .where(eq(members.id, member.id));
+      count++;
+    }
+    return count;
   }
 }
 

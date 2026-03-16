@@ -751,6 +751,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
 
+  app.post("/api/admin/members/generate-ids", requireAdmin, async (_req, res) => {
+    try {
+      const count = await storage.generateMissingMembershipIds();
+      res.json({ success: true, count });
+    } catch (error) {
+      console.error("Error generating membership IDs:", error);
+      res.status(500).json({ error: "Erreur lors de la génération des IDs" });
+    }
+  });
+
   app.post("/api/admin/mass-email", requireAdmin, async (req, res) => {
     try {
       const { target, subject, message, includeSada } = req.body;

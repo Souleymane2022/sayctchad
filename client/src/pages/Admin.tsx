@@ -535,6 +535,23 @@ function MembersTab() {
     },
   });
 
+  const generateIdsMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/members/generate-ids");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin", "members"] });
+      toast({ 
+        title: "Génération terminée", 
+        description: `${data.count} IDs de membres ont été générés.` 
+      });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    },
+  });
+
   const exportToExcel = () => {
     const headers = ["Prénom", "Nom", "Email", "Téléphone", "Ville", "Tranche d'âge", "ID Membre", "Date Inscription"];
     const rows = members.map(m => [
@@ -579,10 +596,22 @@ function MembersTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({filteredMembers.length} / {members.length})</h2>
-        <Button variant="outline" onClick={exportToExcel} disabled={filteredMembers.length === 0}>
-          <Download className="h-4 w-4 mr-2" />
-          Exporter Excel (CSV)
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => generateIdsMutation.mutate()} 
+            disabled={generateIdsMutation.isPending}
+            className="text-xs border-sayc-teal/50 hover:bg-sayc-teal/10"
+          >
+            {generateIdsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Shield className="h-4 w-4 mr-2" />}
+            Générer les IDs manquants
+          </Button>
+          <Button variant="outline" size="sm" onClick={exportToExcel} disabled={filteredMembers.length === 0}>
+            <Download className="h-4 w-4 mr-2" />
+            Exporter Excel (CSV)
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
