@@ -530,8 +530,13 @@ function MembersTab() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin", "members"] });
       toast({ title: "Membre supprimé" });
     },
-    onError: (error: Error) => {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    onError: (error: any) => {
+      const details = error.details ? ` (${error.details})` : "";
+      toast({ 
+        title: "Erreur", 
+        description: `${error.message}${details}`, 
+        variant: "destructive" 
+      });
     },
   });
 
@@ -547,8 +552,13 @@ function MembersTab() {
         description: `${data.count} IDs de membres ont été générés.` 
       });
     },
-    onError: (error: Error) => {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    onError: (error: any) => {
+      const details = error.details ? ` (${error.details})` : "";
+      toast({ 
+        title: "Erreur", 
+        description: `${error.message}${details}`, 
+        variant: "destructive" 
+      });
     },
   });
 
@@ -1108,8 +1118,13 @@ function ElectionCandidatesTab() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/elections/candidates"] });
       toast({ title: "Statut mis à jour" });
     },
-    onError: (error: Error) => {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    onError: (error: any) => {
+      const details = error.details ? ` (${error.details})` : "";
+      toast({ 
+        title: "Erreur", 
+        description: `${error.message}${details}`, 
+        variant: "destructive" 
+      });
     },
   });
 
@@ -1228,8 +1243,13 @@ function MassEmailTab() {
       setSubject("");
       setMessage("");
     },
-    onError: (error: Error) => {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    onError: (error: any) => {
+      const details = error.details ? ` (${error.details})` : "";
+      toast({ 
+        title: "Erreur", 
+        description: `${error.message}${details}`, 
+        variant: "destructive" 
+      });
     },
   });
 

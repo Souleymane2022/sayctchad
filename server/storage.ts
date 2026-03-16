@@ -17,7 +17,7 @@ import {
   thunderbirdApplications, electionCandidates, electionVotes
 } from "../shared/schema";
 import { db } from "./db";
-import { eq, desc, asc, sql } from "drizzle-orm";
+import { eq, desc, asc, sql, or, isNull } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -110,7 +110,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMember(member: InsertMember): Promise<Member> {
-    const membershipId = `SAYC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`;
+    const membershipId = `SAYC-2026-${Math.floor(Math.random() * 9000 + 1000)}`;
     const [newMember] = await db.insert(members).values({ ...member, membershipId }).returning();
     return newMember;
   }
@@ -379,19 +379,34 @@ export class DatabaseStorage implements IStorage {
   }
 
   async generateMissingMembershipIds(): Promise<number> {
-    const missingMembers = await db.select()
-      .from(members)
-      .where(sql`${members.membershipId} IS NULL OR ${members.membershipId} = ''`);
+    console.log("Starting membership ID generation...");
+    let missingMembers;
+    try {
+      missingMembers = await db.select()
+        .from(members)
+        .where(or(isNull(members.membershipId), eq(members.membershipId, "")));
+    } catch (e: any) {
+      console.error("Error fetching members missing IDs:", e);
+      throw new Error(`Erreur lors de la lecture des membres: ${e.message}`);
+    }
 
+    console.log(`Found ${missingMembers.length} members missing IDs.`);
     let count = 0;
     for (const member of missingMembers) {
-      // Reuse the same logic as in createMember
-      const membershipId = `SAYC-${new Date().getFullYear()}-${Math.floor(Math.random() * 9000 + 1000)}`;
-      await db.update(members)
-        .set({ membershipId })
-        .where(eq(members.id, member.id));
-      count++;
+      try {
+        const id = `SAYC-2026-${Math.floor(Math.random() * 9000 + 1000)}`;
+        // Try to update with a unique ID
+        await db.update(members)
+          .set({ membershipId: id })
+          .where(eq(members.id, member.id));
+        count++;
+        console.log(`Generated ID ${id} for member ${member.id}`);
+      } catch (err: any) {
+        console.error(`Failed to generate ID for member ${member.id}:`, err);
+        // We continue the loop even if one fails
+      }
     }
+    console.log(`Generation finished. Total updated: ${count}`);
     return count;
   }
 }

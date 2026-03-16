@@ -755,9 +755,9 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     try {
       const count = await storage.generateMissingMembershipIds();
       res.json({ success: true, count });
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error generating membership IDs:", error);
-      res.status(500).json({ error: "Erreur lors de la génération des IDs" });
+      res.status(500).json({ error: "Erreur lors de la génération des IDs", details: error.message });
     }
   });
 

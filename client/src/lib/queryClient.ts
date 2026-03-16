@@ -13,6 +13,7 @@ async function throwIfResNotOk(res: Response) {
     (error as any).status = res.status;
     (error as any).code = errorData.code;
     (error as any).membershipId = errorData.membershipId;
+    (error as any).details = errorData.details;
     throw error;
   }
 }
