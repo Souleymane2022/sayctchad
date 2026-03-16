@@ -12,7 +12,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
 import { pool } from "./db";
-import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection } from "./email";
+import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection, sendPersonalizedMemberEmails } from "./email";
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -749,6 +749,35 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   app.get("/api/admin/newsletter", requireAdmin, async (_req, res) => {
     try { res.json(await storage.getAllNewsletterSubscribers()); }
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+  });
+
+  app.post("/api/admin/members/send-voting-info", requireAdmin, async (req, res) => {
+    try {
+      const members = await storage.getAllMembers();
+      const subject = "Information Importante : Processus de Vote - SAYC Tchad";
+      
+      const messageTemplate = `Bonjour {{firstName}},
+
+      Votre participation au processus de vote du SAYC Tchad est essentielle. Voici vos informations personnelles nécessaires pour voter :
+      - ID Membre : {{membershipId}}
+      - Email : {{email}}
+
+      PRINCIPE DE VOTE :
+      En tant que membre, vous avez le droit de voter pour un candidat par poste électif. Le vote se fera exclusivement via notre plateforme sécurisée. Assurez-vous d'avoir votre ID Membre à portée de main.
+
+      Rejoignez notre communauté pour suivre les actualités :
+      - WhatsApp : https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj
+      - Facebook : https://www.facebook.com/profile.php?id=61585729201040
+
+      Cordialement,
+      L'équipe SAYC Tchad`;
+
+      const result = await sendPersonalizedMemberEmails(members, subject, messageTemplate);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error in send-voting-info route:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi des emails personnalisés", details: error.message });
+    }
   });
 
   app.post("/api/admin/members/generate-ids", requireAdmin, async (_req, res) => {

@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
 
@@ -562,6 +562,27 @@ function MembersTab() {
     },
   });
 
+  const sendVotingInfoMutation = useMutation({
+    mutationFn: async () => {
+      const res = await apiRequest("POST", "/api/admin/members/send-voting-info");
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({ 
+        title: "Envoi terminé", 
+        description: `${data.sent} emails personnalisés ont été envoyés.` 
+      });
+    },
+    onError: (error: any) => {
+      const details = error.details ? ` (${error.details})` : "";
+      toast({ 
+        title: "Erreur d'envoi", 
+        description: `${error.message}${details}`, 
+        variant: "destructive" 
+      });
+    },
+  });
+
   const exportToExcel = () => {
     const headers = ["Prénom", "Nom", "Email", "Téléphone", "Ville", "Tranche d'âge", "ID Membre", "Date Inscription"];
     const rows = members.map(m => [
@@ -607,6 +628,20 @@ function MembersTab() {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({filteredMembers.length} / {members.length})</h2>
         <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              if (confirm("Voulez-vous envoyer les infos de vote personnalisées à TOUS les membres ? Cela enverra un email individuel avec leur ID membre.")) {
+                sendVotingInfoMutation.mutate();
+              }
+            }} 
+            disabled={sendVotingInfoMutation.isPending}
+            className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600"
+          >
+            {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
+            Envoyer Infos Vote (Membres)
+          </Button>
           <Button 
             variant="outline" 
             size="sm"

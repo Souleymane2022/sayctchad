@@ -209,3 +209,65 @@ export async function debugSmtpConnection() {
         return { success: false, error: error.message || String(error), stack: error.stack, code: error.code };
     }
 }
+
+/**
+ * Sends personalized emails to multiple members
+ */
+export async function sendPersonalizedMemberEmails(membersList: any[], subject: string, messageTemplate: string) {
+    try {
+        if (!process.env.SMTP_PASS || membersList.length === 0) return { success: false, sent: 0 };
+
+        let sentCount = 0;
+        for (const member of membersList) {
+            try {
+                // Personalize the message
+                const personalizedMessage = messageTemplate
+                    .replace(/{{firstName}}/g, member.firstName || "")
+                    .replace(/{{lastName}}/g, member.lastName || "")
+                    .replace(/{{membershipId}}/g, member.membershipId || "")
+                    .replace(/{{email}}/g, member.email || "");
+
+                const htmlTemplate = `
+                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
+                            <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Information Officielle de Vote</p>
+                        </div>
+                        
+                        <div style="padding: 30px; background-color: #ffffff;">
+                            <div style="font-size: 16px; line-height: 1.6; color: #444;">
+                                ${personalizedMessage.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+                            <p style="margin: 0; font-size: 13px; color: #666;">
+                                <strong>Smart Africa Youth Chapter - Tchad</strong><br>
+                                N'Djamena, Tchad<br>
+                                <a href="https://sayctchad.org" style="color: #1976d2; text-decoration: none;">sayctchad.org</a>
+                            </p>
+                        </div>
+                    </div>
+                `;
+
+                await transporter.sendMail({
+                    from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+                    to: member.email,
+                    subject,
+                    text: personalizedMessage,
+                    html: htmlTemplate,
+                });
+                sentCount++;
+                // Delay to avoid spam filters
+                await new Promise(resolve => setTimeout(resolve, 150));
+            } catch (err) {
+                console.error(`Failed to send personalized email to ${member.email}:`, err);
+            }
+        }
+
+        return { success: true, sent: sentCount };
+    } catch (error) {
+        console.error("Error in sendPersonalizedMemberEmails:", error);
+        return { success: false, sent: 0 };
+    }
+}
