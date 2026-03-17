@@ -8,6 +8,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import {
   ArrowRight,
   Users,
   Lightbulb,
@@ -25,7 +33,8 @@ import {
   TrendingUp,
   BookOpen,
   Award,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Calendar
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
@@ -693,34 +702,96 @@ export default function Home() {
 
             <div className="grid md:grid-cols-3 gap-6">
               {newsList.slice(0, 3).map((article) => (
-                <Card key={article.id} className="group hover-elevate transition-all duration-300 overflow-hidden" data-testid={`card-news-${article.id}`}>
-                  {(article.imageUrls?.[0] || article.imageUrl) && (
-                    <div className="aspect-video overflow-hidden">
-                      <img
-                        src={article.imageUrls?.[0] || article.imageUrl || ""}
-                        alt={article.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        data-testid={`img-news-${article.id}`}
-                      />
-                    </div>
-                  )}
-                  <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
-                      <Badge variant="secondary" className="text-xs">
-                        {article.category}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{article.publishedAt}</span>
-                    </div>
-                    <CardTitle className="font-heading text-lg leading-snug">
-                      {article.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-sm leading-relaxed">
-                      {article.excerpt}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                <Dialog key={article.id}>
+                  <Card className="group hover-elevate transition-all duration-300 overflow-hidden" data-testid={`card-news-${article.id}`}>
+                    {(article.imageUrls?.[0] || article.imageUrl) && (
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={article.imageUrls?.[0] || article.imageUrl || ""}
+                          alt={article.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          data-testid={`img-news-${article.id}`}
+                        />
+                      </div>
+                    )}
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                        <Badge variant="secondary" className="text-xs">
+                          {article.category}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground">{article.publishedAt}</span>
+                      </div>
+                      <CardTitle className="font-heading text-lg leading-snug">
+                        {article.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <CardDescription className="text-sm leading-relaxed">
+                        {article.excerpt}
+                      </CardDescription>
+                      <DialogTrigger asChild>
+                        <Button variant="ghost" className="p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-medium" data-testid={`btn-read-more-home-${article.id}`}>
+                          Lire la suite
+                          <ChevronRight className="ml-1 h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                    </CardContent>
+                  </Card>
+
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader className="mb-6">
+                      <DialogTitle className="font-heading text-2xl md:text-3xl text-left leading-tight">
+                        {article.title}
+                      </DialogTitle>
+                      <div className="flex flex-wrap items-center gap-3 mt-4">
+                        <Badge variant="outline" className="text-xs">
+                          {article.category}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {article.publishedAt}
+                        </span>
+                      </div>
+                      <DialogDescription className="hidden">
+                        Détails de l'article : {article.title}
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <article className="space-y-8">
+                      {/* Image Gallery */}
+                      {(article.imageUrls || article.imageUrl) && (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {article.imageUrls && article.imageUrls.length > 0 ? (
+                              article.imageUrls.map((img, idx) => (
+                                <div key={idx} className={`relative rounded-xl overflow-hidden shadow-lg ${article.imageUrls!.length === 1 ? 'md:col-span-2 aspect-video' : 'aspect-square'}`}>
+                                  <img 
+                                    src={img} 
+                                    alt={`${article.title} - ${idx + 1}`} 
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ))
+                            ) : article.imageUrl ? (
+                              <div className="md:col-span-2 aspect-video rounded-xl overflow-hidden shadow-lg">
+                                <img 
+                                  src={article.imageUrl} 
+                                  alt={article.title} 
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Article Content */}
+                      <div className="prose prose-sm md:prose-base max-w-none text-foreground/90 leading-relaxed whitespace-pre-wrap font-sans">
+                        {article.content || article.excerpt}
+                      </div>
+                    </article>
+                  </DialogContent>
+                </Dialog>
               ))}
             </div>
           </div>
