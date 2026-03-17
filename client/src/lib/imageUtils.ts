@@ -16,8 +16,8 @@ export async function processAndWatermark(file: File): Promise<string> {
           return;
         }
 
-        const MAX_WIDTH = 400;
-        const MAX_HEIGHT = 400;
+        const MAX_WIDTH = 1024;
+        const MAX_HEIGHT = 1024;
         let width = img.width;
         let height = img.height;
 
@@ -55,7 +55,7 @@ export async function processAndWatermark(file: File): Promise<string> {
         
         ctx.fillText(text, width - padding, height - padding);
 
-        resolve(canvas.toDataURL("image/jpeg", 0.3));
+        resolve(canvas.toDataURL("image/jpeg", 0.7));
       };
       img.onerror = () => reject(new Error("Failed to load image"));
     };
