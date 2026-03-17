@@ -280,7 +280,7 @@ function MultiImageUpload({
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-        {value.map((src, idx) => (
+        {(value || []).map((src, idx) => (
           <div key={idx} className="relative group aspect-square border rounded-md overflow-hidden bg-muted">
             <img src={src} className="w-full h-full object-cover" alt={`Preview ${idx}`} />
             <button

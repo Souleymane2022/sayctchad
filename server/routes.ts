@@ -336,9 +336,9 @@ ${pages.map(p => `  <url>
     try {
       const articles = await storage.getActiveNewsArticles();
       res.json(articles);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching news:", error);
-      res.status(500).json({ error: "Erreur lors de la récupération des actualités" });
+      res.status(500).json({ error: "Erreur lors de la récupération des actualités", details: error.message });
     }
   });
 
@@ -347,12 +347,12 @@ ${pages.map(p => `  <url>
       const validatedData = insertNewsArticleSchema.parse(req.body);
       const article = await storage.createNewsArticle(validatedData);
       res.status(201).json(article);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
       console.error("Error creating news article:", error);
-      res.status(500).json({ error: "Erreur lors de la création de l'article" });
+      res.status(500).json({ error: "Erreur lors de la création de l'article", details: error.message });
     }
   });
 
@@ -582,11 +582,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   app.get("/api/admin/news", requireAdmin, async (_req, res) => {
     try { res.json(await storage.getAllNewsArticles()); }
-    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+    catch (error: any) { 
+      console.error("Error fetching admin news:", error);
+      res.status(500).json({ error: "Erreur serveur", details: error.message }); 
+    }
   });
   app.put("/api/admin/news/:id", requireAdmin, async (req, res) => {
     try { const updated = await storage.updateNewsArticle(req.params.id as string, req.body); res.json(updated); }
-    catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
+    catch (error: any) { 
+      console.error("Error updating admin news:", error);
+      res.status(500).json({ error: "Erreur serveur", details: error.message }); 
+    }
   });
   app.delete("/api/admin/news/:id", requireAdmin, async (req, res) => {
     try { await storage.deleteNewsArticle(req.params.id as string); res.json({ success: true }); }
