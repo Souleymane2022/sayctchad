@@ -255,10 +255,10 @@ function MultiImageUpload({
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    if (value.length + files.length > 6) {
+    if (value.length + files.length > 4) {
       toast({ 
         title: "Trop d'images", 
-        description: "Vous ne pouvez pas ajouter plus de 6 images par article pour garantir la publication.", 
+        description: "Vous ne pouvez pas ajouter plus de 4 images par article pour garantir la publication.", 
         variant: "destructive" 
       });
       return;
