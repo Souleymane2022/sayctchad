@@ -255,6 +255,15 @@ function MultiImageUpload({
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
+    if (value.length + files.length > 6) {
+      toast({ 
+        title: "Trop d'images", 
+        description: "Vous ne pouvez pas ajouter plus de 6 images par article pour garantir la publication.", 
+        variant: "destructive" 
+      });
+      return;
+    }
+
     setIsProcessing(true);
     try {
       const newImages = await Promise.all(
