@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
+import { processAndWatermark } from "@/lib/imageUtils";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
@@ -195,7 +196,7 @@ const resourceConfigs: ResourceConfig[] = [
       { name: "excerpt", label: "Extrait", type: "textarea", required: true },
       { name: "content", label: "Contenu", type: "textarea" },
       { name: "category", label: "Catégorie", required: true },
-      { name: "imageUrl", label: "URL de l'image" },
+      { name: "imageUrls", label: "Images (Multi)", type: "image-multi" },
       { name: "publishedAt", label: "Date de publication", required: true },
     ],
     columns: [
@@ -240,6 +241,80 @@ const resourceConfigs: ResourceConfig[] = [
   },
 ];
 
+function MultiImageUpload({ 
+  value, 
+  onChange 
+}: { 
+  value: string[]; 
+  onChange: (value: string[]) => void 
+}) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setIsProcessing(true);
+    try {
+      const newImages = await Promise.all(
+        files.map(file => processAndWatermark(file))
+      );
+      onChange([...value, ...newImages]);
+    } catch (error) {
+      toast({ 
+        title: "Erreur lors du traitement", 
+        description: "Impossible d'ajouter certaines images.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsProcessing(false);
+      e.target.value = ""; // Reset input
+    }
+  };
+
+  const removeImage = (index: number) => {
+    onChange(value.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        {value.map((src, idx) => (
+          <div key={idx} className="relative group aspect-square border rounded-md overflow-hidden bg-muted">
+            <img src={src} className="w-full h-full object-cover" alt={`Preview ${idx}`} />
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <XCircle className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+        <label className="flex flex-col items-center justify-center aspect-square border-2 border-dashed rounded-md cursor-pointer hover:bg-muted/50 transition-colors">
+          {isProcessing ? (
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          ) : (
+            <>
+              <Plus className="h-6 w-6 text-muted-foreground" />
+              <span className="text-[10px] text-muted-foreground mt-1 text-center px-1">Ajouter des images (Filigrane auto)</span>
+            </>
+          )}
+          <input
+            type="file"
+            className="hidden"
+            multiple
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={isProcessing}
+          />
+        </label>
+      </div>
+    </div>
+  );
+}
+
 function ResourceForm({
   config,
   initialData,
@@ -254,7 +329,7 @@ function ResourceForm({
   const [formData, setFormData] = useState<Record<string, any>>(() => {
     const d: Record<string, any> = {};
     config.fields.forEach((f) => {
-      d[f.name] = initialData?.[f.name] ?? "";
+      d[f.name] = initialData?.[f.name] ?? (f.type === "image-multi" ? [] : "");
     });
     return d;
   });
@@ -269,7 +344,7 @@ function ResourceForm({
           if (f.type === "number") {
             cleaned[f.name] = val === "" ? 99 : Number(val);
           } else {
-            cleaned[f.name] = val || (f.required ? "" : undefined);
+            cleaned[f.name] = val || (f.required ? "" : (f.type === "image-multi" ? [] : undefined));
           }
         });
         onSubmit(cleaned);
@@ -289,6 +364,11 @@ function ResourceForm({
               onChange={(e) => setFormData({ ...formData, [field.name]: e.target.value })}
               required={field.required}
               data-testid={`input-${field.name}`}
+            />
+          ) : field.type === "image-multi" ? (
+            <MultiImageUpload
+              value={formData[field.name] || []}
+              onChange={(newVal) => setFormData({ ...formData, [field.name]: newVal })}
             />
           ) : (
             <Input

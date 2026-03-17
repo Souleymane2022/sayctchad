@@ -144,6 +144,7 @@ export const newsArticles = pgTable("news_articles", {
   content: text("content"),
   category: text("category").notNull(),
   imageUrl: text("image_url"),
+  imageUrls: text("image_urls").array(),
   publishedAt: text("published_at").notNull(),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),

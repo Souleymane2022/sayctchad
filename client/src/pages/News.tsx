@@ -89,10 +89,10 @@ export default function News() {
                     className="group hover-elevate transition-all overflow-hidden"
                     data-testid={`card-news-${article.id}`}
                   >
-                    {article.imageUrl && (
+                    {(article.imageUrls?.[0] || article.imageUrl) && (
                       <div className="aspect-video overflow-hidden">
                         <img
-                          src={article.imageUrl}
+                          src={article.imageUrls?.[0] || article.imageUrl || ""}
                           alt={article.title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           data-testid={`img-news-${article.id}`}
