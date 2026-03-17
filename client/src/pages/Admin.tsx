@@ -477,6 +477,9 @@ function ResourceTab({ config }: { config: ResourceConfig }) {
           <DialogContent className="max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Ajouter - {config.label}</DialogTitle>
+              <DialogDescription>
+                Remplissez les informations ci-dessous pour ajouter un nouvel élément à {config.label}.
+              </DialogDescription>
             </DialogHeader>
             <ResourceForm
               config={config}
@@ -491,6 +494,9 @@ function ResourceTab({ config }: { config: ResourceConfig }) {
         <DialogContent className="max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Modifier - {config.label}</DialogTitle>
+            <DialogDescription>
+              Modifiez les informations ci-dessous pour mettre à jour cet élément de {config.label}.
+            </DialogDescription>
           </DialogHeader>
           {editItem && (
             <ResourceForm
