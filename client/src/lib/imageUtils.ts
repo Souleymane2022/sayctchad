@@ -16,8 +16,8 @@ export async function processAndWatermark(file: File): Promise<string> {
           return;
         }
 
-        const MAX_WIDTH = 1024;
-        const MAX_HEIGHT = 1024;
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
         let width = img.width;
         let height = img.height;
 
