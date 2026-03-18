@@ -45,6 +45,50 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Google Translate Element */}
+          <div id="google_translate_element" className="h-9 overflow-hidden rounded-md border bg-background px-2 flex items-center translate-y-[2px]" />
+          <style>{`
+            .goog-te-gadget-simple {
+              background-color: transparent !important;
+              border: none !important;
+              padding: 0 !important;
+              display: flex !important;
+              align-items: center !important;
+              font-family: inherit !important;
+            }
+            .goog-te-gadget-simple img {
+              display: none !important;
+            }
+            .goog-te-gadget-simple span {
+              color: inherit !important;
+              font-size: 13px !important;
+            }
+            .goog-te-menu-value span {
+              color: inherit !important;
+              font-weight: 500 !important;
+            }
+            .goog-te-menu-value img {
+              display: none !important;
+            }
+            .goog-te-banner-frame {
+              display: none !important;
+            }
+            body {
+              top: 0 !important;
+            }
+            .goog-tooltip {
+              display: none !important;
+            }
+            .goog-tooltip:hover {
+              display: none !important;
+            }
+            .goog-text-highlight {
+              background-color: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+            }
+          `}</style>
+
           <Link href="/rejoindre" className="hidden sm:block">
             <Button className="bg-accent text-accent-foreground border-accent-border" data-testid="button-join-cta">
               Rejoindre

@@ -722,7 +722,7 @@ function MembersTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({filteredMembers.length} / {members.length})</h2>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <Button 
             variant="outline" 
             size="sm"
@@ -732,24 +732,33 @@ function MembersTab() {
               }
             }} 
             disabled={sendVotingInfoMutation.isPending}
-            className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600"
+            className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600 h-8 px-2 sm:h-9 sm:px-3"
+            title="Envoyer Infos Vote"
           >
-            {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
-            Envoyer Infos Vote (Membres)
+            {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-0 sm:mr-2" /> : <Mail className="h-4 w-4 mr-0 sm:mr-2" />}
+            <span className="hidden sm:inline">Envoyer Infos Vote</span>
           </Button>
           <Button 
             variant="outline" 
             size="sm"
             onClick={() => generateIdsMutation.mutate()} 
             disabled={generateIdsMutation.isPending}
-            className="text-xs border-sayc-teal/50 hover:bg-sayc-teal/10"
+            className="text-xs border-sayc-teal/50 hover:bg-sayc-teal/10 h-8 px-2 sm:h-9 sm:px-3"
+            title="Générer les IDs manquants"
           >
-            {generateIdsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Shield className="h-4 w-4 mr-2" />}
-            Générer les IDs manquants
+            {generateIdsMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-0 sm:mr-2" /> : <Shield className="h-4 w-4 mr-0 sm:mr-2" />}
+            <span className="hidden sm:inline">Générer les IDs</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={exportToExcel} disabled={filteredMembers.length === 0}>
-            <Download className="h-4 w-4 mr-2" />
-            Exporter Excel (CSV)
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={exportToExcel} 
+            disabled={filteredMembers.length === 0}
+            className="h-8 px-2 sm:h-9 sm:px-3"
+            title="Exporter Excel (CSV)"
+          >
+            <Download className="h-4 w-4 mr-0 sm:mr-2" />
+            <span className="hidden sm:inline">Exporter</span>
           </Button>
         </div>
       </div>
@@ -989,6 +998,7 @@ function MessagesTab() {
               <TableHead>Sujet</TableHead>
               <TableHead>Message</TableHead>
               <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -1002,8 +1012,33 @@ function MessagesTab() {
                   <TableCell>{msg.firstName} {msg.lastName}</TableCell>
                   <TableCell>{msg.email}</TableCell>
                   <TableCell>{msg.subject}</TableCell>
-                  <TableCell className="max-w-[300px] truncate">{msg.message}</TableCell>
+                  <TableCell className="max-w-[200px] truncate">{msg.message}</TableCell>
                   <TableCell>{msg.createdAt ? new Date(msg.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">Voir</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Message de {msg.firstName} {msg.lastName}</DialogTitle>
+                          <p className="text-xs text-muted-foreground">{msg.email} - {msg.createdAt ? new Date(msg.createdAt).toLocaleString("fr-FR") : ""}</p>
+                        </DialogHeader>
+                        <div className="space-y-4 py-4">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Sujet</Label>
+                            <p className="font-bold">{msg.subject}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Message</Label>
+                            <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed">
+                              {msg.message}
+                            </div>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
                 </TableRow>
               ))
             )}
