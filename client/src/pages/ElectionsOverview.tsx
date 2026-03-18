@@ -21,12 +21,12 @@ import SEOHead from "@/components/SEOHead";
 const electionPhases = [
     {
         title: "Appel à Candidature",
-        status: "Bientôt",
-        date: "7 à 10 jours",
+        status: "En cours",
+        date: "Actuellement",
         description: "Lancement officiel et réception des dossiers des candidats sur la plateforme.",
         icon: UserPlus,
-        color: "text-blue-600",
-        bgColor: "bg-blue-50"
+        color: "text-sayc-teal",
+        bgColor: "bg-sayc-teal/10"
     },
     {
         title: "Lancement Officiel",
@@ -119,8 +119,8 @@ export default function ElectionsOverview() {
                             </Button>
                         </Link>
                         <Link href="/elections/voter">
-                            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm">
-                                <Vote className="mr-2 h-5 w-5" /> Voter maintenant
+                            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm opacity-60 cursor-not-allowed">
+                                <Vote className="mr-2 h-5 w-5" /> Voter (Bientôt)
                             </Button>
                         </Link>
                     </div>
@@ -213,6 +213,43 @@ export default function ElectionsOverview() {
                             ))}
                         </CardContent>
                     </Card>
+                </section>
+
+                {/* Instructions de Vote */}
+                <section className="bg-white rounded-3xl p-8 md:p-12 border shadow-sm space-y-8">
+                    <div className="text-center space-y-4">
+                        <h2 className="text-3xl font-heading font-bold text-[#1e3a8a]">Comment voter ? (Prochainement)</h2>
+                        <p className="text-muted-foreground">Voici les étapes pour participer au scrutin numérique lorsqu'il sera ouvert :</p>
+                    </div>
+                    
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <div className="space-y-4 text-center">
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto">
+                                <UserPlus className="w-8 h-8" />
+                            </div>
+                            <h4 className="font-bold text-lg">1. Devenir Membre</h4>
+                            <p className="text-sm text-muted-foreground">Seuls les membres inscrits et vérifiés du SAYC Tchad peuvent voter.</p>
+                            <Link href="/rejoindre">
+                                <Button variant="ghost" className="text-sayc-teal font-bold p-0">S'inscrire ici</Button>
+                            </Link>
+                        </div>
+                        
+                        <div className="space-y-4 text-center">
+                            <div className="w-16 h-16 bg-sayc-teal/10 text-sayc-teal rounded-2xl flex items-center justify-center mx-auto">
+                                <ShieldCheck className="w-8 h-8" />
+                            </div>
+                            <h4 className="font-bold text-lg">2. Identifiants</h4>
+                            <p className="text-sm text-muted-foreground">Munissez-vous de votre **ID de Membre (SAYC-XXXXXX)** et de votre adresse email d'inscription.</p>
+                        </div>
+                        
+                        <div className="space-y-4 text-center">
+                            <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto">
+                                <Vote className="w-8 h-8" />
+                            </div>
+                            <h4 className="font-bold text-lg">3. Vote Sécurisé</h4>
+                            <p className="text-sm text-muted-foreground">Une fois le scrutin ouvert, cliquez sur "Voter" et suivez les instructions pour chaque poste.</p>
+                        </div>
+                    </div>
                 </section>
 
                 {/* Call to Action */}
