@@ -804,7 +804,87 @@ function MembersTab() {
           </Button>
         </div>
       </div>
-      <div className="rounded-md border overflow-x-auto">
+
+      {/* Mobile Card View */}
+      <div className="block md:hidden space-y-4">
+        {filteredMembers.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-lg border border-dashed">
+            <p className="text-muted-foreground">Aucun membre trouvé</p>
+          </div>
+        ) : (
+          filteredMembers.map((m) => (
+            <Card key={m.id} className="overflow-hidden">
+              <CardContent className="p-4 space-y-3">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-bold text-lg">{m.firstName} {m.lastName}</h3>
+                    <p className="text-xs text-muted-foreground font-mono">{m.membershipId}</p>
+                  </div>
+                  <Badge variant="outline" className="text-[10px]">{m.city}</Badge>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Email</p>
+                    <p className="truncate">{m.email}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Téléphone</p>
+                    <p>{m.phone}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Âge</p>
+                    <p>{m.ageRange}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-[10px] text-muted-foreground uppercase font-bold">Inscription</p>
+                    <p>{m.createdAt ? new Date(m.createdAt).toLocaleDateString("fr-FR") : "-"}</p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="flex-1">Carte</Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl border-none p-0 bg-transparent shadow-none w-[95vw]">
+                      <MemberCard member={m} />
+                    </DialogContent>
+                  </Dialog>
+
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-destructive">
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="w-[90vw] rounded-lg">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Supprimer ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Supprimer {m.firstName} ?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction 
+                          className="bg-destructive"
+                          onClick={() => deleteMemberMutation.mutate(m.id)}
+                        >
+                          Oui
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        )}
+      </div>
+
+      {/* Desktop Table View */}
+      <div className="hidden md:block rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
