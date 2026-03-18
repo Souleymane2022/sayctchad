@@ -1,6 +1,4 @@
-import { Link } from "wouter";
-import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
-import { SiFacebook, SiLinkedin, SiYoutube } from "react-icons/si";
+import { useTranslation } from "react-i18next";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
 const footerLinks = {
@@ -25,6 +23,23 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    navigation: [
+      { href: "/", label: t("nav.home") },
+      { href: "/a-propos", label: t("nav.about") },
+      { href: "/programmes", label: t("nav.programs") },
+      { href: "/formations", label: t("nav.training") },
+      { href: "/opportunites", label: t("nav.opportunities") },
+    ],
+    resources: [
+      { href: "/evenements", label: "Événements" },
+      { href: "/actualites", label: "Actualités" },
+      { href: "/contact", label: t("nav.contact") },
+    ],
+  };
+
   return (
     <footer className="bg-sidebar text-sidebar-foreground">
       <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
@@ -34,7 +49,7 @@ export function Footer() {
               <img src={logoSayc} alt="SAYC Tchad" className="h-16 w-auto object-contain bg-white rounded-md p-1" data-testid="img-footer-logo" />
             </div>
             <p className="text-sm text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-footer-description">
-              Plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration et l'innovation numérique.
+              {t("hero.description")}
             </p>
             <p className="text-xs text-sidebar-foreground/60 mb-4" data-testid="text-focal-point">
               Point Focal SAYC Tchad: Souleymane Mahamat Saleh

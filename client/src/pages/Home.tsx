@@ -1,11 +1,4 @@
-import { useMemo } from "react";
-import { Link } from "wouter";
-import SEOHead from "@/components/SEOHead";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
 import {
   Dialog,
@@ -171,6 +164,7 @@ const smartAfricaInitiatives = [
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
   const { data: opportunities = [] } = useQuery<Opportunity[]>({
     queryKey: ["/api/opportunities"],
   });
@@ -248,12 +242,11 @@ export default function Home() {
               7e Chapitre Jeunesse de Smart Africa
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-testid="text-hero-title">
-              Smart Africa Youth Chapter{" "}
-              <span className="text-accent">Tchad</span>
+              {t("hero.title")}{" "}
+              <span className="text-accent">{t("hero.tchad")}</span>
             </h1>
             <p className="text-lg md:text-xl text-sidebar-foreground/80 mb-4 max-w-2xl mx-auto leading-relaxed" data-testid="text-hero-description">
-              Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie
-              et l'innovation pour transformer l'Afrique, créer des opportunités et bâtir un avenir durable.
+              {t("hero.description")}
             </p>
             <p className="text-sm text-sidebar-foreground/60 mb-8 max-w-xl mx-auto" data-testid="text-hero-tagline">
               Jeunes de 15 à 35 ans | Une initiative de{" "}
@@ -264,13 +257,13 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/rejoindre">
                 <Button size="lg" className="bg-accent text-accent-foreground border-accent-border min-w-[200px]" data-testid="button-hero-join">
-                  Rejoindre le SAYC
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {t("hero.cta_join")}
+                  <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180" />
                 </Button>
               </Link>
               <Link href="/opportunites">
                 <Button size="lg" variant="outline" className="min-w-[200px] border-sidebar-foreground/20 text-sidebar-foreground" data-testid="button-hero-opportunities">
-                  Voir les opportunités
+                  {t("hero.cta_opp")}
                 </Button>
               </Link>
             </div>

@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "programs": "Programmes",
+    "training": "Formations",
+    "opportunities": "Opportunités",
+    "contact": "Contact",
+    "join": "Rejoindre le SAYC",
+    "login": "Connexion"
+  },
+  "hero": {
+    "title": "Smart Africa Youth Chapter",
+    "tchad": "Tchad",
+    "description": "Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique.",
+    "cta_join": "Rejoindre le SAYC",
+    "cta_opp": "Voir les opportunités"
+  },
+  "common": {
+    "email": "Email",
+    "phone": "Téléphone",
+    "address": "Adresse",
+    "send": "Envoyer",
+    "back_home": "Retour à l'accueil",
+    "learn_more": "En savoir plus",
+    "view_details": "Voir les détails"
+  },
+  "admin": {
+    "dashboard": "Tableau de Bord Admin",
+    "members": "Membres",
+    "messages": "Messages",
+    "candidates": "Candidatures",
+    "logout": "Déconnexion"
+  },
+  "vote": {
+    "success_title": "Merci pour votre vote !",
+    "success_desc": "Vos choix ont été enregistrés avec succès."
+  },
+  "about": {
+    "hero_tag": "À propos de nous",
+    "hero_title": "Le Chapitre Jeunesse de Smart Africa au Tchad",
+    "hero_desc": "Le Smart Africa Youth Chapter - Tchad (SAYC Tchad) est la branche jeunesse de Smart Africa Alliance au Tchad. C'est une plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration, le mentorat et l'innovation numérique.",
+    "vision_tag": "Notre Vision",
+    "vision_title": "Transformer l'Afrique par la jeunesse et l'innovation",
+    "vision_desc": "Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir un avenir durable.",
+    "pillars_title": "Les 3 Piliers du SAYC",
+    "values_title": "Ce qui nous guide"
+  }
+}

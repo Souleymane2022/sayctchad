@@ -4,23 +4,27 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
-const navLinks = [
-  { href: "/", label: "Accueil" },
-  { href: "/a-propos", label: "À propos" },
-  { href: "/programmes", label: "Programmes" },
+const getNavLinks = (t: any) => [
+  { href: "/", label: t("nav.home") },
+  { href: "/a-propos", label: t("nav.about") },
+  { href: "/programmes", label: t("nav.programs") },
   { href: "/programmes/thunderbird", label: "Thunderbird" },
-  { href: "/formations", label: "Formations" },
-  { href: "/opportunites", label: "Opportunités" },
+  { href: "/formations", label: t("nav.training") },
+  { href: "/opportunites", label: t("nav.opportunities") },
   { href: "/evenements", label: "Événements" },
   { href: "/elections", label: "Élections" },
   { href: "/actualites", label: "Actualités" },
-  { href: "/contact", label: "Contact" },
+  { href: "/contact", label: t("nav.contact") },
 ];
 
 export function Header() {
+  const { t } = useTranslation();
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const navLinks = getNavLinks(t);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,12 +49,10 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          {/* Google Translate Element */}
-          <div id="google_translate_element" className="h-9 flex items-center" />
-
+          <LanguageSwitcher />
           <Link href="/rejoindre" className="hidden sm:block">
             <Button className="bg-accent text-accent-foreground border-accent-border" data-testid="button-join-cta">
-              Rejoindre
+              {t("nav.join")}
             </Button>
           </Link>
 
@@ -81,7 +83,7 @@ export function Header() {
                 </nav>
                 <Link href="/rejoindre" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-accent text-accent-foreground border-accent-border" data-testid="button-mobile-join">
-                    Rejoindre le SAYC
+                    {t("nav.join")}
                   </Button>
                 </Link>
               </div>

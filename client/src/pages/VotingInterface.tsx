@@ -8,8 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Vote, CheckCircle2, AlertCircle, ShieldCheck, User, ExternalLink, ChevronRight, ChevronLeft, Linkedin, Facebook, Twitter } from "lucide-react";
-import SEOHead from "@/components/SEOHead";
+import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 
 const roles = [
@@ -20,6 +19,7 @@ const roles = [
 ];
 
 export default function VotingInterface() {
+    const { t } = useTranslation();
     const { toast } = useToast();
     const [step, setStep] = useState<"verify" | "vote" | "done">("verify");
     const [voterInfo, setVoterInfo] = useState({ membershipId: "", email: "" });
@@ -42,8 +42,8 @@ export default function VotingInterface() {
             } else {
                 setStep("done");
                 toast({
-                    title: "Merci pour votre vote !",
-                    description: "Vos choix ont été enregistrés avec succès.",
+                    title: t("vote.success_title") || "Merci pour votre vote !",
+                    description: t("vote.success_desc") || "Vos choix ont été enregistrés avec succès.",
                 });
             }
         },

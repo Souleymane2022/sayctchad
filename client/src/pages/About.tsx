@@ -1,10 +1,4 @@
-import { useMemo } from "react";
-import { Link } from "wouter";
-import SEOHead from "@/components/SEOHead";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useTranslation } from "react-i18next";
 import {
   Carousel,
   CarouselContent,
@@ -87,6 +81,7 @@ const galleryImages = [
 ];
 
 export default function About() {
+  const { t } = useTranslation();
   const { data: partnersList = [], isLoading: partnersLoading } = useQuery<Partner[]>({
     queryKey: ["/api/partners"],
   });
@@ -157,25 +152,14 @@ export default function About() {
         <div className="container mx-auto px-4 md:px-6 relative">
           <div className="max-w-3xl">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-about-tag">
-              <Eye className="w-3 h-3 mr-1" />
-              A propos de nous
+              <Eye className="w-3 h-3 mr-1 rtl:ml-1 rtl:mr-0" />
+              {t("about.hero_tag")}
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-about-title">
-              Le Chapitre Jeunesse de{" "}
-              <span className="text-accent">Smart Africa</span> au Tchad
+              {t("about.hero_title")}
             </h1>
             <p className="text-lg text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-about-description">
-              Le Smart Africa Youth Chapter - Tchad (SAYC Tchad) est la branche jeunesse de{" "}
-              <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2">
-                Smart Africa Alliance
-              </a>
-              {" "}au Tchad. C'est une plateforme dediee aux jeunes de 15 a 35 ans,
-              axee sur l'education, la collaboration, le mentorat et l'innovation numerique.
-            </p>
-            <p className="text-sidebar-foreground/70 leading-relaxed" data-testid="text-about-description-2">
-              En tant que chapitre national, le SAYC Tchad travaille en coordination avec Smart Africa
-              pour renforcer le leadership des jeunes, stimuler l'innovation et activer la collaboration
-              au service de la transformation numerique du continent africain.
+              {t("about.hero_desc")}
             </p>
           </div>
         </div>
@@ -187,16 +171,14 @@ export default function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <Badge variant="outline" className="mb-4" data-testid="badge-vision-tag">
-                <Eye className="w-3 h-3 mr-1" />
-                Notre Vision
+                <Eye className="w-3 h-3 mr-1 rtl:ml-1 rtl:mr-0" />
+                {t("about.vision_tag")}
               </Badge>
               <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6" data-testid="text-vision-title">
-                Transformer l'Afrique par la jeunesse et l'innovation
+                {t("about.vision_title")}
               </h2>
               <p className="text-muted-foreground leading-relaxed mb-6" data-testid="text-vision-description">
-                Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation
-                pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir
-                un avenir durable.
+                {t("about.vision_desc")}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-8">
                 Notre vision est de faire du Tchad un hub d'innovation numérique où chaque jeune a accès
@@ -204,8 +186,8 @@ export default function About() {
               </p>
               <Link href="/programmes">
                 <Button data-testid="button-vision-programs">
-                  Découvrir nos programmes
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {t("common.learn_more")}
+                  <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180" />
                 </Button>
               </Link>
             </div>
