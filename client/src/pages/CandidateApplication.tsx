@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, Camera, Upload, Link as LinkIcon, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Loader2, Camera, Upload, Link as LinkIcon, AlertCircle, CheckCircle2, Linkedin, Facebook, Twitter } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { Link } from "wouter";
 
@@ -41,6 +41,9 @@ export default function CandidateApplication() {
             motivationUrl: "",
             videoUrl: "",
             programUrl: "",
+            linkedInUrl: "",
+            facebookUrl: "",
+            twitterUrl: "",
         },
     });
 
@@ -342,6 +345,54 @@ export default function CandidateApplication() {
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="Votre vision en PDF" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                </div>
+
+                                <div className="grid md:grid-cols-3 gap-6 pt-4 border-t border-dashed">
+                                    <FormField
+                                        control={form.control}
+                                        name="linkedInUrl"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="flex items-center gap-2">
+                                                    <Linkedin className="w-4 h-4 text-[#0a66c2]" /> LinkedIn
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="facebookUrl"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="flex items-center gap-2">
+                                                    <Facebook className="w-4 h-4 text-[#1877f2]" /> Facebook
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="twitterUrl"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel className="flex items-center gap-2">
+                                                    <Twitter className="w-4 h-4 text-[#1da1f2]" /> X (Twitter)
+                                                </FormLabel>
+                                                <FormControl>
+                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

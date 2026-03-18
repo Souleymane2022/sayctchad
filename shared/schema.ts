@@ -244,6 +244,9 @@ export const electionCandidates = pgTable("election_candidates", {
   motivationUrl: text("motivation_url").notNull(),
   videoUrl: text("video_url"),
   programUrl: text("program_url"),
+  linkedInUrl: text("linkedin_url"),
+  facebookUrl: text("facebook_url"),
+  twitterUrl: text("twitter_url"),
   status: text("status").notNull().default("pending"), // pending, approved, rejected
   votesCount: integer("votes_count").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow(),
