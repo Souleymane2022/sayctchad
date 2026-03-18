@@ -1171,33 +1171,35 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   return (
     <div className="min-h-screen">
       <div className="border-b">
-        <div className="container mx-auto flex items-center justify-between flex-wrap gap-2 py-4 px-4">
-          <div>
-            <h1 className="text-xl font-bold" data-testid="text-dashboard-title">Administration SAYC Tchad</h1>
-            <p className="text-sm text-muted-foreground">Gérer le contenu du site</p>
+        <div className="container mx-auto flex items-center justify-between flex-wrap gap-4 py-4 px-4">
+          <div className="flex-1 min-w-[200px]">
+            <h1 className="text-xl font-bold line-clamp-1" data-testid="text-dashboard-title">Administration SAYC</h1>
+            <p className="text-xs text-muted-foreground">Gestion du portail</p>
           </div>
-          <Button variant="outline" onClick={() => logoutMutation.mutate()} disabled={logoutMutation.isPending} data-testid="button-admin-logout">
+          <Button variant="outline" size="sm" onClick={() => logoutMutation.mutate()} disabled={logoutMutation.isPending} data-testid="button-admin-logout">
             <LogOut className="h-4 w-4 mr-2" />
-            Déconnexion
+            <span className="hidden sm:inline">Déconnexion</span>
           </Button>
         </div>
       </div>
       <div className="container mx-auto py-6 px-4">
         <Tabs defaultValue="opportunities">
-          <TabsList className="flex flex-wrap gap-1 h-auto mb-6">
-            <TabsTrigger value="opportunities" data-testid="tab-opportunities">Opportunités</TabsTrigger>
-            <TabsTrigger value="partners" data-testid="tab-partners">Partenaires</TabsTrigger>
-            <TabsTrigger value="trainings" data-testid="tab-trainings">Formations</TabsTrigger>
-            <TabsTrigger value="news" data-testid="tab-news">Actualités</TabsTrigger>
-            <TabsTrigger value="events" data-testid="tab-events">Événements</TabsTrigger>
-            <TabsTrigger value="achievements" data-testid="tab-achievements">Réalisations</TabsTrigger>
-            <TabsTrigger value="thunderbird" data-testid="tab-thunderbird">Candidatures Thunderbird</TabsTrigger>
-            <TabsTrigger value="elections" data-testid="tab-elections">Candidatures Élections</TabsTrigger>
-            <TabsTrigger value="members" data-testid="tab-members">Membres</TabsTrigger>
-            <TabsTrigger value="messages" data-testid="tab-messages">Messages</TabsTrigger>
-            <TabsTrigger value="newsletter" data-testid="tab-newsletter">Newsletter</TabsTrigger>
-            <TabsTrigger value="mass-email" data-testid="tab-mass-email">Email en Masse</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
+            <TabsList className="flex min-w-max md:min-w-0 md:flex-wrap gap-1 h-auto mb-2 md:mb-6 bg-transparent border-none p-0">
+              <TabsTrigger value="opportunities" className="data-[state=active]:bg-sayc-teal data-[state=active]:text-white border">Opportunités</TabsTrigger>
+              <TabsTrigger value="partners" className="border">Partenaires</TabsTrigger>
+              <TabsTrigger value="trainings" className="border">Formations</TabsTrigger>
+              <TabsTrigger value="news" className="border">Actualités</TabsTrigger>
+              <TabsTrigger value="events" className="border">Événements</TabsTrigger>
+              <TabsTrigger value="achievements" className="border">Réalisations</TabsTrigger>
+              <TabsTrigger value="thunderbird" className="border">T-Bird</TabsTrigger>
+              <TabsTrigger value="elections" className="border">Élections</TabsTrigger>
+              <TabsTrigger value="members" className="border">Membres</TabsTrigger>
+              <TabsTrigger value="messages" className="border">Messages</TabsTrigger>
+              <TabsTrigger value="newsletter" className="border">Newsletter</TabsTrigger>
+              <TabsTrigger value="mass-email" className="border text-blue-600">Email Hub</TabsTrigger>
+            </TabsList>
+          </div>
 
           {resourceConfigs.map((config) => (
             <TabsContent key={config.key} value={config.key}>
