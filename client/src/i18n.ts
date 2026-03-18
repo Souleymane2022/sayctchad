@@ -20,14 +20,6 @@ i18n
       caches: ['localStorage', 'cookie'],
     },
   });
-    interpolation: {
-      escapeValue: false,
-    },
-    detection: {
-      order: ['localStorage', 'cookie', 'htmlTag', 'path', 'subdomain'],
-      caches: ['localStorage', 'cookie'],
-    },
-  });
 
 // Set HTML lang and dir attributes on language change
 i18n.on('languageChanged', (lng) => {
