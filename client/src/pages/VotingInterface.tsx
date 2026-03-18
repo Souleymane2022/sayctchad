@@ -13,7 +13,6 @@ import SEOHead from "@/components/SEOHead";
 import { Link } from "wouter";
 
 const roles = [
-    "Leader National",
     "Leader Adjoint",
     "Secteur Privé",
     "Académique",

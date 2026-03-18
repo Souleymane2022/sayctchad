@@ -18,8 +18,7 @@ import SEOHead from "@/components/SEOHead";
 import { Link } from "wouter";
 
 const postRoles = [
-    { value: "Leader National", label: "Leader National de la transformation numérique" },
-    { value: "Leader Adjoint", label: "Leader Adjoint (Coordination des provinces)" },
+    { value: "Leader Adjoint", label: "Leader National Adjoint (Coordination des provinces)" },
     { value: "Secteur Privé", label: "Représentant du secteur privé / innovation" },
     { value: "Académique", label: "Représentant académique (Recherche & Formation)" },
     { value: "Inclusion", label: "Représentant inclusion & genre" },
