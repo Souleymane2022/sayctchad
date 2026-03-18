@@ -1,6 +1,7 @@
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Header } from "@/components/layout/Header";
@@ -51,14 +52,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-1">
-            <Router />
-          </main>
-          <Footer />
-        </div>
-        <Toaster />
+        <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Chargement...</div>}>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">
+              <Router />
+            </main>
+            <Footer />
+          </div>
+          <Toaster />
+        </Suspense>
       </TooltipProvider>
     </QueryClientProvider>
   );
