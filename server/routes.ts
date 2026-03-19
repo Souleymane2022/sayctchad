@@ -715,6 +715,30 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   });
 
   // Admin Election Management
+  app.get("/api/admin/elections/diagnose", requireAdmin, async (_req, res) => {
+    const result: any = { status: "running", steps: [] };
+    try {
+      result.steps.push("1. Testing DB connection...");
+      const { db } = await import("./db");
+      result.steps.push("2. DB module loaded. Testing raw query...");
+      const { sql } = await import("drizzle-orm");
+      const testResult = await db.execute(sql`SELECT 1 as test`);
+      result.steps.push(`3. DB connected. Testing election_candidates table...`);
+      const tableCheck = await db.execute(sql`SELECT COUNT(*) as count FROM election_candidates`);
+      result.steps.push(`4. Table exists. Row count: ${JSON.stringify(tableCheck.rows[0])}`);
+      const candidates = await db.execute(sql`SELECT id, first_name, last_name, status FROM election_candidates LIMIT 5`);
+      result.candidates = candidates.rows;
+      result.status = "ok";
+      res.json(result);
+    } catch (error: any) {
+      result.status = "error";
+      result.error = error.message;
+      result.code = error.code;
+      result.steps.push(`ERROR: ${error.message}`);
+      res.status(500).json(result);
+    }
+  });
+
   app.get("/api/admin/elections/candidates", requireAdmin, async (_req, res) => {
     try {
       const candidates = await storage.getAllCandidates();
