@@ -1,3 +1,5 @@
+import { sql as drizzleSql } from "drizzle-orm";
+import { neon } from "@neondatabase/serverless";
 import {
   type User, type InsertUser,
   type Member, type InsertMember,
@@ -335,11 +337,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApprovedCandidates(): Promise<ElectionCandidate[]> {
-    return db.select().from(electionCandidates).where(eq(electionCandidates.status, "approved")).orderBy(asc(electionCandidates.lastName));
+    const rawSql = neon(process.env.DATABASE_URL!);
+    const rows = await rawSql(`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`);
+    return rows as unknown as ElectionCandidate[];
   }
 
   async getAllCandidates(): Promise<ElectionCandidate[]> {
-    return db.select().from(electionCandidates).orderBy(desc(electionCandidates.createdAt));
+    const rawSql = neon(process.env.DATABASE_URL!);
+    const rows = await rawSql(`SELECT * FROM election_candidates ORDER BY created_at DESC`);
+    return rows as unknown as ElectionCandidate[];
   }
 
   async updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined> {
