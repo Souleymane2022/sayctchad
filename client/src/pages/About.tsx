@@ -1,4 +1,17 @@
 import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
+import { Link } from "wouter";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from "@/components/ui/card";
+import SEOHead from "@/components/SEOHead";
 import {
   Carousel,
   CarouselContent,
@@ -82,11 +95,15 @@ const galleryImages = [
 
 export default function About() {
   const { t } = useTranslation();
+  
+  // Helper to ensure we always get a string for SEO/Props
+  const v = (res: any, fallback: string) => typeof res === "string" ? res : fallback;
+
   const { data: partnersList = [], isLoading: partnersLoading } = useQuery<Partner[]>({
     queryKey: ["/api/partners"],
   });
 
-  const webPageJsonLd = useMemo(() => ({
+  const organizationJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "AboutPage",
     name: "À propos de SAYC Tchad",
@@ -137,11 +154,11 @@ export default function About() {
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="À propos de SAYC Tchad | Souleymane Mahamat Saleh - Point Focal"
-        description="SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Point Focal National : Souleymane Mahamat Saleh. Éducation, collaboration et innovation numérique pour les jeunes de 15 à 35 ans."
+        title={`${v(t("common.about"), "À propos")} - SAYC Tchad` as any}
+        description={v(t("about.seo_desc"), "SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa au Tchad, dédié à l'autonomisation des jeunes par le numérique.") as any}
         path="/a-propos"
-        keywords="Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse"
-        jsonLd={webPageJsonLd}
+        keywords={v(t("about.seo_keywords"), "Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse") as any}
+        jsonLd={organizationJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
         <div className="absolute inset-0 opacity-10">

@@ -1,4 +1,18 @@
 import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  Card, 
+  CardHeader, 
+  CardTitle, 
+  CardDescription, 
+  CardContent 
+} from "@/components/ui/card";
+import SEOHead from "@/components/SEOHead";
 import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
 import {
   Dialog,
@@ -165,6 +179,10 @@ const smartAfricaInitiatives = [
 
 export default function Home() {
   const { t } = useTranslation();
+  
+  // Helper to ensure we always get a string for SEO/Props
+  const v = (res: any, fallback: string) => typeof res === "string" ? res : fallback;
+
   const { data: opportunities = [] } = useQuery<Opportunity[]>({
     queryKey: ["/api/opportunities"],
   });
@@ -225,9 +243,10 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="SAYC Tchad - Smart Africa Youth Chapter | Innovation Numérique pour la Jeunesse"
-        description="Smart Africa Youth Chapter Tchad - 7ème chapitre jeunesse de Smart Africa dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique au Tchad."
+        title={`${v(t("common.home"), "Accueil")} - SAYC Tchad` as any}
+        description={v(t("home.seo_desc"), "Smart Africa Youth Chapter Tchad - 7ème chapitre jeunesse de Smart Africa dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique au Tchad.") as any}
         path="/"
+        keywords={v(t("home.seo_keywords"), "SAYC Tchad, Smart Africa, Jeunesse, Tchad, Innovation, SADA") as any}
         jsonLd={organizationJsonLd}
       />
       <section className="relative overflow-hidden bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground py-20 md:py-28 lg:py-36">

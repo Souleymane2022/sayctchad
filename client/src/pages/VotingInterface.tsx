@@ -10,6 +10,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
+import SEOHead from "@/components/SEOHead";
+import {
+    CheckCircle2,
+    ShieldCheck,
+    Loader2,
+    ChevronRight,
+    ChevronLeft,
+    AlertCircle,
+    ExternalLink,
+    Linkedin,
+    Facebook,
+    Twitter,
+    Vote as VoteIcon
+} from "lucide-react";
 
 const roles = [
     "Leader Adjoint",
@@ -119,15 +133,15 @@ export default function VotingInterface() {
                         <CheckCircle2 className="w-12 h-12" />
                     </div>
                     <div className="space-y-4">
-                        <h1 className="text-4xl font-heading font-bold text-[#1e3a8a]">Vote Terminé !</h1>
+                        <h1 className="text-4xl font-heading font-bold text-[#1e3a8a]">{t("vote.done_title") || "Vote Terminé !"}</h1>
                         <p className="text-muted-foreground">
-                            Vous avez accompli votre devoir de membre. Votre voix compte pour l'avenir de la technologie au Tchad.
+                            {t("vote.done_desc") || ""}
                         </p>
                     </div>
                     <div className="pt-6">
                         <Link href="/">
                             <Button className="w-full h-14 rounded-2xl bg-[#1e3a8a] text-lg font-bold shadow-xl shadow-blue-900/20">
-                                Retour à l'accueil
+                                {t("common.back_home") || "Retour à l'accueil"}
                             </Button>
                         </Link>
                     </div>
@@ -138,16 +152,16 @@ export default function VotingInterface() {
 
     return (
         <div className="min-h-screen bg-slate-50 py-12 px-4">
-            <SEOHead title="Espace de Vote - SAYC Tchad" description="Votez pour le futur Comité National du SAYC Tchad." path="/elections/voter" />
+            <SEOHead title={`${t("vote.page_title") || ""} - SAYC Tchad`} description={t("vote.page_desc") || ""} path="/elections/voter" />
 
             <div className="max-w-4xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                     <div className="space-y-2">
                         <Badge variant="outline" className="text-sayc-teal border-sayc-teal uppercase tracking-wider text-[10px] font-bold">
-                            Scrutin National 2026
+                            {t("vote.badge") || ""}
                         </Badge>
-                        <h1 className="text-3xl font-heading font-bold text-[#1e3a8a]">Espace de Vote Numérique</h1>
+                        <h1 className="text-3xl font-heading font-bold text-[#1e3a8a]">{t("vote.main_title") || ""}</h1>
                     </div>
                     {step === "vote" && (
                         <div className="flex gap-2">
@@ -166,15 +180,15 @@ export default function VotingInterface() {
                                 <ShieldCheck className="w-8 h-8" />
                             </div>
                             <div>
-                                <CardTitle className="text-2xl">Vérification du Membre</CardTitle>
-                                <CardDescription>Identifiez-vous pour accéder au bulletin de vote.</CardDescription>
+                                <CardTitle className="text-2xl">{t("vote.verify_title") || ""}</CardTitle>
+                                <CardDescription>{t("vote.verify_desc") || ""}</CardDescription>
                             </div>
                         </CardHeader>
                         <CardContent>
                             <form onSubmit={handleVerify} className="space-y-6">
                                 <div className="space-y-4">
                                     <div className="space-y-2">
-                                        <Label htmlFor="membershipId">ID de Membre (SAYC-XXXXXX)</Label>
+                                        <Label htmlFor="membershipId">{t("vote.id_label") || ""}</Label>
                                         <Input 
                                             id="membershipId" 
                                             placeholder="SAYC-123456" 
@@ -184,7 +198,7 @@ export default function VotingInterface() {
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="email">Email d'inscription</Label>
+                                        <Label htmlFor="email">{t("vote.email_label") || ""}</Label>
                                         <Input 
                                             id="email" 
                                             type="email" 
@@ -201,13 +215,13 @@ export default function VotingInterface() {
                                     className="w-full h-14 bg-[#1e3a8a] hover:bg-[#1e40af] text-lg font-bold rounded-2xl shadow-lg"
                                 >
                                     {isVerifying ? (
-                                        <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Vérification...</>
+                                        <><Loader2 className="mr-2 h-5 w-5 animate-spin rtl:ml-2 rtl:mr-0" /> {t("vote.verifying") || ""}</>
                                     ) : (
-                                        <><ShieldCheck className="mr-2 w-5 h-5" /> Accéder au vote <ChevronRight className="ml-2 w-5 h-5" /></>
+                                        <><ShieldCheck className="mr-2 w-5 h-5 rtl:ml-2 rtl:mr-0" /> {t("vote.access_button") || ""} <ChevronRight className="ml-2 w-5 h-5 rtl:rotate-180" /></>
                                     )}
                                 </Button>
                                 <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-2">
-                                    <AlertCircle className="w-3 h-3" /> Votre vote est strictement personnel et sécurisé.
+                                    <AlertCircle className="w-3 h-3" /> {t("vote.security_notice") || ""}
                                 </p>
                             </form>
                         </CardContent>
@@ -221,12 +235,12 @@ export default function VotingInterface() {
                                 </div>
                                 <div>
                                     <h2 className="text-2xl font-bold text-[#1e3a8a]">{currentRole}</h2>
-                                    <p className="text-sm text-muted-foreground">Choisissez votre candidat pour ce poste.</p>
+                                    <p className="text-sm text-muted-foreground">{t("vote.role_selection_desc") || ""}</p>
                                 </div>
                             </div>
                             {currentRoleIndex > 0 && (
                                 <Button variant="ghost" onClick={() => setCurrentRoleIndex(prev => prev - 1)} className="text-muted-foreground">
-                                    <ChevronLeft className="mr-2 w-4 h-4" /> Poste précédent
+                                    <ChevronLeft className="mr-2 w-4 h-4 rtl:rotate-180" /> {t("vote.prev_post") || ""}
                                 </Button>
                             )}
                         </div>
@@ -234,15 +248,15 @@ export default function VotingInterface() {
                         {isLoading ? (
                             <div className="flex flex-col items-center py-20 gap-4">
                                 <Loader2 className="w-12 h-12 text-sayc-teal animate-spin" />
-                                <p className="text-muted-foreground animate-pulse">Chargement des candidats...</p>
+                                <p className="text-muted-foreground animate-pulse">{t("vote.loading_candidates") || ""}</p>
                             </div>
                         ) : roleCandidates.length === 0 ? (
                             <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-300">
                                 <AlertCircle className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                                <h3 className="text-xl font-bold text-slate-500">Aucun candidat validé</h3>
-                                <p className="text-slate-400">Il n'y a pas encore de candidats pour ce poste.</p>
+                                <h3 className="text-xl font-bold text-slate-500">{t("vote.no_candidates_title") || ""}</h3>
+                                <p className="text-slate-400">{t("vote.no_candidates_desc") || ""}</p>
                                 <Button variant="outline" className="mt-6" onClick={() => setCurrentRoleIndex(prev => prev + 1)}>
-                                    Passer au poste suivant
+                                    {t("vote.next_post") || ""}
                                 </Button>
                             </div>
                         ) : (
@@ -270,7 +284,7 @@ export default function VotingInterface() {
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-2 text-sm text-sayc-teal font-semibold hover:underline"
                                                 >
-                                                    <ExternalLink className="w-4 h-4" /> Voir le programme d'action
+                                                    <ExternalLink className="w-4 h-4" /> {t("vote.view_program") || ""}
                                                 </a>
                                                 <a 
                                                     href={candidate.videoUrl || "#"} 
@@ -278,7 +292,7 @@ export default function VotingInterface() {
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center gap-2 text-sm text-blue-600 font-semibold hover:underline"
                                                 >
-                                                    <ExternalLink className="w-4 h-4" /> Voir la vidéo de présentation
+                                                    <ExternalLink className="w-4 h-4" /> {t("vote.view_video") || ""}
                                                 </a>
                                             </div>
 
@@ -306,9 +320,9 @@ export default function VotingInterface() {
                                                 disabled={voteMutation.isPending}
                                             >
                                                 {voteMutation.isPending && voteMutation.variables?.candidateId === candidate.id ? (
-                                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enregistrement...</>
+                                                    <><Loader2 className="mr-2 h-4 w-4 animate-spin rtl:ml-2 rtl:mr-0" /> {t("vote.voting") || ""}</>
                                                 ) : (
-                                                    <><Vote className="mr-2 h-5 w-5" /> Je vote pour ce candidat</>
+                                                    <><VoteIcon className="mr-2 h-5 w-5 rtl:ml-2 rtl:mr-0" /> {t("vote.vote_button") || ""}</>
                                                 )}
                                             </Button>
                                         </CardContent>

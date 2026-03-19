@@ -143,7 +143,9 @@ ${pages.map(p => `  <url>
 
   app.delete("/api/admin/members/:id", requireAdmin, async (req, res) => {
     try {
-      await storage.deleteMember(req.params.id);
+      const { id } = req.params;
+      if (!id) return res.status(400).json({ error: "ID manquant" });
+      await (storage as any).deleteMember(id);
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Erreur lors de la suppression" });
@@ -550,7 +552,12 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
   app.delete("/api/admin/opportunities/:id", requireAdmin, async (req, res) => {
-    try { await storage.deleteOpportunity(req.params.id as string); res.json({ success: true }); }
+    try { 
+      const { id } = req.params;
+      if (!id) return res.status(400).json({ error: "ID manquant" });
+      await (storage as any).deleteOpportunity(id); 
+      res.json({ success: true }); 
+    }
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
 

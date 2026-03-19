@@ -1,4 +1,16 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "wouter";
+import { 
+  SiFacebook, 
+  SiLinkedin, 
+  SiYoutube 
+} from "react-icons/si";
+import { 
+  ExternalLink, 
+  MapPin, 
+  Phone, 
+  Mail 
+} from "lucide-react";
 import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 
 const footerLinks = {
