@@ -18,7 +18,7 @@ import {
   opportunities, partners, trainings, newsArticles, events, achievements,
   thunderbirdApplications, electionCandidates, electionVotes
 } from "../shared/schema";
-import { db } from "./db";
+import { db, sql as neonSql } from "./db";
 import { eq, desc, asc, sql, or, isNull } from "drizzle-orm";
 
 export interface IStorage {
@@ -337,13 +337,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getApprovedCandidates(): Promise<ElectionCandidate[]> {
-    const result = await db.execute(sql`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`);
-    return (result.rows || result) as unknown as ElectionCandidate[];
+    const rows = await neonSql`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`;
+    return rows as unknown as ElectionCandidate[];
   }
 
   async getAllCandidates(): Promise<ElectionCandidate[]> {
-    const result = await db.execute(sql`SELECT * FROM election_candidates ORDER BY created_at DESC`);
-    return (result.rows || result) as unknown as ElectionCandidate[];
+    const rows = await neonSql`SELECT * FROM election_candidates ORDER BY created_at DESC`;
+    return rows as unknown as ElectionCandidate[];
   }
 
   async updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined> {
