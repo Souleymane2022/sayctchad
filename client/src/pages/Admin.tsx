@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import { processAndWatermark } from "@/lib/imageUtils";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
@@ -1348,13 +1348,17 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
 function ElectionCandidatesTab() {
   const { toast } = useToast();
-  const { data: candidates = [], isLoading } = useQuery<(ElectionCandidate)[]>({
+  const { data: candidates = [], isLoading, error } = useQuery<(ElectionCandidate)[]>({
     queryKey: ["/api/admin/elections/candidates"],
     queryFn: async () => {
       const res = await fetch("/api/admin/elections/candidates", { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || errData.message || "Failed to fetch candidates");
+      }
       return res.json();
     },
+    retry: 1,
   });
 
   const updateStatusMutation = useMutation({
@@ -1377,97 +1381,165 @@ function ElectionCandidatesTab() {
 
   if (isLoading) return <LoadingTable />;
 
+  if (error) {
+    return (
+      <div className="p-8 text-center bg-destructive/10 border border-destructive/20 rounded-xl space-y-4">
+        <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
+        <h3 className="text-xl font-bold text-destructive">{t("admin.elections.error_loading")}</h3>
+        <p className="text-muted-foreground max-w-md mx-auto">
+          {(error as Error).message}. {t("admin.elections.error_db_migration")}
+        </p>
+        <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/elections/candidates"] })}>
+          {t("admin.elections.retry")}
+        </Button>
+      </div>
+    );
+  }
+
+  // Calculate stats
+  const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
+  const stats = roles.map(role => {
+    const roleCandidates = candidates.filter(c => c.role === role);
+    const sorted = [...roleCandidates].sort((a, b) => (b.votesCount || 0) - (a.votesCount || 0));
+    return {
+      role,
+      totalVotes: roleCandidates.reduce((acc, curr) => acc + (curr.votesCount || 0), 0),
+      leader: sorted[0] || null,
+      count: roleCandidates.length
+    };
+  });
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">Candidatures Élections ({candidates.length})</h2>
-      <div className="rounded-md border overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Candidat</TableHead>
-              <TableHead>Poste</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Statut</TableHead>
-              <TableHead>Votes</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {candidates.length === 0 ? (
+    <div className="space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h2 className="text-2xl font-bold text-[#1e3a8a]">{t("admin.elections.title")}</h2>
+        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+          {t("admin.elections.total_applications", { count: candidates.length })}
+        </Badge>
+      </div>
+
+      {/* Results Summary */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((s) => (
+          <Card key={s.role} className="border-none shadow-sm bg-slate-50/50">
+            <CardContent className="pt-6 space-y-2">
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{s.role}</p>
+              <div className="flex justify-between items-end">
+                <div>
+                  <p className="text-2xl font-bold text-[#1e3a8a]">{s.totalVotes}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("admin.elections.votes_expressed")}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm font-semibold">{s.count}</p>
+                  <p className="text-[10px] text-muted-foreground">{t("admin.elections.candidate_label")}</p>
+                </div>
+              </div>
+              {s.leader && s.totalVotes > 0 && (
+                <div className="pt-2 border-t flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-sayc-teal/10 text-sayc-teal flex items-center justify-center">
+                    <Award className="w-3 h-3" />
+                  </div>
+                  <p className="text-[11px] font-medium truncate">En tête: {s.leader.firstName}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <div className="space-y-4 pt-4">
+        <h3 className="text-lg font-semibold flex items-center gap-2">
+          <Users className="w-5 h-5 text-sayc-teal" /> {t("admin.elections.detailed_list")}
+        </h3>
+        <div className="rounded-md border overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucune candidature</TableCell>
+                <TableHead>{t("admin.elections.columns.candidate")}</TableHead>
+                <TableHead>{t("admin.elections.columns.role")}</TableHead>
+                <TableHead>{t("admin.elections.columns.email")}</TableHead>
+                <TableHead>{t("admin.elections.columns.status")}</TableHead>
+                <TableHead>{t("admin.elections.columns.votes")}</TableHead>
+                <TableHead>{t("admin.elections.columns.date")}</TableHead>
+                <TableHead>{t("admin.elections.columns.actions")}</TableHead>
               </TableRow>
-            ) : (
-              candidates.map((c) => (
-                <TableRow key={c.id}>
-                  <TableCell className="font-medium">
-                    <div className="flex items-center gap-2">
-                      <img src={c.photoUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
-                      {c.firstName} {c.lastName}
-                    </div>
-                  </TableCell>
-                  <TableCell>{c.role}</TableCell>
-                  <TableCell>{c.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={c.status === "approved" ? "default" : c.status === "rejected" ? "destructive" : "outline"}>
-                      {c.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{c.votesCount}</TableCell>
-                  <TableCell>{c.createdAt ? new Date(c.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline" size="sm">Détails</Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle>Dossier de Candidature - {c.firstName} {c.lastName}</DialogTitle>
-                          </DialogHeader>
-                          <div className="grid grid-cols-2 gap-4 py-4">
-                            <div className="col-span-2 flex justify-center py-4">
-                                <img src={c.photoUrl} alt="" className="w-32 h-32 rounded-2xl object-cover border" />
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">Poste</Label>
-                              <p className="font-bold">{c.role}</p>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">Email</Label>
-                              <p>{c.email}</p>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">CV (Lien)</Label>
-                              <a href={c.cvUrl} target="_blank" className="text-blue-600 hover:underline block truncate">Voir le CV</a>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">Motivation (Lien)</Label>
-                              <a href={c.motivationUrl} target="_blank" className="text-blue-600 hover:underline block truncate">Voir la motivation</a>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">Vidéo (Lien)</Label>
-                              <a href={c.videoUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">Voir la vidéo</a>
-                            </div>
-                            <div className="space-y-1">
-                              <Label className="text-xs text-muted-foreground">Vision/Programme (Lien)</Label>
-                              <a href={c.programUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">Voir le programme</a>
-                            </div>
-                          </div>
-                          <div className="flex justify-end gap-2 border-t pt-4">
-                            <Button variant="outline" className="text-destructive" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "rejected" })}>Rejeter</Button>
-                            <Button className="bg-sayc-teal hover:bg-sayc-teal/90" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "approved" })}>Approuver</Button>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </TableCell>
+            </TableHeader>
+            <TableBody>
+              {candidates.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="text-center text-muted-foreground py-8">{t("admin.elections.no_entries")}</TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                candidates.map((c) => (
+                  <TableRow key={c.id}>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <img src={c.photoUrl} alt="" className="w-8 h-8 rounded-full object-cover" />
+                        {c.firstName} {c.lastName}
+                      </div>
+                    </TableCell>
+                    <TableCell>{c.role}</TableCell>
+                    <TableCell>{c.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={c.status === "approved" ? "default" : c.status === "rejected" ? "destructive" : "outline"}>
+                        {c.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>{c.votesCount}</TableCell>
+                    <TableCell>{c.createdAt ? new Date(c.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm">{t("admin.elections.details")}</Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>{t("admin.elections.dialog_title")} - {c.firstName} {c.lastName}</DialogTitle>
+                            </DialogHeader>
+                            <div className="grid grid-cols-2 gap-4 py-4">
+                              <div className="col-span-2 flex justify-center py-4">
+                                  <img src={c.photoUrl} alt="" className="w-32 h-32 rounded-2xl object-cover border" />
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.post")}</Label>
+                                <p className="font-bold">{c.role}</p>
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.columns.email")}</Label>
+                                <p>{c.email}</p>
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.cv")}</Label>
+                                <a href={c.cvUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.motivation")}</Label>
+                                <a href={c.motivationUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.video")}</Label>
+                                <a href={c.videoUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                              </div>
+                              <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.program")}</Label>
+                                <a href={c.programUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                              </div>
+                            </div>
+                            <div className="flex justify-end gap-2 border-t pt-4">
+                              <Button variant="outline" className="text-destructive" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "rejected" })}>{t("admin.elections.reject")}</Button>
+                              <Button className="bg-sayc-teal hover:bg-sayc-teal/90" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "approved" })}>{t("admin.elections.approve")}</Button>
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

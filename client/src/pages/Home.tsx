@@ -49,12 +49,7 @@ import galleryImg2 from "@assets/UniPod_Mamou_J2_70_1770104422781.JPG";
 import galleryImg3 from "@assets/UniPod_Mamou_J2_21_1770104422785.JPG";
 import galleryImg4 from "@assets/604667985_122096798505190973_8462039452349924014_n_1770104422797.jpg";
 
-const galleryImages = [
-  { src: galleryImg1, alt: "Formation SADA4Youth en cours" },
-  { src: galleryImg2, alt: "Session de renforcement de compétences" },
-  { src: galleryImg3, alt: "Travail collaboratif des jeunes" },
-  { src: galleryImg4, alt: "Conférence Smart Africa" },
-];
+// Images assets imports kept at top level
 
 function PixelGrid({ className = "", variant = "hero" }: { className?: string; variant?: "hero" | "section" | "small" }) {
   if (variant === "small") {
@@ -102,80 +97,6 @@ function PixelGrid({ className = "", variant = "hero" }: { className?: string; v
   );
 }
 
-const objectives = [
-  {
-    icon: Users,
-    title: "Leadership",
-    description: "Favoriser le leadership au sein du chapitre et former des jeunes leaders capables de piloter son évolution.",
-    color: "bg-primary/10 text-primary",
-  },
-  {
-    icon: Lightbulb,
-    title: "Innovation",
-    description: "Fournir une plateforme structurée où les jeunes innovateurs peuvent concevoir, valider et lancer des solutions numériques innovantes.",
-    color: "bg-accent/10 text-accent",
-  },
-  {
-    icon: Handshake,
-    title: "Collaboration",
-    description: "Activer la collaboration entre les jeunes via une plateforme nationale et continentale pour la formation, la mise en réseau et l'innovation.",
-    color: "bg-sayc-teal/10 text-sayc-teal",
-  },
-];
-
-const activities = [
-  {
-    icon: GraduationCap,
-    title: "Développer vos compétences",
-    description: "Programmes de renforcement des compétences numériques de base et avancées via la plateforme SADA.",
-  },
-  {
-    icon: Users,
-    title: "Programme de mentorat",
-    description: "Accompagnement personnalisé par des mentors expérimentés du réseau Smart Africa.",
-  },
-  {
-    icon: Rocket,
-    title: "Hackathons & Bootcamps",
-    description: "Concours de pitchs, bootcamps et hackathons locaux et internationaux pour les jeunes innovateurs.",
-  },
-  {
-    icon: Globe,
-    title: "Opportunités de réseautage",
-    description: "Connexion avec les 6 autres chapitres Smart Africa à travers l'Afrique pour partager les meilleures pratiques.",
-  },
-  {
-    icon: BookOpen,
-    title: "Ressources pédagogiques",
-    description: "Accès à plus de 130 formations sur la plateforme SADA, incluant des cours d'universités internationales.",
-  },
-  {
-    icon: Award,
-    title: "Présentation de projets",
-    description: "Opportunités de présenter vos projets devant des investisseurs et des décideurs politiques.",
-  },
-];
-
-const smartAfricaInitiatives = [
-  {
-    title: "Smart Africa Alliance",
-    description: "Alliance panafricaine de 40 États membres représentant plus de 1,2 milliard de personnes, pour accélérer le développement socio-économique par les TIC.",
-    link: "https://smartafrica.org/fr/page-daccueil/",
-    icon: Globe,
-  },
-  {
-    title: "SADA - Académie Numérique",
-    description: "Écosystème d'apprentissage panafricain visant à améliorer les compétences numériques et l'employabilité. Objectif : 100 millions de citoyens africains d'ici 2030.",
-    link: "https://sada.smart.africa",
-    icon: GraduationCap,
-  },
-  {
-    title: "Transform Africa Summit",
-    description: "Le sommet annuel qui rassemble les leaders africains pour accélérer la transformation digitale du continent.",
-    link: "https://transformafricasummit.org",
-    icon: Rocket,
-  },
-];
 
 export default function Home() {
   const { t } = useTranslation();
@@ -183,6 +104,81 @@ export default function Home() {
   // Helper to ensure we always get a string for SEO/Props
   const v = (res: any, fallback: string) => typeof res === "string" ? res : fallback;
 
+  const objectives = useMemo(() => [
+    {
+      icon: Users,
+      title: t("home.objectives.leadership.title"),
+      description: t("home.objectives.leadership.desc"),
+      color: "bg-primary/10 text-primary",
+    },
+    {
+      icon: Lightbulb,
+      title: t("home.objectives.innovation.title"),
+      description: t("home.objectives.innovation.desc"),
+      color: "bg-accent/10 text-accent",
+    },
+    {
+      icon: Handshake,
+      title: t("home.objectives.collaboration.title"),
+      description: t("home.objectives.collaboration.desc"),
+      color: "bg-sayc-teal/10 text-sayc-teal",
+    },
+  ], [t]);
+
+  const activities = useMemo(() => [
+    {
+      icon: GraduationCap,
+      title: t("home.activities.skills.title"),
+      description: t("home.activities.skills.desc"),
+    },
+    {
+      icon: Users,
+      title: t("home.activities.mentorship.title"),
+      description: t("home.activities.mentorship.desc"),
+    },
+    {
+      icon: Rocket,
+      title: t("home.activities.hackathons.title"),
+      description: t("home.activities.hackathons.desc"),
+    },
+    {
+      icon: Globe,
+      title: t("home.activities.networking.title"),
+      description: t("home.activities.networking.desc"),
+    },
+    {
+      icon: BookOpen,
+      title: t("home.activities.resources.title"),
+      description: t("home.activities.resources.desc"),
+    },
+    {
+      icon: Award,
+      title: t("home.activities.showcase.title"),
+      description: t("home.activities.showcase.desc"),
+    },
+  ], [t]);
+
+  const smartAfricaInitiatives = useMemo(() => [
+    {
+      title: t("home.initiatives.alliance.title"),
+      description: t("home.initiatives.alliance.desc"),
+      link: "https://smartafrica.org/fr/page-daccueil/",
+      icon: Globe,
+    },
+    {
+      title: t("home.initiatives.sada.title"),
+      description: t("home.initiatives.sada.desc"),
+      link: "https://sada.smart.africa",
+      icon: GraduationCap,
+    },
+    {
+      title: t("home.initiatives.tas.title"),
+      description: t("home.initiatives.tas.desc"),
+      link: "https://transformafricasummit.org",
+      icon: Rocket,
+    },
+  ], [t]);
+  
   const { data: opportunities = [] } = useQuery<Opportunity[]>({
     queryKey: ["/api/opportunities"],
   });
@@ -199,6 +195,13 @@ export default function Home() {
     queryKey: ["/api/trainings"],
   });
 
+  const galleryImages = useMemo(() => [
+    { src: galleryImg1, alt: t("home.gallery.img1") },
+    { src: galleryImg2, alt: t("home.gallery.img2") },
+    { src: galleryImg3, alt: t("home.gallery.img3") },
+    { src: galleryImg4, alt: t("home.gallery.img4") },
+  ], [t]);
+
   const { data: newsList = [] } = useQuery<NewsArticle[]>({
     queryKey: ["/api/news"],
   });
@@ -210,7 +213,7 @@ export default function Home() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "SAYC Tchad - Smart Africa Youth Chapter",
-    description: "7ème chapitre jeunesse de Smart Africa au Tchad, dédié aux jeunes de 15 à 35 ans pour l'éducation, la collaboration et l'innovation numérique.",
+    description: v(t("home.seo_desc"), "Smart Africa Youth Chapter Tchad"),
     url: "https://sayctchad.org",
     logo: "https://sayctchad.org/favicon.png",
     parentOrganization: {
@@ -221,24 +224,24 @@ export default function Home() {
     founder: {
       "@type": "Person",
       "name": "Souleymane Mahamat Saleh",
-      "jobTitle": "Point Focal National SAYC Tchad",
+      "jobTitle": v(t("about.focal_point_title"), "Point Focal National"),
       "sameAs": [
         "https://www.linkedin.com/company/110439974/"
       ]
     },
     contactPoint: {
       "@type": "ContactPoint",
-      "contactType": "Point Focal National",
+      "contactType": v(t("about.focal_point_title"), "Point Focal National"),
       "name": "Souleymane Mahamat Saleh",
       "telephone": "+23566161753",
-      "availableLanguage": ["fr", "ar"]
+      "availableLanguage": ["fr", "ar", "en"]
     },
     address: {
       "@type": "PostalAddress",
       "addressLocality": "N'Djamena",
       "addressCountry": "TD",
     },
-  }), []);
+  }), [t]);
 
   return (
     <div className="flex flex-col">
@@ -258,7 +261,7 @@ export default function Home() {
           <div className="max-w-4xl mx-auto text-center">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-hero-tag">
               <Zap className="w-3 h-3 mr-1" />
-              7e Chapitre Jeunesse de Smart Africa
+              {t("hero.badge", { defaultValue: "7e Chapitre Jeunesse de Smart Africa" })}
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-testid="text-hero-title">
               {t("hero.title")}{" "}
@@ -268,9 +271,9 @@ export default function Home() {
               {t("hero.description")}
             </p>
             <p className="text-sm text-sidebar-foreground/60 mb-8 max-w-xl mx-auto" data-testid="text-hero-tagline">
-              Jeunes de 15 à 35 ans | Une initiative de{" "}
+              {t("hero.tagline", { defaultValue: "Jeunes de 15 à 35 ans" })} | {t("hero.initiative_of", { defaultValue: "Une initiative de" })}{" "}
               <a href="https://smartafrica.org" target="_blank" rel="noopener noreferrer" className="text-accent underline underline-offset-2" data-testid="link-hero-smart-africa">
-                Smart Africa Alliance
+                {t("home.alliance_name")}
               </a>
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -294,7 +297,7 @@ export default function Home() {
       <section className="py-4 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm">
-            <span className="font-medium">Smart Africa Alliance</span>
+            <span className="font-medium">{t("home.alliance_name")}</span>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
             <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-sada">
               SADA <ExternalLink className="w-3 h-3" />
@@ -305,7 +308,7 @@ export default function Home() {
             </a>
             <span className="hidden sm:inline text-primary-foreground/40">|</span>
             <a href="https://smartafrica.org/blueprint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary-foreground/80 transition-colors" data-testid="link-bar-blueprints">
-              Plans directeurs <ExternalLink className="w-3 h-3" />
+              {t("home.blueprints")} <ExternalLink className="w-3 h-3" />
             </a>
           </div>
         </div>
@@ -324,15 +327,15 @@ export default function Home() {
               <PixelGrid variant="small" />
               <Badge variant="outline" data-testid="badge-objectives-tag">
                 <Target className="w-3 h-3 mr-1" />
-                Objectifs du SAYC
+                {t("home.objectives_tag")}
               </Badge>
               <PixelGrid variant="small" />
             </div>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-objectives-title">
-              Trois Piliers Stratégiques
+              {t("home.objectives_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-objectives-description">
-              Le chapitre jeunesse de Smart Africa repose sur trois objectifs fondamentaux pour transformer la jeunesse tchadienne.
+              {t("home.objectives_desc")}
             </p>
           </div>
 
@@ -362,18 +365,18 @@ export default function Home() {
             <div>
               <Badge variant="outline" className="mb-4" data-testid="badge-activities-tag">
                 <Rocket className="w-3 h-3 mr-1" />
-                Activités SAYC
+                {t("home.activities_tag")}
               </Badge>
               <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-activities-title">
-                Ce Que Nous Offrons
+                {t("home.activities_title")}
               </h2>
               <p className="text-muted-foreground max-w-xl" data-testid="text-activities-description">
-                Une plateforme dédiée à l'éducation, à la collaboration et à l'autonomisation des jeunes tchadiens.
+                {t("home.activities_desc")}
               </p>
             </div>
             <Link href="/programmes">
               <Button variant="outline" className="shrink-0" data-testid="button-activities-view-all">
-                En savoir plus
+                {t("common.learn_more")}
                 <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             </Link>
@@ -404,13 +407,13 @@ export default function Home() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-gallery-tag">
               <Eye className="w-3 h-3 mr-1" />
-              En Images
+              {t("home.gallery_tag")}
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-gallery-title">
-              Nos Activités
+              {t("home.gallery_title")}
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto" data-testid="text-gallery-description">
-              Découvrez nos formations et événements en images.
+              {t("home.gallery_desc")}
             </p>
           </div>
 
@@ -459,7 +462,7 @@ export default function Home() {
           ) : (
             <div className="text-center text-sidebar-foreground/60">
               <TrendingUp className="w-12 h-12 mx-auto mb-4 opacity-50" />
-              <p>Les statistiques seront bientôt disponibles.</p>
+              <p>{t("home.stats_unavailable")}</p>
             </div>
           )}
         </div>
@@ -472,18 +475,18 @@ export default function Home() {
               <div>
                 <Badge variant="outline" className="mb-4" data-testid="badge-trainings-home-tag">
                   <GraduationCap className="w-3 h-3 mr-1" />
-                  Formations SADA
+                  {t("home.trainings_tag")}
                 </Badge>
                 <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-trainings-home-title">
-                  Formations & Programmes
+                  {t("home.trainings_title")}
                 </h2>
                 <p className="text-muted-foreground max-w-xl" data-testid="text-trainings-home-description">
-                  Programmes certifiants de la Smart Africa Digital Academy et de ses partenaires.
+                  {t("home.trainings_desc")}
                 </p>
               </div>
               <Link href="/formations">
                 <Button variant="outline" className="shrink-0" data-testid="button-trainings-view-all">
-                  Toutes les formations
+                  {t("common.all_trainings")}
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -509,7 +512,7 @@ export default function Home() {
                     </CardDescription>
                     {training.link && (
                       <a href={training.link} target="_blank" rel="noopener noreferrer" className="flex items-center text-primary text-sm font-medium">
-                        Accéder à la formation
+                        {t("home.access_training")}
                         <ExternalLink className="ml-1 h-3 w-3" />
                       </a>
                     )}
@@ -528,18 +531,18 @@ export default function Home() {
               <div>
                 <Badge variant="outline" className="mb-4" data-testid="badge-opportunities-home-tag">
                   <Briefcase className="w-3 h-3 mr-1" />
-                  Opportunités
+                  {t("home.opps_tag")}
                 </Badge>
                 <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-opportunities-home-title">
-                  Appels d'offres & Opportunités
+                  {t("home.opps_title")}
                 </h2>
                 <p className="text-muted-foreground max-w-xl" data-testid="text-opportunities-home-description">
-                  Les dernières opportunités de Smart Africa et de ses partenaires.
+                  {t("home.opps_desc")}
                 </p>
               </div>
               <Link href="/opportunites">
                 <Button variant="outline" className="shrink-0" data-testid="button-opportunities-view-all">
-                  Toutes les opportunités
+                  {t("common.all_opps")}
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -569,7 +572,7 @@ export default function Home() {
                     </div>
                     <Link href="/opportunites">
                       <span className="flex items-center text-primary text-sm font-medium cursor-pointer">
-                        Voir les détails
+                        {t("common.view_details")}
                         <ChevronRight className="ml-1 h-4 w-4" />
                       </span>
                     </Link>
@@ -586,15 +589,13 @@ export default function Home() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-smart-africa-tag">
               <Globe className="w-3 h-3 mr-1" />
-              Notre Réseau
+              {t("home.initiatives_tag")}
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-smart-africa-title">
-              Smart Africa Alliance
+              {t("home.initiatives_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-smart-africa-description">
-              Le SAYC Tchad est le 7e chapitre jeunesse de Smart Africa.
-              Smart Africa est un engagement des chefs d'État africains pour accélérer le développement
-              socio-économique durable par les technologies de l'information.
+              {t("home.initiatives_desc")}
             </p>
           </div>
 
@@ -631,7 +632,7 @@ export default function Home() {
           <div className="text-center">
             <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" data-testid="button-visit-smart-africa">
-                Visiter smartafrica.org
+                {t("common.visit_site")} smartafrica.org
                 <ExternalLink className="ml-1 h-4 w-4" />
               </Button>
             </a>
@@ -645,13 +646,13 @@ export default function Home() {
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4" data-testid="badge-partners-tag">
                 <LinkIcon className="w-3 h-3 mr-1" />
-                Partenaires
+                {t("home.partners_tag")}
               </Badge>
               <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-partners-title">
-                Nos Partenaires
+                {t("home.partners_title")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Les organisations et institutions qui soutiennent le développement numérique de la jeunesse.
+                {t("home.partners_desc")}
               </p>
             </div>
 
@@ -676,7 +677,7 @@ export default function Home() {
                     )}
                     {partner.websiteUrl && (
                       <a href={partner.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-xs font-medium">
-                        Visiter
+                        {t("home.partners.visit")}
                         <ExternalLink className="ml-1 h-3 w-3" />
                       </a>
                     )}
@@ -695,18 +696,18 @@ export default function Home() {
               <div>
                 <Badge variant="outline" className="mb-4" data-testid="badge-news-tag">
                   <Zap className="w-3 h-3 mr-1" />
-                  Actualités
+                  {t("home.news_tag")}
                 </Badge>
                 <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-news-title">
-                  Dernières Actualités
+                  {t("home.news_title")}
                 </h2>
                 <p className="text-muted-foreground max-w-xl">
-                  Les nouvelles récentes du SAYC Tchad et de Smart Africa.
+                  {t("home.news_desc")}
                 </p>
               </div>
               <Link href="/actualites">
                 <Button variant="outline" className="shrink-0" data-testid="button-news-view-all">
-                  Toutes les actualités
+                  {t("common.all_news")}
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Button>
               </Link>
@@ -743,7 +744,7 @@ export default function Home() {
                       </CardDescription>
                       <DialogTrigger asChild>
                         <Button variant="ghost" className="p-0 h-auto text-primary hover:text-primary/80 hover:bg-transparent font-medium" data-testid={`btn-read-more-home-${article.id}`}>
-                          Lire la suite
+                          {t("common.read_more")}
                           <ChevronRight className="ml-1 h-4 w-4" />
                         </Button>
                       </DialogTrigger>
@@ -765,7 +766,7 @@ export default function Home() {
                         </span>
                       </div>
                       <DialogDescription className="hidden">
-                        Détails de l'article : {article.title}
+                        {t("home.news.details_prefix")}{article.title}
                       </DialogDescription>
                     </DialogHeader>
 
@@ -815,22 +816,21 @@ export default function Home() {
         <PixelGrid className="bottom-10 left-10 opacity-15" variant="hero" />
         <div className="container mx-auto px-4 md:px-6 text-center relative">
           <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
-            Rejoignez le mouvement
+            {t("home.cta_title")}
           </h2>
           <p className="text-primary-foreground/80 max-w-2xl mx-auto mb-8 text-lg" data-testid="text-cta-description">
-            Participez à la transformation numérique du Tchad. Le SAYC est ouvert à tous les jeunes
-            de 15 à 35 ans passionnés par la technologie et l'innovation.
+            {t("home.cta_desc")}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link href="/rejoindre">
               <Button size="lg" className="bg-accent text-accent-foreground border-accent-border min-w-[200px]" data-testid="button-cta-join">
-                Devenir membre
+                {t("home.become_member")}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="/contact">
               <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground" data-testid="button-cta-contact">
-                Nous contacter
+                {t("common.contact_us")}
               </Button>
             </Link>
           </div>

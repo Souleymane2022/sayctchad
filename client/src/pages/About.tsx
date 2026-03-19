@@ -43,47 +43,6 @@ import galleryImg4 from "@assets/UniPod_Mamou_J2_15_1770104422788.JPG";
 import galleryImg5 from "@assets/604871340_122096798553190973_93826767380244901_n_1770104422796.jpg";
 import galleryImg6 from "@assets/607158151_122096792241190973_7868278716369897210_n_(1)_1770104422799.jpg";
 
-const values = [
-  {
-    icon: Heart,
-    title: "Engagement",
-    description: "Nous nous engageons pleinement pour le développement numérique de la jeunesse tchadienne.",
-  },
-  {
-    icon: Users,
-    title: "Inclusion",
-    description: "Nous croyons en l'accès égal aux opportunités numériques pour tous les jeunes.",
-  },
-  {
-    icon: Briefcase,
-    title: "Excellence",
-    description: "Nous visons l'excellence dans tous nos programmes et initiatives.",
-  },
-  {
-    icon: Globe,
-    title: "Ouverture",
-    description: "Nous favorisons les échanges et la collaboration au niveau continental.",
-  },
-];
-
-const pillars = [
-  {
-    icon: GraduationCap,
-    title: "Engagement des jeunes dans les politiques numériques",
-    description: "Encourager la participation des jeunes dans l'élaboration des politiques numériques. Plaider pour des politiques inclusives et centrées sur les jeunes.",
-  },
-  {
-    icon: Target,
-    title: "Renforcement des compétences numériques",
-    description: "Déployer des formations nationales et régionales en compétences numériques de base et avancées. Fournir des parcours de certification alignés sur les besoins du marché.",
-  },
-  {
-    icon: Briefcase,
-    title: "Compétences entrepreneuriales & innovation",
-    description: "Organiser des bootcamps, concours de pitchs locaux et internationaux. Faciliter l'accès au financement et à l'accompagnement.",
-  },
-];
-
 const galleryImages = [
   { src: galleryImg1, alt: "Formation en cours" },
   { src: galleryImg2, alt: "Participants en formation" },
@@ -99,6 +58,47 @@ export default function About() {
   // Helper to ensure we always get a string for SEO/Props
   const v = (res: any, fallback: string) => typeof res === "string" ? res : fallback;
 
+  const values = useMemo(() => [
+    {
+      icon: Heart,
+      title: t("about.values.engagement.title"),
+      description: t("about.values.engagement.desc"),
+    },
+    {
+      icon: Users,
+      title: t("about.values.inclusion.title"),
+      description: t("about.values.inclusion.desc"),
+    },
+    {
+      icon: Briefcase,
+      title: t("about.values.excellence.title"),
+      description: t("about.values.excellence.desc"),
+    },
+    {
+      icon: Globe,
+      title: t("about.values.ouverture.title"),
+      description: t("about.values.ouverture.desc"),
+    },
+  ], [t]);
+
+  const pillars = useMemo(() => [
+    {
+      icon: GraduationCap,
+      title: t("about.pillars.engagement.title"),
+      description: t("about.pillars.engagement.desc"),
+    },
+    {
+      icon: Target,
+      title: t("about.pillars.skills.title"),
+      description: t("about.pillars.skills.desc"),
+    },
+    {
+      icon: Briefcase,
+      title: t("about.pillars.innovation.title"),
+      description: t("about.pillars.innovation.desc"),
+    },
+  ], [t]);
+
   const { data: partnersList = [], isLoading: partnersLoading } = useQuery<Partner[]>({
     queryKey: ["/api/partners"],
   });
@@ -106,8 +106,8 @@ export default function About() {
   const organizationJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "À propos de SAYC Tchad",
-    description: "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance. Point Focal National : Souleymane Mahamat Saleh. Missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
+    name: `À propos de SAYC Tchad - ${t("common.about")}`,
+    description: v(t("about.seo_desc"), "SAYC Tchad"),
     url: "https://sayctchad.org/a-propos",
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
     mainEntity: {
@@ -117,14 +117,14 @@ export default function About() {
       founder: {
         "@type": "Person",
         "name": "Souleymane Mahamat Saleh",
-        "jobTitle": "Point Focal National SAYC Tchad & Tech Leader",
+        "jobTitle": v(t("about.focal_point_title"), "Point Focal National"),
         "image": [
           "https://sayctchad.org/images/souleymane-1.jpg",
           "https://sayctchad.org/images/souleymane-2.jpg",
           "https://sayctchad.org/images/souleymane-3.jpg"
         ],
-        "description": "Expert en Ingénierie Logicielle et Acteur de la Transformation Digitale en Afrique",
-        "knowsAbout": ["Ingénierie Logicielle", "Transformation Digitale", "Leadership", "Smart Africa", "Jeunesse"],
+        "description": v(t("about.focal_point_desc"), "Expert en Ingénierie Logicielle"),
+        "knowsAbout": ["Software Engineering", "Digital Transformation", "Leadership", "Smart Africa", "Youth"],
         "sameAs": [
           "https://www.linkedin.com/in/souleymane-mahamat-saleh-559097359/",
           "https://github.com/Souleymane2022/",
@@ -142,14 +142,14 @@ export default function About() {
       ],
       contactPoint: {
         "@type": "ContactPoint",
-        "contactType": "Point Focal National",
+        "contactType": v(t("about.focal_point_title"), "Point Focal National"),
         "name": "Souleymane Mahamat Saleh",
         "telephone": "+23566161753",
-        "description": "Représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad",
-        "availableLanguage": ["fr", "ar"]
+        "description": t("about.focal_point_desc"),
+        "availableLanguage": ["fr", "ar", "en"]
       },
     },
-  }), []);
+  }), [t]);
 
   return (
     <div className="flex flex-col">
@@ -197,9 +197,8 @@ export default function About() {
               <p className="text-muted-foreground leading-relaxed mb-6" data-testid="text-vision-description">
                 {t("about.vision_desc")}
               </p>
-              <p className="text-muted-foreground leading-relaxed mb-8">
-                Notre vision est de faire du Tchad un hub d'innovation numérique où chaque jeune a accès
-                aux compétences et ressources nécessaires pour réussir dans l'économie digitale.
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                {t("about.vision_desc_long")}
               </p>
               <Link href="/programmes">
                 <Button data-testid="button-vision-programs">
@@ -230,13 +229,13 @@ export default function About() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-pillars-tag">
               <Target className="w-3 h-3 mr-1" />
-              Nos Piliers
+              {t("home.pillars_tag", { defaultValue: t("home.objectives_tag") })}
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-pillars-title">
-              Les 3 Piliers du SAYC
+              {t("about.pillars_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-pillars-description">
-              Notre action repose sur trois piliers fondamentaux pour accompagner les jeunes.
+              {t("home.objectives_desc")}
             </p>
           </div>
 
@@ -268,10 +267,10 @@ export default function About() {
               Nos Valeurs
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-values-title">
-              Ce qui nous guide
+              {t("about.values_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-values-description">
-              Nos valeurs fondamentales orientent chacune de nos actions et décisions.
+              {t("about.values.inclusion.desc")}
             </p>
           </div>
 
@@ -300,13 +299,13 @@ export default function About() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-governance-tag">
               <Users className="w-3 h-3 mr-1" />
-              Coordination Nationale
+              {t("home.initiatives_tag")}
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-governance-title">
-              Point Focal National SAYC Tchad
+              {t("about.focal_point_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-governance-description">
-              Le représentant officiel et coordinateur national du Smart Africa Youth Chapter au Tchad.
+              {t("about.focal_point_desc")}
             </p>
           </div>
 
@@ -314,13 +313,13 @@ export default function About() {
             <Card data-testid="card-focal-point">
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Badge variant="secondary" className="text-xs">Point Focal National</Badge>
+                  <Badge variant="secondary" className="text-xs">{t("about.focal_point_title")}</Badge>
                 </div>
                 <CardTitle className="font-heading text-2xl" data-testid="text-focal-point-name">
                   Souleymane Mahamat Saleh
                 </CardTitle>
                 <CardDescription className="text-sm leading-relaxed mt-2">
-                  Souleymane Mahamat Saleh est le Point Focal National du Smart Africa Youth Chapter Tchad (SAYC Tchad). Il est le représentant officiel du 7ème chapitre jeunesse de Smart Africa Alliance au Tchad. Basé à N'Djamena, il coordonne l'ensemble des initiatives nationales, les programmes de formation en compétences numériques, et assure la liaison avec le réseau continental Smart Africa et ses partenaires stratégiques.
+                  {t("about.focal_point_desc")}
                 </CardDescription>
               </CardHeader>
             </Card>
@@ -333,13 +332,13 @@ export default function About() {
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-gallery-tag">
               <Eye className="w-3 h-3 mr-1" />
-              Nos Activités
+              {t("home.gallery_tag")}
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-gallery-title">
-              En Images
+              {t("home.gallery_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-gallery-description">
-              Découvrez nos formations, événements et activités à travers l'Afrique.
+              {t("home.gallery_desc")}
             </p>
           </div>
 
@@ -367,13 +366,13 @@ export default function About() {
             <div className="text-center mb-12">
               <Badge variant="outline" className="mb-4" data-testid="badge-about-partners-tag">
                 <LinkIcon className="w-3 h-3 mr-1" />
-                Partenaires
+                {t("home.partners_tag")}
               </Badge>
               <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-about-partners-title">
-                Nos Partenaires
+                {t("home.partners_title")}
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                Les organisations qui soutiennent le développement numérique de la jeunesse au Tchad.
+                {t("home.partners_desc")}
               </p>
             </div>
 
@@ -414,7 +413,7 @@ export default function About() {
                       )}
                       {partner.websiteUrl && (
                         <a href={partner.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center text-primary text-xs font-medium">
-                          Visiter
+                          {t("common.visit_site")}
                           <ExternalLink className="ml-1 h-3 w-3" />
                         </a>
                       )}
@@ -435,31 +434,24 @@ export default function About() {
               Smart Africa
             </Badge>
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-smart-africa-about-title">
-              Notre Organisation M&egrave;re
+              {t("home.initiatives_title")}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-smart-africa-about-description">
-              Smart Africa est une alliance panafricaine dont la vision est de transformer l'Afrique en un
-              march&eacute; num&eacute;rique unique. Le SAYC Tchad est son chapitre jeunesse au Tchad.
+              {t("home.initiatives_desc")}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 items-start mb-10">
             <div>
               <h3 className="font-heading text-xl font-semibold mb-4">
-                &Agrave; propos de Smart Africa Alliance
+                {t("home.initiatives.alliance.title")}
               </h3>
               <p className="text-muted-foreground leading-relaxed mb-4">
-                Smart Africa est un engagement audacieux pris par les chefs d'&Eacute;tat et de gouvernement
-                africains pour acc&eacute;l&eacute;rer la transformation socio-&eacute;conomique durable du continent
-                gr&acirc;ce aux technologies de l'information et de la communication (TIC).
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                L'alliance r&eacute;unit 40 &Eacute;tats membres et travaille avec le secteur priv&eacute; et les
-                organisations internationales pour connecter, innover et transformer l'Afrique.
+                {t("home.initiatives.alliance.desc")}
               </p>
               <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer">
                 <Button variant="outline" data-testid="button-about-visit-sa">
-                  Visiter smartafrica.org
+                  {t("common.visit_site")} smartafrica.org
                   <ExternalLink className="ml-1 h-4 w-4" />
                 </Button>
               </a>
@@ -473,11 +465,11 @@ export default function About() {
                   <div>
                     <CardTitle className="text-base mb-1">
                       <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                        SADA - Acad&eacute;mie Num&eacute;rique <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                        {t("home.initiatives.sada.title")} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                       </a>
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Formations certifiantes en comp&eacute;tences num&eacute;riques pour les jeunes africains.
+                      {t("home.initiatives.sada.desc")}
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -490,11 +482,11 @@ export default function About() {
                   <div>
                     <CardTitle className="text-base mb-1">
                       <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                        Transform Africa Summit <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                        {t("home.initiatives.tas.title")} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                       </a>
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Le sommet annuel pour acc&eacute;l&eacute;rer la transformation digitale de l'Afrique.
+                      {t("home.initiatives.tas.desc")}
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -507,11 +499,11 @@ export default function About() {
                   <div>
                     <CardTitle className="text-base mb-1">
                       <a href="https://smartafrica.org/blueprint/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
-                        Plans Directeurs <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                        {t("home.blueprints")} <ExternalLink className="w-3 h-3 text-muted-foreground" />
                       </a>
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Strat&eacute;gies sectorielles pour le d&eacute;veloppement num&eacute;rique africain.
+                      {t("about.hero_tag")}
                     </CardDescription>
                   </div>
                 </CardHeader>
@@ -525,21 +517,21 @@ export default function About() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-heading text-3xl md:text-4xl font-bold mb-6" data-testid="text-cta-title">
-              Envie de faire partie de l'aventure?
+              {t("home.cta_title")}
             </h2>
             <p className="text-lg text-primary-foreground/80 mb-8 max-w-xl mx-auto" data-testid="text-cta-description">
-              Rejoignez le SAYC Tchad et contribuez à la transformation numérique de notre pays.
+              {t("home.cta_desc")}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link href="/rejoindre">
                 <Button size="lg" variant="secondary" className="min-w-[200px]" data-testid="button-cta-join">
-                  Rejoindre le SAYC
+                  {t("hero.cta_join")}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link href="/contact">
                 <Button size="lg" variant="outline" className="min-w-[200px] border-primary-foreground/30 text-primary-foreground" data-testid="button-cta-contact">
-                  Nous contacter
+                  {t("common.contact_us")}
                 </Button>
               </Link>
             </div>

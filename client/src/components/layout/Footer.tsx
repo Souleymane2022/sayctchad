@@ -46,8 +46,8 @@ export function Footer() {
       { href: "/opportunites", label: t("nav.opportunities") },
     ],
     resources: [
-      { href: "/evenements", label: "Événements" },
-      { href: "/actualites", label: "Actualités" },
+      { href: "/evenements", label: t("common.all_events", { defaultValue: "Événements" }) },
+      { href: "/actualites", label: t("common.all_news") },
       { href: "/contact", label: t("nav.contact") },
     ],
   };
@@ -64,7 +64,7 @@ export function Footer() {
               {t("hero.description")}
             </p>
             <p className="text-xs text-sidebar-foreground/60 mb-4" data-testid="text-focal-point">
-              Point Focal SAYC Tchad: Souleymane Mahamat Saleh
+              {t("about.focal_point_title")}: Souleymane Mahamat Saleh
             </p>
             <div className="flex items-center gap-3">
               {socialLinks.map((social) => (
@@ -84,7 +84,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-nav-title">Navigation</h4>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-nav-title">{t("footer.navigation")}</h4>
             <ul className="space-y-2">
               {footerLinks.navigation.map((link) => (
                 <li key={link.href}>
@@ -101,7 +101,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-resources-title">Ressources</h4>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-resources-title">{t("footer.resources")}</h4>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
@@ -115,33 +115,33 @@ export function Footer() {
                 </li>
               ))}
               <li className="pt-2 border-t border-sidebar-border mt-2">
-                <h5 className="text-xs text-sidebar-foreground/50 mb-2">Smart Africa</h5>
+                <h5 className="text-xs text-sidebar-foreground/50 mb-2">{t("home.initiatives_tag")}</h5>
               </li>
               <li>
                 <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-smart-africa">
-                  Smart Africa Alliance <ExternalLink className="w-3 h-3" />
+                  {t("home.initiatives.alliance.title")} <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
               <li>
                 <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-sada">
-                  SADA (Acad&eacute;mie) <ExternalLink className="w-3 h-3" />
+                  {t("home.initiatives.sada.title")} <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
               <li>
                 <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-tas">
-                  Transform Africa Summit <ExternalLink className="w-3 h-3" />
+                  {t("home.initiatives.tas.title")} <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-contact-title">Contact</h4>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-contact-title">{t("footer.contact")}</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 text-accent shrink-0" />
                 <span className="text-sm text-sidebar-foreground/70" data-testid="text-footer-address">
-                  N'Djamena, Tchad
+                  {t("footer.address")}
                 </span>
               </li>
               <li className="flex items-center gap-3">
@@ -161,7 +161,7 @@ export function Footer() {
                   className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
                   data-testid="link-footer-contact-form"
                 >
-                  Formulaire de contact
+                  {t("common.contact_us")}
                 </Link>
               </li>
             </ul>
@@ -170,14 +170,14 @@ export function Footer() {
 
         <div className="border-t border-sidebar-border mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-sidebar-foreground/60" data-testid="text-footer-copyright">
-            © {new Date().getFullYear()} SAYC Tchad. Tous droits réservés.
+            © {new Date().getFullYear()} SAYC Tchad. {t("footer.rights")}
           </p>
           <div className="flex items-center gap-6">
             <Link href="/a-propos" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-              À propos
+              {t("nav.about")}
             </Link>
             <Link href="/contact" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-              Contact
+              {t("nav.contact")}
             </Link>
           </div>
         </div>

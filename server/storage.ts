@@ -198,7 +198,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteOpportunity(id: string): Promise<void> {
-    await db.delete(opportunities).where(sql`${opportunities.id} = ${Number(id)}`);
+    await db.delete(opportunities).where(eq(opportunities.id, id));
   }
 
   async createPartner(partner: InsertPartner): Promise<Partner> {
@@ -215,12 +215,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updatePartner(id: string, data: Partial<InsertPartner>): Promise<Partner | undefined> {
-    const [updated] = await db.update(partners).set(data).where(eq(partners.id, Number(id))).returning();
+    const [updated] = await db.update(partners).set(data).where(eq(partners.id, id)).returning();
     return updated;
   }
 
   async deletePartner(id: string): Promise<void> {
-    await db.delete(partners).where(eq(partners.id, Number(id)));
+    await db.delete(partners).where(eq(partners.id, id));
   }
 
   async createTraining(training: InsertTraining): Promise<Training> {
@@ -237,12 +237,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateTraining(id: string, data: Partial<InsertTraining>): Promise<Training | undefined> {
-    const [updated] = await db.update(trainings).set(data).where(eq(trainings.id, Number(id))).returning();
+    const [updated] = await db.update(trainings).set(data).where(eq(trainings.id, id)).returning();
     return updated;
   }
 
   async deleteTraining(id: string): Promise<void> {
-    await db.delete(trainings).where(eq(trainings.id, Number(id)));
+    await db.delete(trainings).where(eq(trainings.id, id));
   }
 
   async createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle> {
@@ -259,12 +259,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateNewsArticle(id: string, data: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined> {
-    const [updated] = await db.update(newsArticles).set(data).where(eq(newsArticles.id, Number(id))).returning();
+    const [updated] = await db.update(newsArticles).set(data).where(eq(newsArticles.id, id)).returning();
     return updated;
   }
 
   async deleteNewsArticle(id: string): Promise<void> {
-    await db.delete(newsArticles).where(eq(newsArticles.id, Number(id)));
+    await db.delete(newsArticles).where(eq(newsArticles.id, id));
   }
 
   async createEvent(event: InsertEvent): Promise<Event> {
@@ -281,12 +281,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateEvent(id: string, data: Partial<InsertEvent>): Promise<Event | undefined> {
-    const [updated] = await db.update(events).set(data).where(eq(events.id, Number(id))).returning();
+    const [updated] = await db.update(events).set(data).where(eq(events.id, id)).returning();
     return updated;
   }
 
   async deleteEvent(id: string): Promise<void> {
-    await db.delete(events).where(eq(events.id, Number(id)));
+    await db.delete(events).where(eq(events.id, id));
   }
 
   async createAchievement(achievement: InsertAchievement): Promise<Achievement> {
@@ -303,12 +303,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateAchievement(id: string, data: Partial<InsertAchievement>): Promise<Achievement | undefined> {
-    const [updated] = await db.update(achievements).set(data).where(eq(achievements.id, Number(id))).returning();
+    const [updated] = await db.update(achievements).set(data).where(eq(achievements.id, id)).returning();
     return updated;
   }
 
   async deleteAchievement(id: string): Promise<void> {
-    await db.delete(achievements).where(eq(achievements.id, Number(id)));
+    await db.delete(achievements).where(eq(achievements.id, id));
   }
 
   async createThunderbirdApplication(application: InsertThunderbirdApplication): Promise<ThunderbirdApplication> {
