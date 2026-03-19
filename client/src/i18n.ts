@@ -9,6 +9,7 @@ i18n
   .use(initReactI18next)
   .init({
     fallbackLng: 'fr',
+    supportedLngs: ['fr', 'en', 'ar'],
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json',
     },
@@ -18,6 +19,7 @@ i18n
     detection: {
       order: ['localStorage', 'cookie', 'htmlTag', 'path', 'subdomain'],
       caches: ['localStorage', 'cookie'],
+      lookupLocalStorage: 'i18nextLng',
     },
   });
 
@@ -35,7 +37,8 @@ i18n.on('languageChanged', (lng) => {
 });
 
 // Initial direction setting
-document.documentElement.lang = i18n.language;
-document.documentElement.dir = i18n.language === 'ar' ? 'rtl' : 'ltr';
+const initialLng = i18n.language || 'fr';
+document.documentElement.lang = initialLng;
+document.documentElement.dir = initialLng === 'ar' ? 'rtl' : 'ltr';
 
 export default i18n;

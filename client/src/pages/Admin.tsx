@@ -1347,6 +1347,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 }
 
 function ElectionCandidatesTab() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { data: candidates = [], isLoading, error } = useQuery<(ElectionCandidate)[]>({
     queryKey: ["/api/admin/elections/candidates"],
