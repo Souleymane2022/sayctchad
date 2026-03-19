@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -1386,12 +1387,12 @@ function ElectionCandidatesTab() {
     return (
       <div className="p-8 text-center bg-destructive/10 border border-destructive/20 rounded-xl space-y-4">
         <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
-        <h3 className="text-xl font-bold text-destructive">{t("admin.elections.error_loading")}</h3>
+        <h3 className="text-xl font-bold text-destructive">Erreur de chargement</h3>
         <p className="text-muted-foreground max-w-md mx-auto">
-          {(error as Error).message}. {t("admin.elections.error_db_migration")}
+          {(error as Error).message}. Veuillez vérifier que la migration de base de données a été appliquée.
         </p>
         <Button onClick={() => queryClient.invalidateQueries({ queryKey: ["/api/admin/elections/candidates"] })}>
-          {t("admin.elections.retry")}
+          Réessayer
         </Button>
       </div>
     );
