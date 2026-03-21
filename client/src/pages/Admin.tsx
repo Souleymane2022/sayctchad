@@ -1094,6 +1094,11 @@ function NewsletterTab() {
 }
 
 function ThunderbirdApplicationsTab() {
+  const { t } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cityFilter, setCityFilter] = useState("all");
+  const [pathwayFilter, setPathwayFilter] = useState("all");
+
   const { data: applications = [], isLoading } = useQuery<ThunderbirdApplication[]>({
     queryKey: ["/api/admin", "thunderbird-applications"],
     queryFn: async () => {
@@ -1102,6 +1107,20 @@ function ThunderbirdApplicationsTab() {
       return res.json();
     },
   });
+
+  const filteredApps = applications.filter(app => {
+    const matchesSearch = 
+      app.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCity = cityFilter === "all" || app.city === cityFilter;
+    const matchesPathway = pathwayFilter === "all" || app.targetPathway === pathwayFilter;
+
+    return matchesSearch && matchesCity && matchesPathway;
+  });
+
+  const cities = Array.from(new Set(applications.map(a => a.city).filter(Boolean)));
+  const pathways = Array.from(new Set(applications.map(a => a.targetPathway).filter(Boolean)));
 
   const exportToExcel = () => {
     const headers = [
@@ -1141,13 +1160,66 @@ function ThunderbirdApplicationsTab() {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold" data-testid="text-title-thunderbird">
-          Candidatures Thunderbird ({applications.length})
+          Candidatures Thunderbird ({filteredApps.length} / {applications.length})
         </h2>
-        <Button variant="outline" onClick={exportToExcel} disabled={applications.length === 0}>
+        <Button variant="outline" onClick={exportToExcel} disabled={filteredApps.length === 0}>
           <Download className="h-4 w-4 mr-2" />
           Exporter Excel (CSV)
         </Button>
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Rechercher</Label>
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Nom ou email..." 
+              className="pl-8 h-9" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Ville</Label>
+          <select 
+            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+          >
+            <option value="all">Toutes les villes</option>
+            {cities.map(city => <option key={city} value={city}>{city}</option>)}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Parcours</Label>
+          <select 
+            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            value={pathwayFilter}
+            onChange={(e) => setPathwayFilter(e.target.value)}
+          >
+            <option value="all">Tous les parcours</option>
+            {pathways.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+        </div>
+        <div className="flex items-end">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="text-xs w-full h-9" 
+            onClick={() => {
+              setSearchTerm("");
+              setCityFilter("all");
+              setPathwayFilter("all");
+            }}
+          >
+            <XCircle className="h-4 w-4 mr-2" />
+            Réinitialiser
+          </Button>
+        </div>
+      </div>
+
       <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
@@ -1163,12 +1235,12 @@ function ThunderbirdApplicationsTab() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {applications.length === 0 ? (
+            {filteredApps.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucune candidature</TableCell>
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucune candidature trouvée</TableCell>
               </TableRow>
             ) : (
-              applications.map((app) => (
+              filteredApps.map((app) => (
                 <TableRow key={app.id} data-testid={`row-thunderbird-${app.id}`}>
                   <TableCell className="font-medium">{app.fullName}</TableCell>
                   <TableCell>{app.email}</TableCell>
@@ -1512,6 +1584,10 @@ function ElectionCandidatesTab() {
                                 <p>{c.email}</p>
                               </div>
                               <div className="space-y-1">
+                                <Label className="text-xs text-muted-foreground">{t("admin.elections.columns.votes")}</Label>
+                                <p className="font-bold text-sayc-teal">{c.votesCount}</p>
+                              </div>
+                              <div className="space-y-1">
                                 <Label className="text-xs text-muted-foreground">{t("admin.elections.cv")}</Label>
                                 <a href={c.cvUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
                               </div>
@@ -1527,6 +1603,24 @@ function ElectionCandidatesTab() {
                                 <Label className="text-xs text-muted-foreground">{t("admin.elections.program")}</Label>
                                 <a href={c.programUrl || "#"} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
                               </div>
+                              {c.linkedInUrl && (
+                                <div className="space-y-1">
+                                  <Label className="text-xs text-muted-foreground">LinkedIn</Label>
+                                  <a href={c.linkedInUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                                </div>
+                              )}
+                              {c.facebookUrl && (
+                                <div className="space-y-1">
+                                  <Label className="text-xs text-muted-foreground">Facebook</Label>
+                                  <a href={c.facebookUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                                </div>
+                              )}
+                              {c.twitterUrl && (
+                                <div className="space-y-1">
+                                  <Label className="text-xs text-muted-foreground">Twitter / X</Label>
+                                  <a href={c.twitterUrl} target="_blank" className="text-blue-600 hover:underline block truncate">{t("admin.elections.see")}</a>
+                                </div>
+                              )}
                             </div>
                             <div className="flex justify-end gap-2 border-t pt-4">
                               <Button variant="outline" className="text-destructive" onClick={() => updateStatusMutation.mutate({ id: c.id, status: "rejected" })}>{t("admin.elections.reject")}</Button>
