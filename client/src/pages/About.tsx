@@ -56,7 +56,12 @@ export default function About() {
   const { t } = useTranslation();
   
   // Helper to ensure we always get a string for SEO/Props
-  const v = (res: any, fallback: string) => typeof res === "string" ? res : fallback;
+  // Helper to ensure we always get a real string, not an i18n key (containing dots)
+  const v = (res: any, fallback: string) => {
+    if (typeof res !== "string") return fallback;
+    if (res.includes(".") || res === "common.home" || res === "common.about") return fallback;
+    return res;
+  };
 
   const values = useMemo(() => [
     {
@@ -154,10 +159,10 @@ export default function About() {
   return (
     <div className="flex flex-col">
       <SEOHead
-        title={`${v(t("common.about"), "À propos")} - SAYC Tchad` as any}
-        description={v(t("about.seo_desc"), "SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa au Tchad, dédié à l'autonomisation des jeunes par le numérique.") as any}
+        title={`${v(t("common.about", "À propos"), "À propos")} - SAYC Tchad` as any}
+        description={v(t("about.seo_desc", "À propos du SAYC Tchad"), "SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa au Tchad, dédié à l'autonomisation des jeunes par le numérique.") as any}
         path="/a-propos"
-        keywords={v(t("about.seo_keywords"), "Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse") as any}
+        keywords={v(t("about.seo_keywords", "À propos, SAYC Tchad, Smart Africa"), "Souleymane Mahamat Saleh, Point Focal, SAYC Tchad, Smart Africa Youth Chapter, chapitre jeunesse") as any}
         jsonLd={organizationJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
