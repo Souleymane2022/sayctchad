@@ -332,8 +332,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate> {
-    const [newCandidate] = await db.insert(electionCandidates).values(candidate).returning();
-    return newCandidate;
+    const rows = await neonSql`
+      INSERT INTO election_candidates (id, first_name, last_name, email, role, photo_url, cv_url, motivation_url, video_url, program_url, linkedin_url, facebook_url, twitter_url, status, votes_count)
+      VALUES (gen_random_uuid(), ${candidate.firstName}, ${candidate.lastName}, ${candidate.email}, ${candidate.role}, ${candidate.photoUrl}, ${candidate.cvUrl}, ${candidate.motivationUrl}, ${candidate.videoUrl || null}, ${candidate.programUrl || null}, ${candidate.linkedInUrl || null}, ${candidate.facebookUrl || null}, ${candidate.twitterUrl || null}, 'pending', 0)
+      RETURNING *
+    `;
+    return rows[0] as unknown as ElectionCandidate;
   }
 
   async getApprovedCandidates(): Promise<ElectionCandidate[]> {
@@ -347,40 +351,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined> {
-    const [updated] = await db.update(electionCandidates).set({ status }).where(eq(electionCandidates.id, id)).returning();
-    return updated;
+    const rows = await neonSql`UPDATE election_candidates SET status = ${status} WHERE id = ${id} RETURNING *`;
+    return rows[0] as unknown as ElectionCandidate | undefined;
   }
 
   async getCandidateById(id: string): Promise<ElectionCandidate | undefined> {
-    const [candidate] = await db.select().from(electionCandidates).where(eq(electionCandidates.id, id));
-    return candidate;
+    const rows = await neonSql`SELECT * FROM election_candidates WHERE id = ${id}`;
+    return rows[0] as unknown as ElectionCandidate | undefined;
   }
 
   async castVote(vote: InsertVote): Promise<ElectionVote> {
-    const [newVote] = await db.insert(electionVotes).values(vote).returning();
+    const rows = await neonSql`
+      INSERT INTO election_votes (id, voter_id, candidate_id, role)
+      VALUES (gen_random_uuid(), ${vote.voterId}, ${vote.candidateId}, ${vote.role})
+      RETURNING *
+    `;
     // Increment candidate vote count
-    await db.update(electionCandidates)
-      .set({ votesCount: sql`${electionCandidates.votesCount} + 1` })
-      .where(eq(electionCandidates.id, vote.candidateId));
-    return newVote;
+    await neonSql`UPDATE election_candidates SET votes_count = votes_count + 1 WHERE id = ${vote.candidateId}`;
+    return rows[0] as unknown as ElectionVote;
   }
 
   async hasVoted(voterId: string, role: string): Promise<boolean> {
-    const [existingVote] = await db.select()
-      .from(electionVotes)
-      .where(sql`${electionVotes.voterId} = ${voterId} AND ${electionVotes.role} = ${role}`);
-    return !!existingVote;
+    const rows = await neonSql`SELECT id FROM election_votes WHERE voter_id = ${voterId} AND role = ${role} LIMIT 1`;
+    return rows.length > 0;
   }
 
   async getVotesForRole(role: string): Promise<ElectionVote[]> {
-    return db.select().from(electionVotes).where(eq(electionVotes.role, role));
+    const rows = await neonSql`SELECT * FROM election_votes WHERE role = ${role}`;
+    return rows as unknown as ElectionVote[];
   }
 
   async getVotedRoles(voterId: string): Promise<string[]> {
-    const votes = await db.select({ role: electionVotes.role })
-      .from(electionVotes)
-      .where(eq(electionVotes.voterId, voterId));
-    return votes.map(v => v.role);
+    const rows = await neonSql`SELECT role FROM election_votes WHERE voter_id = ${voterId}`;
+    return rows.map((r: any) => r.role);
   }
 
   async generateMissingMembershipIds(): Promise<number> {
