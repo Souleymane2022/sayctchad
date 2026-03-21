@@ -333,6 +333,34 @@ export default function VotingInterface() {
                     </div>
                 )}
             </div>
+
+            {/* Bloc aide / contact */}
+            <div className="max-w-4xl mx-auto px-4 pb-12">
+                <div className="mt-6 rounded-2xl border border-blue-200 bg-blue-50 p-6 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
+                    <div className="flex-1 text-center sm:text-left">
+                        <p className="font-semibold text-[#1e3a8a] text-base">
+                            🆘 Besoin d'aide pour voter ?
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Si vous rencontrez un problème ou si votre identifiant de membre n'est pas reconnu, contactez notre équipe.
+                        </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                        <a
+                            href="mailto:sayctchad@gmail.com?subject=Aide%20Vote%20%C3%89lections"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#1e3a8a] text-white text-sm font-semibold hover:bg-[#1e40af] transition-colors"
+                        >
+                            ✉️ Écrire par email
+                        </a>
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#1e3a8a] text-[#1e3a8a] text-sm font-semibold hover:bg-blue-100 transition-colors"
+                        >
+                            📬 Formulaire de contact
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

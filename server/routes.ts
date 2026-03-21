@@ -43,13 +43,51 @@ export async function registerRoutes(
 
   app.set("trust proxy", 1);
 
+  // ─── Security Headers Middleware ───────────────────────────────────────────
+  app.use((_req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+    res.setHeader(
+      "Strict-Transport-Security",
+      "max-age=63072000; includeSubDomains; preload"
+    );
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+    );
+    next();
+  });
+
+  // ─── Rate Limiters ─────────────────────────────────────────────────────────
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Limit each IP to 5 requests per windowMs
+    max: 5,
     message: { error: "Trop de requêtes depuis cette adresse IP, veuillez réessayer plus tard." },
     standardHeaders: true,
     legacyHeaders: false,
   });
+
+  // Strict limiter for election endpoints - only 3 attempts per 30 min
+  const electionLimiter = rateLimit({
+    windowMs: 30 * 60 * 1000,
+    max: 3,
+    message: { error: "Trop de tentatives. Réessayez dans 30 minutes." },
+    standardHeaders: true,
+    legacyHeaders: false,
+    skipSuccessfulRequests: false,
+  });
+
+  // General API limiter - 100 req / 15 min
+  const generalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+    message: { error: "Trop de requêtes." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+  app.use("/api/", generalLimiter);
 
   app.use(
     session({
@@ -57,7 +95,12 @@ export async function registerRoutes(
       secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 },
+      cookie: {
+        secure: process.env.NODE_ENV === "production",
+        httpOnly: true,
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 1000
+      },
     })
   );
 

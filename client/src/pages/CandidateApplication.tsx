@@ -419,6 +419,32 @@ export default function CandidateApplication() {
                         </Form>
                     </CardContent>
                 </Card>
+
+                {/* Bloc aide / contact */}
+                <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-6 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
+                    <div className="flex-1 text-center sm:text-left">
+                        <p className="font-semibold text-[#1e3a8a] text-base">
+                            🆘 Vous avez un souci pour postuler ?
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Notre équipe est disponible pour vous aider à compléter votre dossier ou résoudre un problème technique.
+                        </p>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                        <a
+                            href="mailto:sayctchad@gmail.com?subject=Aide%20Candidature%20Élections"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#1e3a8a] text-white text-sm font-semibold hover:bg-[#1e40af] transition-colors"
+                        >
+                            ✉️ Écrire par email
+                        </a>
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#1e3a8a] text-[#1e3a8a] text-sm font-semibold hover:bg-blue-100 transition-colors"
+                        >
+                            📬 Formulaire de contact
+                        </Link>
+                    </div>
+                </div>
             </div>
         </div>
     );
