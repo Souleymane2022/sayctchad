@@ -331,33 +331,66 @@ export class DatabaseStorage implements IStorage {
     return this.getAllThunderbirdApplications();
   }
 
+  private mapCandidateRow(row: any): ElectionCandidate {
+    return {
+      id: row.id,
+      firstName: row.first_name,
+      lastName: row.last_name,
+      email: row.email,
+      role: row.role,
+      photoUrl: row.photo_url,
+      cvUrl: row.cv_url,
+      motivationUrl: row.motivation_url,
+      videoUrl: row.video_url,
+      programUrl: row.program_url,
+      linkedInUrl: row.linkedin_url,
+      facebookUrl: row.facebook_url,
+      twitterUrl: row.twitter_url,
+      status: row.status,
+      votesCount: row.votes_count,
+      createdAt: row.created_at ? new Date(row.created_at) : null,
+    } as ElectionCandidate;
+  }
+
+  private mapVoteRow(row: any): ElectionVote {
+    return {
+      id: row.id,
+      voterId: row.voter_id,
+      candidateId: row.candidate_id,
+      role: row.role,
+      createdAt: row.created_at ? new Date(row.created_at) : null,
+    } as ElectionVote;
+  }
+
   async createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate> {
     const rows = await neonSql`
       INSERT INTO election_candidates (id, first_name, last_name, email, role, photo_url, cv_url, motivation_url, video_url, program_url, linkedin_url, facebook_url, twitter_url, status, votes_count)
       VALUES (gen_random_uuid(), ${candidate.firstName}, ${candidate.lastName}, ${candidate.email}, ${candidate.role}, ${candidate.photoUrl}, ${candidate.cvUrl}, ${candidate.motivationUrl}, ${candidate.videoUrl || null}, ${candidate.programUrl || null}, ${candidate.linkedInUrl || null}, ${candidate.facebookUrl || null}, ${candidate.twitterUrl || null}, 'pending', 0)
       RETURNING *
     `;
-    return rows[0] as unknown as ElectionCandidate;
+    return this.mapCandidateRow(rows[0]);
   }
 
   async getApprovedCandidates(): Promise<ElectionCandidate[]> {
     const rows = await neonSql`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`;
-    return rows as unknown as ElectionCandidate[];
+    return rows.map(row => this.mapCandidateRow(row));
   }
 
   async getAllCandidates(): Promise<ElectionCandidate[]> {
     const rows = await neonSql`SELECT * FROM election_candidates ORDER BY created_at DESC`;
-    return rows as unknown as ElectionCandidate[];
+    return rows.map(row => this.mapCandidateRow(row));
   }
 
   async updateCandidateStatus(id: string, status: string): Promise<ElectionCandidate | undefined> {
     const rows = await neonSql`UPDATE election_candidates SET status = ${status} WHERE id = ${id} RETURNING *`;
-    return rows[0] as unknown as ElectionCandidate | undefined;
+    if (rows.length === 0) return undefined;
+    return this.mapCandidateRow(rows[0]);
   }
 
   async getCandidateById(id: string): Promise<ElectionCandidate | undefined> {
     const rows = await neonSql`SELECT * FROM election_candidates WHERE id = ${id}`;
-    return rows[0] as unknown as ElectionCandidate | undefined;
+    if (rows.length === 0) return undefined;
+    return this.mapCandidateRow(rows[0]);
   }
 
   async castVote(vote: InsertVote): Promise<ElectionVote> {
@@ -368,7 +401,7 @@ export class DatabaseStorage implements IStorage {
     `;
     // Increment candidate vote count
     await neonSql`UPDATE election_candidates SET votes_count = votes_count + 1 WHERE id = ${vote.candidateId}`;
-    return rows[0] as unknown as ElectionVote;
+    return this.mapVoteRow(rows[0]);
   }
 
   async hasVoted(voterId: string, role: string): Promise<boolean> {
@@ -378,7 +411,7 @@ export class DatabaseStorage implements IStorage {
 
   async getVotesForRole(role: string): Promise<ElectionVote[]> {
     const rows = await neonSql`SELECT * FROM election_votes WHERE role = ${role}`;
-    return rows as unknown as ElectionVote[];
+    return rows.map(row => this.mapVoteRow(row));
   }
 
   async getVotedRoles(voterId: string): Promise<string[]> {
