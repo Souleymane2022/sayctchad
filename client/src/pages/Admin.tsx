@@ -1005,48 +1005,108 @@ function MessagesTab() {
           <TableBody>
             {messages.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground py-8">Aucun message</TableCell>
+                <TableCell colSpan={6} className="text-center text-muted-foreground py-8">Aucun message</TableCell>
               </TableRow>
             ) : (
               messages.map((msg) => (
-                <TableRow key={msg.id} data-testid={`row-message-${msg.id}`}>
-                  <TableCell>{msg.firstName} {msg.lastName}</TableCell>
-                  <TableCell>{msg.email}</TableCell>
-                  <TableCell>{msg.subject}</TableCell>
-                  <TableCell className="max-w-[200px] truncate">{msg.message}</TableCell>
-                  <TableCell>{msg.createdAt ? new Date(msg.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
-                  <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" size="sm">Voir</Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle>Message de {msg.firstName} {msg.lastName}</DialogTitle>
-                          <p className="text-xs text-muted-foreground">{msg.email} - {msg.createdAt ? new Date(msg.createdAt).toLocaleString("fr-FR") : ""}</p>
-                        </DialogHeader>
-                        <div className="space-y-4 py-4">
-                          <div className="space-y-1">
-                            <Label className="text-xs text-muted-foreground">Sujet</Label>
-                            <p className="font-bold">{msg.subject}</p>
-                          </div>
-                          <div className="space-y-1">
-                            <Label className="text-xs text-muted-foreground">Message</Label>
-                            <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed">
-                              {msg.message}
-                            </div>
-                          </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
-                </TableRow>
+                <MessageRow key={msg.id} msg={msg} />
               ))
             )}
           </TableBody>
         </Table>
       </div>
     </div>
+  );
+}
+
+function MessageRow({ msg }: { msg: ContactMessage }) {
+  const [replyText, setReplyText] = useState("");
+  const { toast } = useToast();
+  const { t } = useTranslation();
+
+  const replyMutation = useMutation({
+    mutationFn: async (text: string) => {
+      const res = await fetch(`/api/admin/contact/${msg.id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to send");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Succès", description: "Réponse envoyée avec succès." });
+      setReplyText("");
+    },
+    onError: (error: any) => {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    }
+  });
+
+  return (
+    <TableRow data-testid={`row-message-${msg.id}`}>
+      <TableCell>{msg.firstName} {msg.lastName}</TableCell>
+      <TableCell>{msg.email}</TableCell>
+      <TableCell>{msg.subject}</TableCell>
+      <TableCell className="max-w-[200px] truncate">{msg.message}</TableCell>
+      <TableCell>{msg.createdAt ? new Date(msg.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+      <TableCell>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm">Voir & Répondre</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Message de {msg.firstName} {msg.lastName}</DialogTitle>
+              <p className="text-xs text-muted-foreground">{msg.email} - {msg.createdAt ? new Date(msg.createdAt).toLocaleString("fr-FR") : ""}</p>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Sujet</Label>
+                <p className="font-bold">{msg.subject}</p>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs text-muted-foreground">Message</Label>
+                <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed max-h-[200px] overflow-y-auto">
+                  {msg.message}
+                </div>
+              </div>
+
+              <div className="border-t pt-4 space-y-3 bg-sayc-teal/5 p-4 rounded-xl">
+                <div className="flex items-center gap-2 text-sayc-teal">
+                  <Mail className="h-4 w-4" />
+                  <Label className="font-bold">Envoyer une réponse par Email</Label>
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Votre réponse sera envoyée directement à <strong>{msg.email}</strong> via le serveur SMTP de SAYC.
+                </p>
+                <Textarea 
+                  placeholder="Tapez votre réponse ici..." 
+                  className="min-h-[150px] bg-white"
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                />
+                <Button 
+                  className="w-full bg-sayc-teal hover:bg-sayc-teal/90 text-white font-bold" 
+                  disabled={!replyText.trim() || replyMutation.isPending}
+                  onClick={() => replyMutation.mutate(replyText)}
+                >
+                  {replyMutation.isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Envoi en cours...
+                    </>
+                  ) : "Envoyer la réponse"}
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </TableCell>
+    </TableRow>
   );
 }
 

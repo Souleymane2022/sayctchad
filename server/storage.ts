@@ -35,6 +35,7 @@ export interface IStorage {
   deleteMember(id: string): Promise<void>;
 
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
+  getContactMessageById(id: string): Promise<ContactMessage | undefined>;
   getAllContactMessages(): Promise<ContactMessage[]>;
 
   createNewsletterSubscriber(subscriber: InsertNewsletterSubscriber): Promise<NewsletterSubscriber>;
@@ -156,6 +157,11 @@ export class DatabaseStorage implements IStorage {
   async createContactMessage(message: InsertContactMessage): Promise<ContactMessage> {
     const [newMessage] = await db.insert(contactMessages).values(message).returning();
     return newMessage;
+  }
+
+  async getContactMessageById(id: string): Promise<ContactMessage | undefined> {
+    const [message] = await db.select().from(contactMessages).where(eq(contactMessages.id, id));
+    return message;
   }
 
   async getAllContactMessages(): Promise<ContactMessage[]> {

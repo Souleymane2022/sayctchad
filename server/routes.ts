@@ -834,6 +834,32 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     catch (e) { res.status(500).json({ error: "Erreur serveur" }); }
   });
 
+  app.post("/api/admin/contact/:id/reply", requireAdmin, async (req, res) => {
+    try {
+      const { message: replyText } = req.body;
+      if (!replyText) {
+        return res.status(400).json({ error: "Le message de réponse est requis" });
+      }
+
+      const originalMessage = await storage.getContactMessageById(req.params.id as string);
+      if (!originalMessage) {
+        return res.status(404).json({ error: "Message original introuvable" });
+      }
+
+      await sendAutoReplyEmail(
+        originalMessage.email,
+        `Réponse à votre message : ${originalMessage.subject}`,
+        replyText,
+        true // Include SADA banner
+      );
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Error replying to contact message:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi de la réponse", details: error.message });
+    }
+  });
+
   app.post("/api/admin/members/send-voting-info", requireAdmin, async (req, res) => {
     try {
       const members = await storage.getAllMembers();
