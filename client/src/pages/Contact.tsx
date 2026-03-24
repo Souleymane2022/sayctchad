@@ -11,9 +11,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { insertContactMessageSchema, type InsertContactMessage } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
+import { insertContactMessageSchema, type InsertContactMessage } from "@shared/schema";
 import {
   Mail,
   MapPin,
@@ -21,64 +20,61 @@ import {
   Clock,
   MessageSquare,
   Users,
-  Briefcase,
-  FileText,
-  ExternalLink
+  Briefcase
 } from "lucide-react";
 import { SiFacebook, SiLinkedin } from "react-icons/si";
 
+const contactInfo = [
+  {
+    icon: MapPin,
+    title: "Localisation",
+    content: "N'Djamena, Tchad",
+    detail: "Siège du chapitre national",
+  },
+  {
+    icon: MessageSquare,
+    title: "Point Focal",
+    content: "Souleymane Mahamat Saleh",
+    detail: "Point Focal National SAYC Tchad",
+  },
+  {
+    icon: Mail,
+    title: "Email",
+    content: "contact@sayctchad.org",
+    detail: "Réponse sous 48h ouvrables",
+  },
+  {
+    icon: Send,
+    title: "Téléphone",
+    content: "+235 66 16 17 53",
+    detail: "Appel & WhatsApp",
+  },
+  {
+    icon: Clock,
+    title: "Horaires",
+    content: "Lun-Ven: 8h-17h",
+    detail: "Heure de N'Djamena (UTC+1)",
+  },
+];
+
+const socialLinks = [
+  { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
+  { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
+];
+
+const subjects = [
+  { value: "general", label: "Question générale" },
+  { value: "membership", label: "Adhésion au SAYC" },
+  { value: "training", label: "Formations & Programmes" },
+  { value: "partnership", label: "Partenariat" },
+  { value: "media", label: "Presse & Médias" },
+  { value: "other", label: "Autre" },
+];
+
 export default function Contact() {
-  const { t } = useTranslation();
   const { toast } = useToast();
 
-  const contactInfo = [
-    {
-      icon: MapPin,
-      title: t('contact.info.location.title'),
-      content: t('contact.info.location.content'),
-      detail: t('contact.info.location.detail'),
-    },
-    {
-      icon: MessageSquare,
-      title: t('contact.info.focal.title'),
-      content: t('contact.info.focal.content'),
-      detail: t('contact.info.focal.detail'),
-    },
-    {
-      icon: Mail,
-      title: t('contact.info.email.title'),
-      content: "contact@sayctchad.org",
-      detail: t('contact.info.email.detail'),
-    },
-    {
-      icon: Send,
-      title: t('contact.info.phone.title'),
-      content: "+235 66 16 17 53",
-      detail: t('contact.info.phone.detail'),
-    },
-    {
-      icon: Clock,
-      title: t('contact.info.hours.title'),
-      content: t('contact.info.hours.content'),
-      detail: t('contact.info.hours.detail'),
-    },
-  ];
-
-  const socialLinks = [
-    { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
-    { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
-  ];
-
-  const subjects = [
-    { value: "general", label: t('contact.subjects.general') },
-    { value: "membership", label: t('contact.subjects.membership') },
-    { value: "training", label: t('contact.subjects.training') },
-    { value: "partnership", label: t('contact.subjects.partnership') },
-    { value: "media", label: t('contact.subjects.media') },
-    { value: "other", label: t('contact.subjects.other') },
-  ];
-
-  const form = useForm<any>({
+  const form = useForm<InsertContactMessage>({
     resolver: zodResolver(insertContactMessageSchema),
     defaultValues: {
       firstName: "",
@@ -91,21 +87,21 @@ export default function Contact() {
   });
 
   const contactMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const response = await (apiRequest as any)("POST", "/api/contact", data);
+    mutationFn: async (data: InsertContactMessage) => {
+      const response = await apiRequest("POST", "/api/contact", data);
       return response.json();
     },
     onSuccess: () => {
       toast({
-        title: t('contact.form.success_title'),
-        description: t('contact.form.success_desc'),
+        title: "Message envoyé!",
+        description: "Nous vous répondrons dans les plus brefs délais.",
       });
       form.reset();
     },
     onError: () => {
       toast({
-        title: t('contact.form.error_title'),
-        description: t('contact.form.error_desc'),
+        title: "Erreur",
+        description: "Une erreur est survenue. Veuillez réessayer.",
         variant: "destructive",
       });
     },
@@ -118,8 +114,8 @@ export default function Contact() {
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "ContactPage",
-    name: t('contact.seo.title'),
-    description: t('contact.seo.description'),
+    name: "Contact SAYC Tchad",
+    description: "Contactez le SAYC Tchad pour toute question, partenariat ou demande d'information.",
     url: "https://sayctchad.org/contact",
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
     mainEntity: {
@@ -135,16 +131,16 @@ export default function Contact() {
         contactType: "Point Focal National",
         name: "Souleymane Mahamat Saleh",
         telephone: "+23566161753",
-        availableLanguage: ["fr", "ar", "en"],
+        availableLanguage: ["fr", "ar"],
       },
     },
-  }), [t]);
+  }), []);
 
   return (
     <div className="flex flex-col">
       <SEOHead
-        title={t('contact.seo.title')}
-        description={t('contact.seo.description')}
+        title="Contact SAYC Tchad | Nous Joindre"
+        description="Contactez le SAYC Tchad pour toute question sur nos programmes, partenariats ou adhésion. Basé à N'Djamena, Tchad."
         path="/contact"
         jsonLd={webPageJsonLd}
       />
@@ -157,11 +153,15 @@ export default function Contact() {
           <div className="max-w-3xl">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-contact-header">
               <MessageSquare className="w-3 h-3 mr-1" />
-              {t('contact.hero.badge')}
+              Contact
             </Badge>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-contact-title" dangerouslySetInnerHTML={{ __html: t('contact.hero.title') }} />
+            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-contact-title">
+              Entrons en{" "}
+              <span className="text-accent">contact</span>
+            </h1>
             <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-contact-description">
-              {t('contact.hero.description')}
+              Une question, une suggestion ou envie de collaborer?
+              N'hesitez pas a nous contacter. Notre equipe est la pour vous accompagner.
             </p>
           </div>
         </div>
@@ -174,9 +174,9 @@ export default function Contact() {
             <div className="lg:col-span-2">
               <Card data-testid="card-contact-form">
                 <CardHeader>
-                  <CardTitle className="font-heading text-2xl">{t('contact.form.title')}</CardTitle>
+                  <CardTitle className="font-heading text-2xl">Envoyez-nous un message</CardTitle>
                   <CardDescription>
-                    {t('contact.form.description')}
+                    Remplissez le formulaire ci-dessous et nous vous répondrons rapidement.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -188,14 +188,14 @@ export default function Contact() {
                           name="firstName"
                           render={({ field }) => (
                             <FormItem>
-                            <FormLabel>{t('contact.form.first_name')}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t('contact.form.first_name_placeholder')}
-                                {...field}
-                                data-testid="input-first-name"
-                              />
-                            </FormControl>
+                              <FormLabel>Prénom *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Votre prénom"
+                                  {...field}
+                                  data-testid="input-first-name"
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -205,15 +205,14 @@ export default function Contact() {
                           name="nomSpecifiqueUnique"
                           render={({ field }) => (
                             <FormItem>
-                            <FormLabel>{t('contact.form.last_name')}</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder={t('contact.form.last_name_placeholder')}
-                                {...field}
-                                value={field.value || ""}
-                                data-testid="input-last-name"
-                              />
-                            </FormControl>
+                              <FormLabel>Nom *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Votre nom"
+                                  {...field}
+                                  data-testid="input-last-name"
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -226,15 +225,15 @@ export default function Contact() {
                           name="email"
                           render={({ field }) => (
                             <FormItem>
-                            <FormLabel>{t('contact.form.email')}</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="email"
-                                placeholder={t('contact.form.email_placeholder')}
-                                {...field}
-                                data-testid="input-email"
-                              />
-                            </FormControl>
+                              <FormLabel>Email *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="email"
+                                  placeholder="votre@email.com"
+                                  {...field}
+                                  data-testid="input-email"
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -244,16 +243,16 @@ export default function Contact() {
                           name="phone"
                           render={({ field }) => (
                             <FormItem>
-                            <FormLabel>{t('contact.form.phone')}</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="tel"
-                                placeholder={t('contact.form.phone_placeholder')}
-                                {...field}
-                                value={field.value || ""}
-                                data-testid="input-phone"
-                              />
-                            </FormControl>
+                              <FormLabel>Téléphone</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="tel"
+                                  placeholder="+235 66 00 00 00"
+                                  {...field}
+                                  value={field.value || ""}
+                                  data-testid="input-phone"
+                                />
+                              </FormControl>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -265,11 +264,11 @@ export default function Contact() {
                         name="subject"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('contact.form.subject')}</FormLabel>
+                            <FormLabel>Sujet *</FormLabel>
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
                                 <SelectTrigger data-testid="select-subject">
-                                  <SelectValue placeholder={t('contact.form.subject_placeholder')} />
+                                  <SelectValue placeholder="Sélectionnez un sujet" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -290,10 +289,10 @@ export default function Contact() {
                         name="message"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>{t('contact.form.message')}</FormLabel>
+                            <FormLabel>Message *</FormLabel>
                             <FormControl>
                               <Textarea
-                                placeholder={t('contact.form.message_placeholder')}
+                                placeholder="Votre message..."
                                 rows={6}
                                 className="resize-none"
                                 {...field}
@@ -313,11 +312,11 @@ export default function Contact() {
                         data-testid="button-submit-contact"
                       >
                         {contactMutation.isPending ? (
-                          t('contact.form.submitting')
+                          "Envoi en cours..."
                         ) : (
                           <>
-                            {t('contact.form.submit')}
-                            <Send className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0" />
+                            Envoyer le message
+                            <Send className="ml-2 h-4 w-4" />
                           </>
                         )}
                       </Button>
@@ -330,7 +329,7 @@ export default function Contact() {
             <div className="space-y-6">
               <Card data-testid="card-contact-info">
                 <CardHeader>
-                  <CardTitle className="font-heading text-xl">{t('contact.info.title')}</CardTitle>
+                  <CardTitle className="font-heading text-xl">Informations de contact</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   {contactInfo.map((info, index) => (
@@ -350,9 +349,9 @@ export default function Contact() {
 
               <Card data-testid="card-social-links">
                 <CardHeader>
-                  <CardTitle className="font-heading text-xl">{t('contact.social.title')}</CardTitle>
+                  <CardTitle className="font-heading text-xl">Suivez-nous</CardTitle>
                   <CardDescription>
-                    {t('contact.social.description')}
+                    Restez connecté avec le SAYC Tchad sur les réseaux sociaux.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -376,16 +375,16 @@ export default function Contact() {
 
               <Card className="bg-primary text-primary-foreground" data-testid="card-quick-actions">
                 <CardHeader>
-                  <CardTitle className="font-heading text-xl">{t('contact.quick_actions.title')}</CardTitle>
+                  <CardTitle className="font-heading text-xl">Actions rapides</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <a href="/rejoindre" className="flex items-center gap-3 p-3 rounded-lg bg-primary-foreground/10 hover-elevate transition-colors">
                     <Users className="w-5 h-5" />
-                    <span className="font-medium">{t('contact.quick_actions.membership')}</span>
+                    <span className="font-medium">Devenir membre</span>
                   </a>
-                  <a href="/contact" className="flex items-center gap-3 p-3 rounded-lg bg-primary-foreground/10 hover-elevate transition-colors">
+                  <a href="/partenaires" className="flex items-center gap-3 p-3 rounded-lg bg-primary-foreground/10 hover-elevate transition-colors">
                     <Briefcase className="w-5 h-5" />
-                    <span className="font-medium">{t('contact.quick_actions.partnership')}</span>
+                    <span className="font-medium">Devenir partenaire</span>
                   </a>
                 </CardContent>
               </Card>
