@@ -65894,15 +65894,20 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.post("/api/contact", apiLimiter, async (req, res) => {
     try {
+      console.log("Processing contact message from:", req.body.email);
       const validatedData = insertContactMessageSchema.parse(req.body);
-      const message = await storage.createContactMessage(validatedData);
-      await sendNotificationEmail(
+      const message = await storage.createContactMessage(validatedData).catch((dbError) => {
+        console.error("DATABASE FAIL in createContactMessage:", dbError);
+        throw dbError;
+      });
+      console.log("Contact message stored in DB, sending emails...");
+      const notifyResult = await sendNotificationEmail(
         "Nouveau Message de Contact - SAYC Tchad",
         `Nouveau message de ${message.firstName} ${message.nomSpecifiqueUnique} (${message.email}).
 Sujet: ${message.subject}
 Message: ${message.message}`
       );
-      await sendAutoReplyEmail(
+      const replyResult = await sendAutoReplyEmail(
         message.email,
         "Accus\xE9 de r\xE9ception de votre message - SAYC Tchad",
         `Bonjour ${message.firstName},
@@ -65914,13 +65919,18 @@ Notre \xE9quipe vous r\xE9pondra dans les plus brefs d\xE9lais (g\xE9n\xE9raleme
 Cordialement,
 L'\xE9quipe SAYC Tchad`
       );
+      console.log("Email results:", { notifyResult, replyResult });
       res.status(201).json(message);
     } catch (error) {
       if (error instanceof z.ZodError) {
+        console.warn("Zod Validation Error in Contact:", error.errors);
         return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
       }
-      console.error("Error creating contact message:", error);
-      res.status(500).json({ error: "Erreur lors de l'envoi du message" });
+      console.error("FATAL ERROR in /api/contact:", error);
+      res.status(500).json({
+        error: "Erreur lors de l'envoi du message",
+        debug: true ? "Check server logs" : error.message
+      });
     }
   });
   app2.get("/api/debug-email", async (req, res) => {

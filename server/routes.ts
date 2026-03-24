@@ -227,27 +227,40 @@ ${pages.map(p => `  <url>
 
   app.post("/api/contact", apiLimiter, async (req, res) => {
     try {
+      console.log("Processing contact message from:", req.body.email);
       const validatedData = insertContactMessageSchema.parse(req.body);
-      const message = await storage.createContactMessage(validatedData);
+      
+      const message = await storage.createContactMessage(validatedData).catch(dbError => {
+        console.error("DATABASE FAIL in createContactMessage:", dbError);
+        throw dbError; // RE-THROW to be caught by outer block
+      });
 
-      await sendNotificationEmail(
+      console.log("Contact message stored in DB, sending emails...");
+
+      const notifyResult = await sendNotificationEmail(
         "Nouveau Message de Contact - SAYC Tchad",
         `Nouveau message de ${message.firstName} ${message.nomSpecifiqueUnique} (${message.email}).\nSujet: ${message.subject}\nMessage: ${message.message}`
       );
 
-      await sendAutoReplyEmail(
+      const replyResult = await sendAutoReplyEmail(
         message.email,
         "Accusé de réception de votre message - SAYC Tchad",
         `Bonjour ${message.firstName},\n\nNous avons bien reçu votre message concernant "${message.subject}".\n\nNotre équipe vous répondra dans les plus brefs délais (généralement sous 48h ouvrables).\n\nCordialement,\nL'équipe SAYC Tchad`
       );
 
+      console.log("Email results:", { notifyResult, replyResult });
+
       res.status(201).json(message);
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof z.ZodError) {
+        console.warn("Zod Validation Error in Contact:", error.errors);
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
-      console.error("Error creating contact message:", error);
-      res.status(500).json({ error: "Erreur lors de l'envoi du message" });
+      console.error("FATAL ERROR in /api/contact:", error);
+      res.status(500).json({ 
+        error: "Erreur lors de l'envoi du message", 
+        debug: process.env.NODE_ENV === "production" ? "Check server logs" : error.message 
+      });
     }
   });
 
