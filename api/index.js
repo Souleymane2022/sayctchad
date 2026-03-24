@@ -65794,6 +65794,7 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.get("/api/health", async (_req, res) => {
     try {
+      console.log("--- HEALTH CHECK VERSION 2 ---");
       const dbCheck = await db.execute(sql`SELECT 1 as health`).catch((e) => ({ error: e.message }));
       const isConnected = Array.isArray(dbCheck) ? dbCheck[0]?.health === 1 : dbCheck?.rows?.[0]?.health === 1;
       res.json({
