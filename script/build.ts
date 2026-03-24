@@ -61,7 +61,7 @@ async function buildAll() {
     logLevel: "info",
   });
 
-  console.log("building vercel api...");
+  console.log("building vercel api (fat bundle)...");
   await esbuild({
     entryPoints: ["api/handler.ts"],
     platform: "node",
@@ -70,9 +70,11 @@ async function buildAll() {
     outfile: "api/index.js",
     define: {
       "process.env.NODE_ENV": '"production"',
+      "process.env.VERCEL": '"1"',
     },
     minify: false,
-    external: externals,
+    // NO EXTERNALS - bundle everything except built-ins
+    external: ["fsevents", "canvas"], 
     logLevel: "info",
     banner: {
       js: `import { createRequire } from "module";
