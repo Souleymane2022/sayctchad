@@ -21,7 +21,7 @@ const getNavLinks = (t: any) => [
 ];
 
 export function Header() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const navLinks = getNavLinks(t);
