@@ -11,9 +11,7 @@ import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
-import { pool, db } from "./db";
-import { sql } from "drizzle-orm";
-import { partners, achievements, trainings, opportunities, newsArticles, members, newsletterSubscribers, thunderbirdApplications } from "../shared/schema";
+import { pool } from "./db";
 import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection, sendPersonalizedMemberEmails } from "./email";
 declare module "express-session" {
   interface SessionData {
@@ -263,55 +261,6 @@ ${pages.map(p => `  <url>
         error: "Erreur lors de l'envoi du message", 
         debug: process.env.NODE_ENV === "production" ? "Check server logs" : error.message 
       });
-    }
-  });
-
-  app.get("/api/debug-data", async (_req, res) => {
-    try {
-      const getCount = async (tableName: string) => {
-        const result: any = await db.execute(sql.raw(`SELECT count(*) as total FROM ${tableName}`));
-        return Array.isArray(result) ? result[0]?.total : result?.rows?.[0]?.total;
-      };
-
-      const counts = {
-        partners: await getCount("partners"),
-        achievements: await getCount("achievements"),
-        trainings: await getCount("trainings"),
-        opportunities: await getCount("opportunities"),
-        news: await getCount("news_articles"),
-        members: await getCount("members"),
-        subscribers: await getCount("newsletter_subscribers"),
-        thunderbird: await getCount("thunderbird_applications"),
-      };
-      res.json({ status: "ok", counts });
-    } catch (e: any) {
-      res.status(500).json({ status: "error", message: e.message });
-    }
-  });
-
-  app.get("/api/health", async (_req, res) => {
-    try {
-      const deployId = "FORCE_UPDATE_3456";
-      console.log(`--- HEALTH CHECK VERSION 2 (${deployId}) ---`);
-      // Use raw SQL via Drizzle's execute to check connectivity
-      const dbCheck: any = await db.execute(sql`SELECT 1 as health`).catch((e: any) => ({ error: e.message }));
-      
-      const isConnected = Array.isArray(dbCheck) ? dbCheck[0]?.health === 1 : (dbCheck?.rows?.[0]?.health === 1);
-
-      res.json({
-        status: "ok",
-        database: isConnected ? "connected" : "failed",
-        db_error: dbCheck.error || null,
-        env: {
-          DATABASE_URL: process.env.DATABASE_URL ? "Present (masked)" : "MISSING",
-          SMTP_USER: process.env.SMTP_USER ? "Present" : "MISSING",
-          SMTP_PASS: process.env.SMTP_PASS ? "Present" : "MISSING",
-          NODE_ENV: process.env.NODE_ENV,
-          VERCEL: process.env.VERCEL
-        }
-      });
-    } catch (e: any) {
-      res.status(500).json({ status: "error", message: e.message });
     }
   });
 

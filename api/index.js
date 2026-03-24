@@ -65326,7 +65326,6 @@ var rate_limit_default = rateLimit;
 
 // server/routes.ts
 init_db2();
-init_drizzle_orm();
 
 // server/email.ts
 var import_nodemailer = __toESM(require_nodemailer(), 1);
@@ -65791,49 +65790,6 @@ L'\xE9quipe SAYC Tchad`
         error: "Erreur lors de l'envoi du message",
         debug: true ? "Check server logs" : error.message
       });
-    }
-  });
-  app2.get("/api/debug-data", async (_req, res) => {
-    try {
-      const getCount = async (tableName) => {
-        const result = await db.execute(sql.raw(`SELECT count(*) as total FROM ${tableName}`));
-        return Array.isArray(result) ? result[0]?.total : result?.rows?.[0]?.total;
-      };
-      const counts = {
-        partners: await getCount("partners"),
-        achievements: await getCount("achievements"),
-        trainings: await getCount("trainings"),
-        opportunities: await getCount("opportunities"),
-        news: await getCount("news_articles"),
-        members: await getCount("members"),
-        subscribers: await getCount("newsletter_subscribers"),
-        thunderbird: await getCount("thunderbird_applications")
-      };
-      res.json({ status: "ok", counts });
-    } catch (e) {
-      res.status(500).json({ status: "error", message: e.message });
-    }
-  });
-  app2.get("/api/health", async (_req, res) => {
-    try {
-      const deployId = "FORCE_UPDATE_3456";
-      console.log(`--- HEALTH CHECK VERSION 2 (${deployId}) ---`);
-      const dbCheck = await db.execute(sql`SELECT 1 as health`).catch((e) => ({ error: e.message }));
-      const isConnected = Array.isArray(dbCheck) ? dbCheck[0]?.health === 1 : dbCheck?.rows?.[0]?.health === 1;
-      res.json({
-        status: "ok",
-        database: isConnected ? "connected" : "failed",
-        db_error: dbCheck.error || null,
-        env: {
-          DATABASE_URL: process.env.DATABASE_URL ? "Present (masked)" : "MISSING",
-          SMTP_USER: process.env.SMTP_USER ? "Present" : "MISSING",
-          SMTP_PASS: process.env.SMTP_PASS ? "Present" : "MISSING",
-          NODE_ENV: "production",
-          VERCEL: "1"
-        }
-      });
-    } catch (e) {
-      res.status(500).json({ status: "error", message: e.message });
     }
   });
   app2.get("/api/debug-email", async (req, res) => {
