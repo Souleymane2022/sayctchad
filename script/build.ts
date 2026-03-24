@@ -60,6 +60,29 @@ async function buildAll() {
     external: externals,
     logLevel: "info",
   });
+
+  console.log("building vercel api...");
+  await esbuild({
+    entryPoints: ["api/handler.ts"],
+    platform: "node",
+    bundle: true,
+    format: "esm",
+    outfile: "api/index.js",
+    define: {
+      "process.env.NODE_ENV": '"production"',
+    },
+    minify: false,
+    external: externals,
+    logLevel: "info",
+    banner: {
+      js: `import { createRequire } from "module";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const require = createRequire(import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);`,
+    },
+  });
 }
 
 buildAll().catch((err) => {
