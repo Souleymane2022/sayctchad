@@ -33,7 +33,9 @@ import {
   ExternalLink,
   Rocket,
   Building2,
-  Link as LinkIcon
+  Link as LinkIcon,
+  FileText,
+  Download
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
@@ -514,6 +516,63 @@ export default function About() {
                 </CardHeader>
               </Card>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4" data-testid="badge-docs-tag">
+              <FileText className="w-3 h-3 mr-1" />
+              Ressources
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-docs-title">
+              Documents Officiels
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto" data-testid="text-docs-description">
+              Consultez et téléchargez les documents de référence du Smart Africa Youth Chapter Tchad.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="hover-elevate transition-all border-l-4 border-l-primary group cursor-pointer" onClick={() => window.open("/docs/SAYC_Tchad_Concept_Note.pdf", "_blank")}>
+              <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="font-heading text-lg mb-1 group-hover:text-primary transition-colors">
+                    SAYC Tchad - Note Conceptuelle
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Document détaillé sur la mission, les objectifs et la structure du chapitre.
+                  </CardDescription>
+                </div>
+                <Button variant="ghost" size="icon" className="shrink-0 rounded-full group-hover:bg-primary group-hover:text-primary-foreground" title="Télécharger">
+                  <Download className="w-4 h-4" />
+                </Button>
+              </CardHeader>
+            </Card>
+
+            <Card className="hover-elevate transition-all border-l-4 border-l-accent group cursor-pointer" onClick={() => window.open("/docs/SAYC_Tchad_Presentation.pdf", "_blank")}>
+              <CardHeader className="flex flex-row items-start gap-4 pb-4">
+                <div className="w-12 h-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6" />
+                </div>
+                <div className="flex-1">
+                  <CardTitle className="font-heading text-lg mb-1 group-hover:text-accent transition-colors">
+                    SAYC Tchad - Présentation
+                  </CardTitle>
+                  <CardDescription className="text-sm">
+                    Support de présentation officiel des activités et programmes prévus.
+                  </CardDescription>
+                </div>
+                <Button variant="ghost" size="icon" className="shrink-0 rounded-full group-hover:bg-accent group-hover:text-accent-foreground" title="Télécharger">
+                  <Download className="w-4 h-4" />
+                </Button>
+              </CardHeader>
+            </Card>
           </div>
         </div>
       </section>
