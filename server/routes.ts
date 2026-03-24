@@ -266,7 +266,8 @@ ${pages.map(p => `  <url>
 
   app.get("/api/health", async (_req, res) => {
     try {
-      console.log("--- HEALTH CHECK VERSION 2 ---");
+      const deployId = "FORCE_UPDATE_3456";
+      console.log(`--- HEALTH CHECK VERSION 2 (${deployId}) ---`);
       // Use raw SQL via Drizzle's execute to check connectivity
       const dbCheck: any = await db.execute(sql`SELECT 1 as health`).catch((e: any) => ({ error: e.message }));
       
