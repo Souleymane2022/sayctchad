@@ -146,7 +146,7 @@ ${pages.map(p => `  <url>
 
       await sendNotificationEmail(
         "Nouveau Membre SAYC - SAYC Tchad",
-        `Nouvelle adhésion de ${member.firstName} ${member.lastName} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}\nMotivation: ${member.motivation || 'Non spécifiée'}`
+        `Nouvelle adhésion de ${member.firstName} ${member.nomSpecifiqueUnique} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}\nMotivation: ${member.motivation || 'Non spécifiée'}`
       );
 
       await sendAutoReplyEmail(
@@ -204,7 +204,7 @@ ${pages.map(p => `  <url>
       // Return public info only
       res.json({
         firstName: member.firstName,
-        lastName: member.lastName,
+        nomSpecifiqueUnique: member.nomSpecifiqueUnique,
         membershipId: member.membershipId,
         createdAt: member.createdAt,
         chapter: "Tchad"
@@ -232,7 +232,7 @@ ${pages.map(p => `  <url>
 
       await sendNotificationEmail(
         "Nouveau Message de Contact - SAYC Tchad",
-        `Nouveau message de ${message.firstName} ${message.lastName} (${message.email}).\nSujet: ${message.subject}\nMessage: ${message.message}`
+        `Nouveau message de ${message.firstName} ${message.nomSpecifiqueUnique} (${message.email}).\nSujet: ${message.subject}\nMessage: ${message.message}`
       );
 
       await sendAutoReplyEmail(
@@ -679,7 +679,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
       await sendNotificationEmail(
         "Nouvelle Candidature Election - SAYC Tchad",
-        `Nouvelle candidature de ${candidate.firstName} ${candidate.lastName} pour le poste de ${candidate.role}.\nEmail: ${candidate.email}`
+        `Nouvelle candidature de ${candidate.firstName} ${candidate.nomSpecifiqueUnique} pour le poste de ${candidate.role}.\nEmail: ${candidate.email}`
       );
 
       res.status(201).json(candidate);

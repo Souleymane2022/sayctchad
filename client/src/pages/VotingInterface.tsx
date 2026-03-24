@@ -266,13 +266,13 @@ export default function VotingInterface() {
                                         <div className="aspect-[4/5] relative overflow-hidden">
                                             <img 
                                                 src={candidate.photoUrl} 
-                                                alt={`${candidate.firstName} ${candidate.lastName}`}
+                                                alt={`${candidate.firstName} ${candidate.nomSpecifiqueUnique}`}
                                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                             />
                                             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-6 pt-20">
                                                 <h3 className="text-xl font-bold text-white leading-tight">
                                                     {candidate.firstName} <br />
-                                                    {candidate.lastName}
+                                                    {candidate.nomSpecifiqueUnique}
                                                 </h3>
                                             </div>
                                         </div>

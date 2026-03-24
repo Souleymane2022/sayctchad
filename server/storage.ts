@@ -341,7 +341,7 @@ export class DatabaseStorage implements IStorage {
     return {
       id: row.id,
       firstName: row.first_name,
-      lastName: row.last_name,
+      nomSpecifiqueUnique: row.last_name,
       email: row.email,
       role: row.role,
       photoUrl: row.photo_url,
@@ -371,7 +371,7 @@ export class DatabaseStorage implements IStorage {
   async createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate> {
     const rows = await neonSql`
       INSERT INTO election_candidates (id, first_name, last_name, email, role, photo_url, cv_url, motivation_url, video_url, program_url, linkedin_url, facebook_url, twitter_url, status, votes_count)
-      VALUES (gen_random_uuid(), ${candidate.firstName}, ${candidate.lastName}, ${candidate.email}, ${candidate.role}, ${candidate.photoUrl}, ${candidate.cvUrl}, ${candidate.motivationUrl}, ${candidate.videoUrl || null}, ${candidate.programUrl || null}, ${candidate.linkedInUrl || null}, ${candidate.facebookUrl || null}, ${candidate.twitterUrl || null}, 'pending', 0)
+      VALUES (gen_random_uuid(), ${candidate.firstName}, ${candidate.nomSpecifiqueUnique}, ${candidate.email}, ${candidate.role}, ${candidate.photoUrl}, ${candidate.cvUrl}, ${candidate.motivationUrl}, ${candidate.videoUrl || null}, ${candidate.programUrl || null}, ${candidate.linkedInUrl || null}, ${candidate.facebookUrl || null}, ${candidate.twitterUrl || null}, 'pending', 0)
       RETURNING *
     `;
     return this.mapCandidateRow(rows[0]);

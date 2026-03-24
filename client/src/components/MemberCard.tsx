@@ -32,7 +32,7 @@ export function MemberCard({ member }: MemberCardProps) {
                 }
             });
             const link = document.createElement('a');
-            link.download = `SAYC_Carte_${member.lastName}_${side}.jpg`;
+            link.download = `SAYC_Carte_${member.nomSpecifiqueUnique}_${side}.jpg`;
             link.href = dataUrl;
             link.click();
         } catch (err) {
@@ -71,7 +71,7 @@ export function MemberCard({ member }: MemberCardProps) {
             pdf.setTextColor(100);
             pdf.text("Smart Africa Youth Chapter Tchad - Connecter. Innover. Transformer.", 105, 200, { align: 'center' });
 
-            pdf.save(`SAYC_Carte_${member.lastName}.pdf`);
+            pdf.save(`SAYC_Carte_${member.nomSpecifiqueUnique}.pdf`);
         } catch (err) {
             console.error("PDF generation failed", err);
         } finally {
@@ -126,7 +126,7 @@ export function MemberCard({ member }: MemberCardProps) {
                                     <div className="flex-1">
                                         <p className="text-[10px] text-white/60 mb-1 uppercase tracking-wider font-semibold">Identité du membre</p>
                                         <h2 className="font-heading text-xl font-bold leading-tight mb-1">
-                                            {member.firstName} <span className="text-accent">{member.lastName}</span>
+                                            {member.firstName} <span className="text-accent">{member.nomSpecifiqueUnique}</span>
                                         </h2>
                                         <div className="flex items-center gap-2 text-[11px] text-white/90">
                                             <Award className="w-3.5 h-3.5 text-accent" />

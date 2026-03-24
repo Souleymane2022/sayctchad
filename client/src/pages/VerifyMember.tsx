@@ -12,7 +12,7 @@ export default function VerifyMember() {
 
   const { data: member, isLoading, error } = useQuery<{
     firstName: string;
-    lastName: string;
+    nomSpecifiqueUnique: string;
     membershipId: string;
     createdAt: string;
     chapter: string;
@@ -97,7 +97,7 @@ export default function VerifyMember() {
                   </div>
                   <div>
                     <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Nom Complet</p>
-                    <p className="font-heading font-bold text-lg">{member.firstName} {member.lastName}</p>
+                    <p className="font-heading font-bold text-lg">{member.firstName} {member.nomSpecifiqueUnique}</p>
                   </div>
                 </div>
 

@@ -63,7 +63,7 @@ export function Header() {
                 <span className="sr-only">Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[280px] sm:w-[350px]">
+            <SheetContent side={i18n.language === 'ar' ? 'left' : 'right'} className="w-[280px] sm:w-[350px]">
               <div className="flex flex-col gap-6 mt-6">
                 <div className="flex items-center gap-3">
                   <img src={logoSayc} alt="SAYC Tchad" className="h-12 w-auto object-contain" />

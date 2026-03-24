@@ -20,7 +20,7 @@ export type User = typeof users.$inferSelect;
 export const members = pgTable("members", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
+  nomSpecifiqueUnique: text("last_name").notNull(),
   email: text("email").notNull().unique(),
   phone: text("phone").notNull(),
   ageRange: text("age_range").notNull(),
@@ -46,7 +46,7 @@ export type Member = typeof members.$inferSelect;
 export const contactMessages = pgTable("contact_messages", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
+  nomSpecifiqueUnique: text("last_name").notNull(),
   email: text("email").notNull(),
   phone: text("phone"),
   subject: text("subject").notNull(),
@@ -166,6 +166,7 @@ export const events = pgTable("events", {
   time: text("time"),
   location: text("location"),
   type: text("type").notNull(),
+  imageUrl: text("image_url"),
   registrationLink: text("registration_link"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
@@ -196,6 +197,7 @@ export const insertAchievementSchema = createInsertSchema(achievements).omit({
 
 export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
 export type Achievement = typeof achievements.$inferSelect;
+
 export const thunderbirdApplications = pgTable("thunderbird_applications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   fullName: text("full_name").notNull(),
@@ -236,7 +238,7 @@ export type ThunderbirdApplication = typeof thunderbirdApplications.$inferSelect
 export const electionCandidates = pgTable("election_candidates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   firstName: text("first_name").notNull(),
-  lastName: text("last_name").notNull(),
+  nomSpecifiqueUnique: text("last_name").notNull(),
   email: text("email").notNull(),
   role: text("role").notNull(), // One of the 5 roles
   photoUrl: text("photo_url").notNull(),

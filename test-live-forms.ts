@@ -5,7 +5,7 @@ async function testForms() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             firstName: "Test",
-            lastName: "AutoBot",
+            nomSpecifiqueUnique: "AutoBot",
             email: "test.sayctchad@yopmail.com", // dummy email to receive auto-reply
             subject: "Test Diagnostic Formulaire en ligne",
             message: "Ceci est un test automatisé pour s'assurer que le formulaire en ligne communique bien avec la base de données et le service email en production."
@@ -22,7 +22,7 @@ async function testForms() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             firstName: "Nouveau",
-            lastName: "Membre Test",
+            nomSpecifiqueUnique: "Membre Test",
             email: "test.membre@yopmail.com",
             phone: "+23560000000",
             motivation: "Test d'adhésion depuis le bot."

@@ -1,97 +1,54 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "wouter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { insertMemberSchema, type InsertMember } from "@shared/schema";
-import { z } from "zod";
+import { apiRequest } from "@/lib/queryClient";
 import { 
   Users, 
-  CheckCircle2,
-  GraduationCap,
-  Rocket,
-  Globe,
-  Heart,
-  Send
+  ArrowRight, 
+  CheckCircle, 
+  Zap, 
+  Search,
+  Users2,
+  Calendar,
+  Globe
 } from "lucide-react";
 
-const benefits = [
-  {
-    icon: GraduationCap,
-    title: "Formations gratuites",
-    description: "Accès à tous nos programmes de formation en compétences numériques.",
-  },
-  {
-    icon: Rocket,
-    title: "Mentorat personnalisé",
-    description: "Accompagnement par des experts du secteur technologique.",
-  },
-  {
-    icon: Globe,
-    title: "Réseau continental",
-    description: "Connexion avec les chapitres Smart Africa à travers l'Afrique.",
-  },
-  {
-    icon: Heart,
-    title: "Communauté engagée",
-    description: "Rejoignez une communauté de jeunes passionnés par l'innovation.",
-  },
-];
-
-const ageRanges = [
-  { value: "15-18", label: "15-18 ans" },
-  { value: "19-24", label: "19-24 ans" },
-  { value: "25-30", label: "25-30 ans" },
-  { value: "31-35", label: "31-35 ans" },
-];
-
-const educationLevels = [
-  { value: "secondary", label: "Secondaire" },
-  { value: "bac", label: "Baccalauréat" },
-  { value: "license", label: "Licence" },
-  { value: "master", label: "Master" },
-  { value: "doctorate", label: "Doctorat" },
-  { value: "other", label: "Autre" },
-];
-
-const interestOptions = [
-  "Développement Web",
-  "Développement Mobile",
-  "Data Science",
-  "Intelligence Artificielle",
-  "Cybersécurité",
-  "Cloud Computing",
-  "Entrepreneuriat",
-  "Design UI/UX",
-];
-
-const extendedMemberSchema = insertMemberSchema.extend({
-  acceptTerms: z.literal(true, {
-    errorMap: () => ({ message: "Vous devez accepter les conditions d'utilisation" }),
-  }),
-});
-
-type ExtendedMemberForm = z.infer<typeof extendedMemberSchema>;
-
 export default function Join() {
+  const { t } = useTranslation();
   const { toast } = useToast();
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  const form = useForm<ExtendedMemberForm>({
-    resolver: zodResolver(extendedMemberSchema),
+  const form = useForm<any>({
+    resolver: zodResolver(insertMemberSchema),
     defaultValues: {
       firstName: "",
-      lastName: "",
+      nomSpecifiqueUnique: "",
       email: "",
       phone: "",
       ageRange: "",
@@ -100,195 +57,191 @@ export default function Join() {
       occupation: "",
       interests: [],
       motivation: "",
-      acceptTerms: false as unknown as true,
+      acceptTerms: false,
     },
   });
 
-  const memberMutation = useMutation({
-    mutationFn: async (data: InsertMember) => {
+  const registrationMutation = useMutation({
+    mutationFn: async (data: any) => {
       const response = await apiRequest("POST", "/api/members", data);
       return response.json();
     },
     onSuccess: () => {
+      setIsSuccess(true);
       toast({
-        title: "Inscription réussie!",
-        description: "Bienvenue au SAYC Tchad! Vous recevrez un email de confirmation.",
+        title: t('join.form.success_title'),
+        description: t('join.form.success_desc'),
       });
-      form.reset();
-      setSelectedInterests([]);
+      window.scrollTo(0, 0);
     },
-    onError: () => {
+    onError: (error: any) => {
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue. Veuillez réessayer.",
+        title: t('join.form.error_title'),
+        description: error.message || t('join.form.error_desc'),
         variant: "destructive",
       });
     },
   });
 
-  const handleInterestToggle = (interest: string) => {
-    const newInterests = selectedInterests.includes(interest)
-      ? selectedInterests.filter(i => i !== interest)
-      : [...selectedInterests, interest];
-    setSelectedInterests(newInterests);
-    form.setValue("interests", newInterests);
+  const onSubmit = (data: InsertMember) => {
+    registrationMutation.mutate(data);
   };
 
-  const onSubmit = (data: ExtendedMemberForm) => {
-    memberMutation.mutate({ ...data, interests: selectedInterests });
-  };
+  const ageRanges = [
+    { value: "15-24", label: "15-24 ans" },
+    { value: "25-30", label: "25-30 ans" },
+    { value: "31-35", label: "31-35 ans" },
+    { value: "35+", label: "Plus de 35 ans" },
+  ];
 
-  const webPageJsonLd = useMemo(() => ({
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    name: "Rejoindre SAYC Tchad",
-    description: "Rejoignez le SAYC Tchad et bénéficiez de formations gratuites, mentorat et opportunités pour les jeunes de 15 à 35 ans.",
-    url: "https://sayctchad.org/rejoindre",
-    isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
-  }), []);
+  if (isSuccess) {
+    return (
+      <div className="container mx-auto px-4 py-20 min-h-[60vh] flex items-center justify-center">
+        <Card className="max-w-xl w-full text-center p-8 border-2 border-sayc-teal/20">
+          <div className="w-20 h-20 bg-sayc-teal/10 text-sayc-teal rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle className="w-10 h-10" />
+          </div>
+          <h1 className="text-3xl font-heading font-bold mb-4">{t('join.success.title')}</h1>
+          <p className="text-muted-foreground mb-8 text-lg">
+            {t('join.success.description')}
+          </p>
+          <Link href="/">
+            <Button className="w-full sm:w-auto px-8 py-6 text-lg">
+              {t('common.back_home')}
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="Rejoindre SAYC Tchad | Adhésion Jeunesse 15-35 ans"
-        description="Rejoignez le SAYC Tchad et bénéficiez de formations gratuites en compétences numériques, mentorat personnalisé et connexion au réseau continental Smart Africa. Ouvert aux jeunes de 15 à 35 ans."
+        title={t('join.seo.title')}
+        description={t('join.seo.description')}
         path="/rejoindre"
-        jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-12 left-10 w-32 h-32 border-2 border-accent/30 rounded-full" />
-          <div className="absolute top-20 right-16 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
-          <div className="absolute bottom-16 left-1/3 w-16 h-16 bg-accent/20 rounded-full" />
-        </div>
-        <div className="container mx-auto px-4 md:px-6 relative">
-          <div className="max-w-3xl mx-auto text-center">
-            <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-join-header">
-              <Users className="w-3 h-3 mr-1" />
-              Devenir Membre
-            </Badge>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-join-title">
-              Rejoignez le{" "}
-              <span className="text-accent">SAYC Tchad</span>
-            </h1>
-            <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-join-description">
-              Faites partie d'une communaute de jeunes Tchadiens engages pour la transformation 
-              numerique de l'Afrique. L'adhesion est gratuite et ouverte aux jeunes de 15 a 35 ans.
-            </p>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
-      </section>
 
-      <section className="py-12 md:py-16 bg-muted/30">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="text-center border-none shadow-sm" data-testid={`card-benefit-${index}`}>
-                <CardHeader className="pb-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                    <benefit.icon className="w-6 h-6" />
-                  </div>
-                  <CardTitle className="font-heading text-base">{benefit.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-sm">
-                    {benefit.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 right-10 w-32 h-32 border-2 border-accent/20 rounded-full" />
+          <div className="absolute bottom-16 left-16 w-24 h-24 border-2 border-sayc-teal/20 rounded-full" />
+        </div>
+        <div className="container mx-auto px-4 relative">
+          <Badge className="mb-6 bg-accent/20 text-accent border-accent/30 hover:bg-accent/30">
+            <Users className="w-4 h-4 mr-2" />
+            {t('join.hero.badge')}
+          </Badge>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-6 tracking-tight">
+             {t('join.hero.title')}
+          </h1>
+          <p className="text-lg md:text-xl text-sidebar-foreground/80 max-w-2xl leading-relaxed">
+            {t('join.hero.description')}
+          </p>
         </div>
       </section>
 
       <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-2xl mx-auto">
-            <Card data-testid="card-join-form">
-              <CardHeader className="text-center">
-                <CardTitle className="font-heading text-2xl">Formulaire d'adhésion</CardTitle>
-                <CardDescription>
-                  Remplissez le formulaire pour devenir membre du SAYC Tchad.
-                </CardDescription>
+        <div className="container mx-auto px-4">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            <div className="space-y-8">
+               <div className="grid sm:grid-cols-2 gap-6">
+                 <Card className="border-l-4 border-l-sayc-teal">
+                   <CardHeader className="pb-2">
+                     <Users2 className="w-6 h-6 text-sayc-teal mb-2" />
+                     <CardTitle className="text-lg">{t('about.pillars.engagement.title')}</CardTitle>
+                   </CardHeader>
+                   <CardContent>
+                     <p className="text-sm text-muted-foreground">{t('about.pillars.engagement.desc')}</p>
+                   </CardContent>
+                 </Card>
+                 <Card className="border-l-4 border-l-sayc-orange">
+                   <CardHeader className="pb-2">
+                     <Zap className="w-6 h-6 text-sayc-orange mb-2" />
+                     <CardTitle className="text-lg">{t('about.pillars.skills.title')}</CardTitle>
+                   </CardHeader>
+                   <CardContent>
+                     <p className="text-sm text-muted-foreground">{t('about.pillars.skills.desc')}</p>
+                   </CardContent>
+                 </Card>
+               </div>
+               
+               <Card className="bg-muted/30 border-none shadow-none p-6">
+                 <h3 className="font-heading font-bold text-xl mb-4 flex items-center gap-2">
+                   <Globe className="w-5 h-5 text-sayc-teal" />
+                   {t('home.initiatives.alliance.title')}
+                 </h3>
+                 <p className="text-muted-foreground leading-relaxed">
+                   {t('home.initiatives.alliance.desc')}
+                 </p>
+               </Card>
+            </div>
+
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl font-heading">{t('join.form.title')}</CardTitle>
+                <CardDescription>{t('join.form.description')}</CardDescription>
               </CardHeader>
               <CardContent>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="firstName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Prénom *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="Votre prénom" 
-                                {...field} 
-                                data-testid="input-join-first-name"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="lastName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Nom *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="Votre nom" 
-                                {...field} 
-                                data-testid="input-join-last-name"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={form.control}
+                          name="firstName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('contact.form.first_name')}</FormLabel>
+                              <FormControl>
+                                <Input placeholder={t('contact.form.first_name_placeholder')} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="nomSpecifiqueUnique"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('contact.form.last_name')}</FormLabel>
+                              <FormControl>
+                                <Input placeholder={t('contact.form.last_name_placeholder')} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="email"
-                                placeholder="votre@email.com" 
-                                {...field} 
-                                data-testid="input-join-email"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="phone"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Téléphone *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                type="tel"
-                                placeholder="+235 66 00 00 00" 
-                                {...field} 
-                                data-testid="input-join-phone"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                        <FormField
+                          control={form.control}
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('contact.form.email')}</FormLabel>
+                              <FormControl>
+                                <Input type="email" placeholder={t('contact.form.email_placeholder')} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="phone"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('contact.form.phone')}</FormLabel>
+                              <FormControl>
+                                <Input placeholder={t('contact.form.phone_placeholder')} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                     </div>
 
                     <div className="grid sm:grid-cols-2 gap-4">
@@ -297,11 +250,11 @@ export default function Join() {
                         name="ageRange"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Tranche d'âge *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                            <FormLabel>{t('contact.form.age_range', "Tranche d'âge *")}</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
-                                <SelectTrigger data-testid="select-age-range">
-                                  <SelectValue placeholder="Sélectionnez" />
+                                <SelectTrigger>
+                                  <SelectValue placeholder={t('contact.form.subject_placeholder')} />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
@@ -316,88 +269,19 @@ export default function Join() {
                           </FormItem>
                         )}
                       />
-                      <FormField
-                        control={form.control}
-                        name="city"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Ville *</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="N'Djamena" 
-                                {...field} 
-                                data-testid="input-join-city"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <FormField
-                        control={form.control}
-                        name="education"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Niveau d'études *</FormLabel>
-                            <Select onValueChange={field.onChange} value={field.value}>
+                        <FormField
+                          control={form.control}
+                          name="city"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>{t('contact.form.city', "Ville *")}</FormLabel>
                               <FormControl>
-                                <SelectTrigger data-testid="select-education">
-                                  <SelectValue placeholder="Sélectionnez" />
-                                </SelectTrigger>
+                                <Input placeholder={t('contact.form.city_placeholder', "Votre ville")} {...field} />
                               </FormControl>
-                              <SelectContent>
-                                {educationLevels.map((level) => (
-                                  <SelectItem key={level.value} value={level.value}>
-                                    {level.label}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="occupation"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Profession/Occupation</FormLabel>
-                            <FormControl>
-                              <Input 
-                                placeholder="Étudiant, Développeur..." 
-                                {...field} 
-                                value={field.value || ""}
-                                data-testid="input-join-occupation"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-
-                    <div className="space-y-3">
-                      <FormLabel>Centres d'intérêt</FormLabel>
-                      <div className="flex flex-wrap gap-2">
-                        {interestOptions.map((interest) => (
-                          <Badge
-                            key={interest}
-                            variant={selectedInterests.includes(interest) ? "default" : "outline"}
-                            className="cursor-pointer toggle-elevate"
-                            onClick={() => handleInterestToggle(interest)}
-                            data-testid={`badge-interest-${interest.toLowerCase().replace(/\s+/g, "-")}`}
-                          >
-                            {selectedInterests.includes(interest) && (
-                              <CheckCircle2 className="w-3 h-3 mr-1" />
-                            )}
-                            {interest}
-                          </Badge>
-                        ))}
-                      </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                     </div>
 
                     <FormField
@@ -405,15 +289,12 @@ export default function Join() {
                       name="motivation"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Pourquoi souhaitez-vous rejoindre le SAYC?</FormLabel>
+                          <FormLabel>Pourquoi nous rejoindre ? *</FormLabel>
                           <FormControl>
-                            <Textarea
-                              placeholder="Décrivez votre motivation..."
-                              rows={4}
-                              className="resize-none"
-                              {...field}
-                              value={field.value || ""}
-                              data-testid="textarea-motivation"
+                            <Textarea 
+                              placeholder="Dites-nous ce qui vous motive..." 
+                              className="min-h-[100px] resize-none"
+                              {...field} 
                             />
                           </FormControl>
                           <FormMessage />
@@ -421,44 +302,14 @@ export default function Join() {
                       )}
                     />
 
-                    <FormField
-                      control={form.control}
-                      name="acceptTerms"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                              data-testid="checkbox-terms"
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel className="cursor-pointer">
-                              J'accepte les conditions d'utilisation et la politique de confidentialité du SAYC Tchad. *
-                            </FormLabel>
-                            <FormMessage />
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-
-                    <Button 
-                      type="submit" 
-                      size="lg" 
-                      className="w-full"
-                      disabled={memberMutation.isPending}
-                      data-testid="button-submit-join"
-                    >
-                      {memberMutation.isPending ? (
-                        "Inscription en cours..."
-                      ) : (
-                        <>
-                          S'inscrire au SAYC Tchad
-                          <Send className="ml-2 h-4 w-4" />
-                        </>
-                      )}
-                    </Button>
+                      <Button 
+                        type="submit" 
+                        className="w-full h-12 text-lg font-bold" 
+                        disabled={registrationMutation.isPending}
+                      >
+                        {registrationMutation.isPending ? t('join.form.submitting', "Adhésion en cours...") : t('join.form.submit', "Confirmer mon adhésion")}
+                        {!registrationMutation.isPending && <ArrowRight className="ml-2 h-5 w-5" />}
+                      </Button>
                   </form>
                 </Form>
               </CardContent>

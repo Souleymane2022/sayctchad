@@ -112,13 +112,26 @@
     "hero_desc": "Le Smart Africa Youth Chapter - Tchad (SAYC Tchad) est la branche jeunesse de Smart Africa Alliance au Tchad. C'est une plateforme dédiée aux jeunes de 15 à 35 ans, axée sur l'éducation, la collaboration, le mentorat et l'innovation numérique.",
     "vision_tag": "Notre Vision",
     "vision_title": "Transformer l'Afrique par la jeunesse et l'innovation",
-    "vision_desc": "Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et bâtir un avenir durable.",
-    "pillars_title": "Les 3 Piliers du SAYC",
+    "vision_desc": "Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique, créer des opportunités, renforcer la solidarité régionale et construire un avenir durable.",
+    "pillars_title": "Les 3 Piliers de SAYC",
     "values_title": "Ce qui nous guide",
-    "seo_desc": "Découvrez SAYC Tchad, le 7ème chapitre jeunesse de Smart Africa Alliance. Missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
+    "seo_desc": "Découvrez SAYC Tchad, le 7ème chapitre jeune de Smart Africa Alliance. Missions, valeurs et piliers stratégiques pour la jeunesse tchadienne.",
     "seo_keywords": "SAYC Tchad, Smart Africa, Jeunesse, Tchad, Innovation, Souleymane Mahamat Saleh",
     "focal_point_title": "Point Focal National SAYC Tchad & Tech Leader",
     "focal_point_desc": "Expert en Ingénierie Logicielle et Acteur de la Transformation Digitale en Afrique",
+    "resources_title": "Documents & Ressources",
+    "resources_desc": "Retrouvez ici les documents officiels présentant la vision et les objectifs de SAYC Tchad.",
+    "resources": {
+      "concept_note": "Note de Concept",
+      "open_pdf": "Ouvrir le PDF",
+      "blueprints_desc": "Découvrez les guides stratégiques (Blueprints) de Smart Africa sur l'identité numérique, l'IA et plus encore.",
+      "explorer_blueprints": "Explorer les Blueprints"
+    },
+    "stats": {
+      "youth_trained": "Jeunes formés d'ici 2030",
+      "member_states": "États Membres Smart Africa"
+    },
+    "cta_title": "Prêt à transformer l'Afrique ?",
     "values": {
       "engagement": { "title": "Engagement", "desc": "Nous nous engageons pleinement pour le développement numérique de la jeunesse tchadienne." },
       "inclusion": { "title": "Inclusion", "desc": "Nous croyons en l'accès égal aux opportunités numériques pour tous les jeunes." },
@@ -132,6 +145,20 @@
     }
   },
   "home": {
+    "hero_title": "Le Futur Numérique de la Jeunesse Tchadienne",
+    "hero_subtitle": "Rejoignez le mouvement Smart Africa et transformez vos idées en solutions numériques innovantes.",
+    "cta_join": "Rejoindre le Chapitre",
+    "cta_learn": "En savoir plus",
+    "pillars_title": "Nos 3 Piliers d'Action",
+    "pilar_edu_title": "Éducation Numérique",
+    "pilar_edu_desc": "Accès à des formations certifiées et des programmes de renforcement de capacités via la plateforme SADA.",
+    "pilar_policy_title": "Politiques & Plaidoyer",
+    "pilar_policy_desc": "Porter la voix de la jeunesse dans les instances de décision pour une Afrique connectée.",
+    "pilar_infra_title": "Infrastructure & Innovation",
+    "pilar_infra_desc": "Soutenir l'accès aux technologies et favoriser l'entrepreneuriat numérique local.",
+    "focus_title": "Nos Priorités Stratégiques",
+    "cta_title": "Prêt à faire la différence ?",
+    "cta_desc": "Le SAYC Tchad est plus qu'une plateforme, c'est une communauté engagée pour l'avenir technologique du continent.",
     "seo_desc": "Smart Africa Youth Chapter Tchad - 7ème chapitre jeunesse dédié à l'innovation numérique au Tchad.",
     "seo_keywords": "SAYC Tchad, Smart Africa, Jeunesse, Tchad, Innovation, SADA",
     "objectives_tag": "Objectifs du SAYC",
@@ -178,11 +205,147 @@
     "news_tag": "Actualités",
     "news_title": "Dernières Actualités",
     "news_desc": "Les nouvelles récentes du SAYC Tchad et de Smart Africa.",
-    "cta_title": "Rejoignez le mouvement",
-    "cta_desc": "Participez à la transformation numérique du Tchad. Le SAYC est ouvert à tous les jeunes de 15 à 35 ans passionnés par la technologie.",
     "become_member": "Devenir membre",
     "stats_unavailable": "Les statistiques seront bientôt disponibles.",
     "alliance_name": "Smart Africa Alliance"
+  },
+  "contact": {
+    "seo": {
+      "title": "Contactez SAYC Tchad",
+      "description": "Une question ? Un projet ? Contactez l'équipe du Smart Africa Youth Chapter Tchad."
+    },
+    "hero": {
+      "badge": "Nous sommes à votre écoute",
+      "title": "Parlons de <span class=\"text-sayc-teal\">l'avenir</span>",
+      "description": "Vous avez des questions sur l'adhésion, les programmes SADA ou vous souhaitez devenir partenaire ? Notre équipe est là pour vous accompagner."
+    },
+    "info": {
+      "title": "Nos coordonnées",
+      "location": {
+        "title": "Siège National",
+        "content": "N'Djamena, Tchad",
+        "detail": "Bâtiment Smart Africa"
+      },
+      "focal": {
+        "title": "Point Focal",
+        "content": "Souleymane Mahamat Saleh",
+        "detail": "National Focal Point"
+      },
+      "email": {
+        "title": "Email Officiel",
+        "detail": "Réponse sous 24h"
+      },
+      "phone": {
+        "title": "Téléphone & WhatsApp",
+        "detail": "Lun-Ven, 8h-17h"
+      },
+      "hours": {
+        "title": "Heures d'ouverture",
+        "content": "Lundi - Vendredi",
+        "detail": "08:00 - 17:00"
+      }
+    },
+    "form": {
+      "title": "Envoyez-nous un message",
+      "description": "Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.",
+      "first_name": "Prénom *",
+      "first_name_placeholder": "Votre prénom",
+      "last_name": "Nom *",
+      "last_name_placeholder": "Votre nom",
+      "email": "Email *",
+      "email_placeholder": "votre@email.com",
+      "phone": "Téléphone",
+      "phone_placeholder": "+235 6X XX XX XX",
+      "subject": "Sujet *",
+      "subject_placeholder": "Sélectionner un sujet",
+      "message": "Message *",
+      "message_placeholder": "Comment pouvons-nous vous aider ?",
+      "submit": "Envoyer le message",
+      "submitting": "Envoi en cours...",
+      "success_title": "Message Envoyé",
+      "success_desc": "Merci ! Votre message a été transmis avec succès.",
+      "error_title": "Erreur",
+      "error_desc": "Désolé, une erreur est survenue lors de l'envoi.",
+      "full_name": "Nom complet",
+      "age_range": "Tranche d'âge *",
+      "city": "Ville *",
+      "city_placeholder": "Votre ville"
+    },
+    "subjects": {
+      "general": "Demande générale",
+      "membership": "Question sur l'adhésion",
+      "training": "Formations SADA",
+      "partnership": "Devenir partenaire",
+      "media": "Presse / Média",
+      "other": "Autre"
+    },
+    "social": {
+      "title": "Suivez-nous",
+      "description": "Restez informé de nos dernières actualités sur les réseaux sociaux."
+    },
+    "quick_actions": {
+      "title": "Actions rapides",
+      "membership": "Devenir membre",
+      "partnership": "Partenariats"
+    }
+  },
+  "join": {
+    "seo": {
+      "title": "Devenir Membre - SAYC Tchad",
+      "description": "Rejoignez le Smart Africa Youth Chapter Tchad et profitez d'opportunités numériques exclusives."
+    },
+    "hero": {
+      "badge": "Adhésion 2024",
+      "title": "Rejoignez la Communauté Tech du Tchad",
+      "description": "Inscrivez-vous dès aujourd'hui et connectez-vous aux opportunités de formation de la Smart Africa Digital Academy."
+    },
+    "form": {
+      "title": "Formulaire d'adhésion",
+      "description": "Veuillez remplir les informations suivantes pour confirmer votre inscription.",
+      "success_title": "Adhésion Enregistrée",
+      "success_desc": "Bienvenue chez SAYC Tchad !",
+      "error_title": "Erreur d'Inscription",
+      "error_desc": "Impossible de valider votre adhésion pour le moment.",
+      "personal_info": "Informations Personnelles",
+      "submitting": "Adhésion en cours...",
+      "submit": "Confirmer mon adhésion",
+      "privacy_notice": "Vos données personnelles sont protégées et traitées conformément à notre politique de confidentialité."
+    },
+    "success": {
+      "title": "Félicitations !",
+      "description": "Votre demande d'adhésion a été reçue avec succès. Un email de confirmation vous sera envoyé prochainement avec vos accès.",
+      "info_title": "Vos informations d'adhésion",
+      "member_id": "ID Membre",
+      "status": "Statut",
+      "pending": "En attente de validation",
+      "email_sent": "Un email de confirmation a été envoyé à {{email}}"
+    },
+    "why": {
+      "title": "Pourquoi nous rejoindre ?",
+      "sada": "Accès prioritaire aux formations SADA",
+      "network": "Réseautage avec la jeunesse africaine",
+      "events": "Participation aux événements Smart Africa"
+    },
+    "already_member": {
+      "title": "Déjà membre ?",
+      "desc": "Si vous possédez déjà un identifiant de membre, vous pouvez vérifier votre statut ou mettre à jour votre profil.",
+      "button": "Vérifier mon statut"
+    }
+  },
+  "candidate": {
+    "seo": {
+      "title": "Candidater aux Élections - SAYC Tchad",
+      "description": "Soumettez votre candidature pour le bureau exécutif de l'organisation."
+    },
+    "hero": {
+      "badge": "Leadership 2024",
+      "title": "Devenez un Leader de SAYC Tchad",
+      "description": "Menez l'innovation numérique et portez la voix de la jeunesse tchadienne."
+    },
+    "form": {
+      "title": "Dossier de candidature",
+      "description": "Soumettez vos documents et votre vision pour le poste visé."
+    }
   },
   "footer": {
     "navigation": "Navigation",

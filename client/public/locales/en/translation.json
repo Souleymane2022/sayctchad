@@ -119,6 +119,19 @@
     "seo_keywords": "SAYC Chad, Smart Africa, Youth, Chad, Innovation, Souleymane Mahamat Saleh",
     "focal_point_title": "National Focal Point SAYC Chad & Tech Leader",
     "focal_point_desc": "Expert in Software Engineering and Actor of Digital Transformation in Africa",
+    "resources_title": "Documents & Resources",
+    "resources_desc": "Find here the official documents presenting the vision and objectives of SAYC Chad.",
+    "resources": {
+      "concept_note": "Concept Note",
+      "open_pdf": "Open PDF",
+      "blueprints_desc": "Discover Smart Africa's strategic guides (Blueprints) on digital identity, AI and more.",
+      "explorer_blueprints": "Explore Blueprints"
+    },
+    "stats": {
+      "youth_trained": "Youth trained by 2030",
+      "member_states": "Smart Africa Member States"
+    },
+    "cta_title": "Ready to transform Africa?",
     "values": {
       "engagement": { "title": "Commitment", "desc": "We are fully committed to the digital development of Chadian youth." },
       "inclusion": { "title": "Inclusion", "desc": "We believe in equal access to digital opportunities for all young people." },
@@ -132,6 +145,20 @@
     }
   },
   "home": {
+    "hero_title": "The Digital Future of Chadian Youth",
+    "hero_subtitle": "Join the Smart Africa movement and transform your ideas into innovative digital solutions.",
+    "cta_join": "Join the Chapter",
+    "cta_learn": "Learn More",
+    "pillars_title": "Our 3 Pillars of Action",
+    "pilar_edu_title": "Digital Education",
+    "pilar_edu_desc": "Access to certified training and capacity-building programs via the SADA platform.",
+    "pilar_policy_title": "Policy & Advocacy",
+    "pilar_policy_desc": "Carry the voice of youth in decision-making bodies for a connected Africa.",
+    "pilar_infra_title": "Infrastructure & Innovation",
+    "pilar_infra_desc": "Support access to technologies and foster local digital entrepreneurship.",
+    "focus_title": "Our Strategic Priorities",
+    "cta_title": "Ready to make a difference?",
+    "cta_desc": "SAYC Chad is more than a platform, it is a community committed to the technological future of the continent.",
     "seo_desc": "Smart Africa Youth Chapter Chad - 7th youth chapter dedicated to digital innovation in Chad.",
     "seo_keywords": "SAYC Chad, Smart Africa, Youth, Chad, Innovation, SADA",
     "objectives_tag": "SAYC Objectives",
@@ -178,11 +205,147 @@
     "news_tag": "News",
     "news_title": "Latest News",
     "news_desc": "Recent news from SAYC Chad and Smart Africa.",
-    "cta_title": "Join the Movement",
-    "cta_desc": "Participate in Chad's digital transformation. SAYC is open to all youth aged 15 to 35 passionate about technology.",
     "become_member": "Become a Member",
     "stats_unavailable": "Statistics will be available soon.",
     "alliance_name": "Smart Africa Alliance"
+  },
+  "contact": {
+    "seo": {
+      "title": "Contact SAYC Chad",
+      "description": "A question? A project? Contact the Smart Africa Youth Chapter Chad team."
+    },
+    "hero": {
+      "badge": "We are listening",
+      "title": "Let's talk about the <span class=\"text-sayc-teal\">future</span>",
+      "description": "Questions about membership, SADA programs, or becoming a partner? Our team is here to support you."
+    },
+    "info": {
+      "title": "Contact Details",
+      "location": {
+        "title": "National Headquarters",
+        "content": "N'Djamena, Chad",
+        "detail": "Smart Africa Building"
+      },
+      "focal": {
+        "title": "Focal Point",
+        "content": "Souleymane Mahamat Saleh",
+        "detail": "National Focal Point"
+      },
+      "email": {
+        "title": "Official Email",
+        "detail": "Response within 24h"
+      },
+      "phone": {
+        "title": "Phone & WhatsApp",
+        "detail": "Mon-Fri, 8am-5pm"
+      },
+      "hours": {
+        "title": "Opening Hours",
+        "content": "Monday - Friday",
+        "detail": "08:00 - 17:00"
+      }
+    },
+    "form": {
+      "title": "Send us a message",
+      "description": "Fill out the form below and we will get back to you as soon as possible.",
+      "first_name": "First Name *",
+      "first_name_placeholder": "Your first name",
+      "last_name": "Last Name *",
+      "last_name_placeholder": "Your last name",
+      "email": "Email *",
+      "email_placeholder": "your@email.com",
+      "phone": "Phone",
+      "phone_placeholder": "+235 6X XX XX XX",
+      "subject": "Subject *",
+      "subject_placeholder": "Select a subject",
+      "message": "Message *",
+      "message_placeholder": "How can we help you?",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "success_title": "Message Sent",
+      "success_desc": "Thank you! Your message has been successfully transmitted.",
+      "error_title": "Error",
+      "error_desc": "Sorry, an error occurred while sending.",
+      "full_name": "Full Name",
+      "age_range": "Age Range *",
+      "city": "City *",
+      "city_placeholder": "Your city"
+    },
+    "subjects": {
+      "general": "General Inquiry",
+      "membership": "Membership Question",
+      "training": "SADA Trainings",
+      "partnership": "Become a Partner",
+      "media": "Press / Media",
+      "other": "Other"
+    },
+    "social": {
+      "title": "Follow Us",
+      "description": "Stay informed about our latest news on social media."
+    },
+    "quick_actions": {
+      "title": "Quick Actions",
+      "membership": "Become a Member",
+      "partnership": "Partnerships"
+    }
+  },
+  "join": {
+    "seo": {
+      "title": "Become a Member - SAYC Chad",
+      "description": "Join the Smart Africa Youth Chapter Chad and enjoy exclusive digital opportunities."
+    },
+    "hero": {
+      "badge": "Membership 2024",
+      "title": "Join Chad's Tech Community",
+      "description": "Sign up today and connect to training opportunities from the Smart Africa Digital Academy."
+    },
+    "form": {
+      "title": "Membership Form",
+      "description": "Please fill in the following information to confirm your registration.",
+      "success_title": "Membership Registered",
+      "success_desc": "Welcome to SAYC Chad!",
+      "error_title": "Registration Error",
+      "error_desc": "Unable to validate your membership at this time.",
+      "personal_info": "Personal Information",
+      "submitting": "Membership in progress...",
+      "submit": "Confirm my membership",
+      "privacy_notice": "Your personal data is protected and processed in accordance with our privacy policy."
+    },
+    "success": {
+      "title": "Congratulations!",
+      "description": "Your membership application has been successfully received. A confirmation email will be sent to you soon with your access details.",
+      "info_title": "Your membership information",
+      "member_id": "Member ID",
+      "status": "Status",
+      "pending": "Pending validation",
+      "email_sent": "A confirmation email has been sent to {{email}}"
+    },
+    "why": {
+      "title": "Why join us?",
+      "sada": "Priority access to SADA training",
+      "network": "Networking with African youth",
+      "events": "Participation in Smart Africa events"
+    },
+    "already_member": {
+      "title": "Already a member?",
+      "desc": "If you already have a member ID, you can check your status or update your profile.",
+      "button": "Check my status"
+    }
+  },
+  "candidate": {
+    "seo": {
+      "title": "Apply for Elections - SAYC Chad",
+      "description": "Submit your application for the organization's executive board."
+    },
+    "hero": {
+      "badge": "Leadership 2024",
+      "title": "Become a Leader of SAYC Chad",
+      "description": "Lead digital innovation and carry the voice of Chadian youth."
+    },
+    "form": {
+      "title": "Application File",
+      "description": "Submit your documents and vision for the target position."
+    }
   },
   "footer": {
     "navigation": "Navigation",
