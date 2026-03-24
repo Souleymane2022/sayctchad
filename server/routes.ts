@@ -266,10 +266,14 @@ ${pages.map(p => `  <url>
 
   app.get("/api/health", async (_req, res) => {
     try {
-      const dbCheck = await (storage as any).sql`SELECT 1 as health`.catch((e: any) => ({ error: e.message }));
+      // Use raw SQL via Drizzle's execute to check connectivity
+      const dbCheck: any = await db.execute(sql`SELECT 1 as health`).catch((e: any) => ({ error: e.message }));
+      
+      const isConnected = Array.isArray(dbCheck) ? dbCheck[0]?.health === 1 : (dbCheck?.rows?.[0]?.health === 1);
+
       res.json({
         status: "ok",
-        database: dbCheck[0]?.health === 1 ? "connected" : "failed",
+        database: isConnected ? "connected" : "failed",
         db_error: dbCheck.error || null,
         env: {
           DATABASE_URL: process.env.DATABASE_URL ? "Present (masked)" : "MISSING",

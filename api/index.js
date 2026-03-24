@@ -15147,7 +15147,7 @@ var require_mimeScore = __commonJS({
 var require_mime_types = __commonJS({
   "node_modules/mime-types/index.js"(exports) {
     "use strict";
-    var db2 = require_mime_db();
+    var db3 = require_mime_db();
     var extname = __require("path").extname;
     var mimeScore = require_mimeScore();
     var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/;
@@ -15166,7 +15166,7 @@ var require_mime_types = __commonJS({
         return false;
       }
       var match = EXTRACT_TYPE_REGEXP.exec(type);
-      var mime = match && db2[match[1].toLowerCase()];
+      var mime = match && db3[match[1].toLowerCase()];
       if (mime && mime.charset) {
         return mime.charset;
       }
@@ -15211,8 +15211,8 @@ var require_mime_types = __commonJS({
       return exports.types[extension2] || false;
     }
     function populateMaps(extensions, types) {
-      Object.keys(db2).forEach(function forEachMimeType(type) {
-        var mime = db2[type];
+      Object.keys(db3).forEach(function forEachMimeType(type) {
+        var mime = db3[type];
         var exts = mime.extensions;
         if (!exts || !exts.length) {
           return;
@@ -15233,14 +15233,14 @@ var require_mime_types = __commonJS({
       });
     }
     function _preferredType(ext, type0, type1) {
-      var score0 = type0 ? mimeScore(type0, db2[type0].source) : 0;
-      var score1 = type1 ? mimeScore(type1, db2[type1].source) : 0;
+      var score0 = type0 ? mimeScore(type0, db3[type0].source) : 0;
+      var score1 = type1 ? mimeScore(type1, db3[type1].source) : 0;
       return score0 > score1 ? type0 : type1;
     }
     function _preferredTypeLegacy(ext, type0, type1) {
       var SOURCE_RANK = ["nginx", "apache", void 0, "iana"];
-      var score0 = type0 ? SOURCE_RANK.indexOf(db2[type0].source) : 0;
-      var score1 = type1 ? SOURCE_RANK.indexOf(db2[type1].source) : 0;
+      var score0 = type0 ? SOURCE_RANK.indexOf(db3[type0].source) : 0;
+      var score1 = type1 ? SOURCE_RANK.indexOf(db3[type1].source) : 0;
       if (exports.types[extension] !== "application/octet-stream" && (score0 > score1 || score0 === score1 && exports.types[extension]?.slice(0, 12) === "application/")) {
         return type0;
       }
@@ -26352,10 +26352,10 @@ var init_subquery = __esm({
     init_entity();
     Subquery = class {
       static [entityKind] = "Subquery";
-      constructor(sql3, fields, alias, isWith = false, usedTables = []) {
+      constructor(sql4, fields, alias, isWith = false, usedTables = []) {
         this._ = {
           brand: "Subquery",
-          sql: sql3,
+          sql: sql4,
           selectedFields: fields,
           alias,
           isWith,
@@ -26527,7 +26527,7 @@ function isDriverValueEncoder(value) {
 function param(value, encoder) {
   return new Param(value, encoder);
 }
-function sql(strings, ...params) {
+function sql2(strings, ...params) {
   const queryChunks = [];
   if (params.length > 0 || strings.length > 0 && strings[0] !== "") {
     queryChunks.push(new StringChunk(strings[0]));
@@ -26858,7 +26858,7 @@ var init_sql = __esm({
         return new Param(value, encoder);
       }
       sql22.param = param2;
-    })(sql || (sql = {}));
+    })(sql2 || (sql2 = {}));
     ((SQL2) => {
       class Aliased {
         constructor(sql22, fieldAlias) {
@@ -26938,7 +26938,7 @@ function mapColumnsInAliasedSQLToAlias(query, alias) {
   return new SQL.Aliased(mapColumnsInSQLToAlias(query.sql, alias), query.fieldAlias);
 }
 function mapColumnsInSQLToAlias(query, alias) {
-  return sql.join(query.queryChunks.map((c) => {
+  return sql2.join(query.queryChunks.map((c) => {
     if (is(c, Column)) {
       return aliasedTableColumn(c, alias);
     }
@@ -27633,7 +27633,7 @@ var init_date_common = __esm({
     PgDateColumnBaseBuilder = class extends PgColumnBuilder {
       static [entityKind] = "PgDateColumnBaseBuilder";
       defaultNow() {
-        return this.default(sql`now()`);
+        return this.default(sql2`now()`);
       }
     };
   }
@@ -28683,7 +28683,7 @@ var init_uuid = __esm({
        * Adds `default gen_random_uuid()` to the column definition.
        */
       defaultRandom() {
-        return this.default(sql`gen_random_uuid()`);
+        return this.default(sql2`gen_random_uuid()`);
       }
       /** @internal */
       build(table) {
@@ -29082,7 +29082,7 @@ function and(...unfilteredConditions) {
   }
   return new SQL([
     new StringChunk("("),
-    sql.join(conditions, new StringChunk(" and ")),
+    sql2.join(conditions, new StringChunk(" and ")),
     new StringChunk(")")
   ]);
 }
@@ -29098,96 +29098,96 @@ function or(...unfilteredConditions) {
   }
   return new SQL([
     new StringChunk("("),
-    sql.join(conditions, new StringChunk(" or ")),
+    sql2.join(conditions, new StringChunk(" or ")),
     new StringChunk(")")
   ]);
 }
 function not(condition) {
-  return sql`not ${condition}`;
+  return sql2`not ${condition}`;
 }
 function inArray(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
-      return sql`false`;
+      return sql2`false`;
     }
-    return sql`${column} in ${values.map((v2) => bindIfParam(v2, column))}`;
+    return sql2`${column} in ${values.map((v2) => bindIfParam(v2, column))}`;
   }
-  return sql`${column} in ${bindIfParam(values, column)}`;
+  return sql2`${column} in ${bindIfParam(values, column)}`;
 }
 function notInArray(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
-      return sql`true`;
+      return sql2`true`;
     }
-    return sql`${column} not in ${values.map((v2) => bindIfParam(v2, column))}`;
+    return sql2`${column} not in ${values.map((v2) => bindIfParam(v2, column))}`;
   }
-  return sql`${column} not in ${bindIfParam(values, column)}`;
+  return sql2`${column} not in ${bindIfParam(values, column)}`;
 }
 function isNull(value) {
-  return sql`${value} is null`;
+  return sql2`${value} is null`;
 }
 function isNotNull(value) {
-  return sql`${value} is not null`;
+  return sql2`${value} is not null`;
 }
 function exists(subquery) {
-  return sql`exists ${subquery}`;
+  return sql2`exists ${subquery}`;
 }
 function notExists(subquery) {
-  return sql`not exists ${subquery}`;
+  return sql2`not exists ${subquery}`;
 }
 function between(column, min2, max2) {
-  return sql`${column} between ${bindIfParam(min2, column)} and ${bindIfParam(
+  return sql2`${column} between ${bindIfParam(min2, column)} and ${bindIfParam(
     max2,
     column
   )}`;
 }
 function notBetween(column, min2, max2) {
-  return sql`${column} not between ${bindIfParam(
+  return sql2`${column} not between ${bindIfParam(
     min2,
     column
   )} and ${bindIfParam(max2, column)}`;
 }
 function like(column, value) {
-  return sql`${column} like ${value}`;
+  return sql2`${column} like ${value}`;
 }
 function notLike(column, value) {
-  return sql`${column} not like ${value}`;
+  return sql2`${column} not like ${value}`;
 }
 function ilike(column, value) {
-  return sql`${column} ilike ${value}`;
+  return sql2`${column} ilike ${value}`;
 }
 function notIlike(column, value) {
-  return sql`${column} not ilike ${value}`;
+  return sql2`${column} not ilike ${value}`;
 }
 function arrayContains(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
       throw new Error("arrayContains requires at least one value");
     }
-    const array = sql`${bindIfParam(values, column)}`;
-    return sql`${column} @> ${array}`;
+    const array = sql2`${bindIfParam(values, column)}`;
+    return sql2`${column} @> ${array}`;
   }
-  return sql`${column} @> ${bindIfParam(values, column)}`;
+  return sql2`${column} @> ${bindIfParam(values, column)}`;
 }
 function arrayContained(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
       throw new Error("arrayContained requires at least one value");
     }
-    const array = sql`${bindIfParam(values, column)}`;
-    return sql`${column} <@ ${array}`;
+    const array = sql2`${bindIfParam(values, column)}`;
+    return sql2`${column} <@ ${array}`;
   }
-  return sql`${column} <@ ${bindIfParam(values, column)}`;
+  return sql2`${column} <@ ${bindIfParam(values, column)}`;
 }
 function arrayOverlaps(column, values) {
   if (Array.isArray(values)) {
     if (values.length === 0) {
       throw new Error("arrayOverlaps requires at least one value");
     }
-    const array = sql`${bindIfParam(values, column)}`;
-    return sql`${column} && ${array}`;
+    const array = sql2`${bindIfParam(values, column)}`;
+    return sql2`${column} && ${array}`;
   }
-  return sql`${column} && ${bindIfParam(values, column)}`;
+  return sql2`${column} && ${bindIfParam(values, column)}`;
 }
 var eq, ne, gt, gte, lt, lte;
 var init_conditions = __esm({
@@ -29197,32 +29197,32 @@ var init_conditions = __esm({
     init_table();
     init_sql();
     eq = (left, right) => {
-      return sql`${left} = ${bindIfParam(right, left)}`;
+      return sql2`${left} = ${bindIfParam(right, left)}`;
     };
     ne = (left, right) => {
-      return sql`${left} <> ${bindIfParam(right, left)}`;
+      return sql2`${left} <> ${bindIfParam(right, left)}`;
     };
     gt = (left, right) => {
-      return sql`${left} > ${bindIfParam(right, left)}`;
+      return sql2`${left} > ${bindIfParam(right, left)}`;
     };
     gte = (left, right) => {
-      return sql`${left} >= ${bindIfParam(right, left)}`;
+      return sql2`${left} >= ${bindIfParam(right, left)}`;
     };
     lt = (left, right) => {
-      return sql`${left} < ${bindIfParam(right, left)}`;
+      return sql2`${left} < ${bindIfParam(right, left)}`;
     };
     lte = (left, right) => {
-      return sql`${left} <= ${bindIfParam(right, left)}`;
+      return sql2`${left} <= ${bindIfParam(right, left)}`;
     };
   }
 });
 
 // node_modules/drizzle-orm/sql/expressions/select.js
 function asc(column) {
-  return sql`${column} asc`;
+  return sql2`${column} asc`;
 }
 function desc(column) {
-  return sql`${column} desc`;
+  return sql2`${column} desc`;
 }
 var init_select = __esm({
   "node_modules/drizzle-orm/sql/expressions/select.js"() {
@@ -29262,12 +29262,12 @@ function getOperators() {
     notIlike,
     notInArray,
     or,
-    sql
+    sql: sql2
   };
 }
 function getOrderByOperators() {
   return {
-    sql,
+    sql: sql2,
     asc,
     desc
   };
@@ -29523,28 +29523,28 @@ var init_relations = __esm({
 
 // node_modules/drizzle-orm/sql/functions/aggregate.js
 function count(expression) {
-  return sql`count(${expression || sql.raw("*")})`.mapWith(Number);
+  return sql2`count(${expression || sql2.raw("*")})`.mapWith(Number);
 }
 function countDistinct(expression) {
-  return sql`count(distinct ${expression})`.mapWith(Number);
+  return sql2`count(distinct ${expression})`.mapWith(Number);
 }
 function avg(expression) {
-  return sql`avg(${expression})`.mapWith(String);
+  return sql2`avg(${expression})`.mapWith(String);
 }
 function avgDistinct(expression) {
-  return sql`avg(distinct ${expression})`.mapWith(String);
+  return sql2`avg(distinct ${expression})`.mapWith(String);
 }
 function sum(expression) {
-  return sql`sum(${expression})`.mapWith(String);
+  return sql2`sum(${expression})`.mapWith(String);
 }
 function sumDistinct(expression) {
-  return sql`sum(distinct ${expression})`.mapWith(String);
+  return sql2`sum(distinct ${expression})`.mapWith(String);
 }
 function max(expression) {
-  return sql`max(${expression})`.mapWith(is(expression, Column) ? expression : String);
+  return sql2`max(${expression})`.mapWith(is(expression, Column) ? expression : String);
 }
 function min(expression) {
-  return sql`min(${expression})`.mapWith(is(expression, Column) ? expression : String);
+  return sql2`min(${expression})`.mapWith(is(expression, Column) ? expression : String);
 }
 var init_aggregate = __esm({
   "node_modules/drizzle-orm/sql/functions/aggregate.js"() {
@@ -29560,39 +29560,39 @@ function toSql(value) {
 }
 function l2Distance(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <-> ${toSql(value)}`;
+    return sql2`${column} <-> ${toSql(value)}`;
   }
-  return sql`${column} <-> ${value}`;
+  return sql2`${column} <-> ${value}`;
 }
 function l1Distance(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <+> ${toSql(value)}`;
+    return sql2`${column} <+> ${toSql(value)}`;
   }
-  return sql`${column} <+> ${value}`;
+  return sql2`${column} <+> ${value}`;
 }
 function innerProduct(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <#> ${toSql(value)}`;
+    return sql2`${column} <#> ${toSql(value)}`;
   }
-  return sql`${column} <#> ${value}`;
+  return sql2`${column} <#> ${value}`;
 }
 function cosineDistance(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <=> ${toSql(value)}`;
+    return sql2`${column} <=> ${toSql(value)}`;
   }
-  return sql`${column} <=> ${value}`;
+  return sql2`${column} <=> ${value}`;
 }
 function hammingDistance(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <~> ${toSql(value)}`;
+    return sql2`${column} <~> ${toSql(value)}`;
   }
-  return sql`${column} <~> ${value}`;
+  return sql2`${column} <~> ${value}`;
 }
 function jaccardDistance(column, value) {
   if (Array.isArray(value)) {
-    return sql`${column} <%> ${toSql(value)}`;
+    return sql2`${column} <%> ${toSql(value)}`;
   }
-  return sql`${column} <%> ${value}`;
+  return sql2`${column} <%> ${value}`;
 }
 var init_vector2 = __esm({
   "node_modules/drizzle-orm/sql/functions/vector.js"() {
@@ -29734,7 +29734,7 @@ __export(drizzle_orm_exports, {
   param: () => param,
   placeholder: () => placeholder,
   relations: () => relations,
-  sql: () => sql,
+  sql: () => sql2,
   sum: () => sum,
   sumDistinct: () => sumDistinct,
   textDecoder: () => textDecoder
@@ -30168,27 +30168,27 @@ var init_dialect = __esm({
       async migrate(migrations, session2, config) {
         const migrationsTable = typeof config === "string" ? "__drizzle_migrations" : config.migrationsTable ?? "__drizzle_migrations";
         const migrationsSchema = typeof config === "string" ? "drizzle" : config.migrationsSchema ?? "drizzle";
-        const migrationTableCreate = sql`
-			CREATE TABLE IF NOT EXISTS ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} (
+        const migrationTableCreate = sql2`
+			CREATE TABLE IF NOT EXISTS ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} (
 				id SERIAL PRIMARY KEY,
 				hash text NOT NULL,
 				created_at bigint
 			)
 		`;
-        await session2.execute(sql`CREATE SCHEMA IF NOT EXISTS ${sql.identifier(migrationsSchema)}`);
+        await session2.execute(sql2`CREATE SCHEMA IF NOT EXISTS ${sql2.identifier(migrationsSchema)}`);
         await session2.execute(migrationTableCreate);
         const dbMigrations = await session2.all(
-          sql`select id, hash, created_at from ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} order by created_at desc limit 1`
+          sql2`select id, hash, created_at from ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} order by created_at desc limit 1`
         );
         const lastDbMigration = dbMigrations[0];
         await session2.transaction(async (tx) => {
           for await (const migration of migrations) {
             if (!lastDbMigration || Number(lastDbMigration.created_at) < migration.folderMillis) {
               for (const stmt of migration.sql) {
-                await tx.execute(sql.raw(stmt));
+                await tx.execute(sql2.raw(stmt));
               }
               await tx.execute(
-                sql`insert into ${sql.identifier(migrationsSchema)}.${sql.identifier(migrationsTable)} ("hash", "created_at") values(${migration.hash}, ${migration.folderMillis})`
+                sql2`insert into ${sql2.identifier(migrationsSchema)}.${sql2.identifier(migrationsTable)} ("hash", "created_at") values(${migration.hash}, ${migration.folderMillis})`
               );
             }
           }
@@ -30205,21 +30205,21 @@ var init_dialect = __esm({
       }
       buildWithCTE(queries) {
         if (!queries?.length) return void 0;
-        const withSqlChunks = [sql`with `];
+        const withSqlChunks = [sql2`with `];
         for (const [i, w] of queries.entries()) {
-          withSqlChunks.push(sql`${sql.identifier(w._.alias)} as (${w._.sql})`);
+          withSqlChunks.push(sql2`${sql2.identifier(w._.alias)} as (${w._.sql})`);
           if (i < queries.length - 1) {
-            withSqlChunks.push(sql`, `);
+            withSqlChunks.push(sql2`, `);
           }
         }
-        withSqlChunks.push(sql` `);
-        return sql.join(withSqlChunks);
+        withSqlChunks.push(sql2` `);
+        return sql2.join(withSqlChunks);
       }
       buildDeleteQuery({ table, where, returning, withList }) {
         const withSql = this.buildWithCTE(withList);
-        const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
-        const whereSql = where ? sql` where ${where}` : void 0;
-        return sql`${withSql}delete from ${table}${whereSql}${returningSql}`;
+        const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
+        const whereSql = where ? sql2` where ${where}` : void 0;
+        return sql2`${withSql}delete from ${table}${whereSql}${returningSql}`;
       }
       buildUpdateSet(table, set) {
         const tableColumns = table[Table.Symbol.Columns];
@@ -30227,13 +30227,13 @@ var init_dialect = __esm({
           (colName) => set[colName] !== void 0 || tableColumns[colName]?.onUpdateFn !== void 0
         );
         const setSize = columnNames.length;
-        return sql.join(columnNames.flatMap((colName, i) => {
+        return sql2.join(columnNames.flatMap((colName, i) => {
           const col = tableColumns[colName];
           const onUpdateFnResult = col.onUpdateFn?.();
-          const value = set[colName] ?? (is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col));
-          const res = sql`${sql.identifier(this.casing.getColumnCasing(col))} = ${value}`;
+          const value = set[colName] ?? (is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col));
+          const res = sql2`${sql2.identifier(this.casing.getColumnCasing(col))} = ${value}`;
           if (i < setSize - 1) {
-            return [res, sql.raw(", ")];
+            return [res, sql2.raw(", ")];
           }
           return [res];
         }));
@@ -30244,13 +30244,13 @@ var init_dialect = __esm({
         const tableSchema = table[PgTable.Symbol.Schema];
         const origTableName = table[PgTable.Symbol.OriginalName];
         const alias = tableName === origTableName ? void 0 : tableName;
-        const tableSql = sql`${tableSchema ? sql`${sql.identifier(tableSchema)}.` : void 0}${sql.identifier(origTableName)}${alias && sql` ${sql.identifier(alias)}`}`;
+        const tableSql = sql2`${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${alias && sql2` ${sql2.identifier(alias)}`}`;
         const setSql = this.buildUpdateSet(table, set);
-        const fromSql = from && sql.join([sql.raw(" from "), this.buildFromTable(from)]);
+        const fromSql = from && sql2.join([sql2.raw(" from "), this.buildFromTable(from)]);
         const joinsSql = this.buildJoins(joins);
-        const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: !from })}` : void 0;
-        const whereSql = where ? sql` where ${where}` : void 0;
-        return sql`${withSql}update ${tableSql} set ${setSql}${fromSql}${joinsSql}${whereSql}${returningSql}`;
+        const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: !from })}` : void 0;
+        const whereSql = where ? sql2` where ${where}` : void 0;
+        return sql2`${withSql}update ${tableSql} set ${setSql}${fromSql}${joinsSql}${whereSql}${returningSql}`;
       }
       /**
        * Builds selection SQL with provided fields/expressions
@@ -30268,7 +30268,7 @@ var init_dialect = __esm({
         const chunks = fields.flatMap(({ field }, i) => {
           const chunk = [];
           if (is(field, SQL.Aliased) && field.isSelectionField) {
-            chunk.push(sql.identifier(field.fieldAlias));
+            chunk.push(sql2.identifier(field.fieldAlias));
           } else if (is(field, SQL.Aliased) || is(field, SQL)) {
             const query = is(field, SQL.Aliased) ? field.sql : field;
             if (isSingleTable) {
@@ -30276,7 +30276,7 @@ var init_dialect = __esm({
                 new SQL(
                   query.queryChunks.map((c) => {
                     if (is(c, PgColumn)) {
-                      return sql.identifier(this.casing.getColumnCasing(c));
+                      return sql2.identifier(this.casing.getColumnCasing(c));
                     }
                     return c;
                   })
@@ -30286,11 +30286,11 @@ var init_dialect = __esm({
               chunk.push(query);
             }
             if (is(field, SQL.Aliased)) {
-              chunk.push(sql` as ${sql.identifier(field.fieldAlias)}`);
+              chunk.push(sql2` as ${sql2.identifier(field.fieldAlias)}`);
             }
           } else if (is(field, Column)) {
             if (isSingleTable) {
-              chunk.push(sql.identifier(this.casing.getColumnCasing(field)));
+              chunk.push(sql2.identifier(this.casing.getColumnCasing(field)));
             } else {
               chunk.push(field);
             }
@@ -30306,11 +30306,11 @@ var init_dialect = __esm({
             chunk.push(field);
           }
           if (i < columnsLen - 1) {
-            chunk.push(sql`, `);
+            chunk.push(sql2`, `);
           }
           return chunk;
         });
-        return sql.join(chunks);
+        return sql2.join(chunks);
       }
       buildJoins(joins) {
         if (!joins || joins.length === 0) {
@@ -30319,18 +30319,18 @@ var init_dialect = __esm({
         const joinsArray = [];
         for (const [index, joinMeta] of joins.entries()) {
           if (index === 0) {
-            joinsArray.push(sql` `);
+            joinsArray.push(sql2` `);
           }
           const table = joinMeta.table;
-          const lateralSql = joinMeta.lateral ? sql` lateral` : void 0;
-          const onSql = joinMeta.on ? sql` on ${joinMeta.on}` : void 0;
+          const lateralSql = joinMeta.lateral ? sql2` lateral` : void 0;
+          const onSql = joinMeta.on ? sql2` on ${joinMeta.on}` : void 0;
           if (is(table, PgTable)) {
             const tableName = table[PgTable.Symbol.Name];
             const tableSchema = table[PgTable.Symbol.Schema];
             const origTableName = table[PgTable.Symbol.OriginalName];
             const alias = tableName === origTableName ? void 0 : joinMeta.alias;
             joinsArray.push(
-              sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql`${sql.identifier(tableSchema)}.` : void 0}${sql.identifier(origTableName)}${alias && sql` ${sql.identifier(alias)}`}${onSql}`
+              sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${tableSchema ? sql2`${sql2.identifier(tableSchema)}.` : void 0}${sql2.identifier(origTableName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
             );
           } else if (is(table, View)) {
             const viewName = table[ViewBaseConfig].name;
@@ -30338,26 +30338,26 @@ var init_dialect = __esm({
             const origViewName = table[ViewBaseConfig].originalName;
             const alias = viewName === origViewName ? void 0 : joinMeta.alias;
             joinsArray.push(
-              sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql`${sql.identifier(viewSchema)}.` : void 0}${sql.identifier(origViewName)}${alias && sql` ${sql.identifier(alias)}`}${onSql}`
+              sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${viewSchema ? sql2`${sql2.identifier(viewSchema)}.` : void 0}${sql2.identifier(origViewName)}${alias && sql2` ${sql2.identifier(alias)}`}${onSql}`
             );
           } else {
             joinsArray.push(
-              sql`${sql.raw(joinMeta.joinType)} join${lateralSql} ${table}${onSql}`
+              sql2`${sql2.raw(joinMeta.joinType)} join${lateralSql} ${table}${onSql}`
             );
           }
           if (index < joins.length - 1) {
-            joinsArray.push(sql` `);
+            joinsArray.push(sql2` `);
           }
         }
-        return sql.join(joinsArray);
+        return sql2.join(joinsArray);
       }
       buildFromTable(table) {
         if (is(table, Table) && table[Table.Symbol.IsAlias]) {
-          let fullName = sql`${sql.identifier(table[Table.Symbol.OriginalName])}`;
+          let fullName = sql2`${sql2.identifier(table[Table.Symbol.OriginalName])}`;
           if (table[Table.Symbol.Schema]) {
-            fullName = sql`${sql.identifier(table[Table.Symbol.Schema])}.${fullName}`;
+            fullName = sql2`${sql2.identifier(table[Table.Symbol.Schema])}.${fullName}`;
           }
-          return sql`${fullName} ${sql.identifier(table[Table.Symbol.Name])}`;
+          return sql2`${fullName} ${sql2.identifier(table[Table.Symbol.Name])}`;
         }
         return table;
       }
@@ -30392,42 +30392,42 @@ var init_dialect = __esm({
         const withSql = this.buildWithCTE(withList);
         let distinctSql;
         if (distinct) {
-          distinctSql = distinct === true ? sql` distinct` : sql` distinct on (${sql.join(distinct.on, sql`, `)})`;
+          distinctSql = distinct === true ? sql2` distinct` : sql2` distinct on (${sql2.join(distinct.on, sql2`, `)})`;
         }
         const selection = this.buildSelection(fieldsList, { isSingleTable });
         const tableSql = this.buildFromTable(table);
         const joinsSql = this.buildJoins(joins);
-        const whereSql = where ? sql` where ${where}` : void 0;
-        const havingSql = having ? sql` having ${having}` : void 0;
+        const whereSql = where ? sql2` where ${where}` : void 0;
+        const havingSql = having ? sql2` having ${having}` : void 0;
         let orderBySql;
         if (orderBy && orderBy.length > 0) {
-          orderBySql = sql` order by ${sql.join(orderBy, sql`, `)}`;
+          orderBySql = sql2` order by ${sql2.join(orderBy, sql2`, `)}`;
         }
         let groupBySql;
         if (groupBy && groupBy.length > 0) {
-          groupBySql = sql` group by ${sql.join(groupBy, sql`, `)}`;
+          groupBySql = sql2` group by ${sql2.join(groupBy, sql2`, `)}`;
         }
-        const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : void 0;
-        const offsetSql = offset ? sql` offset ${offset}` : void 0;
-        const lockingClauseSql = sql.empty();
+        const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
+        const offsetSql = offset ? sql2` offset ${offset}` : void 0;
+        const lockingClauseSql = sql2.empty();
         if (lockingClause) {
-          const clauseSql = sql` for ${sql.raw(lockingClause.strength)}`;
+          const clauseSql = sql2` for ${sql2.raw(lockingClause.strength)}`;
           if (lockingClause.config.of) {
             clauseSql.append(
-              sql` of ${sql.join(
+              sql2` of ${sql2.join(
                 Array.isArray(lockingClause.config.of) ? lockingClause.config.of : [lockingClause.config.of],
-                sql`, `
+                sql2`, `
               )}`
             );
           }
           if (lockingClause.config.noWait) {
-            clauseSql.append(sql` nowait`);
+            clauseSql.append(sql2` nowait`);
           } else if (lockingClause.config.skipLocked) {
-            clauseSql.append(sql` skip locked`);
+            clauseSql.append(sql2` skip locked`);
           }
           lockingClauseSql.append(clauseSql);
         }
-        const finalQuery = sql`${withSql}select${distinctSql} ${selection} from ${tableSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClauseSql}`;
+        const finalQuery = sql2`${withSql}select${distinctSql} ${selection} from ${tableSql}${joinsSql}${whereSql}${groupBySql}${havingSql}${orderBySql}${limitSql}${offsetSql}${lockingClauseSql}`;
         if (setOperators.length > 0) {
           return this.buildSetOperations(finalQuery, setOperators);
         }
@@ -30450,39 +30450,39 @@ var init_dialect = __esm({
         leftSelect,
         setOperator: { type, isAll, rightSelect, limit, orderBy, offset }
       }) {
-        const leftChunk = sql`(${leftSelect.getSQL()}) `;
-        const rightChunk = sql`(${rightSelect.getSQL()})`;
+        const leftChunk = sql2`(${leftSelect.getSQL()}) `;
+        const rightChunk = sql2`(${rightSelect.getSQL()})`;
         let orderBySql;
         if (orderBy && orderBy.length > 0) {
           const orderByValues = [];
           for (const singleOrderBy of orderBy) {
             if (is(singleOrderBy, PgColumn)) {
-              orderByValues.push(sql.identifier(singleOrderBy.name));
+              orderByValues.push(sql2.identifier(singleOrderBy.name));
             } else if (is(singleOrderBy, SQL)) {
               for (let i = 0; i < singleOrderBy.queryChunks.length; i++) {
                 const chunk = singleOrderBy.queryChunks[i];
                 if (is(chunk, PgColumn)) {
-                  singleOrderBy.queryChunks[i] = sql.identifier(chunk.name);
+                  singleOrderBy.queryChunks[i] = sql2.identifier(chunk.name);
                 }
               }
-              orderByValues.push(sql`${singleOrderBy}`);
+              orderByValues.push(sql2`${singleOrderBy}`);
             } else {
-              orderByValues.push(sql`${singleOrderBy}`);
+              orderByValues.push(sql2`${singleOrderBy}`);
             }
           }
-          orderBySql = sql` order by ${sql.join(orderByValues, sql`, `)} `;
+          orderBySql = sql2` order by ${sql2.join(orderByValues, sql2`, `)} `;
         }
-        const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql` limit ${limit}` : void 0;
-        const operatorChunk = sql.raw(`${type} ${isAll ? "all " : ""}`);
-        const offsetSql = offset ? sql` offset ${offset}` : void 0;
-        return sql`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
+        const limitSql = typeof limit === "object" || typeof limit === "number" && limit >= 0 ? sql2` limit ${limit}` : void 0;
+        const operatorChunk = sql2.raw(`${type} ${isAll ? "all " : ""}`);
+        const offsetSql = offset ? sql2` offset ${offset}` : void 0;
+        return sql2`${leftChunk}${operatorChunk}${rightChunk}${orderBySql}${limitSql}${offsetSql}`;
       }
       buildInsertQuery({ table, values: valuesOrSelect, onConflict, returning, withList, select, overridingSystemValue_ }) {
         const valuesSqlList = [];
         const columns = table[Table.Symbol.Columns];
         const colEntries = Object.entries(columns).filter(([_, col]) => !col.shouldDisableInsert());
         const insertOrder = colEntries.map(
-          ([, column]) => sql.identifier(this.casing.getColumnCasing(column))
+          ([, column]) => sql2.identifier(this.casing.getColumnCasing(column))
         );
         if (select) {
           const select2 = valuesOrSelect;
@@ -30493,7 +30493,7 @@ var init_dialect = __esm({
           }
         } else {
           const values = valuesOrSelect;
-          valuesSqlList.push(sql.raw("values "));
+          valuesSqlList.push(sql2.raw("values "));
           for (const [valueIndex, value] of values.entries()) {
             const valueList = [];
             for (const [fieldName, col] of colEntries) {
@@ -30501,14 +30501,14 @@ var init_dialect = __esm({
               if (colValue === void 0 || is(colValue, Param) && colValue.value === void 0) {
                 if (col.defaultFn !== void 0) {
                   const defaultFnResult = col.defaultFn();
-                  const defaultValue = is(defaultFnResult, SQL) ? defaultFnResult : sql.param(defaultFnResult, col);
+                  const defaultValue = is(defaultFnResult, SQL) ? defaultFnResult : sql2.param(defaultFnResult, col);
                   valueList.push(defaultValue);
                 } else if (!col.default && col.onUpdateFn !== void 0) {
                   const onUpdateFnResult = col.onUpdateFn();
-                  const newValue = is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql.param(onUpdateFnResult, col);
+                  const newValue = is(onUpdateFnResult, SQL) ? onUpdateFnResult : sql2.param(onUpdateFnResult, col);
                   valueList.push(newValue);
                 } else {
-                  valueList.push(sql`default`);
+                  valueList.push(sql2`default`);
                 }
               } else {
                 valueList.push(colValue);
@@ -30516,21 +30516,21 @@ var init_dialect = __esm({
             }
             valuesSqlList.push(valueList);
             if (valueIndex < values.length - 1) {
-              valuesSqlList.push(sql`, `);
+              valuesSqlList.push(sql2`, `);
             }
           }
         }
         const withSql = this.buildWithCTE(withList);
-        const valuesSql = sql.join(valuesSqlList);
-        const returningSql = returning ? sql` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
-        const onConflictSql = onConflict ? sql` on conflict ${onConflict}` : void 0;
-        const overridingSql = overridingSystemValue_ === true ? sql`overriding system value ` : void 0;
-        return sql`${withSql}insert into ${table} ${insertOrder} ${overridingSql}${valuesSql}${onConflictSql}${returningSql}`;
+        const valuesSql = sql2.join(valuesSqlList);
+        const returningSql = returning ? sql2` returning ${this.buildSelection(returning, { isSingleTable: true })}` : void 0;
+        const onConflictSql = onConflict ? sql2` on conflict ${onConflict}` : void 0;
+        const overridingSql = overridingSystemValue_ === true ? sql2`overriding system value ` : void 0;
+        return sql2`${withSql}insert into ${table} ${insertOrder} ${overridingSql}${valuesSql}${onConflictSql}${returningSql}`;
       }
       buildRefreshMaterializedViewQuery({ view, concurrently, withNoData }) {
-        const concurrentlySql = concurrently ? sql` concurrently` : void 0;
-        const withNoDataSql = withNoData ? sql` with no data` : void 0;
-        return sql`refresh materialized view${concurrentlySql} ${view}${withNoDataSql}`;
+        const concurrentlySql = concurrently ? sql2` concurrently` : void 0;
+        const withNoDataSql = withNoData ? sql2` with no data` : void 0;
+        return sql2`refresh materialized view${concurrentlySql} ${view}${withNoDataSql}`;
       }
       prepareTyping(encoder) {
         if (is(encoder, PgJsonb) || is(encoder, PgJson)) {
@@ -31103,7 +31103,7 @@ var init_dialect = __esm({
           }
           let extras;
           if (config.extras) {
-            extras = typeof config.extras === "function" ? config.extras(aliasedColumns, { sql }) : config.extras;
+            extras = typeof config.extras === "function" ? config.extras(aliasedColumns, { sql: sql2 }) : config.extras;
             for (const [tsKey, value] of Object.entries(extras)) {
               fieldsSelection.push({
                 tsKey,
@@ -31161,9 +31161,9 @@ var init_dialect = __esm({
               joinOn: joinOn2,
               nestedQueryRelation: relation
             });
-            const field = sql`${sql.identifier(relationTableAlias)}.${sql.identifier("data")}`.as(selectedRelationTsKey);
+            const field = sql2`${sql2.identifier(relationTableAlias)}.${sql2.identifier("data")}`.as(selectedRelationTsKey);
             joins.push({
-              on: sql`true`,
+              on: sql2`true`,
               table: new Subquery(builtRelation.sql, {}, relationTableAlias),
               alias: relationTableAlias,
               joinType: "left",
@@ -31185,14 +31185,14 @@ var init_dialect = __esm({
         let result;
         where = and(joinOn, where);
         if (nestedQueryRelation) {
-          let field = sql`json_build_array(${sql.join(
+          let field = sql2`json_build_array(${sql2.join(
             selection.map(
-              ({ field: field2, tsKey, isJson }) => isJson ? sql`${sql.identifier(`${tableAlias}_${tsKey}`)}.${sql.identifier("data")}` : is(field2, SQL.Aliased) ? field2.sql : field2
+              ({ field: field2, tsKey, isJson }) => isJson ? sql2`${sql2.identifier(`${tableAlias}_${tsKey}`)}.${sql2.identifier("data")}` : is(field2, SQL.Aliased) ? field2.sql : field2
             ),
-            sql`, `
+            sql2`, `
           )})`;
           if (is(nestedQueryRelation, Many)) {
-            field = sql`coalesce(json_agg(${field}${orderBy.length > 0 ? sql` order by ${sql.join(orderBy, sql`, `)}` : void 0}), '[]'::json)`;
+            field = sql2`coalesce(json_agg(${field}${orderBy.length > 0 ? sql2` order by ${sql2.join(orderBy, sql2`, `)}` : void 0}), '[]'::json)`;
           }
           const nestedSelection = [{
             dbKey: "data",
@@ -31209,7 +31209,7 @@ var init_dialect = __esm({
               fields: {},
               fieldsFlat: [{
                 path: [],
-                field: sql.raw("*")
+                field: sql2.raw("*")
               }],
               where,
               limit,
@@ -32695,12 +32695,12 @@ var init_insert = __esm({
        */
       onConflictDoNothing(config = {}) {
         if (config.target === void 0) {
-          this.config.onConflict = sql`do nothing`;
+          this.config.onConflict = sql2`do nothing`;
         } else {
           let targetColumn = "";
           targetColumn = Array.isArray(config.target) ? config.target.map((it2) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it2))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config.target));
-          const whereSql = config.where ? sql` where ${config.where}` : void 0;
-          this.config.onConflict = sql`(${sql.raw(targetColumn)})${whereSql} do nothing`;
+          const whereSql = config.where ? sql2` where ${config.where}` : void 0;
+          this.config.onConflict = sql2`(${sql2.raw(targetColumn)})${whereSql} do nothing`;
         }
         return this;
       }
@@ -32739,13 +32739,13 @@ var init_insert = __esm({
             'You cannot use both "where" and "targetWhere"/"setWhere" at the same time - "where" is deprecated, use "targetWhere" or "setWhere" instead.'
           );
         }
-        const whereSql = config.where ? sql` where ${config.where}` : void 0;
-        const targetWhereSql = config.targetWhere ? sql` where ${config.targetWhere}` : void 0;
-        const setWhereSql = config.setWhere ? sql` where ${config.setWhere}` : void 0;
+        const whereSql = config.where ? sql2` where ${config.where}` : void 0;
+        const targetWhereSql = config.targetWhere ? sql2` where ${config.targetWhere}` : void 0;
+        const setWhereSql = config.setWhere ? sql2` where ${config.setWhere}` : void 0;
         const setSql = this.dialect.buildUpdateSet(this.config.table, mapUpdateSet(this.config.table, config.set));
         let targetColumn = "";
         targetColumn = Array.isArray(config.target) ? config.target.map((it2) => this.dialect.escapeName(this.dialect.casing.getColumnCasing(it2))).join(",") : this.dialect.escapeName(this.dialect.casing.getColumnCasing(config.target));
-        this.config.onConflict = sql`(${sql.raw(targetColumn)})${targetWhereSql} do update set ${setSql}${whereSql}${setWhereSql}`;
+        this.config.onConflict = sql2`(${sql2.raw(targetColumn)})${targetWhereSql} do update set ${setSql}${whereSql}${setWhereSql}`;
         return this;
       }
       /** @internal */
@@ -33128,10 +33128,10 @@ var init_count = __esm({
       [Symbol.toStringTag] = "PgCountBuilder";
       session;
       static buildEmbeddedCount(source, filters) {
-        return sql`(select count(*) from ${source}${sql.raw(" where ").if(filters)}${filters})`;
+        return sql2`(select count(*) from ${source}${sql2.raw(" where ").if(filters)}${filters})`;
       }
       static buildCount(source, filters) {
-        return sql`select count(*) as count from ${source}${sql.raw(" where ").if(filters)}${filters};`;
+        return sql2`select count(*) as count from ${source}${sql2.raw(" where ").if(filters)}${filters};`;
       }
       /** @intrnal */
       setToken(token) {
@@ -33292,10 +33292,10 @@ var init_raw = __esm({
     init_entity();
     init_query_promise();
     PgRaw = class extends QueryPromise {
-      constructor(execute, sql3, query, mapBatchResult) {
+      constructor(execute, sql4, query, mapBatchResult) {
         super();
         this.execute = execute;
-        this.sql = sql3;
+        this.sql = sql4;
         this.query = query;
         this.mapBatchResult = mapBatchResult;
       }
@@ -33592,7 +33592,7 @@ var init_db = __esm({
       }
       authToken;
       execute(query) {
-        const sequel = typeof query === "string" ? sql.raw(query) : query.getSQL();
+        const sequel = typeof query === "string" ? sql2.raw(query) : query.getSQL();
         const builtQuery = this.dialect.sqlToQuery(sequel);
         const prepared = this.session.prepareQuery(
           builtQuery,
@@ -33699,7 +33699,7 @@ var init_schema = __esm({
         return pgSequenceWithSchema(name2, options, this.schemaName);
       };
       getSQL() {
-        return new SQL([sql.identifier(this.schemaName)]);
+        return new SQL([sql2.identifier(this.schemaName)]);
       }
       shouldOmitSQLParens() {
         return true;
@@ -33709,8 +33709,8 @@ var init_schema = __esm({
 });
 
 // node_modules/drizzle-orm/cache/core/cache.js
-async function hashQuery(sql3, params) {
-  const dataToHash = `${sql3}-${JSON.stringify(params)}`;
+async function hashQuery(sql4, params) {
+  const dataToHash = `${sql4}-${JSON.stringify(params)}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(dataToHash);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
@@ -33903,10 +33903,10 @@ var init_session = __esm({
         if (typeof config.deferrable === "boolean") {
           chunks.push(config.deferrable ? "deferrable" : "not deferrable");
         }
-        return sql.raw(chunks.join(" "));
+        return sql2.raw(chunks.join(" "));
       }
       setTransaction(config) {
-        return this.session.execute(sql`set transaction ${this.getTransactionConfigSQL(config)}`);
+        return this.session.execute(sql2`set transaction ${this.getTransactionConfigSQL(config)}`);
       }
     };
   }
@@ -38298,7 +38298,7 @@ var init_schema2 = __esm({
     init_pg_core();
     init_drizzle_zod();
     users = pgTable("users", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       username: text("username").notNull().unique(),
       password: text("password").notNull()
     });
@@ -38307,7 +38307,7 @@ var init_schema2 = __esm({
       password: true
     });
     members = pgTable("members", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       firstName: text("first_name").notNull(),
       nomSpecifiqueUnique: text("last_name").notNull(),
       email: text("email").notNull().unique(),
@@ -38328,7 +38328,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     contactMessages = pgTable("contact_messages", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       firstName: text("first_name").notNull(),
       nomSpecifiqueUnique: text("last_name").notNull(),
       email: text("email").notNull(),
@@ -38342,7 +38342,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     newsletterSubscribers = pgTable("newsletter_subscribers", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       email: text("email").notNull().unique(),
       createdAt: timestamp("created_at").defaultNow()
     });
@@ -38351,7 +38351,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     opportunities = pgTable("opportunities", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       title: text("title").notNull(),
       description: text("description").notNull(),
       category: text("category").notNull(),
@@ -38367,7 +38367,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     partners = pgTable("partners", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       name: text("name").notNull(),
       logoUrl: text("logo_url"),
       websiteUrl: text("website_url"),
@@ -38381,7 +38381,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     trainings = pgTable("trainings", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       title: text("title").notNull(),
       description: text("description").notNull(),
       provider: text("provider").notNull(),
@@ -38397,7 +38397,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     newsArticles = pgTable("news_articles", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       title: text("title").notNull(),
       excerpt: text("excerpt").notNull(),
       content: text("content"),
@@ -38413,7 +38413,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     events = pgTable("events", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       title: text("title").notNull(),
       description: text("description").notNull(),
       date: text("date").notNull(),
@@ -38430,7 +38430,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     achievements = pgTable("achievements", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       title: text("title").notNull(),
       description: text("description"),
       metricValue: text("metric_value").notNull(),
@@ -38443,7 +38443,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     thunderbirdApplications = pgTable("thunderbird_applications", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       fullName: text("full_name").notNull(),
       gender: text("gender").notNull(),
       dateOfBirth: text("date_of_birth").notNull(),
@@ -38475,7 +38475,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     electionCandidates = pgTable("election_candidates", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       firstName: text("first_name").notNull(),
       nomSpecifiqueUnique: text("last_name").notNull(),
       email: text("email").notNull(),
@@ -38501,7 +38501,7 @@ var init_schema2 = __esm({
       createdAt: true
     });
     electionVotes = pgTable("election_votes", {
-      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      id: varchar("id").primaryKey().default(sql2`gen_random_uuid()`),
       voterId: text("voter_id").notNull(),
       // Member's email or Membership ID
       candidateId: varchar("candidate_id").notNull(),
@@ -43890,8 +43890,8 @@ var init_session2 = __esm({
         return this.clientQuery(query, params, { arrayMode: false, fullResults: true });
       }
       /** @internal */
-      async count(sql3, token) {
-        const res = await this.execute(sql3, token);
+      async count(sql4, token) {
+        const res = await this.execute(sql4, token);
         return Number(
           res["rows"][0]["count"]
         );
@@ -43951,17 +43951,17 @@ function construct(client, config = {}) {
   }
   const driver = new NeonHttpDriver(client, dialect, { logger, cache: config.cache });
   const session2 = driver.createSession(schema);
-  const db2 = new NeonHttpDatabase(
+  const db3 = new NeonHttpDatabase(
     dialect,
     session2,
     schema
   );
-  db2.$client = client;
-  db2.$cache = config.cache;
-  if (db2.$cache) {
-    db2.$cache["invalidate"] = config.cache?.onMutate;
+  db3.$client = client;
+  db3.$cache = config.cache;
+  if (db3.$cache) {
+    db3.$cache["invalidate"] = config.cache?.onMutate;
   }
-  return db2;
+  return db3;
 }
 function drizzle(...params) {
   if (typeof params[0] === "string") {
@@ -44053,11 +44053,11 @@ var init_neon_http = __esm({
 // server/db.ts
 var db_exports = {};
 __export(db_exports, {
-  db: () => db,
+  db: () => db2,
   pool: () => pool,
-  sql: () => sql2
+  sql: () => sql3
 });
-var safeDbUrl, sql2, db, pool;
+var safeDbUrl, sql3, db2, pool;
 var init_db2 = __esm({
   "server/db.ts"() {
     "use strict";
@@ -44068,8 +44068,8 @@ var init_db2 = __esm({
       console.error("CRITICAL ERROR: DATABASE_URL is missing in this environment!");
     }
     safeDbUrl = process.env.DATABASE_URL || "postgresql://dummy:dummy@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
-    sql2 = cs(safeDbUrl);
-    db = drizzle(sql2, { schema: schema_exports });
+    sql3 = cs(safeDbUrl);
+    db2 = drizzle(sql3, { schema: schema_exports });
     pool = null;
   }
 });
@@ -64137,182 +64137,182 @@ init_db2();
 init_drizzle_orm();
 var DatabaseStorage = class {
   async getUser(id) {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
+    const [user] = await db2.select().from(users).where(eq(users.id, id));
     return user;
   }
   async getUserByUsername(username) {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
+    const [user] = await db2.select().from(users).where(eq(users.username, username));
     return user;
   }
   async createUser(insertUser) {
-    const [user] = await db.insert(users).values(insertUser).returning();
+    const [user] = await db2.insert(users).values(insertUser).returning();
     return user;
   }
   async createMember(member) {
     const membershipId = `SAYC-2026-${Math.floor(Math.random() * 9e3 + 1e3)}`;
-    const [newMember] = await db.insert(members).values({ ...member, membershipId }).returning();
+    const [newMember] = await db2.insert(members).values({ ...member, membershipId }).returning();
     return newMember;
   }
   async getMemberByEmail(email) {
-    const [member] = await db.select().from(members).where(eq(members.email, email));
+    const [member] = await db2.select().from(members).where(eq(members.email, email));
     return member;
   }
   async getMemberByEmailCaseInsensitive(email) {
-    const [member] = await db.select().from(members).where(sql`lower(${members.email}) = lower(${email.trim()})`);
+    const [member] = await db2.select().from(members).where(sql2`lower(${members.email}) = lower(${email.trim()})`);
     return member;
   }
   async getMemberByMembershipId(membershipId) {
-    const [member] = await db.select().from(members).where(eq(members.membershipId, membershipId.trim()));
+    const [member] = await db2.select().from(members).where(eq(members.membershipId, membershipId.trim()));
     return member;
   }
   async getAllMembers() {
-    return db.select().from(members).orderBy(desc(members.createdAt));
+    return db2.select().from(members).orderBy(desc(members.createdAt));
   }
   async updateMemberPhoto(membershipId, email, photoUrl) {
-    const [updated] = await db.update(members).set({ photoUrl }).where(sql`${members.membershipId} = ${membershipId.trim()} AND lower(${members.email}) = lower(${email.trim()})`).returning();
+    const [updated] = await db2.update(members).set({ photoUrl }).where(sql2`${members.membershipId} = ${membershipId.trim()} AND lower(${members.email}) = lower(${email.trim()})`).returning();
     return updated;
   }
   async deleteMember(id) {
-    await db.delete(members).where(sql`${members.id} = ${id}`);
+    await db2.delete(members).where(sql2`${members.id} = ${id}`);
   }
   async createContactMessage(message) {
-    const [newMessage] = await db.insert(contactMessages).values(message).returning();
+    const [newMessage] = await db2.insert(contactMessages).values(message).returning();
     return newMessage;
   }
   async getContactMessageById(id) {
-    const [message] = await db.select().from(contactMessages).where(eq(contactMessages.id, id));
+    const [message] = await db2.select().from(contactMessages).where(eq(contactMessages.id, id));
     return message;
   }
   async getAllContactMessages() {
-    return db.select().from(contactMessages);
+    return db2.select().from(contactMessages);
   }
   async createNewsletterSubscriber(subscriber) {
-    const [newSubscriber] = await db.insert(newsletterSubscribers).values(subscriber).returning();
+    const [newSubscriber] = await db2.insert(newsletterSubscribers).values(subscriber).returning();
     return newSubscriber;
   }
   async getNewsletterSubscriberByEmail(email) {
-    const [subscriber] = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
+    const [subscriber] = await db2.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.email, email));
     return subscriber;
   }
   async getAllNewsletterSubscribers() {
-    return db.select().from(newsletterSubscribers);
+    return db2.select().from(newsletterSubscribers);
   }
   async createOpportunity(opportunity) {
-    const [newOpportunity] = await db.insert(opportunities).values(opportunity).returning();
+    const [newOpportunity] = await db2.insert(opportunities).values(opportunity).returning();
     return newOpportunity;
   }
   async getAllOpportunities() {
-    return db.select().from(opportunities).orderBy(desc(opportunities.createdAt));
+    return db2.select().from(opportunities).orderBy(desc(opportunities.createdAt));
   }
   async getActiveOpportunities() {
-    return db.select().from(opportunities).where(eq(opportunities.isActive, true)).orderBy(desc(opportunities.createdAt));
+    return db2.select().from(opportunities).where(eq(opportunities.isActive, true)).orderBy(desc(opportunities.createdAt));
   }
   async getOpportunityById(id) {
-    const [opportunity] = await db.select().from(opportunities).where(sql`${opportunities.id} = ${Number(id)}`);
+    const [opportunity] = await db2.select().from(opportunities).where(sql2`${opportunities.id} = ${Number(id)}`);
     return opportunity;
   }
   async updateOpportunity(id, data) {
-    const [updated] = await db.update(opportunities).set(data).where(sql`${opportunities.id} = ${Number(id)}`).returning();
+    const [updated] = await db2.update(opportunities).set(data).where(sql2`${opportunities.id} = ${Number(id)}`).returning();
     return updated;
   }
   async deleteOpportunity(id) {
-    await db.delete(opportunities).where(eq(opportunities.id, id));
+    await db2.delete(opportunities).where(eq(opportunities.id, id));
   }
   async createPartner(partner) {
-    const [newPartner] = await db.insert(partners).values(partner).returning();
+    const [newPartner] = await db2.insert(partners).values(partner).returning();
     return newPartner;
   }
   async getActivePartners() {
-    return db.select().from(partners).where(eq(partners.isActive, true)).orderBy(asc(partners.sortOrder));
+    return db2.select().from(partners).where(eq(partners.isActive, true)).orderBy(asc(partners.sortOrder));
   }
   async getAllPartners() {
-    return db.select().from(partners).orderBy(asc(partners.sortOrder));
+    return db2.select().from(partners).orderBy(asc(partners.sortOrder));
   }
   async updatePartner(id, data) {
-    const [updated] = await db.update(partners).set(data).where(eq(partners.id, id)).returning();
+    const [updated] = await db2.update(partners).set(data).where(eq(partners.id, id)).returning();
     return updated;
   }
   async deletePartner(id) {
-    await db.delete(partners).where(eq(partners.id, id));
+    await db2.delete(partners).where(eq(partners.id, id));
   }
   async createTraining(training) {
-    const [newTraining] = await db.insert(trainings).values(training).returning();
+    const [newTraining] = await db2.insert(trainings).values(training).returning();
     return newTraining;
   }
   async getActiveTrainings() {
-    return db.select().from(trainings).where(eq(trainings.isActive, true)).orderBy(desc(trainings.createdAt));
+    return db2.select().from(trainings).where(eq(trainings.isActive, true)).orderBy(desc(trainings.createdAt));
   }
   async getAllTrainings() {
-    return db.select().from(trainings).orderBy(desc(trainings.createdAt));
+    return db2.select().from(trainings).orderBy(desc(trainings.createdAt));
   }
   async updateTraining(id, data) {
-    const [updated] = await db.update(trainings).set(data).where(eq(trainings.id, id)).returning();
+    const [updated] = await db2.update(trainings).set(data).where(eq(trainings.id, id)).returning();
     return updated;
   }
   async deleteTraining(id) {
-    await db.delete(trainings).where(eq(trainings.id, id));
+    await db2.delete(trainings).where(eq(trainings.id, id));
   }
   async createNewsArticle(article) {
-    const [newArticle] = await db.insert(newsArticles).values(article).returning();
+    const [newArticle] = await db2.insert(newsArticles).values(article).returning();
     return newArticle;
   }
   async getActiveNewsArticles() {
-    return db.select().from(newsArticles).where(eq(newsArticles.isActive, true)).orderBy(desc(newsArticles.createdAt));
+    return db2.select().from(newsArticles).where(eq(newsArticles.isActive, true)).orderBy(desc(newsArticles.createdAt));
   }
   async getAllNewsArticles() {
-    return db.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
+    return db2.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
   }
   async updateNewsArticle(id, data) {
-    const [updated] = await db.update(newsArticles).set(data).where(eq(newsArticles.id, id)).returning();
+    const [updated] = await db2.update(newsArticles).set(data).where(eq(newsArticles.id, id)).returning();
     return updated;
   }
   async deleteNewsArticle(id) {
-    await db.delete(newsArticles).where(eq(newsArticles.id, id));
+    await db2.delete(newsArticles).where(eq(newsArticles.id, id));
   }
   async createEvent(event) {
-    const [newEvent] = await db.insert(events).values(event).returning();
+    const [newEvent] = await db2.insert(events).values(event).returning();
     return newEvent;
   }
   async getActiveEvents() {
-    return db.select().from(events).where(eq(events.isActive, true)).orderBy(desc(events.createdAt));
+    return db2.select().from(events).where(eq(events.isActive, true)).orderBy(desc(events.createdAt));
   }
   async getAllEvents() {
-    return db.select().from(events).orderBy(desc(events.createdAt));
+    return db2.select().from(events).orderBy(desc(events.createdAt));
   }
   async updateEvent(id, data) {
-    const [updated] = await db.update(events).set(data).where(eq(events.id, id)).returning();
+    const [updated] = await db2.update(events).set(data).where(eq(events.id, id)).returning();
     return updated;
   }
   async deleteEvent(id) {
-    await db.delete(events).where(eq(events.id, id));
+    await db2.delete(events).where(eq(events.id, id));
   }
   async createAchievement(achievement) {
-    const [newAchievement] = await db.insert(achievements).values(achievement).returning();
+    const [newAchievement] = await db2.insert(achievements).values(achievement).returning();
     return newAchievement;
   }
   async getActiveAchievements() {
-    return db.select().from(achievements).where(eq(achievements.isActive, true)).orderBy(desc(achievements.createdAt));
+    return db2.select().from(achievements).where(eq(achievements.isActive, true)).orderBy(desc(achievements.createdAt));
   }
   async getAllAchievements() {
-    return db.select().from(achievements).orderBy(desc(achievements.createdAt));
+    return db2.select().from(achievements).orderBy(desc(achievements.createdAt));
   }
   async updateAchievement(id, data) {
-    const [updated] = await db.update(achievements).set(data).where(eq(achievements.id, id)).returning();
+    const [updated] = await db2.update(achievements).set(data).where(eq(achievements.id, id)).returning();
     return updated;
   }
   async deleteAchievement(id) {
-    await db.delete(achievements).where(eq(achievements.id, id));
+    await db2.delete(achievements).where(eq(achievements.id, id));
   }
   async createThunderbirdApplication(application) {
-    const [newApp] = await db.insert(thunderbirdApplications).values(application).returning();
+    const [newApp] = await db2.insert(thunderbirdApplications).values(application).returning();
     return newApp;
   }
   async getThunderbirdApplicationByEmail(email) {
-    const [app2] = await db.select().from(thunderbirdApplications).where(eq(thunderbirdApplications.email, email));
+    const [app2] = await db2.select().from(thunderbirdApplications).where(eq(thunderbirdApplications.email, email));
     return app2;
   }
   async getAllThunderbirdApplications() {
-    return db.select().from(thunderbirdApplications).orderBy(desc(thunderbirdApplications.createdAt));
+    return db2.select().from(thunderbirdApplications).orderBy(desc(thunderbirdApplications.createdAt));
   }
   async getThunderbirdApplications() {
     return this.getAllThunderbirdApplications();
@@ -64347,7 +64347,7 @@ var DatabaseStorage = class {
     };
   }
   async createCandidate(candidate) {
-    const rows = await sql2`
+    const rows = await sql3`
       INSERT INTO election_candidates (id, first_name, last_name, email, role, photo_url, cv_url, motivation_url, video_url, program_url, linkedin_url, facebook_url, twitter_url, status, votes_count)
       VALUES (gen_random_uuid(), ${candidate.firstName}, ${candidate.nomSpecifiqueUnique}, ${candidate.email}, ${candidate.role}, ${candidate.photoUrl}, ${candidate.cvUrl}, ${candidate.motivationUrl}, ${candidate.videoUrl || null}, ${candidate.programUrl || null}, ${candidate.linkedInUrl || null}, ${candidate.facebookUrl || null}, ${candidate.twitterUrl || null}, 'pending', 0)
       RETURNING *
@@ -64355,49 +64355,49 @@ var DatabaseStorage = class {
     return this.mapCandidateRow(rows[0]);
   }
   async getApprovedCandidates() {
-    const rows = await sql2`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`;
+    const rows = await sql3`SELECT * FROM election_candidates WHERE status = 'approved' ORDER BY last_name ASC`;
     return rows.map((row) => this.mapCandidateRow(row));
   }
   async getAllCandidates() {
-    const rows = await sql2`SELECT * FROM election_candidates ORDER BY created_at DESC`;
+    const rows = await sql3`SELECT * FROM election_candidates ORDER BY created_at DESC`;
     return rows.map((row) => this.mapCandidateRow(row));
   }
   async updateCandidateStatus(id, status) {
-    const rows = await sql2`UPDATE election_candidates SET status = ${status} WHERE id = ${id} RETURNING *`;
+    const rows = await sql3`UPDATE election_candidates SET status = ${status} WHERE id = ${id} RETURNING *`;
     if (rows.length === 0) return void 0;
     return this.mapCandidateRow(rows[0]);
   }
   async getCandidateById(id) {
-    const rows = await sql2`SELECT * FROM election_candidates WHERE id = ${id}`;
+    const rows = await sql3`SELECT * FROM election_candidates WHERE id = ${id}`;
     if (rows.length === 0) return void 0;
     return this.mapCandidateRow(rows[0]);
   }
   async castVote(vote) {
-    const rows = await sql2`
+    const rows = await sql3`
       INSERT INTO election_votes (id, voter_id, candidate_id, role)
       VALUES (gen_random_uuid(), ${vote.voterId}, ${vote.candidateId}, ${vote.role})
       RETURNING *
     `;
-    await sql2`UPDATE election_candidates SET votes_count = votes_count + 1 WHERE id = ${vote.candidateId}`;
+    await sql3`UPDATE election_candidates SET votes_count = votes_count + 1 WHERE id = ${vote.candidateId}`;
     return this.mapVoteRow(rows[0]);
   }
   async hasVoted(voterId, role) {
-    const rows = await sql2`SELECT id FROM election_votes WHERE voter_id = ${voterId} AND role = ${role} LIMIT 1`;
+    const rows = await sql3`SELECT id FROM election_votes WHERE voter_id = ${voterId} AND role = ${role} LIMIT 1`;
     return rows.length > 0;
   }
   async getVotesForRole(role) {
-    const rows = await sql2`SELECT * FROM election_votes WHERE role = ${role}`;
+    const rows = await sql3`SELECT * FROM election_votes WHERE role = ${role}`;
     return rows.map((row) => this.mapVoteRow(row));
   }
   async getVotedRoles(voterId) {
-    const rows = await sql2`SELECT role FROM election_votes WHERE voter_id = ${voterId}`;
+    const rows = await sql3`SELECT role FROM election_votes WHERE voter_id = ${voterId}`;
     return rows.map((r) => r.role);
   }
   async generateMissingMembershipIds() {
     console.log("Starting membership ID generation...");
     let missingMembers;
     try {
-      missingMembers = await db.select().from(members).where(or(isNull(members.membershipId), eq(members.membershipId, "")));
+      missingMembers = await db2.select().from(members).where(or(isNull(members.membershipId), eq(members.membershipId, "")));
     } catch (e) {
       console.error("Error fetching members missing IDs:", e);
       throw new Error(`Erreur lors de la lecture des membres: ${e.message}`);
@@ -64407,7 +64407,7 @@ var DatabaseStorage = class {
     for (const member of missingMembers) {
       try {
         const id = `SAYC-2026-${Math.floor(Math.random() * 9e3 + 1e3)}`;
-        await db.update(members).set({ membershipId: id }).where(eq(members.id, member.id));
+        await db2.update(members).set({ membershipId: id }).where(eq(members.id, member.id));
         count2++;
         console.log(`Generated ID ${id} for member ${member.id}`);
       } catch (err) {
@@ -65794,10 +65794,11 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.get("/api/health", async (_req, res) => {
     try {
-      const dbCheck = await storage.sql`SELECT 1 as health`.catch((e) => ({ error: e.message }));
+      const dbCheck = await db.execute(sql`SELECT 1 as health`).catch((e) => ({ error: e.message }));
+      const isConnected = Array.isArray(dbCheck) ? dbCheck[0]?.health === 1 : dbCheck?.rows?.[0]?.health === 1;
       res.json({
         status: "ok",
-        database: dbCheck[0]?.health === 1 ? "connected" : "failed",
+        database: isConnected ? "connected" : "failed",
         db_error: dbCheck.error || null,
         env: {
           DATABASE_URL: process.env.DATABASE_URL ? "Present (masked)" : "MISSING",
@@ -66309,14 +66310,14 @@ Email: ${candidate.email}`
     const result = { status: "running", steps: [] };
     try {
       result.steps.push("1. Testing DB connection...");
-      const { db: db2 } = await Promise.resolve().then(() => (init_db2(), db_exports));
+      const { db: db3 } = await Promise.resolve().then(() => (init_db2(), db_exports));
       result.steps.push("2. DB module loaded. Testing raw query...");
-      const { sql: sql3 } = await Promise.resolve().then(() => (init_drizzle_orm(), drizzle_orm_exports));
-      const testResult = await db2.execute(sql3`SELECT 1 as test`);
+      const { sql: sql4 } = await Promise.resolve().then(() => (init_drizzle_orm(), drizzle_orm_exports));
+      const testResult = await db3.execute(sql4`SELECT 1 as test`);
       result.steps.push(`3. DB connected. Testing election_candidates table...`);
-      const tableCheck = await db2.execute(sql3`SELECT COUNT(*) as count FROM election_candidates`);
+      const tableCheck = await db3.execute(sql4`SELECT COUNT(*) as count FROM election_candidates`);
       result.steps.push(`4. Table exists. Row count: ${JSON.stringify(tableCheck.rows[0])}`);
-      const candidates = await db2.execute(sql3`SELECT id, first_name, last_name, status FROM election_candidates LIMIT 5`);
+      const candidates = await db3.execute(sql4`SELECT id, first_name, last_name, status FROM election_candidates LIMIT 5`);
       result.candidates = candidates.rows;
       result.status = "ok";
       res.json(result);
@@ -66648,10 +66649,10 @@ var seedNews = [
   }
 ];
 async function seedTable(tableName, table, data, nameField = "name") {
-  const existing = await db.select().from(table);
+  const existing = await db2.select().from(table);
   if (existing.length === 0) {
     console.log(`Seeding ${tableName}...`);
-    await db.insert(table).values(data);
+    await db2.insert(table).values(data);
     console.log(`${tableName} seeded: ${data.length} rows.`);
   }
 }
@@ -66663,7 +66664,7 @@ async function seedDatabase() {
       await seedTable("trainings", trainings, seedTrainings, "title");
       await seedTable("opportunities", opportunities, seedOpportunities, "title");
       await seedTable("news_articles", newsArticles, seedNews, "title");
-      await db.update(partners).set({ isActive: false }).where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
+      await db2.update(partners).set({ isActive: false }).where(sql2`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
       console.log("Database seed check complete.");
     } catch (e) {
       console.error("Failed to seed tables:", e);
