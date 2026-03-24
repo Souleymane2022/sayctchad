@@ -264,6 +264,26 @@ ${pages.map(p => `  <url>
     }
   });
 
+  app.get("/api/health", async (_req, res) => {
+    try {
+      const dbCheck = await (storage as any).sql`SELECT 1 as health`.catch((e: any) => ({ error: e.message }));
+      res.json({
+        status: "ok",
+        database: dbCheck[0]?.health === 1 ? "connected" : "failed",
+        db_error: dbCheck.error || null,
+        env: {
+          DATABASE_URL: process.env.DATABASE_URL ? "Present (masked)" : "MISSING",
+          SMTP_USER: process.env.SMTP_USER ? "Present" : "MISSING",
+          SMTP_PASS: process.env.SMTP_PASS ? "Present" : "MISSING",
+          NODE_ENV: process.env.NODE_ENV,
+          VERCEL: process.env.VERCEL
+        }
+      });
+    } catch (e: any) {
+      res.status(500).json({ status: "error", message: e.message });
+    }
+  });
+
   app.get("/api/debug-email", async (req, res) => {
     const result = await debugSmtpConnection();
     res.json(result);
