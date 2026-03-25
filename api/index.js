@@ -65406,11 +65406,12 @@ async function sendAutoReplyEmail(to, subject, messageBody, includeSada = true) 
                 </div>
                 
                 <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
-                    <p style="margin: 0; font-size: 13px; color: #666;">
-                        <strong>SAYC Tchad</strong><br>
-                        N'Djamena, Tchad<br>
-                        <a href="https://sayctchad.org" style="color: #1976d2; text-decoration: none;">sayctchad.org</a>
+                        <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
                     </p>
+                    <div style="margin-top: 15px; font-size: 12px;">
+                        <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">\u{1F4AC} Rejoindre la communaut\xE9 WhatsApp</a>
+                        <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">\u{1F4DD} Devenir membre officiel</a>
+                    </div>
                 </div>
             </div>
         `;
@@ -65461,10 +65462,12 @@ async function sendMassEmail(recipients, subject, messageBody, includeSada = tru
                 
                 <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
                     <p style="margin: 0; font-size: 13px; color: #666;">
-                        <strong>Smart Africa Youth Chapter - Tchad</strong><br>
-                        N'Djamena, Tchad<br>
-                        <a href="https://sayctchad.org" style="color: #1976d2; text-decoration: none;">sayctchad.org</a>
+                        <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
                     </p>
+                    <div style="margin-top: 15px; font-size: 12px;">
+                        <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">\u{1F4AC} Rejoindre la communaut\xE9 WhatsApp</a>
+                        <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">\u{1F4DD} Devenir membre officiel</a>
+                    </div>
                     <p style="font-size: 11px; color: #999; margin-top: 10px;">
                         Vous recevez cet email car vous \xEAtes membre ou partenaire du SAYC Tchad.
                     </p>
@@ -65531,10 +65534,12 @@ async function sendPersonalizedMemberEmails(membersList, subject, messageTemplat
                         
                         <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
                             <p style="margin: 0; font-size: 13px; color: #666;">
-                                <strong>Smart Africa Youth Chapter - Tchad</strong><br>
-                                N'Djamena, Tchad<br>
-                                <a href="https://sayctchad.org" style="color: #1976d2; text-decoration: none;">sayctchad.org</a>
+                                <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
                             </p>
+                            <div style="margin-top: 15px; font-size: 12px;">
+                                <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">\u{1F4AC} Rejoindre la communaut\xE9 WhatsApp</a>
+                                <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">\u{1F4DD} Devenir membre officiel</a>
+                            </div>
                         </div>
                     </div>
                 `;

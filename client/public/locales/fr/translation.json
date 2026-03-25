@@ -15,6 +15,7 @@
     "description": "Inspirer une nouvelle génération de jeunes Africains à utiliser la technologie et l'innovation pour transformer l'Afrique.",
     "cta_join": "Rejoindre le SAYC",
     "cta_opp": "Voir les opportunités",
+    "cta_whatsapp": "Communauté WhatsApp",
     "badge": "7e Chapitre Jeunesse de Smart Africa",
     "tagline": "Jeunes de 15 à 35 ans",
     "initiative_of": "Une initiative de"
@@ -34,7 +35,9 @@
     "all_news": "Toutes les actualités",
     "all_opps": "Toutes les opportunités",
     "all_trainings": "Toutes les formations",
-    "contact_us": "Nous contacter"
+    "contact_us": "Nous contacter",
+    "join_whatsapp": "Rejoindre la communauté",
+    "become_member": "Devenir membre officiel"
   },
   "admin": {
     "dashboard": "Tableau de Bord Admin",

@@ -45,6 +45,7 @@ const benefits = [
     icon: Heart,
     title: "Communauté engagée",
     description: "Rejoignez une communauté de jeunes passionnés par l'innovation.",
+    link: "https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj"
   },
 ];
 
@@ -195,6 +196,16 @@ export default function Join() {
                   <CardDescription className="text-sm">
                     {benefit.description}
                   </CardDescription>
+                  {"link" in benefit && (
+                    <a 
+                      href={benefit.link as string} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block mt-3 text-xs font-semibold text-primary hover:underline"
+                    >
+                      Rejoindre le groupe WhatsApp →
+                    </a>
+                  )}
                 </CardContent>
               </Card>
             ))}

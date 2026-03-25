@@ -3,7 +3,8 @@ import { Link } from "wouter";
 import { 
   SiFacebook, 
   SiLinkedin, 
-  SiYoutube 
+  SiYoutube,
+  SiWhatsapp
 } from "react-icons/si";
 import { 
   ExternalLink, 
@@ -31,6 +32,7 @@ const footerLinks = {
 const socialLinks = [
   { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
   { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
+  { icon: SiWhatsapp, href: "https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj", label: "WhatsApp" },
   { icon: SiYoutube, href: "https://www.youtube.com/@RealSmartAfrica", label: "YouTube" },
 ];
 

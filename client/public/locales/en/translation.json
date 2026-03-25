@@ -14,7 +14,8 @@
     "tchad": "Chad",
     "description": "Inspiring a new generation of young Africans to use technology and innovation to transform Africa.",
     "cta_join": "Join SAYC",
-    "cta_opp": "See Opportunities",
+    "cta_opp": "View Opportunities",
+    "cta_whatsapp": "WhatsApp Community",
     "badge": "7th Smart Africa Youth Chapter",
     "tagline": "Youth aged 15 to 35",
     "initiative_of": "An initiative of"
@@ -24,7 +25,7 @@
     "phone": "Phone",
     "address": "Address",
     "send": "Send",
-    "back_home": "Back to Home",
+    "back_home": "Back Home",
     "learn_more": "Learn More",
     "view_details": "View Details",
     "home": "Home",
@@ -34,7 +35,9 @@
     "all_news": "All News",
     "all_opps": "All Opportunities",
     "all_trainings": "All Trainings",
-    "contact_us": "Contact Us"
+    "contact_us": "Contact Us",
+    "join_whatsapp": "Join the community",
+    "become_member": "Become an official member"
   },
   "admin": {
     "dashboard": "Admin Dashboard",

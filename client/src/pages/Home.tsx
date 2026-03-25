@@ -12,6 +12,7 @@ import {
   CardDescription, 
   CardContent 
 } from "@/components/ui/card";
+import { SiWhatsapp } from "react-icons/si";
 import SEOHead from "@/components/SEOHead";
 import type { Opportunity, Achievement, Partner, Training, NewsArticle } from "@shared/schema";
 import {
@@ -288,6 +289,16 @@ export default function Home() {
                   <ArrowRight className="ml-2 h-4 w-4 rtl:rotate-180" />
                 </Button>
               </Link>
+              <a 
+                href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button size="lg" variant="outline" className="min-w-[200px] border-sayc-teal/50 text-sayc-teal hover:bg-sayc-teal/10" data-testid="button-hero-whatsapp">
+                  <SiWhatsapp className="mr-2 h-5 w-5" />
+                  {t("hero.cta_whatsapp")}
+                </Button>
+              </a>
               <Link href="/opportunites">
                 <Button size="lg" variant="outline" className="min-w-[200px] border-sidebar-foreground/20 text-sidebar-foreground" data-testid="button-hero-opportunities">
                   {t("hero.cta_opp")}
