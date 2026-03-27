@@ -37,6 +37,9 @@ function Router() {
       <Route path="/formations/:id" component={Trainings} />
       <Route path="/evenements" component={Events} />
       <Route path="/evenements/:id" component={Events} />
+      <Route path="/actualites" component={News} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/rejoindre" component={Join} />
       <Route path="/elections" component={ElectionsOverview} />
       <Route path="/elections/postuler" component={CandidateApplication} />
       <Route path="/elections/voter" component={VotingInterface} />
