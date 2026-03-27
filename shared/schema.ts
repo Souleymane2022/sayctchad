@@ -244,8 +244,8 @@ export const electionCandidates = pgTable("election_candidates", {
   photoUrl: text("photo_url").notNull(),
   cvUrl: text("cv_url").notNull(),
   motivationUrl: text("motivation_url").notNull(),
-  videoUrl: text("video_url"),
-  programUrl: text("program_url"),
+  videoUrl: text("video_url").notNull(),
+  programUrl: text("program_url").notNull(),
   linkedInUrl: text("linkedin_url"),
   facebookUrl: text("facebook_url"),
   twitterUrl: text("twitter_url"),
@@ -254,7 +254,20 @@ export const electionCandidates = pgTable("election_candidates", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertCandidateSchema = createInsertSchema(electionCandidates).omit({
+export const insertCandidateSchema = createInsertSchema(electionCandidates, {
+  firstName: z.string().min(1, "Prénom requis"),
+  nomSpecifiqueUnique: z.string().min(1, "Nom requis"),
+  email: z.string().email("Email invalide").min(1, "Email requis"),
+  role: z.string().min(1, "Poste requis"),
+  photoUrl: z.string().min(1, "Photo requise"),
+  cvUrl: z.string().url("Lien CV invalide").min(1, "Lien CV requis"),
+  motivationUrl: z.string().url("Lien motivation invalide").min(1, "Lien motivation requis"),
+  videoUrl: z.string().url("Lien vidéo invalide").min(1, "Lien vidéo requis"),
+  programUrl: z.string().url("Lien programme invalide").min(1, "Lien programme requis"),
+  linkedInUrl: z.string().url("Lien LinkedIn invalide").optional().or(z.literal("")),
+  facebookUrl: z.string().url("Lien Facebook invalide").optional().or(z.literal("")),
+  twitterUrl: z.string().url("Lien Twitter invalide").optional().or(z.literal("")),
+}).omit({
   id: true,
   votesCount: true,
   status: true,

@@ -296,7 +296,7 @@ export default function CandidateApplication() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lien vers votre CV (PDF)
+                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lien vers votre CV (PDF) *
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="https://drive.google.com/..." {...field} />
@@ -311,7 +311,7 @@ export default function CandidateApplication() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lettre de motivation (Lien)
+                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lettre de motivation (Lien) *
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="https://link-to-motivation.doc" {...field} />
@@ -326,7 +326,7 @@ export default function CandidateApplication() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Vidéo de présentation (YouTube/Drive)
+                                                    <LinkIcon className="w-4 h-4 text-accent" /> Vidéo de présentation (YouTube/Drive) *
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="https://youtube.com/..." {...field} value={field.value || ""} />
@@ -341,7 +341,7 @@ export default function CandidateApplication() {
                                         render={({ field }) => (
                                             <FormItem>
                                                 <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Programme d'action (Lien)
+                                                    <LinkIcon className="w-4 h-4 text-accent" /> Programme d'action (Lien) *
                                                 </FormLabel>
                                                 <FormControl>
                                                     <Input placeholder="Votre vision en PDF" {...field} value={field.value || ""} />
