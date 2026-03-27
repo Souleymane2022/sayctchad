@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,33 +15,181 @@ import {
   ArrowRight,
   ExternalLink,
   BookOpen,
-  TrendingUp
+  TrendingUp,
+  MapPin,
+  Calendar,
+  X
 } from "lucide-react";
 
 export default function Trainings() {
+  const [match, params] = useRoute("/formations/:id");
+  const detailId = params?.id;
+
   const { data: trainings = [], isLoading } = useQuery<Training[]>({
     queryKey: ["/api/trainings"],
   });
+
+  const training = useMemo(() => 
+    detailId ? trainings.find(t => t.id === detailId) : null
+  , [detailId, trainings]);
 
   const { data: achievements = [] } = useQuery<Achievement[]>({
     queryKey: ["/api/achievements"],
   });
 
+  const seoData = useMemo(() => {
+    if (training) {
+      return {
+        title: `${training.title} | Formation SAYC Tchad`,
+        description: training.description.substring(0, 160),
+        image: training.imageUrl || undefined,
+        path: `/formations/${training.id}`
+      };
+    }
+    return {
+      title: "Formations SAYC Tchad | SADA, AWS, Cybersécurité, IA",
+      description: "Accédez aux formations certifiantes de la Smart Africa Digital Academy (SADA) et de ses partenaires : AWS, cybersécurité, intelligence artificielle et compétences numériques.",
+      path: "/formations"
+    };
+  }, [training]);
+
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Formations SAYC Tchad",
-    description: "Formations certifiantes SADA, AWS, cybersécurité et intelligence artificielle pour les jeunes tchadiens.",
-    url: "https://sayctchad.org/formations",
+    name: seoData.title,
+    description: seoData.description,
+    url: `https://sayctchad.org${seoData.path}`,
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
-  }), []);
+  }), [seoData]);
+
+  if (training) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <SEOHead
+          title={seoData.title}
+          description={seoData.description}
+          image={seoData.image}
+          path={seoData.path}
+          jsonLd={webPageJsonLd}
+        />
+        <section className="pt-32 pb-20 bg-muted/30">
+          <div className="container mx-auto px-4 md:px-6">
+            <Link href="/formations">
+              <Button variant="ghost" className="mb-8 hover:bg-transparent p-0 flex items-center gap-2">
+                <X className="w-4 h-4" />
+                Retour au catalogue
+              </Button>
+            </Link>
+
+            <div className="grid md:grid-cols-3 gap-12">
+              <div className="md:col-span-2 space-y-8">
+                <div className="space-y-4">
+                  {training.level && (
+                    <Badge variant="outline" className="bg-primary/5">
+                      {training.level}
+                    </Badge>
+                  )}
+                  <h1 className="text-3xl md:text-5xl font-heading font-bold">{training.title}</h1>
+                  <div className="flex flex-wrap gap-6 text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-primary" />
+                      <span>{training.provider}</span>
+                    </div>
+                    {training.duration && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-primary" />
+                        <span>Dur&eacute;e : {training.duration}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {training.imageUrl && (
+                  <div className="rounded-2xl overflow-hidden shadow-2xl bg-muted aspect-video">
+                    <img 
+                      src={training.imageUrl} 
+                      alt={training.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                  {training.description}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <Card className="border-2 border-primary/10">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-heading">Rejoindre la formation</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {training.link ? (
+                      <a href={training.link} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button className="w-full py-6 text-lg font-bold">
+                          Acc&eacute;der maintenant
+                          <ExternalLink className="ml-2 w-5 h-5" />
+                        </Button>
+                      </a>
+                    ) : (
+                       <Link href="/contact" className="block">
+                        <Button className="w-full py-6 text-lg font-bold" variant="outline">
+                          S'informer
+                        </Button>
+                      </Link>
+                    )}
+                    <p className="text-xs text-center text-muted-foreground">
+                      D&eacute;veloppez vos comp&eacute;tences avec SAYC Tchad
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          navigator.share?.({
+                            title: training.title,
+                            text: training.description,
+                            url: window.location.href
+                          }).catch(() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            alert("Lien copi\u00e9 !");
+                          });
+                        }}
+                      >
+                        Partager
+                      </Button>
+                      <Link href="/contact">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Aide
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-primary/5 to-transparent">
+                  <CardHeader>
+                    <CardTitle className="text-sm">Certificat inclus</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-xs text-muted-foreground">À la fin de ce programme, vous recevrez une certification reconnue par Smart Africa et ses partenaires.</p>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="Formations SAYC Tchad | SADA, AWS, Cybersécurité, IA"
-        description="Accédez aux formations certifiantes de la Smart Africa Digital Academy (SADA) et de ses partenaires : AWS, cybersécurité, intelligence artificielle et compétences numériques."
-        path="/formations"
+        title={seoData.title}
+        description={seoData.description}
+        path={seoData.path}
         jsonLd={webPageJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
@@ -165,22 +313,28 @@ export default function Trainings() {
           ) : trainings.length > 0 ? (
             <div className="grid md:grid-cols-2 gap-6">
               {trainings.map((training) => (
-                <Card key={training.id} className="hover-elevate transition-all" data-testid={`card-training-${training.id}`}>
+                <Card key={training.id} className="group hover-elevate transition-all overflow-hidden" data-testid={`card-training-${training.id}`}>
+                  <div className="aspect-video w-full overflow-hidden bg-muted relative">
+                    {training.imageUrl ? (
+                      <img
+                        src={training.imageUrl}
+                        alt={training.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                        <GraduationCap className="w-12 h-12 text-primary/20" />
+                      </div>
+                    )}
+                    {training.level && (
+                      <Badge className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm text-foreground hover:bg-background/90">
+                        {training.level}
+                      </Badge>
+                    )}
+                  </div>
                   <CardHeader className="pb-4">
-                    <div className="flex items-start justify-between gap-4 mb-4 flex-wrap">
-                      <div className="w-14 h-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <GraduationCap className="w-7 h-7" />
-                      </div>
-                      <div className="flex items-center gap-2 flex-wrap justify-end">
-                        {training.level && (
-                          <Badge variant="outline" className="text-xs">
-                            {training.level}
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                    <CardTitle className="font-heading text-xl">{training.title}</CardTitle>
-                    <CardDescription className="text-sm leading-relaxed">
+                    <CardTitle className="font-heading text-xl group-hover:text-primary transition-colors">{training.title}</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed line-clamp-2">
                       {training.description}
                     </CardDescription>
                   </CardHeader>
@@ -197,20 +351,26 @@ export default function Trainings() {
                         </span>
                       )}
                     </div>
-                    {training.link ? (
-                      <a href={training.link} target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="w-full" data-testid={`button-training-access-${training.id}`}>
-                          Accéder à la formation
-                          <ExternalLink className="ml-1 h-4 w-4" />
-                        </Button>
-                      </a>
-                    ) : (
-                      <Link href="/contact">
-                        <Button variant="outline" className="w-full" data-testid={`button-training-info-${training.id}`}>
-                          Demander des informations
+                    <div className="flex gap-2">
+                       <Link href={`/formations/${training.id}`} className="flex-1">
+                        <Button variant="default" className="w-full" data-testid={`button-view-${training.id}`}>
+                          D&eacute;tails
                         </Button>
                       </Link>
-                    )}
+                      {training.link ? (
+                        <a href={training.link} target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" data-testid={`button-training-access-${training.id}`}>
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </a>
+                      ) : (
+                        <Link href="/contact">
+                          <Button variant="outline" data-testid={`button-training-info-${training.id}`}>
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               ))}

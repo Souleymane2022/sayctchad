@@ -146,6 +146,7 @@ const resourceConfigs: ResourceConfig[] = [
       { name: "deadline", label: "Date limite", required: true },
       { name: "location", label: "Lieu" },
       { name: "link", label: "Lien" },
+      { name: "imageUrl", label: "Image à la une", type: "image-single" },
     ],
     columns: [
       { key: "title", label: "Titre" },
@@ -180,7 +181,7 @@ const resourceConfigs: ResourceConfig[] = [
       { name: "level", label: "Niveau" },
       { name: "duration", label: "Durée" },
       { name: "link", label: "Lien" },
-      { name: "imageUrl", label: "URL de l'image" },
+      { name: "imageUrl", label: "Image à la une", type: "image-single" },
     ],
     columns: [
       { key: "title", label: "Titre" },
@@ -217,6 +218,7 @@ const resourceConfigs: ResourceConfig[] = [
       { name: "location", label: "Lieu" },
       { name: "type", label: "Type", required: true },
       { name: "registrationLink", label: "Lien d'inscription" },
+      { name: "imageUrl", label: "Image à la une", type: "image-single" },
     ],
     columns: [
       { key: "title", label: "Titre" },
@@ -241,6 +243,76 @@ const resourceConfigs: ResourceConfig[] = [
     ],
   },
 ];
+
+function SingleImageUpload({ 
+  value, 
+  onChange 
+}: { 
+  value: string; 
+  onChange: (value: string) => void 
+}) {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessing(true);
+    try {
+      const processed = await processAndWatermark(file);
+      onChange(processed);
+    } catch (error) {
+      toast({ 
+        title: "Erreur lors du traitement", 
+        description: "Impossible d'ajouter l'image.", 
+        variant: "destructive" 
+      });
+    } finally {
+      setIsProcessing(false);
+      e.target.value = ""; 
+    }
+  };
+
+  const removeImage = () => {
+    onChange("");
+  };
+
+  return (
+    <div className="space-y-3">
+      {value ? (
+        <div className="relative group w-full aspect-video border rounded-md overflow-hidden bg-muted max-w-sm mx-auto">
+          <img src={value} className="w-full h-full object-cover" alt="Preview" />
+          <button
+            type="button"
+            onClick={removeImage}
+            className="absolute top-2 right-2 bg-destructive text-destructive-foreground p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <XCircle className="h-5 w-5" />
+          </button>
+        </div>
+      ) : (
+        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-md cursor-pointer hover:bg-muted/50 transition-colors max-w-sm mx-auto">
+          {isProcessing ? (
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          ) : (
+            <>
+              <Plus className="h-6 w-6 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground mt-2 font-medium">Capture "A la une" (Filigrane auto)</span>
+            </>
+          )}
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={isProcessing}
+          />
+        </label>
+      )}
+    </div>
+  );
+}
 
 function MultiImageUpload({ 
   value, 
@@ -380,6 +452,11 @@ function ResourceForm({
               value={formData[field.name] || []}
               onChange={(newVal) => setFormData({ ...formData, [field.name]: newVal })}
             />
+          ) : field.type === "image-single" ? (
+            <SingleImageUpload
+              value={formData[field.name] || ""}
+              onChange={(newVal) => setFormData({ ...formData, [field.name]: newVal })}
+            />
           ) : (
             <Input
               id={`field-${field.name}`}
@@ -389,7 +466,7 @@ function ResourceForm({
               required={field.required}
               data-testid={`input-${field.name}`}
             />
-          )}
+          ) }
         </div>
       ))}
       <Button type="submit" disabled={isPending} className="w-full" data-testid="button-submit-form">

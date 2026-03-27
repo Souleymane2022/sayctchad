@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,29 +13,170 @@ import {
   Clock,
   ArrowRight,
   ExternalLink,
-  CalendarDays
+  CalendarDays,
+  X
 } from "lucide-react";
 
 export default function Events() {
+  const [match, params] = useRoute("/evenements/:id");
+  const detailId = params?.id;
+
   const { data: eventsList = [], isLoading } = useQuery<Event[]>({
     queryKey: ["/api/events"],
   });
 
+  const event = useMemo(() => 
+    detailId ? eventsList.find(e => e.id === detailId) : null
+  , [detailId, eventsList]);
+
+  const seoData = useMemo(() => {
+    if (event) {
+      return {
+        title: `${event.title} | Événement SAYC Tchad`,
+        description: event.description.substring(0, 160),
+        image: event.imageUrl || undefined,
+        path: `/evenements/${event.id}`
+      };
+    }
+    return {
+      title: "Événements SAYC Tchad | Activités et Rencontres",
+      description: "Participez aux hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa pour développer vos compétences et élargir votre réseau.",
+      path: "/evenements"
+    };
+  }, [event]);
+
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Événements SAYC Tchad",
-    description: "Hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa.",
-    url: "https://sayctchad.org/evenements",
+    name: seoData.title,
+    description: seoData.description,
+    url: `https://sayctchad.org${seoData.path}`,
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
-  }), []);
+  }), [seoData]);
+
+  if (event) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <SEOHead
+          title={seoData.title}
+          description={seoData.description}
+          image={seoData.image}
+          path={seoData.path}
+          jsonLd={webPageJsonLd}
+        />
+        <section className="pt-32 pb-20 bg-muted/30">
+          <div className="container mx-auto px-4 md:px-6">
+            <Link href="/evenements">
+              <Button variant="ghost" className="mb-8 hover:bg-transparent p-0 flex items-center gap-2">
+                <X className="w-4 h-4" />
+                Retour aux &eacute;v&eacute;nements
+              </Button>
+            </Link>
+
+            <div className="grid md:grid-cols-3 gap-12">
+              <div className="md:col-span-2 space-y-8">
+                <div className="space-y-4">
+                  <Badge variant="outline" className="bg-primary/5">
+                    {event.type}
+                  </Badge>
+                  <h1 className="text-3xl md:text-5xl font-heading font-bold">{event.title}</h1>
+                  <div className="flex flex-wrap gap-6 text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <CalendarDays className="w-4 h-4 text-primary" />
+                      <span>{event.date}</span>
+                    </div>
+                    {event.time && (
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-primary" />
+                        <span>{event.time}</span>
+                      </div>
+                    )}
+                    {event.location && (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-primary" />
+                        <span>{event.location}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {event.imageUrl && (
+                  <div className="rounded-2xl overflow-hidden shadow-2xl bg-muted aspect-video">
+                    <img 
+                      src={event.imageUrl} 
+                      alt={event.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                  {event.description}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <Card className="border-2 border-primary/10">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-heading">Participer</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {event.registrationLink ? (
+                      <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button className="w-full py-6 text-lg font-bold">
+                          S'inscrire Maintenant
+                          <ExternalLink className="ml-2 w-5 h-5" />
+                        </Button>
+                      </a>
+                    ) : (
+                       <Link href="/contact" className="block">
+                        <Button className="w-full py-6 text-lg font-bold" variant="outline">
+                          Plus d'informations
+                        </Button>
+                      </Link>
+                    )}
+                    <p className="text-xs text-center text-muted-foreground">
+                      Ne manquez pas cet &eacute;v&eacute;nement !
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          navigator.share?.({
+                            title: event.title,
+                            text: event.description,
+                            url: window.location.href
+                          }).catch(() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            alert("Lien copi\u00e9 !");
+                          });
+                        }}
+                      >
+                        Partager
+                      </Button>
+                      <Link href="/contact">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Contact
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="Événements SAYC Tchad | Activités et Rencontres"
-        description="Participez aux hackathons, bootcamps, conférences et ateliers organisés par le SAYC Tchad et Smart Africa pour développer vos compétences et élargir votre réseau."
-        path="/evenements"
+        title={seoData.title}
+        description={seoData.description}
+        path={seoData.path}
         jsonLd={webPageJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
@@ -109,56 +250,70 @@ export default function Events() {
                   className="hover-elevate transition-all"
                   data-testid={`card-event-${event.id}`}
                 >
-                  <CardContent className="p-6">
-                    <div className="flex flex-col lg:flex-row lg:items-center gap-6">
-                      <div className="w-16 h-16 rounded-md bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                        <CalendarDays className="w-8 h-8" />
+                  <CardContent className="p-0 overflow-hidden">
+                    <div className="flex flex-col lg:flex-row gap-0">
+                      <div className="lg:w-72 h-48 lg:h-auto shrink-0 bg-muted relative overflow-hidden">
+                        {event.imageUrl ? (
+                          <img
+                            src={event.imageUrl}
+                            alt={event.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-primary/5">
+                            <CalendarDays className="w-12 h-12 text-primary/20" />
+                          </div>
+                        )}
+                        <Badge className="absolute top-3 left-3 bg-background/80 backdrop-blur-sm text-foreground hover:bg-background/90">
+                          {event.type}
+                        </Badge>
                       </div>
                       
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-wrap items-center gap-2 mb-2">
-                          <Badge variant="secondary">
-                            {event.type}
-                          </Badge>
-                        </div>
-                        <h3 className="font-heading text-xl font-bold mb-2">{event.title}</h3>
-                        <p className="text-muted-foreground text-sm mb-4">{event.description}</p>
-                        
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4 text-primary" />
-                            {event.date}
-                          </span>
-                          {event.time && (
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-4 h-4 text-primary" />
-                              {event.time}
+                      <div className="flex-1 p-6 flex flex-col justify-between">
+                        <div>
+                          <h3 className="font-heading text-xl font-bold mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                          <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{event.description}</p>
+                          
+                          <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground mb-4">
+                            <span className="flex items-center gap-1.5">
+                              <Calendar size={14} className="text-primary" />
+                              {event.date}
                             </span>
-                          )}
-                          {event.location && (
-                            <span className="flex items-center gap-1">
-                              <MapPin className="w-4 h-4 text-primary" />
-                              {event.location}
-                            </span>
-                          )}
+                            {event.time && (
+                              <span className="flex items-center gap-1.5">
+                                <Clock size={14} className="text-primary" />
+                                {event.time}
+                              </span>
+                            )}
+                            {event.location && (
+                              <span className="flex items-center gap-1.5">
+                                <MapPin size={14} className="text-primary" />
+                                {event.location}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="lg:shrink-0">
-                        {event.registrationLink ? (
-                          <a href={event.registrationLink} target="_blank" rel="noopener noreferrer">
-                            <Button className="w-full lg:w-auto" data-testid={`button-register-event-${event.id}`}>
-                              S'inscrire
-                              <ExternalLink className="ml-1 h-4 w-4" />
-                            </Button>
-                          </a>
-                        ) : (
-                          <Link href="/contact">
-                            <Button variant="outline" className="w-full lg:w-auto" data-testid={`button-info-event-${event.id}`}>
-                              Plus d'infos
+                        <div className="flex items-center gap-3 mt-auto">
+                          <Link href={`/evenements/${event.id}`} className="flex-1">
+                            <Button size="sm" variant="default" className="w-full" data-testid={`button-view-${event.id}`}>
+                              D&eacute;tails
                             </Button>
                           </Link>
-                        )}
+                          {event.registrationLink ? (
+                            <a href={event.registrationLink} target="_blank" rel="noopener noreferrer" className="shrink-0">
+                              <Button size="sm" variant="outline" data-testid={`button-register-event-${event.id}`}>
+                                <ExternalLink className="h-4 w-4" />
+                              </Button>
+                            </a>
+                          ) : (
+                            <Link href="/contact" className="shrink-0">
+                              <Button variant="outline" size="sm" data-testid={`button-info-event-${event.id}`}>
+                                <ArrowRight className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </CardContent>

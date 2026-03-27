@@ -38360,10 +38360,19 @@ var init_schema2 = __esm({
       deadline: text("deadline").notNull(),
       location: text("location"),
       link: text("link"),
+      imageUrl: text("image_url"),
       isActive: boolean("is_active").notNull().default(true),
       createdAt: timestamp("created_at").defaultNow()
     });
-    insertOpportunitySchema = createInsertSchema(opportunities).omit({
+    insertOpportunitySchema = createInsertSchema(opportunities, {
+      title: z.string().min(1, "Titre requis"),
+      description: z.string().min(1, "Description requise"),
+      category: z.string().min(1, "Cat\xE9gorie requise"),
+      organization: z.string().min(1, "Organisation requise"),
+      deadline: z.string().min(1, "Date limite requise"),
+      link: z.string().url("URL invalide").optional().or(z.literal("")),
+      imageUrl: z.string().optional().or(z.literal(""))
+    }).omit({
       id: true,
       createdAt: true
     });
@@ -38393,7 +38402,13 @@ var init_schema2 = __esm({
       isActive: boolean("is_active").notNull().default(true),
       createdAt: timestamp("created_at").defaultNow()
     });
-    insertTrainingSchema = createInsertSchema(trainings).omit({
+    insertTrainingSchema = createInsertSchema(trainings, {
+      title: z.string().min(1, "Titre requis"),
+      description: z.string().min(1, "Description requise"),
+      provider: z.string().min(1, "Fournisseur requis"),
+      link: z.string().url("URL invalide").optional().or(z.literal("")),
+      imageUrl: z.string().optional().or(z.literal(""))
+    }).omit({
       id: true,
       createdAt: true
     });
@@ -38426,7 +38441,14 @@ var init_schema2 = __esm({
       isActive: boolean("is_active").notNull().default(true),
       createdAt: timestamp("created_at").defaultNow()
     });
-    insertEventSchema = createInsertSchema(events).omit({
+    insertEventSchema = createInsertSchema(events, {
+      title: z.string().min(1, "Titre requis"),
+      description: z.string().min(1, "Description requise"),
+      date: z.string().min(1, "Date requise"),
+      type: z.string().min(1, "Type requis"),
+      registrationLink: z.string().url("URL invalide").optional().or(z.literal("")),
+      imageUrl: z.string().optional().or(z.literal(""))
+    }).omit({
       id: true,
       createdAt: true
     });

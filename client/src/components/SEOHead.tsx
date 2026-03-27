@@ -4,12 +4,13 @@ interface SEOHeadProps {
   title: string;
   description: string;
   path: string;
+  image?: string;
   type?: "website" | "article";
   keywords?: string;
   jsonLd?: Record<string, unknown>;
 }
 
-export default function SEOHead({ title, description, path, type = "website", keywords, jsonLd }: SEOHeadProps) {
+export default function SEOHead({ title, description, path, image, type = "website", keywords, jsonLd }: SEOHeadProps) {
   const baseUrl = "https://sayctchad.org";
   
   // Last resort filter: if a string contains a dot and no space, it's likely a raw i18n key
@@ -24,7 +25,7 @@ export default function SEOHead({ title, description, path, type = "website", ke
   const safeDescription = clean(description, "Smart Africa Youth Chapter Tchad");
 
   const url = `${baseUrl}${path}`;
-  const imageUrl = `${baseUrl}/images/og-image.png`;
+  const imageUrl = image || `${baseUrl}/images/og-image.png`;
   const siteName = "SAYC Tchad - Smart Africa Youth Chapter";
 
   const defaultKeywords = "Souleymane Mahamat Saleh, SAYC Tchad, Smart Africa, Youth Chapter, jeunesse tchadienne, innovation numérique Tchad, Ingénierie logicielle, tech leader Tchad, formation, SADA, leadership jeunesse, N'Djamena, transformation digitale Afrique";

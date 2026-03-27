@@ -31,12 +31,12 @@ function Router() {
       <Route path="/a-propos" component={About} />
       <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
       <Route path="/programmes" component={Programs} />
-      <Route path="/formations" component={Trainings} />
-      <Route path="/evenements" component={Events} />
-      <Route path="/actualites" component={News} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/rejoindre" component={Join} />
       <Route path="/opportunites" component={Opportunities} />
+      <Route path="/opportunites/:id" component={Opportunities} />
+      <Route path="/formations" component={Trainings} />
+      <Route path="/formations/:id" component={Trainings} />
+      <Route path="/evenements" component={Events} />
+      <Route path="/evenements/:id" component={Events} />
       <Route path="/elections" component={ElectionsOverview} />
       <Route path="/elections/postuler" component={CandidateApplication} />
       <Route path="/elections/voter" component={VotingInterface} />

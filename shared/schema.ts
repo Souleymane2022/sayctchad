@@ -85,11 +85,20 @@ export const opportunities = pgTable("opportunities", {
   deadline: text("deadline").notNull(),
   location: text("location"),
   link: text("link"),
+  imageUrl: text("image_url"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertOpportunitySchema = createInsertSchema(opportunities).omit({
+export const insertOpportunitySchema = createInsertSchema(opportunities, {
+  title: z.string().min(1, "Titre requis"),
+  description: z.string().min(1, "Description requise"),
+  category: z.string().min(1, "Catégorie requise"),
+  organization: z.string().min(1, "Organisation requise"),
+  deadline: z.string().min(1, "Date limite requise"),
+  link: z.string().url("URL invalide").optional().or(z.literal("")),
+  imageUrl: z.string().optional().or(z.literal("")),
+}).omit({
   id: true,
   createdAt: true,
 });
@@ -129,7 +138,13 @@ export const trainings = pgTable("trainings", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertTrainingSchema = createInsertSchema(trainings).omit({
+export const insertTrainingSchema = createInsertSchema(trainings, {
+  title: z.string().min(1, "Titre requis"),
+  description: z.string().min(1, "Description requise"),
+  provider: z.string().min(1, "Fournisseur requis"),
+  link: z.string().url("URL invalide").optional().or(z.literal("")),
+  imageUrl: z.string().optional().or(z.literal("")),
+}).omit({
   id: true,
   createdAt: true,
 });
@@ -172,7 +187,14 @@ export const events = pgTable("events", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertEventSchema = createInsertSchema(events).omit({
+export const insertEventSchema = createInsertSchema(events, {
+  title: z.string().min(1, "Titre requis"),
+  description: z.string().min(1, "Description requise"),
+  date: z.string().min(1, "Date requise"),
+  type: z.string().min(1, "Type requis"),
+  registrationLink: z.string().url("URL invalide").optional().or(z.literal("")),
+  imageUrl: z.string().optional().or(z.literal("")),
+}).omit({
   id: true,
   createdAt: true,
 });

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link } from "wouter";
+import { Link, useRoute } from "wouter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +19,8 @@ import {
   Building2,
   Filter,
   Clock,
-  Rocket
+  Rocket,
+  X
 } from "lucide-react";
 import { useState } from "react";
 
@@ -43,11 +44,17 @@ const categoryBadgeVariant = (category: string): string => {
 };
 
 export default function Opportunities() {
+  const [match, params] = useRoute("/opportunites/:id");
+  const detailId = params?.id;
   const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["/api/opportunities"],
   });
+
+  const opportunity = useMemo(() => 
+    detailId ? opportunities.find(o => o.id === detailId) : null
+  , [detailId, opportunities]);
 
   const categories = ["Tous", ...Array.from(new Set(opportunities.map((o) => o.category)))];
 
@@ -61,21 +68,149 @@ export default function Opportunities() {
     { label: "Organisations", value: new Set(opportunities.map(o => o.organization)).size.toString(), icon: Building2 },
   ];
 
+  const seoData = useMemo(() => {
+    if (opportunity) {
+      return {
+        title: `${opportunity.title} | Opportunité SAYC Tchad`,
+        description: opportunity.description.substring(0, 160),
+        image: opportunity.imageUrl || undefined,
+        path: `/opportunites/${opportunity.id}`
+      };
+    }
+    return {
+      title: "Opportunités SAYC Tchad | Appels d'offres Smart Africa",
+      description: "Découvrez les opportunités de formation, bourses, appels d'offres, recrutement et incubation disponibles via Smart Africa et le SAYC Tchad pour les jeunes tchadiens.",
+      path: "/opportunites"
+    };
+  }, [opportunity]);
+
   const webPageJsonLd = useMemo(() => ({
     "@context": "https://schema.org",
     "@type": "WebPage",
-    name: "Opportunités SAYC Tchad",
-    description: "Opportunités de formation, bourses, appels d'offres et incubation via Smart Africa pour les jeunes tchadiens.",
-    url: "https://sayctchad.org/opportunites",
+    name: seoData.title,
+    description: seoData.description,
+    url: `https://sayctchad.org${seoData.path}`,
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
-  }), []);
+  }), [seoData]);
+
+  if (opportunity) {
+    const config = categoryConfig[opportunity.category] || { icon: Briefcase, colorClass: "bg-muted text-muted-foreground" };
+    const IconComponent = config.icon;
+
+    return (
+      <div className="flex flex-col min-h-screen">
+        <SEOHead
+          title={seoData.title}
+          description={seoData.description}
+          image={seoData.image}
+          path={seoData.path}
+          jsonLd={webPageJsonLd}
+        />
+        <section className="pt-32 pb-20 bg-muted/30">
+          <div className="container mx-auto px-4 md:px-6">
+            <Link href="/opportunites">
+              <Button variant="ghost" className="mb-8 hover:bg-transparent p-0 flex items-center gap-2">
+                <X className="w-4 h-4" />
+                Retour aux opportunit&eacute;s
+              </Button>
+            </Link>
+
+            <div className="grid md:grid-cols-3 gap-12">
+              <div className="md:col-span-2 space-y-8">
+                <div className="space-y-4">
+                  <Badge variant="outline" className={categoryBadgeVariant(opportunity.category)}>
+                    {opportunity.category}
+                  </Badge>
+                  <h1 className="text-3xl md:text-5xl font-heading font-bold">{opportunity.title}</h1>
+                  <div className="flex flex-wrap gap-6 text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-primary" />
+                      <span>{opportunity.organization}</span>
+                    </div>
+                    {opportunity.location && (
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-primary" />
+                        <span>{opportunity.location}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-primary" />
+                      <span>Date limite : {opportunity.deadline}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {opportunity.imageUrl && (
+                  <div className="rounded-2xl overflow-hidden shadow-2xl bg-muted aspect-video">
+                    <img 
+                      src={opportunity.imageUrl} 
+                      alt={opportunity.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                )}
+
+                <div className="prose prose-lg max-w-none text-foreground/80 leading-relaxed whitespace-pre-wrap">
+                  {opportunity.description}
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <Card className="border-2 border-primary/10">
+                  <CardHeader>
+                    <CardTitle className="text-xl font-heading">Int&eacute;ress&eacute; ?</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {opportunity.link && (
+                      <a href={opportunity.link} target="_blank" rel="noopener noreferrer" className="block">
+                        <Button className="w-full py-6 text-lg font-bold">
+                          Postuler Maintenant
+                          <ExternalLink className="ml-2 w-5 h-5" />
+                        </Button>
+                      </a>
+                    )}
+                    <p className="text-xs text-center text-muted-foreground">
+                      Partagez cette opportunit&eacute; avec votre r&eacute;seau
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => {
+                          navigator.share?.({
+                            title: opportunity.title,
+                            text: opportunity.description,
+                            url: window.location.href
+                          }).catch(() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            alert("Lien copi\u00e9 !");
+                          });
+                        }}
+                      >
+                        Partager
+                      </Button>
+                      <Link href="/contact">
+                        <Button variant="outline" size="sm" className="w-full">
+                          Contact
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col">
       <SEOHead
-        title="Opportunités SAYC Tchad | Appels d'offres Smart Africa"
-        description="Découvrez les opportunités de formation, bourses, appels d'offres, recrutement et incubation disponibles via Smart Africa et le SAYC Tchad pour les jeunes tchadiens."
-        path="/opportunites"
+        title={seoData.title}
+        description={seoData.description}
+        path={seoData.path}
         jsonLd={webPageJsonLd}
       />
       <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
@@ -218,21 +353,37 @@ export default function Opportunities() {
                       className="group hover-elevate transition-all duration-300"
                       data-testid={`card-opportunity-${opportunity.id}`}
                     >
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between gap-3 mb-3">
-                          <div className={`w-12 h-12 rounded-lg ${config.colorClass} flex items-center justify-center shrink-0`}>
-                            <IconComponent className="w-6 h-6" />
+                      <CardHeader className="p-0 overflow-hidden">
+                        {opportunity.imageUrl ? (
+                          <div className="aspect-video w-full overflow-hidden">
+                            <img
+                              src={opportunity.imageUrl}
+                              alt={opportunity.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
                           </div>
-                          <Badge variant="outline" className={`text-xs shrink-0 ${categoryBadgeVariant(opportunity.category)}`}>
-                            {opportunity.category}
-                          </Badge>
+                        ) : (
+                          <div className={`aspect-video w-full ${config.colorClass} flex items-center justify-center`}>
+                            <IconComponent className="w-12 h-12 opacity-40" />
+                          </div>
+                        )}
+                        <div className="p-6 pb-2">
+                          <div className="flex items-center justify-between gap-3 mb-3">
+                            <Badge variant="outline" className={`text-xs shrink-0 ${categoryBadgeVariant(opportunity.category)}`}>
+                              {opportunity.category}
+                            </Badge>
+                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                              <Building2 className="w-3 h-3" />
+                              <span className="truncate max-w-[120px]">{opportunity.organization}</span>
+                            </div>
+                          </div>
+                          <CardTitle className="font-heading text-lg leading-snug group-hover:text-primary transition-colors">
+                            {opportunity.title}
+                          </CardTitle>
                         </div>
-                        <CardTitle className="font-heading text-lg leading-snug">
-                          {opportunity.title}
-                        </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <CardDescription className="text-sm leading-relaxed mb-4">
+                      <CardContent className="p-6 pt-2">
+                        <CardDescription className="text-sm leading-relaxed mb-4 line-clamp-3">
                           {opportunity.description}
                         </CardDescription>
                         <div className="space-y-2 mb-4">
@@ -252,12 +403,18 @@ export default function Opportunities() {
                           </div>
                         </div>
                         {opportunity.link && (
-                          <a href={opportunity.link} target="_blank" rel="noopener noreferrer">
-                            <Button variant="outline" size="sm" data-testid={`button-apply-${opportunity.id}`}>
-                              Postuler / En savoir plus
-                              <ExternalLink className="ml-1 h-3 w-3" />
-                            </Button>
-                          </a>
+                          <div className="flex gap-2">
+                             <Link href={`/opportunites/${opportunity.id}`} className="flex-1">
+                              <Button variant="default" size="sm" className="w-full" data-testid={`button-view-${opportunity.id}`}>
+                                Voir d&eacute;tails
+                              </Button>
+                            </Link>
+                            <a href={opportunity.link} target="_blank" rel="noopener noreferrer">
+                              <Button variant="outline" size="sm" data-testid={`button-apply-${opportunity.id}`}>
+                                <ExternalLink className="h-3 w-3" />
+                              </Button>
+                            </a>
+                          </div>
                         )}
                       </CardContent>
                     </Card>
