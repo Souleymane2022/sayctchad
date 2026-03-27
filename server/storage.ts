@@ -58,18 +58,21 @@ export interface IStorage {
   createTraining(training: InsertTraining): Promise<Training>;
   getActiveTrainings(): Promise<Training[]>;
   getAllTrainings(): Promise<Training[]>;
+  getTrainingById(id: string): Promise<Training | undefined>;
   updateTraining(id: string, data: Partial<InsertTraining>): Promise<Training | undefined>;
   deleteTraining(id: string): Promise<void>;
 
   createNewsArticle(article: InsertNewsArticle): Promise<NewsArticle>;
   getActiveNewsArticles(): Promise<NewsArticle[]>;
   getAllNewsArticles(): Promise<NewsArticle[]>;
+  getNewsArticleById(id: string): Promise<NewsArticle | undefined>;
   updateNewsArticle(id: string, data: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined>;
   deleteNewsArticle(id: string): Promise<void>;
 
   createEvent(event: InsertEvent): Promise<Event>;
   getActiveEvents(): Promise<Event[]>;
   getAllEvents(): Promise<Event[]>;
+  getEventById(id: string): Promise<Event | undefined>;
   updateEvent(id: string, data: Partial<InsertEvent>): Promise<Event | undefined>;
   deleteEvent(id: string): Promise<void>;
 
@@ -244,6 +247,11 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(trainings).orderBy(desc(trainings.createdAt));
   }
 
+  async getTrainingById(id: string): Promise<Training | undefined> {
+    const [training] = await db.select().from(trainings).where(sql`${trainings.id} = ${Number(id)}`);
+    return training;
+  }
+
   async updateTraining(id: string, data: Partial<InsertTraining>): Promise<Training | undefined> {
     const [updated] = await db.update(trainings).set(data).where(eq(trainings.id, id)).returning();
     return updated;
@@ -266,6 +274,11 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
   }
 
+  async getNewsArticleById(id: string): Promise<NewsArticle | undefined> {
+    const [article] = await db.select().from(newsArticles).where(sql`${newsArticles.id} = ${Number(id)}`);
+    return article;
+  }
+
   async updateNewsArticle(id: string, data: Partial<InsertNewsArticle>): Promise<NewsArticle | undefined> {
     const [updated] = await db.update(newsArticles).set(data).where(eq(newsArticles.id, id)).returning();
     return updated;
@@ -286,6 +299,11 @@ export class DatabaseStorage implements IStorage {
 
   async getAllEvents(): Promise<Event[]> {
     return db.select().from(events).orderBy(desc(events.createdAt));
+  }
+
+  async getEventById(id: string): Promise<Event | undefined> {
+    const [event] = await db.select().from(events).where(sql`${events.id} = ${Number(id)}`);
+    return event;
   }
 
   async updateEvent(id: string, data: Partial<InsertEvent>): Promise<Event | undefined> {

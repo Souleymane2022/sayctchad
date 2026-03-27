@@ -64281,6 +64281,10 @@ var DatabaseStorage = class {
   async getAllTrainings() {
     return db.select().from(trainings).orderBy(desc(trainings.createdAt));
   }
+  async getTrainingById(id) {
+    const [training] = await db.select().from(trainings).where(sql`${trainings.id} = ${Number(id)}`);
+    return training;
+  }
   async updateTraining(id, data) {
     const [updated] = await db.update(trainings).set(data).where(eq(trainings.id, id)).returning();
     return updated;
@@ -64298,6 +64302,10 @@ var DatabaseStorage = class {
   async getAllNewsArticles() {
     return db.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
   }
+  async getNewsArticleById(id) {
+    const [article] = await db.select().from(newsArticles).where(sql`${newsArticles.id} = ${Number(id)}`);
+    return article;
+  }
   async updateNewsArticle(id, data) {
     const [updated] = await db.update(newsArticles).set(data).where(eq(newsArticles.id, id)).returning();
     return updated;
@@ -64314,6 +64322,10 @@ var DatabaseStorage = class {
   }
   async getAllEvents() {
     return db.select().from(events).orderBy(desc(events.createdAt));
+  }
+  async getEventById(id) {
+    const [event] = await db.select().from(events).where(sql`${events.id} = ${Number(id)}`);
+    return event;
   }
   async updateEvent(id, data) {
     const [updated] = await db.update(events).set(data).where(eq(events.id, id)).returning();
