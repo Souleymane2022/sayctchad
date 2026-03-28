@@ -225,9 +225,9 @@ export default function Opportunities() {
               <Briefcase className="w-3 h-3 mr-1" />
               Appels d'offres & Opportunit&eacute;s
             </Badge>
-            <h1 className="font-heading text-4xl md:text-5xl font-bold mb-6" data-testid="text-opportunities-title">
+            <h1 className="font-heading text-3xl md:text-5xl font-bold mb-6 break-words" data-testid="text-opportunities-title">
               Opportunit&eacute;s &{" "}
-              <span className="text-accent">Appels d'offres</span>
+              <span className="text-accent underline decoration-accent/30 decoration-2 underline-offset-4">Appels d'offres</span>
             </h1>
             <p className="text-lg text-sidebar-foreground/80 leading-relaxed" data-testid="text-opportunities-description">
               D&eacute;couvrez les derni&egrave;res opportunit&eacute;s de Smart Africa et de ses partenaires :

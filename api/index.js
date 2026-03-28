@@ -38493,7 +38493,16 @@ var init_schema2 = __esm({
       status: text("status").notNull().default("pending"),
       createdAt: timestamp("created_at").defaultNow()
     });
-    insertThunderbirdApplicationSchema = createInsertSchema(thunderbirdApplications).omit({
+    insertThunderbirdApplicationSchema = createInsertSchema(thunderbirdApplications, {
+      fullName: z.string().min(1, "Nom complet requis"),
+      gender: z.string().min(1, "Sexe requis"),
+      dateOfBirth: z.string().min(1, "Date de naissance requise"),
+      phone: z.string().min(1, "Num\xE9ro de t\xE9l\xE9phone requis"),
+      email: z.string().email("Email invalide").min(1, "Email requis"),
+      motivation: z.string().min(1, "Motivation requise"),
+      communityImpact: z.string().min(1, "Impact communautaire requis"),
+      projectIdea: z.string().min(1, "Id\xE9e de projet requise")
+    }).omit({
       id: true,
       createdAt: true
     });

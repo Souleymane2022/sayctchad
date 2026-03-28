@@ -249,7 +249,16 @@ export const thunderbirdApplications = pgTable("thunderbird_applications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertThunderbirdApplicationSchema = createInsertSchema(thunderbirdApplications).omit({
+export const insertThunderbirdApplicationSchema = createInsertSchema(thunderbirdApplications, {
+  fullName: z.string().min(1, "Nom complet requis"),
+  gender: z.string().min(1, "Sexe requis"),
+  dateOfBirth: z.string().min(1, "Date de naissance requise"),
+  phone: z.string().min(1, "Numéro de téléphone requis"),
+  email: z.string().email("Email invalide").min(1, "Email requis"),
+  motivation: z.string().min(1, "Motivation requise"),
+  communityImpact: z.string().min(1, "Impact communautaire requis"),
+  projectIdea: z.string().min(1, "Idée de projet requise"),
+}).omit({
   id: true,
   createdAt: true,
 });

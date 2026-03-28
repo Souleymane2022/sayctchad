@@ -58,7 +58,11 @@ export default function ThunderbirdResults() {
 
   const filteredResults = useMemo(() => {
     if (!results) return [];
-    return results.filter(app => {
+    // Filtrage pour ne montrer que la Cohorte 1 (Tchad 2024 / Anciens enregistrés)
+    // Les nouveaux sont en "Cohorte 2 (En attente)"
+    const cohort1 = results.filter(r => r.cohort === "Tchad 2024" || !r.cohort.includes("Cohorte 2"));
+
+    return cohort1.filter(app => {
       const matchesSearch = app.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           app.city?.toLowerCase().includes(searchTerm.toLowerCase());
       

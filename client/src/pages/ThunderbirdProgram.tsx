@@ -232,7 +232,7 @@ export default function ThunderbirdProgram() {
                                                 name="fullName"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-base font-semibold">Nom Complet</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Nom Complet <span className="text-destructive">*</span></FormLabel>
                                                         <FormControl><Input placeholder="Prénom et Nom" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -243,7 +243,7 @@ export default function ThunderbirdProgram() {
                                                 name="gender"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-base font-semibold">Sexe</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Sexe <span className="text-destructive">*</span></FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
                                                                 <SelectTrigger className="h-12">
@@ -264,7 +264,7 @@ export default function ThunderbirdProgram() {
                                                 name="dateOfBirth"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-base font-semibold">Date de Naissance</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Date de Naissance <span className="text-destructive">*</span></FormLabel>
                                                         <FormControl><Input type="date" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -286,7 +286,7 @@ export default function ThunderbirdProgram() {
                                                 name="phone"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-base font-semibold">Numéro WhatsApp</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Numéro WhatsApp <span className="text-destructive">*</span></FormLabel>
                                                         <FormControl><Input placeholder="+235 ..." className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -297,7 +297,7 @@ export default function ThunderbirdProgram() {
                                                 name="email"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel className="text-base font-semibold">Email Professionnel</FormLabel>
+                                                        <FormLabel className="text-base font-semibold">Email Professionnel <span className="text-destructive">*</span></FormLabel>
                                                         <FormControl><Input type="email" placeholder="nom@exemple.com" className="h-12" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -426,7 +426,7 @@ export default function ThunderbirdProgram() {
                                             name="motivation"
                                             render={({ field }) => (
                                                 <FormItem>
-                                                    <FormLabel className="text-base font-semibold">Quelles sont vos motivations réelles pour suivre ce programme international ?</FormLabel>
+                                                    <FormLabel className="text-base font-semibold">Quelles sont vos motivations réelles pour suivre ce programme international ? <span className="text-destructive">*</span></FormLabel>
                                                     <FormControl><Textarea className="min-h-[120px] text-base" placeholder="Détaillez votre vision..." {...field} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
