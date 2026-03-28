@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { GraduationCap, Send, CheckCircle2, Info, Globe, ShieldCheck, Zap } from "lucide-react";
+import { GraduationCap, Send, CheckCircle2, Info, Globe, ShieldCheck, Zap, ExternalLink } from "lucide-react";
+import { Link } from "wouter";
 
 export default function ThunderbirdProgram() {
     const { toast } = useToast();
@@ -107,6 +108,15 @@ export default function ThunderbirdProgram() {
                     <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                         Une initiative de la Thunderbird School of Global Management (ASU) pour démocratiser l'éducation de classe mondiale au Tchad.
                     </p>
+                    <div className="flex flex-wrap justify-center gap-6 mb-12">
+                        <Link href="/programmes/thunderbird/resultats">
+                            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold px-8 h-14 rounded-full shadow-lg shadow-accent/20 flex items-center gap-2">
+                                <Award className="w-5 h-5" />
+                                Voir les Résultats de la Bourse
+                                <ExternalLink className="w-4 h-4" />
+                            </Button>
+                        </Link>
+                    </div>
                     <div className="flex flex-wrap justify-center gap-4">
                         <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
                             <h4 className="font-bold text-accent text-2xl">100M</h4>

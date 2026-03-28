@@ -16,6 +16,7 @@ import Contact from "@/pages/Contact";
 import Join from "@/pages/Join";
 import Opportunities from "@/pages/Opportunities";
 import ThunderbirdProgram from "@/pages/ThunderbirdProgram";
+import ThunderbirdResults from "@/pages/ThunderbirdResults";
 import Admin from "@/pages/Admin";
 import MembershipRegistration from "@/pages/MembershipRegistration";
 import VerifyMember from "@/pages/VerifyMember";
@@ -30,6 +31,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/a-propos" component={About} />
       <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
+      <Route path="/programmes/thunderbird/resultats" component={ThunderbirdResults} />
       <Route path="/programmes" component={Programs} />
       <Route path="/opportunites" component={Opportunities} />
       <Route path="/opportunites/:id" component={Opportunities} />

@@ -86,6 +86,8 @@ export interface IStorage {
   getThunderbirdApplicationByEmail(email: string): Promise<ThunderbirdApplication | undefined>;
   getAllThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
   getThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
+  getApprovedThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
+  updateThunderbirdApplicationStatus(id: string, status: string): Promise<ThunderbirdApplication | undefined>;
 
   createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
   getApprovedCandidates(): Promise<ElectionCandidate[]>;
@@ -353,6 +355,18 @@ export class DatabaseStorage implements IStorage {
 
   async getThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
     return this.getAllThunderbirdApplications();
+  }
+
+  async getApprovedThunderbirdApplications(): Promise<ThunderbirdApplication[]> {
+    return db.select().from(thunderbirdApplications).where(eq(thunderbirdApplications.status, "approved")).orderBy(desc(thunderbirdApplications.createdAt));
+  }
+
+  async updateThunderbirdApplicationStatus(id: string, status: string): Promise<ThunderbirdApplication | undefined> {
+    const [updated] = await db.update(thunderbirdApplications)
+      .set({ status })
+      .where(eq(thunderbirdApplications.id, id))
+      .returning();
+    return updated;
   }
 
   private mapCandidateRow(row: any): ElectionCandidate {

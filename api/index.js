@@ -64365,6 +64365,13 @@ var DatabaseStorage = class {
   async getThunderbirdApplications() {
     return this.getAllThunderbirdApplications();
   }
+  async getApprovedThunderbirdApplications() {
+    return db.select().from(thunderbirdApplications).where(eq(thunderbirdApplications.status, "approved")).orderBy(desc(thunderbirdApplications.createdAt));
+  }
+  async updateThunderbirdApplicationStatus(id, status) {
+    const [updated] = await db.update(thunderbirdApplications).set({ status }).where(eq(thunderbirdApplications.id, id)).returning();
+    return updated;
+  }
   mapCandidateRow(row) {
     return {
       id: row.id,
