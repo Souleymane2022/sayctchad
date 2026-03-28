@@ -175,8 +175,9 @@ export default function ThunderbirdResults() {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 mb-12">
-            <div className="overflow-x-auto">
+          <div className="grid grid-cols-1 gap-6 mb-12">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[600px]">
                 <thead>
                   <tr className="border-b-2 border-slate-200 bg-slate-50/50">
@@ -221,12 +222,56 @@ export default function ThunderbirdResults() {
                   </AnimatePresence>
                 </tbody>
               </table>
-              {filteredResults.length === 0 && (
-                <div className="py-20 text-center text-slate-400 italic">
-                  Aucun résultat trouvé pour cette recherche.
-                </div>
-              )}
             </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden space-y-4">
+              <AnimatePresence mode="popLayout">
+                {displayedResults.map((app, index) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    className="bg-slate-50 border border-slate-200 rounded-xl p-5 relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 p-2">
+                       <span className="bg-green-500 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg uppercase">
+                         Retenu
+                       </span>
+                    </div>
+                    <div className="flex items-center gap-4 mb-3">
+                      <div className="text-2xl font-black text-slate-300">
+                        #{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                      </div>
+                      <div>
+                        <div className="font-bold text-[#1E3A5F] uppercase text-sm leading-tight">
+                          {app.fullName}
+                        </div>
+                        <div className="text-xs text-slate-400 font-medium mt-1">
+                          {app.city || "Ville non précisée"}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                        (app.gender?.toLowerCase() === 'f' || app.gender?.toLowerCase() === 'féminin') 
+                        ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'
+                      }`}>
+                        {app.gender === 'F' ? 'Femme' : app.gender === 'M' ? 'Homme' : app.gender}
+                      </span>
+                      <ShieldCheck className="w-4 h-4 text-green-500" />
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {filteredResults.length === 0 && (
+              <div className="py-20 text-center text-slate-400 italic">
+                Aucun résultat trouvé pour cette recherche.
+              </div>
+            )}
           </div>
 
           <div className="flex justify-between items-center py-6 border-t border-slate-100 mb-12">
