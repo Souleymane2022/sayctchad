@@ -22,5 +22,10 @@
             "source": "/((?!api/|locales/).*)",
             "destination": "/index.html"
         }
-    ]
+    ],
+    "functions": {
+        "api/index.js": {
+            "maxDuration": 60
+        }
+    }
 }

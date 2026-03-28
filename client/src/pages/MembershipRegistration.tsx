@@ -138,8 +138,8 @@ export default function MembershipRegistration() {
                 img.src = event.target?.result as string;
                 img.onload = () => {
                     const canvas = document.createElement("canvas");
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
+                    const MAX_WIDTH = 600;
+                    const MAX_HEIGHT = 600;
                     let width = img.width;
                     let height = img.height;
 
@@ -159,7 +159,7 @@ export default function MembershipRegistration() {
                     canvas.height = height;
                     const ctx = canvas.getContext("2d");
                     ctx?.drawImage(img, 0, 0, width, height);
-                    resolve(canvas.toDataURL("image/jpeg", 0.6));
+                    resolve(canvas.toDataURL("image/jpeg", 0.5));
                 };
             };
         });
@@ -168,11 +168,11 @@ export default function MembershipRegistration() {
     const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            // Increase to 10MB as we will compress it anyway
-            if (file.size > 10 * 1024 * 1024) {
+            // Vercel has a 4.5MB limit, so we check original file size too
+            if (file.size > 4 * 1024 * 1024) {
                 toast({
                     title: "Image trop lourde",
-                    description: "Veuillez choisir une image de moins de 10 Mo.",
+                    description: "Veuillez choisir une image de moins de 4 Mo.",
                     variant: "destructive",
                 });
                 return;
