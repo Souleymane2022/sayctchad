@@ -56,7 +56,7 @@ export default function ThunderbirdProgram() {
             projectIdea: "",
             discoverySource: "",
             consent: false,
-            cohort: "Tchad 2024",
+            cohort: "Cohorte 2 (En attente)",
             status: "pending",
         },
     });
@@ -106,7 +106,8 @@ export default function ThunderbirdProgram() {
                         Najafi <span className="text-accent underline decoration-2 underline-offset-8">100 Million Learners</span>
                     </h1>
                     <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
-                        Une initiative de la Thunderbird School of Global Management (ASU) pour démocratiser l'éducation de classe mondiale au Tchad.
+                        Une initiative mondiale de la Thunderbird School of Global Management (ASU). 
+                        Félicitations aux <strong>277 lauréats</strong> de la première cohorte !
                     </p>
                     <div className="flex flex-wrap justify-center gap-6 mb-12">
                         <Link href="/programmes/thunderbird/resultats">
@@ -206,13 +207,14 @@ export default function ThunderbirdProgram() {
                 <div className="container mx-auto px-4 max-w-4xl">
                     <Card className="border-t-8 border-t-accent shadow-2xl">
                         <CardHeader className="space-y-4 pb-10 text-center">
-                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mb-2">
-                                <CheckCircle2 className="w-10 h-10 text-accent" />
+                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2 animate-pulse">
+                                <GraduationCap className="w-10 h-10 text-accent" />
                             </div>
-                            <CardTitle className="text-4xl font-heading">Postuler à la Cohorte Tchad</CardTitle>
+                            <CardTitle className="text-4xl font-heading">Rejoindre la Cohorte 2</CardTitle>
                             <CardDescription className="text-lg">
-                                Ce programme est sélectif. Vos réponses doivent démontrer votre engagement
-                                et votre vision pour le développement du Tchad.
+                                Les inscriptions pour la première cohorte sont closes (277 sélectionnés). 
+                                <strong> Inscrivez-vous dès maintenant sur la liste d'attente </strong> 
+                                pour être prioritaire lors du lancement de la deuxième cohorte.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -545,11 +547,11 @@ export default function ThunderbirdProgram() {
                                         {mutation.isPending ? (
                                             <>
                                                 <Zap className="mr-2 h-6 w-6 animate-pulse" />
-                                                Traitement de votre dossier...
+                                                Envoi de votre pré-inscription...
                                             </>
                                         ) : (
                                             <>
-                                                Soumettre ma Candidature Officielle
+                                                S'inscrire sur la Liste d'Attente (Cohorte 2)
                                                 <Send className="ml-3 h-6 w-6" />
                                             </>
                                         )}
