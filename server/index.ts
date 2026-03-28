@@ -65,7 +65,10 @@ let isInitialized = false;
 
 async function initializeApp() {
   if (isInitialized) return;
-  await seedDatabase();
+  // Only seed in development or if explicitly requested
+  if (!process.env.VERCEL && process.env.NODE_ENV !== "production") {
+    await seedDatabase();
+  }
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {

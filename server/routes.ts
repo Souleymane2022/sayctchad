@@ -144,12 +144,13 @@ ${pages.map(p => `  <url>
       }
       const member = await storage.createMember(validatedData);
 
-      await sendNotificationEmail(
+      // Non-blocking email notifications
+      sendNotificationEmail(
         "Nouveau Membre SAYC - SAYC Tchad",
         `Nouvelle adhésion de ${member.firstName} ${member.nomSpecifiqueUnique} (${member.email}).\nVille: ${member.city}\nTéléphone: ${member.phone}\nID Membre: ${member.membershipId}\nMotivation: ${member.motivation || 'Non spécifiée'}`
       );
 
-      await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         member.email,
         "Confirmation de votre adhésion - SAYC Tchad",
         `Bonjour ${member.firstName},\n\nNous confirmons la bonne réception de votre demande d'adhésion au Smart Africa Youth Chapter Tchad (SAYC Tchad).\n\nVotre ID Membre est : ${member.membershipId}\n\nNotre équipe étudiera votre demande et vous contactera très prochainement.\n\nCordialement,\nL'équipe SAYC Tchad`
@@ -235,20 +236,19 @@ ${pages.map(p => `  <url>
         throw dbError; // RE-THROW to be caught by outer block
       });
 
-      console.log("Contact message stored in DB, sending emails...");
+      console.log("Contact message stored in DB, sending emails (async)...");
 
-      const notifyResult = await sendNotificationEmail(
+      // Non-blocking email notifications
+      sendNotificationEmail(
         "Nouveau Message de Contact - SAYC Tchad",
         `Nouveau message de ${message.firstName} ${message.nomSpecifiqueUnique} (${message.email}).\nSujet: ${message.subject}\nMessage: ${message.message}`
       );
 
-      const replyResult = await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         message.email,
         "Accusé de réception de votre message - SAYC Tchad",
         `Bonjour ${message.firstName},\n\nNous avons bien reçu votre message concernant "${message.subject}".\n\nNotre équipe vous répondra dans les plus brefs délais (généralement sous 48h ouvrables).\n\nCordialement,\nL'équipe SAYC Tchad`
       );
-
-      console.log("Email results:", { notifyResult, replyResult });
 
       res.status(201).json(message);
     } catch (error: any) {
@@ -476,8 +476,8 @@ ${pages.map(p => `  <url>
 
       const application = await storage.createThunderbirdApplication(validatedData);
 
-      // Notify Admins
-      await sendNotificationEmail(
+      // Non-blocking email notifications
+      sendNotificationEmail(
         "Nouvelle Candidature Thunderbird - SAYC Tchad",
         `Nouvelle candidature Thunderbird de ${application.fullName} (${application.email}).
 Sexe: ${application.gender}
@@ -493,8 +493,7 @@ Parcours souhaité: ${application.targetPathway}
 Motivation: ${application.motivation}`
       );
 
-      // Auto-reply to Candidate
-      await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         application.email,
         "Confirmation de réception de votre candidature Thunderbird - Smart Africa Youth Chapter Tchad",
         `Bonjour ${application.fullName},\n\nNous avons bien reçu votre candidature pour la cohorte Thunderbird (initiative Najafi 100 Million Learners).\n\nNotre équipe étudiera votre profil avec attention et vous contactera prochainement pour la suite du processus de sélection.\n\nCordialement,\n\nL'équipe SAYC Tchad`

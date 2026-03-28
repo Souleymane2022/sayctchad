@@ -65727,7 +65727,7 @@ ${pages.map((p2) => `  <url>
         });
       }
       const member = await storage.createMember(validatedData);
-      await sendNotificationEmail(
+      sendNotificationEmail(
         "Nouveau Membre SAYC - SAYC Tchad",
         `Nouvelle adh\xE9sion de ${member.firstName} ${member.nomSpecifiqueUnique} (${member.email}).
 Ville: ${member.city}
@@ -65735,7 +65735,7 @@ T\xE9l\xE9phone: ${member.phone}
 ID Membre: ${member.membershipId}
 Motivation: ${member.motivation || "Non sp\xE9cifi\xE9e"}`
       );
-      await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         member.email,
         "Confirmation de votre adh\xE9sion - SAYC Tchad",
         `Bonjour ${member.firstName},
@@ -65819,14 +65819,14 @@ L'\xE9quipe SAYC Tchad`
         console.error("DATABASE FAIL in createContactMessage:", dbError);
         throw dbError;
       });
-      console.log("Contact message stored in DB, sending emails...");
-      const notifyResult = await sendNotificationEmail(
+      console.log("Contact message stored in DB, sending emails (async)...");
+      sendNotificationEmail(
         "Nouveau Message de Contact - SAYC Tchad",
         `Nouveau message de ${message.firstName} ${message.nomSpecifiqueUnique} (${message.email}).
 Sujet: ${message.subject}
 Message: ${message.message}`
       );
-      const replyResult = await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         message.email,
         "Accus\xE9 de r\xE9ception de votre message - SAYC Tchad",
         `Bonjour ${message.firstName},
@@ -65838,7 +65838,6 @@ Notre \xE9quipe vous r\xE9pondra dans les plus brefs d\xE9lais (g\xE9n\xE9raleme
 Cordialement,
 L'\xE9quipe SAYC Tchad`
       );
-      console.log("Email results:", { notifyResult, replyResult });
       res.status(201).json(message);
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -66038,7 +66037,7 @@ L'\xE9quipe SAYC Tchad`
         return res.status(400).json({ error: "Une candidature avec cet email a d\xE9j\xE0 \xE9t\xE9 enregistr\xE9e." });
       }
       const application = await storage.createThunderbirdApplication(validatedData);
-      await sendNotificationEmail(
+      sendNotificationEmail(
         "Nouvelle Candidature Thunderbird - SAYC Tchad",
         `Nouvelle candidature Thunderbird de ${application.fullName} (${application.email}).
 Sexe: ${application.gender}
@@ -66053,7 +66052,7 @@ Parcours souhait\xE9: ${application.targetPathway}
 
 Motivation: ${application.motivation}`
       );
-      await sendAutoReplyEmail(
+      sendAutoReplyEmail(
         application.email,
         "Confirmation de r\xE9ception de votre candidature Thunderbird - Smart Africa Youth Chapter Tchad",
         `Bonjour ${application.fullName},
@@ -66676,175 +66675,6 @@ function setupServe(app2, distPath) {
 // server/seed.ts
 init_db2();
 init_schema2();
-init_drizzle_orm();
-var seedPartners = [
-  {
-    name: "Minist\xE8re des Postes et de l'\xC9conomie Num\xE9rique du Tchad",
-    logoUrl: "/images/partners/ministere-tic-tchad-logo.png",
-    websiteUrl: "https://www.gouvernement.td",
-    description: "Minist\xE8re en charge des TIC et de l'\xE9conomie num\xE9rique au Tchad. Partenaire institutionnel du SAYC Tchad pour la transformation num\xE9rique du pays.",
-    sortOrder: 1
-  },
-  {
-    name: "Thunderbird School - Arizona State University",
-    logoUrl: "/images/partners/thunderbird-logo.png",
-    websiteUrl: "https://thunderbird.asu.edu",
-    description: "N\xB01 mondial pour le commerce international. Partenaire du programme 100 millions d'apprenants.",
-    sortOrder: 2
-  },
-  {
-    name: "Transform Africa Summit",
-    logoUrl: "/images/partners/transform-africa-logo.png",
-    websiteUrl: "https://transformafricasummit.org",
-    description: "Sommet annuel rassemblant les leaders africains pour la transformation digitale du continent.",
-    sortOrder: 3
-  },
-  {
-    name: "Amazon Web Services (AWS)",
-    logoUrl: "/images/partners/aws-logo.png",
-    websiteUrl: "https://aws.amazon.com",
-    description: "Leader mondial du cloud computing. Partenaire de Smart Africa pour la formation des jeunes africains aux technologies cloud et \xE0 l'innovation num\xE9rique.",
-    sortOrder: 4
-  },
-  {
-    name: "Mastercard Foundation",
-    logoUrl: "/images/partners/mastercard-logo.jpg",
-    websiteUrl: "https://mastercardfdn.org",
-    description: "Fondation mondiale engag\xE9e pour l'inclusion financi\xE8re et l'autonomisation des jeunes africains. Partenaire strat\xE9gique de Smart Africa pour le d\xE9veloppement des comp\xE9tences num\xE9riques.",
-    sortOrder: 5
-  }
-];
-var seedAchievements = [
-  {
-    title: "Jeunes form\xE9s via SADA4Youth",
-    description: "Plus de 3000 jeunes form\xE9s \xE0 travers le programme SADA4Youth en Afrique.",
-    metricValue: "3000+",
-    metricLabel: "Jeunes form\xE9s"
-  },
-  {
-    title: "Formations SADA disponibles",
-    description: "Plus de 130 formations en ligne sur la plateforme SADA incluant des cours d'universit\xE9s internationales.",
-    metricValue: "130+",
-    metricLabel: "Formations disponibles"
-  },
-  {
-    title: "Pays membres Smart Africa",
-    description: "40 \xC9tats membres de l'Alliance Smart Africa repr\xE9sentant plus de 1,2 milliard de personnes.",
-    metricValue: "40",
-    metricLabel: "\xC9tats membres"
-  },
-  {
-    title: "Chapitres Jeunesse actifs",
-    description: "Le Tchad est le 7e chapitre jeunesse actif de Smart Africa, aux c\xF4t\xE9s de la Sierra Leone, Congo-Brazzaville, Gambie, Malawi, Gabon et Afrique du Sud.",
-    metricValue: "7",
-    metricLabel: "Chapitres Jeunesse"
-  }
-];
-var seedTrainings = [
-  {
-    title: "Programme Thunderbird 100 Millions d'Apprenants - Niveau Fondamental",
-    description: "Certificat en entrepreneuriat mondial et innovation. 19 modules couvrant le leadership, la planification strat\xE9gique, le marketing, la propri\xE9t\xE9 intellectuelle et plus. Bootcamp certifiant d\xE9livr\xE9 par Thunderbird/ASU. Gratuit et disponible en 40 langues.",
-    provider: "Thunderbird School / Arizona State University",
-    level: "Fondamental",
-    duration: "Auto-rythm\xE9",
-    link: "https://sada.smart.africa"
-  },
-  {
-    title: "Programme Thunderbird - Niveau Interm\xE9diaire",
-    description: "5 cours certifiants : Principes de gestion globale, Comptabilit\xE9 globale, Marketing mondial, Big Data dans l'\xE9conomie mondiale, Entrepreneuriat mondial. Certificat accr\xE9dit\xE9 de 15 cr\xE9dits ASU disponible.",
-    provider: "Thunderbird School / Arizona State University",
-    level: "Interm\xE9diaire",
-    duration: "Auto-rythm\xE9",
-    link: "https://sada.smart.africa"
-  },
-  {
-    title: "Programme Thunderbird - Niveau Avanc\xE9",
-    description: "5 cours avanc\xE9s : Leadership mondial, Entrepreneuriat durable, Comptabilit\xE9 mondiale, Marketing num\xE9rique, Analyse des donn\xE9es et transformation num\xE9rique. Certificat de 15 cr\xE9dits acad\xE9miques ASU.",
-    provider: "Thunderbird School / Arizona State University",
-    level: "Avanc\xE9",
-    duration: "Auto-rythm\xE9",
-    link: "https://sada.smart.africa"
-  },
-  {
-    title: "Plateforme SADA - Formations en ligne",
-    description: "Plus de 130 formations disponibles incluant des cours de classe mondiale des universit\xE9s internationales. \xC9valuations num\xE9riques, podcasts sur la transformation num\xE9rique et parcours de certification.",
-    provider: "SADA - Smart Africa Digital Academy",
-    level: "Tous niveaux",
-    duration: "Variable",
-    link: "https://sada.smart.africa"
-  },
-  {
-    title: "Formation Cloud AWS",
-    description: "Formation aux technologies cloud AWS d\xE9ploy\xE9e par Smart Africa. Plus de 200 jeunes form\xE9s au Congo-Brazzaville et au Ghana dans le cadre du programme SADA4Youth.",
-    provider: "Smart Africa / AWS",
-    level: "Interm\xE9diaire",
-    duration: "Variable",
-    link: "https://sada.smart.africa"
-  },
-  {
-    title: "Cybers\xE9curit\xE9 et Intelligence Artificielle",
-    description: "Initiative Smart Women and Girls : 40 femmes de 16 pays certifi\xE9es en cybers\xE9curit\xE9 et IA, formant \xE0 leur tour 500 jeunes femmes et filles. Centre d'innovation en cybers\xE9curit\xE9 avec 152 jeunes certifi\xE9s CyberOps.",
-    provider: "Smart Africa / \xC9SATIC",
-    level: "Avanc\xE9",
-    duration: "Variable",
-    link: "https://sada.smart.africa"
-  }
-];
-var seedOpportunities = [
-  {
-    title: "Recrutement d'un Consultant Individuel pour le D\xE9veloppement d'un Cadre de Mentorat Panafricain pour les Femmes et les Filles dans les TIC",
-    description: "Smart Africa recrute un consultant individuel pour concevoir un programme et un cadre de mentorat panafricain destin\xE9 aux femmes et aux filles dans le secteur des TIC. R\xE9f\xE9rence : 143/S.A/NORAD/RFP/01/2026. Date de publication : 23 janvier 2026.",
-    category: "Appel d'offres",
-    organization: "Smart Africa Secretariat",
-    deadline: "22 F\xE9vrier 2026",
-    location: "\xC0 distance (Anywhere)",
-    link: "https://smartafrica.org/job/recruitment-of-an-individual-consultant-for-the-development-of-a-pan-african-women-and-girls-in-ict-mentorship-framework-program-design/"
-  },
-  {
-    title: "Appel \xE0 Propositions (RFP) - \xC9valuation de l'Environnement R\xE9glementaire et Politique de l'Entrepreneuriat Num\xE9rique et Innovation pour huit pays africains",
-    description: "Smart Africa recherche un cabinet de conseil pour mener une \xE9valuation de l'environnement r\xE9glementaire et politique de l'entrepreneuriat num\xE9rique et de l'innovation, et d\xE9velopper des parcours de soutien adapt\xE9s pour huit pays africains. R\xE9f\xE9rence : 142/SA/RFP/01/2026. Date de publication : 7 janvier 2026.",
-    category: "Appel d'offres",
-    organization: "Smart Africa Secretariat",
-    deadline: "9 F\xE9vrier 2026",
-    location: "\xC0 distance (Anywhere)",
-    link: "https://smartafrica.org/job/request-for-proposal-rfp-for-the-recruitment-of-consultancy-firm-to-conduct-digital-entrepreneurship-and-innovation-regulatory-policy-environment-assessment-and-develop-tailored-support-pathwa/"
-  }
-];
-var seedNews = [
-  {
-    title: "Formation en Intelligence Artificielle pour 200 jeunes Tchadiens",
-    excerpt: "Un \xE9v\xE9nement majeur de formation en Intelligence Artificielle a \xE9t\xE9 organis\xE9 au Tchad, r\xE9unissant 200 jeunes Tchadiens pour les initier aux technologies de l'IA.",
-    content: "Un \xE9v\xE9nement de formation en Intelligence Artificielle a \xE9t\xE9 organis\xE9 au Tchad, r\xE9unissant 200 jeunes Tchadiens passionn\xE9s par les nouvelles technologies. Cet \xE9v\xE9nement s'inscrit dans le cadre des initiatives de Smart Africa et de ses partenaires pour le d\xE9veloppement des comp\xE9tences num\xE9riques en Afrique. La formation a couvert les fondamentaux de l'intelligence artificielle, ses applications pratiques et les opportunit\xE9s qu'elle offre aux jeunes africains. Plusieurs partenaires institutionnels et priv\xE9s ont soutenu cette initiative, notamment l'ENASTIC, le PATN, Airtel, la Chaire UNESCO, la Banque Mondiale et l'ADETIC.",
-    category: "Formation",
-    imageUrl: "/images/news-ia-formation-tchad.jpg",
-    publishedAt: /* @__PURE__ */ new Date("2026-01-15")
-  }
-];
-async function seedTable(tableName, table, data, nameField = "name") {
-  const existing = await db.select().from(table);
-  if (existing.length === 0) {
-    console.log(`Seeding ${tableName}...`);
-    await db.insert(table).values(data);
-    console.log(`${tableName} seeded: ${data.length} rows.`);
-  }
-}
-async function seedDatabase() {
-  try {
-    try {
-      await seedTable("partners", partners, seedPartners);
-      await seedTable("achievements", achievements, seedAchievements, "title");
-      await seedTable("trainings", trainings, seedTrainings, "title");
-      await seedTable("opportunities", opportunities, seedOpportunities, "title");
-      await seedTable("news_articles", newsArticles, seedNews, "title");
-      await db.update(partners).set({ isActive: false }).where(sql`${partners.name} IN ('Smart Africa Alliance', 'SADA - Smart Africa Digital Academy') AND ${partners.isActive} = true`);
-      console.log("Database seed check complete.");
-    } catch (e) {
-      console.error("Failed to seed tables:", e);
-    }
-  } catch (error) {
-    console.error("Error seeding database:", error);
-  }
-}
 
 // server/index.ts
 import { createServer } from "http";
@@ -66892,7 +66722,9 @@ app.use((req, res, next) => {
 var isInitialized = false;
 async function initializeApp() {
   if (isInitialized) return;
-  await seedDatabase();
+  if (false) {
+    await seedDatabase();
+  }
   await registerRoutes(httpServer, app);
   app.use((err, _req, res, next) => {
     const status = err.status || err.statusCode || 500;
