@@ -44103,7 +44103,7 @@ var init_db2 = __esm({
     if (!process.env.DATABASE_URL) {
       console.error("CRITICAL ERROR: DATABASE_URL is missing in this environment!");
     }
-    safeDbUrl = process.env.DATABASE_URL || "postgresql://dummy:dummy@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+    safeDbUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
     sql2 = cs(safeDbUrl);
     db = drizzle(sql2, { schema: schema_exports });
     pool = null;

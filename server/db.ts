@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) {
   console.error("CRITICAL ERROR: DATABASE_URL is missing in this environment!");
 }
 
-const safeDbUrl = process.env.DATABASE_URL || "postgresql://dummy:dummy@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+const safeDbUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
 
 // Low-level client for raw SQL or simple usage if needed
 export const sql = neon(safeDbUrl);
