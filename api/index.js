@@ -66601,6 +66601,10 @@ function serveStatic(app2) {
       }
     }
   }
+  if (!fs.existsSync(distPath)) {
+    console.error(`[Static] WARNING: Could not find build directory. Static serving will be disabled.`);
+    return;
+  }
   console.log(`[Static] Serving from: ${distPath}`);
   return setupServe(app2, distPath);
 }
@@ -66923,7 +66927,11 @@ if (false) {
   })();
 }
 async function server_default(req, res) {
-  await initializeApp();
+  try {
+    await initializeApp();
+  } catch (err) {
+    console.error("Critical: initializeApp failed:", err);
+  }
   return app(req, res);
 }
 

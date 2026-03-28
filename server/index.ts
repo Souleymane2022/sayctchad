@@ -107,6 +107,10 @@ if (!process.env.VERCEL) {
 }
 
 export default async function (req: Request, res: Response) {
-  await initializeApp();
+  try {
+    await initializeApp();
+  } catch (err) {
+    console.error("Critical: initializeApp failed:", err);
+  }
   return app(req, res);
 }

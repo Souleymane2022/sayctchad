@@ -27,6 +27,11 @@ export function serveStatic(app: Express) {
     }
   }
 
+  if (!fs.existsSync(distPath)) {
+    console.error(`[Static] WARNING: Could not find build directory. Static serving will be disabled.`);
+    return;
+  }
+
   console.log(`[Static] Serving from: ${distPath}`);
   return setupServe(app, distPath);
 }
