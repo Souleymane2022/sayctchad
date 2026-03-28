@@ -146,7 +146,7 @@ export default function ThunderbirdResults() {
             <img src="/favicon.png" alt="SAYC Logo" className="h-20 w-auto" />
             <div className="flex gap-8 flex-wrap items-center">
                <div className="flex flex-col items-center">
-                 <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Partenaire</span>
+                 <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Organisatrice</span>
                  <img src="/images/logos/logo-sada.jpg" alt="SADA Logo" className="h-14 w-auto object-contain" />
                </div>
                <div className="flex flex-col items-center">
