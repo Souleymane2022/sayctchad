@@ -34,8 +34,14 @@ export default function ThunderbirdResults() {
 
   const getStats = () => {
     if (!results) return [];
-    const male = results.filter(r => r.gender?.toLowerCase() === "masculin" || r.gender?.toLowerCase() === "male").length;
-    const female = results.filter(r => r.gender?.toLowerCase() === "féminin" || r.gender?.toLowerCase() === "female").length;
+    const male = results.filter(r => {
+      const g = r.gender?.toLowerCase() || "";
+      return g === "masculin" || g === "male" || g === "m" || g === "homme";
+    }).length;
+    const female = results.filter(r => {
+      const g = r.gender?.toLowerCase() || "";
+      return g === "féminin" || g === "female" || g === "f" || g === "femme";
+    }).length;
     return [
       { name: "Hommes", value: male, color: "#1E3A5F" },
       { name: "Femmes", value: female, color: "#D4AF37" },
@@ -57,6 +63,7 @@ export default function ThunderbirdResults() {
       <SEOHead 
         title="Résultats Bourse Thunderbird | 100 Million Learners" 
         description="Liste officielle des 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners."
+        path="/programmes/thunderbird/resultats"
       />
 
       <div className="max-w-5xl mx-auto">
