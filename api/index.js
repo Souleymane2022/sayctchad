@@ -66535,6 +66535,32 @@ Email: ${candidate.email}`
       res.status(500).json({ error: error.message });
     }
   });
+  app2.get("/api/thunderbird/results", async (req, res) => {
+    try {
+      const results = await storage.getApprovedThunderbirdApplications();
+      res.json(results);
+    } catch (e) {
+      console.error("Error fetching Thunderbird results:", e);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.get("/api/thunderbird/applications", requireAdmin, async (_req, res) => {
+    try {
+      res.json(await storage.getThunderbirdApplications());
+    } catch (e) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.patch("/api/thunderbird/applications/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      const updated = await storage.updateThunderbirdApplicationStatus(req.params.id, status);
+      if (!updated) return res.status(404).send("Non trouv\xE9");
+      res.json(updated);
+    } catch (e) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
   return httpServer2;
 }
 
@@ -66597,6 +66623,9 @@ function setupServe(app2, distPath) {
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
+      } else if (reqPath.includes("/resultats")) {
+        title = "Liste Officielle des 50 Laur\xE9ats | Bourse Thunderbird SAYC Tchad";
+        description = "D\xE9couvrez les 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners.";
       }
       if (imageUrl && !imageUrl.startsWith("http")) {
         imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;

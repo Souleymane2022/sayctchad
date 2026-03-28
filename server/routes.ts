@@ -963,5 +963,35 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // Thunderbird API
+  app.get("/api/thunderbird/results", async (req, res) => {
+    try {
+      const results = await storage.getApprovedThunderbirdApplications();
+      res.json(results);
+    } catch (e) {
+      console.error("Error fetching Thunderbird results:", e);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.get("/api/thunderbird/applications", requireAdmin, async (_req, res) => {
+    try {
+      res.json(await storage.getThunderbirdApplications());
+    } catch (e) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.patch("/api/thunderbird/applications/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      const updated = await storage.updateThunderbirdApplicationStatus(req.params.id, status);
+      if (!updated) return res.status(404).send("Non trouvé");
+      res.json(updated);
+    } catch (e) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   return httpServer;
 }

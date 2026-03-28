@@ -71,6 +71,9 @@ function setupServe(app: Express, distPath: string) {
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
+      } else if (reqPath.includes("/resultats")) {
+        title = "Liste Officielle des 50 Lauréats | Bourse Thunderbird SAYC Tchad";
+        description = "Découvrez les 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners.";
       }
 
       // Ensure imageUrl is absolute
