@@ -66561,6 +66561,15 @@ Email: ${candidate.email}`
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
+  app2.get("/api/debug/thunderbird-stats", async (_req, res) => {
+    try {
+      const all = await storage.getThunderbirdApplications();
+      const approved = all.filter((a2) => a2.status === "approved");
+      res.json({ total: all.length, approved: approved.length, statuses: Array.from(new Set(all.map((a2) => a2.status))) });
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  });
   return httpServer2;
 }
 

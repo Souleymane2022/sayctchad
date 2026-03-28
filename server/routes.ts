@@ -993,5 +993,15 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  app.get("/api/debug/thunderbird-stats", async (_req, res) => {
+    try {
+      const all = await storage.getThunderbirdApplications();
+      const approved = all.filter(a => a.status === "approved");
+      res.json({ total: all.length, approved: approved.length, statuses: Array.from(new Set(all.map(a => a.status))) });
+    } catch (e: any) {
+      res.status(500).json({ error: e.message });
+    }
+  });
+
   return httpServer;
 }
