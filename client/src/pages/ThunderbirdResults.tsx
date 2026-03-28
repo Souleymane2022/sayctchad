@@ -147,15 +147,15 @@ export default function ThunderbirdResults() {
             <div className="flex gap-8 flex-wrap items-center">
                <div className="flex flex-col items-center">
                  <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Partenaire</span>
-                 <div className="h-12 flex items-center justify-center font-black text-2xl text-[#1E3A5F]">SADA</div>
-               </div>
-               <div className="flex flex-col items-center">
-                 <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Institution</span>
-                 <div className="h-12 flex items-center justify-center font-black text-2xl text-[#8C1D40]">THUNDERBIRD / ASU</div>
+                 <img src="/images/logos/logo-sada.jpg" alt="SADA Logo" className="h-14 w-auto object-contain" />
                </div>
                <div className="flex flex-col items-center">
                  <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Initiative</span>
-                 <div className="h-12 flex items-center justify-center font-black text-2xl text-[#FF9900]">SMART AFRICA</div>
+                 <img src="/images/logos/logo-thunderbird-asu.jpg" alt="Thunderbird ASU Logo" className="h-14 w-auto object-contain" />
+               </div>
+               <div className="flex flex-col items-center">
+                 <span className="text-[10px] text-slate-400 font-bold tracking-tighter uppercase mb-1">Smart Africa</span>
+                 <img src="/images/logos/logo-smartafrica.png" alt="Smart Africa Logo" className="h-14 w-auto object-contain" />
                </div>
             </div>
           </div>
