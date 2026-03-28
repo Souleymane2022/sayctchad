@@ -242,7 +242,7 @@ export default function Opportunities() {
       {!isLoading && opportunities.length > 0 && (
         <section className="py-8 bg-muted/30 border-b" data-testid="section-opportunities-stats">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="grid grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8">
               {stats.map((stat) => {
                 const StatIcon = stat.icon;
                 return (
@@ -262,7 +262,7 @@ export default function Opportunities() {
         </section>
       )}
 
-      <section className="py-6 border-b sticky top-16 z-[999] backdrop-blur-sm bg-background/95">
+      <section className="py-6 border-b sticky top-16 z-40 backdrop-blur-sm bg-background/95">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-wrap items-center gap-2">
             <Filter className="w-4 h-4 text-muted-foreground mr-1" />

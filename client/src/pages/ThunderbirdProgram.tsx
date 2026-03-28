@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { GraduationCap, Send, CheckCircle2, Info, Globe, ShieldCheck, Zap, ExternalLink } from "lucide-react";
+import { GraduationCap, Send, CheckCircle2, Info, Globe, ShieldCheck, Zap, ExternalLink, Award } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ThunderbirdProgram() {
