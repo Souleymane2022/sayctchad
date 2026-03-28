@@ -81,7 +81,7 @@ async function initializeApp() {
     return res.status(status).json({ message });
   });
 
-  if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
+  if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else if (!process.env.VERCEL) {
     const { setupVite } = await import("./vite");

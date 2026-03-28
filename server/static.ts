@@ -4,16 +4,42 @@ import path from "path";
 import { storage } from "./storage";
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(__dirname, "public");
+  // Try to find dist/public (standard build location)
+  let distPath = path.resolve(process.cwd(), "dist", "public");
+  
   if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to build the client first`,
-    );
+    // Fallback for Replit/local structure where dist/public might be elsewhere
+    distPath = path.resolve(__dirname, "public");
   }
+
+  if (!fs.existsSync(distPath)) {
+    // If still not found, search in common locations
+    const possiblePaths = [
+      path.resolve(process.cwd(), "public"),
+      path.resolve(__dirname, "..", "public"),
+      path.resolve(__dirname, "..", "client", "dist")
+    ];
+    for (const p of possiblePaths) {
+      if (fs.existsSync(p) && fs.existsSync(path.join(p, "index.html"))) {
+        distPath = p;
+        break;
+      }
+    }
+  }
+
+  console.log(`[Static] Serving from: ${distPath}`);
+  return setupServe(app, distPath);
+}
+
+function setupServe(app: Express, distPath: string) {
+  const indexPath = path.resolve(distPath, "index.html");
 
   // Helper for dynamic SEO injection
   const serveIndexWithSEO = async (req: any, res: any) => {
-    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) {
+      return res.status(404).send("Index file not found");
+    }
+
     let html = fs.readFileSync(indexPath, "utf8");
 
     try {
@@ -21,24 +47,24 @@ export function serveStatic(app: Express) {
       let description = "7ème chapitre jeunesse de Smart Africa au Tchad.";
       let imageUrl = "https://sayctchad.org/images/og-image.png";
 
-      const { path: reqPath, params } = req;
-      const id = params.id;
+      const reqPath = req.path;
+      const id = req.params.id;
 
-      if (reqPath.startsWith("/opportunites/")) {
+      if (reqPath.includes("/opportunites/")) {
         const item = await storage.getOpportunityById(id);
         if (item) {
           title = `${item.title} | Opportunité SAYC Tchad`;
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
-      } else if (reqPath.startsWith("/formations/")) {
+      } else if (reqPath.includes("/formations/")) {
         const item = await storage.getTrainingById(id);
         if (item) {
           title = `${item.title} | Formation SAYC Tchad`;
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
-      } else if (reqPath.startsWith("/evenements/")) {
+      } else if (reqPath.includes("/evenements/")) {
         const item = await storage.getEventById(id);
         if (item) {
           title = `${item.title} | Événement SAYC Tchad`;
@@ -47,28 +73,19 @@ export function serveStatic(app: Express) {
         }
       }
 
-      // Replace Title
-      html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
+      // Ensure imageUrl is absolute
+      if (imageUrl && !imageUrl.startsWith("http")) {
+        imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+      }
 
-      // Replace Description
+      // Meta Tag Replacement Logic
+      html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
       html = html.replace(/<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i, `<meta name="description" content="${description}" \/>`);
-      
-      // Replace OG Title
       html = html.replace(/<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${title}" \/>`);
-      
-      // Replace OG Description
       html = html.replace(/<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${description}" \/>`);
-      
-      // Replace OG Image
       html = html.replace(/<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${imageUrl}" \/>`);
-      
-      // Replace Twitter Title
       html = html.replace(/<meta\s+name="twitter:title"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${title}" \/>`);
-      
-      // Replace Twitter Description
       html = html.replace(/<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${description}" \/>`);
-      
-      // Replace Twitter Image
       html = html.replace(/<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${imageUrl}" \/>`);
 
     } catch (error) {
@@ -79,15 +96,17 @@ export function serveStatic(app: Express) {
     res.send(html);
   };
 
-  // Specific routes for SEO
+  // SEO Routes
   app.get("/opportunites/:id", serveIndexWithSEO);
   app.get("/formations/:id", serveIndexWithSEO);
   app.get("/evenements/:id", serveIndexWithSEO);
 
-  app.use(express.static(distPath));
+  // Serve other static files
+  app.use(express.static(distPath, { index: false }));
 
-  // fall through to index.html if the file doesn't exist
-  app.use("/{*path}", (_req, res) => {
-    res.sendFile(path.resolve(distPath, "index.html"));
+  // Fallback for all other SPA routes
+  app.get("*", (req, res) => {
+    if (req.path.startsWith("/api")) return; // Don't interfere with API
+    res.sendFile(indexPath);
   });
 }

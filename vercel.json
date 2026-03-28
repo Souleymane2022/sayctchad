@@ -7,6 +7,18 @@
             "destination": "/api"
         },
         {
+            "source": "/opportunites/(.*)",
+            "destination": "/api"
+        },
+        {
+            "source": "/formations/(.*)",
+            "destination": "/api"
+        },
+        {
+            "source": "/evenements/(.*)",
+            "destination": "/api"
+        },
+        {
             "source": "/((?!api/|locales/).*)",
             "destination": "/index.html"
         }
