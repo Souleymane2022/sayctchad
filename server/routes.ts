@@ -241,6 +241,31 @@ ${pages.map(p => `  <url>
     }
   });
 
+  app.get("/api/members/gallery", async (req, res) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 24;
+      const search = req.query.search as string || "";
+
+      const result = await storage.getGalleryMembers({ page, limit, search });
+      res.json(result);
+    } catch (error) {
+      console.error("Error fetching gallery members:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération de la galerie" });
+    }
+  });
+
+  app.get("/api/members/stats", async (_req, res) => {
+    try {
+      const allMembers = await storage.getAllMembers();
+      const withPhoto = allMembers.filter(m => m.photoUrl && m.photoUrl.trim() !== "").length;
+      res.json({ total: allMembers.length, withPhoto });
+    } catch (error) {
+      console.error("Error fetching member stats:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des statistiques" });
+    }
+  });
+
   app.post("/api/contact", apiLimiter, async (req, res) => {
     try {
       console.log("Processing contact message from:", req.body.email);

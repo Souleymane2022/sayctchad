@@ -19,7 +19,7 @@ import {
   thunderbirdApplications, electionCandidates, electionVotes
 } from "../shared/schema";
 import { db, sql as neonSql } from "./db";
-import { eq, desc, asc, sql, or, isNull } from "drizzle-orm";
+import { eq, desc, asc, sql, or, isNull, isNotNull, and } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -100,6 +100,7 @@ export interface IStorage {
   getVotesForRole(role: string): Promise<ElectionVote[]>;
   getVotedRoles(voterId: string): Promise<string[]>;
   generateMissingMembershipIds(): Promise<number>;
+  getGalleryMembers(options: { page: number, limit: number, search?: string }): Promise<{ members: Member[], total: number, totalPages: number }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -145,6 +146,53 @@ export class DatabaseStorage implements IStorage {
 
   async getAllMembers(): Promise<Member[]> {
     return db.select().from(members).orderBy(desc(members.createdAt));
+  }
+
+  async getGalleryMembers(options: { page: number, limit: number, search?: string }): Promise<{ members: Member[], total: number, totalPages: number }> {
+    const { page, limit, search } = options;
+    const offset = (page - 1) * limit;
+
+    // Base filters: must have a photo
+    let filters = and(
+      isNotNull(members.photoUrl),
+      sql`${members.photoUrl} != ''`
+    );
+
+    // Add search filter if search term provided
+    if (search && search.trim() !== "") {
+      const searchTerm = `%${search.trim().toLowerCase()}%`;
+      filters = and(
+        filters,
+        or(
+          sql`lower(${members.firstName}) ilike ${searchTerm}`,
+          sql`lower(${members.nomSpecifiqueUnique}) ilike ${searchTerm}`,
+          sql`lower(${members.membershipId}) ilike ${searchTerm}`,
+          sql`lower(${members.city}) ilike ${searchTerm}`
+        )
+      );
+    }
+
+    // Get total count for this filter
+    const countResult = await db.select({ count: sql<number>`count(*)` })
+      .from(members)
+      .where(filters);
+    
+    const total = Number(countResult[0]?.count || 0);
+    const totalPages = Math.ceil(total / limit);
+
+    // Get paginated members
+    const galleryMembers = await db.select()
+      .from(members)
+      .where(filters)
+      .limit(limit)
+      .offset(offset)
+      .orderBy(desc(members.createdAt));
+
+    return {
+      members: galleryMembers,
+      total,
+      totalPages
+    };
   }
 
   async updateMemberPhoto(membershipId: string, email: string, photoUrl: string): Promise<Member | undefined> {

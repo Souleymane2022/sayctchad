@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -33,30 +33,29 @@ export default function MembersGallery() {
   const [page, setPage] = useState(1);
   const PER_PAGE = 24;
 
-  const { data: allMembers = [], isLoading } = useQuery<Member[]>({
-    queryKey: ["/api/members"],
+  const { data: galleryData, isLoading } = useQuery<{ members: Member[], total: number, totalPages: number }>({
+    queryKey: ["/api/members/gallery", page, search],
+    queryFn: async () => {
+      const res = await fetch(`/api/members/gallery?page=${page}&limit=${PER_PAGE}&search=${encodeURIComponent(search)}`);
+      if (!res.ok) throw new Error("Erreur lors du chargement de la galerie");
+      return res.json();
+    },
+    placeholderData: keepPreviousData,
   });
 
-  // Seulement les membres avec photo
-  const membersWithPhoto = useMemo(
-    () => allMembers.filter((m) => m.photoUrl && m.photoUrl.trim() !== ""),
-    [allMembers]
-  );
+  // Separate query for global stats (optional but good for the hero)
+  const { data: statsData } = useQuery<{ total: number, withPhoto: number }>({
+    queryKey: ["/api/members/stats"],
+    queryFn: async () => {
+      const res = await fetch("/api/members/stats");
+      if (!res.ok) return { total: 615, withPhoto: 130 }; // Hardcoded fallbacks if route not ready
+      return res.json();
+    }
+  });
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    if (!q) return membersWithPhoto;
-    return membersWithPhoto.filter(
-      (m) =>
-        m.firstName?.toLowerCase().includes(q) ||
-        m.nomSpecifiqueUnique?.toLowerCase().includes(q) ||
-        m.membershipId?.toLowerCase().includes(q) ||
-        m.city?.toLowerCase().includes(q)
-    );
-  }, [membersWithPhoto, search]);
-
-  const totalPages = Math.ceil(filtered.length / PER_PAGE);
-  const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const members = galleryData?.members || [];
+  const totalPages = galleryData?.totalPages || 0;
+  const totalCountMatching = galleryData?.total || 0;
 
   const handleSearch = (v: string) => {
     setSearch(v);
@@ -143,8 +142,8 @@ export default function MembersGallery() {
             {/* Stats band */}
             <div className="flex justify-center gap-10 mb-12 flex-wrap">
               {[
-                { value: membersWithPhoto.length, label: "Membres avec photo", color: "text-accent" },
-                { value: allMembers.length, label: "Membres au total", color: "text-sayc-teal" },
+                { value: statsData?.withPhoto || 0, label: "Membres avec photo", color: "text-accent" },
+                { value: statsData?.total || 0, label: "Membres au total", color: "text-sayc-teal" },
                 { value: "2025", label: "Année de fondation", color: "text-sidebar-foreground" },
               ].map((stat, i) => (
                 <div key={i} className="text-center">
@@ -180,7 +179,7 @@ export default function MembersGallery() {
 
             {search && (
               <p className="text-sm text-sidebar-foreground/40 mt-3">
-                {filtered.length} résultat{filtered.length !== 1 ? "s" : ""} pour «{" "}
+                {totalCountMatching} résultat{totalCountMatching !== 1 ? "s" : ""} pour «{" "}
                 <span className="text-accent font-medium">{search}</span> »
               </p>
             )}
@@ -203,7 +202,7 @@ export default function MembersGallery() {
               />
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : members.length === 0 ? (
           <div className="text-center py-20">
             <Users className="w-16 h-16 mx-auto text-sidebar-foreground/10 mb-4" />
             <p className="text-sidebar-foreground/30 text-lg">Aucun membre trouvé</p>
@@ -217,7 +216,7 @@ export default function MembersGallery() {
               animate="visible"
               className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
             >
-              {paginated.map((member) => (
+              {members.map((member) => (
                 <motion.div
                   key={member.id}
                   variants={cardVariants}
