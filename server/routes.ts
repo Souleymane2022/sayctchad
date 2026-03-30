@@ -104,6 +104,21 @@ export async function registerRoutes(
     })
   );
 
+  // ─── Email Diagnostic Route (Admin Only) ───────────────────────────────────
+  app.get("/api/admin/test-email", requireAdmin, async (_req, res) => {
+    try {
+      const result = await debugSmtpConnection();
+      res.json({
+        timestamp: new Date().toISOString(),
+        smtpUser: process.env.SMTP_USER || "NOT SET",
+        smtpPassPresent: !!process.env.SMTP_PASS,
+        result
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.get("/sitemap.xml", async (_req, res) => {
     const baseUrl = "https://sayctchad.org";
     const pages = [
