@@ -48,9 +48,12 @@ export default function Opportunities() {
   const detailId = params?.id;
   const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
 
-  // Scroll to top on mount or when detailId changes
+  // Scroll to top on mount or when detailId changes (with timeout for mobile Safari/Chrome behavior)
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 50);
+    return () => clearTimeout(timer);
   }, [detailId]);
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
@@ -103,7 +106,7 @@ export default function Opportunities() {
     const IconComponent = config.icon;
 
     return (
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
         <SEOHead
           title={seoData.title}
           description={seoData.description}
@@ -211,7 +214,7 @@ export default function Opportunities() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col w-full overflow-x-hidden">
       <SEOHead
         title={seoData.title}
         description={seoData.description}
