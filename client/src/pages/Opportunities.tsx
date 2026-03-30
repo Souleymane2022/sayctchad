@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { Link, useRoute } from "wouter";
 import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,11 @@ export default function Opportunities() {
   const [match, params] = useRoute("/opportunites/:id");
   const detailId = params?.id;
   const [selectedCategory, setSelectedCategory] = useState<string>("Tous");
+
+  // Scroll to top on mount or when detailId changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [detailId]);
 
   const { data: opportunities = [], isLoading } = useQuery<Opportunity[]>({
     queryKey: ["/api/opportunities"],
@@ -106,7 +111,7 @@ export default function Opportunities() {
           path={seoData.path}
           jsonLd={webPageJsonLd}
         />
-        <section className="pt-32 pb-20 bg-muted/30">
+        <section className="pt-24 md:pt-32 pb-12 md:pb-20 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
             <Link href="/opportunites">
               <Button variant="ghost" className="mb-8 hover:bg-transparent p-0 flex items-center gap-2">
@@ -213,7 +218,7 @@ export default function Opportunities() {
         path={seoData.path}
         jsonLd={webPageJsonLd}
       />
-      <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+      <section className="relative py-12 md:py-28 bg-[#1E3A5F] text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 border-2 border-accent/30 rounded-full" />
           <div className="absolute top-20 right-20 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
