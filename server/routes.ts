@@ -689,7 +689,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       const validatedData = insertCandidateSchema.parse(req.body);
       const candidate = await storage.createCandidate(validatedData);
 
-      await sendNotificationEmail(
+      sendNotificationEmail(
         "Nouvelle Candidature Election - SAYC Tchad",
         `Nouvelle candidature de ${candidate.firstName} ${candidate.nomSpecifiqueUnique} pour le poste de ${candidate.role}.\nEmail: ${candidate.email}`
       );
