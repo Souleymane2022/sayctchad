@@ -24,6 +24,7 @@ import ElectionsOverview from "@/pages/ElectionsOverview";
 import CandidateApplication from "@/pages/CandidateApplication";
 import VotingInterface from "@/pages/VotingInterface";
 import NotFound from "@/pages/not-found";
+import MembersGallery from "@/pages/MembersGallery";
 
 function Router() {
   return (
@@ -48,6 +49,7 @@ function Router() {
       <Route path="/admin" component={Admin} />
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route path="/verify/:membershipId" component={VerifyMember} />
+      <Route path="/sayc-membres-galerie" component={MembersGallery} />
       <Route component={NotFound} />
     </Switch>
   );
