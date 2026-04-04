@@ -21,27 +21,18 @@ import SEOHead from "@/components/SEOHead";
 const electionPhases = [
     {
         title: "Appel à Candidature",
-        status: "En cours",
-        date: "Actuellement",
-        description: "Lancement officiel et réception des dossiers des candidats sur la plateforme.",
-        icon: UserPlus,
-        color: "text-sayc-teal",
-        bgColor: "bg-sayc-teal/10"
-    },
-    {
-        title: "Lancement Officiel",
-        status: "À venir",
-        date: "Prochainement",
-        description: "Ouverture solennelle du portail de candidature pour tous les membres.",
-        icon: Target,
-        color: "text-sayc-teal",
-        bgColor: "bg-sayc-teal/10"
+        status: "Terminé",
+        date: "Clôturé",
+        description: "La période de réception des dossiers est désormais terminée. Merci à tous les candidats.",
+        icon: CheckCircle2,
+        color: "text-gray-500",
+        bgColor: "bg-gray-100"
     },
     {
         title: "Filtrage & Validation",
-        status: "À venir",
-        date: "Après l'appel",
-        description: "Vérification des critères d'éligibilité et sélection des finalistes par un comité technique.",
+        status: "En cours",
+        date: "Actuellement",
+        description: "Vérification des critères d'éligibilité et sélection des finalistes par le comité technique.",
         icon: ShieldCheck,
         color: "text-amber-600",
         bgColor: "bg-amber-50"
@@ -113,11 +104,9 @@ export default function ElectionsOverview() {
                         Un moment historique pour la jeunesse technologique tchadienne.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
-                        <Link href="/elections/postuler">
-                            <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-white px-8 h-14 rounded-xl text-lg font-bold shadow-lg shadow-sayc-teal/20">
-                                Postuler maintenant
-                            </Button>
-                        </Link>
+                        <Button size="lg" disabled className="bg-gray-400 text-white px-8 h-14 rounded-xl text-lg font-bold cursor-not-allowed">
+                            Candidatures Closes
+                        </Button>
                         <Link href="/elections/voter">
                             <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm opacity-60 cursor-not-allowed">
                                 <Vote className="mr-2 h-5 w-5" /> Voter (Bientôt)
@@ -260,11 +249,9 @@ export default function ElectionsOverview() {
                             Le comité national est le moteur du changement. Soumettez votre candidature aujourd'hui et faites partie de l'histoire.
                         </p>
                         <div className="pt-6">
-                            <Link href="/elections/postuler">
-                                <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-blue-50 px-10 h-14 rounded-xl text-lg font-bold group">
-                                    Candidater <ChevronRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </Button>
-                            </Link>
+                            <Button size="lg" disabled className="bg-gray-300 text-gray-600 px-10 h-14 rounded-xl text-lg font-bold cursor-not-allowed">
+                                Inscriptions closes
+                            </Button>
                         </div>
                     </div>
                     {/* Abstract Shapes */}

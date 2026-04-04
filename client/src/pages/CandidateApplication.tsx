@@ -169,282 +169,53 @@ export default function CandidateApplication() {
     }
 
     return (
-        <div className="container mx-auto px-4 py-12">
+        <div className="container mx-auto px-4 py-20 flex flex-col items-center">
             <SEOHead
-                title="Déposer ma Candidature - SAYC Tchad"
-                description="Postulez pour devenir membre du Comité National du SAYC Tchad."
+                title="Candidatures Closes - SAYC Tchad"
+                description="La période de candidature pour le Comité National du SAYC Tchad est terminée."
                 path="/elections/postuler"
             />
-            <div className="max-w-3xl mx-auto space-y-8">
-                <div className="space-y-2 text-center">
-                    <h1 className="text-3xl font-heading font-bold text-[#1e3a8a]">Formulaire de Candidature</h1>
-                    <p className="text-muted-foreground">Rejoignez le leadership numérique du Tchad.</p>
+            <div className="max-w-2xl w-full text-center space-y-8 animate-in fade-in slide-in-from-bottom-5">
+                <div className="w-24 h-24 bg-amber-100 text-amber-600 rounded-3xl flex items-center justify-center mx-auto rotate-3 shadow-lg">
+                    <AlertCircle className="w-14 h-14" />
+                </div>
+                
+                <div className="space-y-4">
+                    <h1 className="text-4xl md:text-5xl font-heading font-black text-[#1e3a8a]">
+                        Candidatures Closes
+                    </h1>
+                    <div className="h-1.5 w-24 bg-[#1e3a8a] mx-auto rounded-full" />
                 </div>
 
-                <AlertCircle className="w-full h-auto p-4 bg-amber-50 text-amber-800 rounded-2xl border border-amber-100 flex gap-3 items-start shrink-0">
-                    <div className="text-xs">
-                        <strong>Note importante :</strong> Comme nous n'hébergeons pas directement les fichiers lourds, veuillez héberger vos documents (CV, Lettre, Vidéo) sur **Google Drive, Dropbox ou YouTube** et fournir les liens de partage publics ci-dessous.
+                <div className="bg-white border border-slate-200 p-8 rounded-3xl shadow-xl space-y-6">
+                    <p className="text-lg text-slate-600 leading-relaxed">
+                        Conformément au calendrier électoral, la période de réception des dossiers de candidature s'est achevée hier soir à minuit.
+                    </p>
+                    <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-blue-800 text-sm font-medium">
+                        🚀 La phase actuelle est : <strong>Filtrage & Validation des dossiers</strong> par le comité technique.
                     </div>
-                </AlertCircle>
-
-                <Card className="border-accent/10 shadow-xl">
-                    <CardHeader className="bg-slate-50 border-b pb-6">
-                        <CardTitle className="text-xl">Votre Dossier Numérique</CardTitle>
-                        <CardDescription>Tous les champs sont obligatoires pour un dossier complet.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-8">
-                        <Form {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                
-                                <div className="flex flex-col md:flex-row gap-8 items-center pb-6 border-b border-dashed">
-                                    <div className="relative group">
-                                        <div className="w-32 h-32 rounded-3xl border-2 border-accent/20 overflow-hidden bg-white flex items-center justify-center text-accent/30 shadow-inner">
-                                            {photoPreview ? (
-                                                <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
-                                            ) : (
-                                                <Camera className="w-12 h-12" />
-                                            )}
-                                        </div>
-                                        <Label
-                                            htmlFor="photo-upload"
-                                            className="absolute -bottom-2 -right-2 w-10 h-10 bg-accent text-white rounded-xl flex items-center justify-center cursor-pointer shadow-lg hover:rotate-12 transition-transform"
-                                        >
-                                            <Upload className="w-5 h-5" />
-                                        </Label>
-                                        <Input
-                                            id="photo-upload"
-                                            type="file"
-                                            accept="image/*"
-                                            className="hidden"
-                                            onChange={handlePhotoChange}
-                                        />
-                                    </div>
-                                    <div className="space-y-1 text-center md:text-left">
-                                        <h4 className="font-bold text-[#1e3a8a]">Photo Officielle</h4>
-                                        <p className="text-xs text-muted-foreground max-w-xs">
-                                            Cette photo sera affichée sur le bulletin de vote numérique. Utilisez une photo professionnelle.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <FormField
-                                        control={form.control}
-                                        name="firstName"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Prénom</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Votre prénom" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="nomSpecifiqueUnique"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Nom de famille</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Votre nom" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Email Professionnel</FormLabel>
-                                                <FormControl>
-                                                    <Input type="email" placeholder="candidat@email.com" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="role"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Poste convoité</FormLabel>
-                                                <Select onValueChange={field.onChange} value={field.value}>
-                                                    <FormControl>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Choisir un poste" />
-                                                        </SelectTrigger>
-                                                    </FormControl>
-                                                    <SelectContent>
-                                                        {postRoles.map((r) => <SelectItem key={r.value} value={r.value}>{r.label}</SelectItem>)}
-                                                    </SelectContent>
-                                                </Select>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <FormField
-                                        control={form.control}
-                                        name="cvUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lien vers votre CV (PDF) *
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="https://drive.google.com/..." {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="motivationUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Lettre de motivation (Lien) *
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="https://link-to-motivation.doc" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="videoUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Vidéo de présentation (YouTube/Drive) *
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="https://youtube.com/..." {...field} value={field.value || ""} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="programUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <LinkIcon className="w-4 h-4 text-accent" /> Programme d'action (Lien) *
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Votre vision en PDF" {...field} value={field.value || ""} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="grid md:grid-cols-3 gap-6 pt-4 border-t border-dashed">
-                                    <FormField
-                                        control={form.control}
-                                        name="linkedInUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <Linkedin className="w-4 h-4 text-[#0a66c2]" /> LinkedIn
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="facebookUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <Facebook className="w-4 h-4 text-[#1877f2]" /> Facebook
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="twitterUrl"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel className="flex items-center gap-2">
-                                                    <Twitter className="w-4 h-4 text-[#1da1f2]" /> X (Twitter)
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Lien profil" {...field} value={field.value || ""} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                </div>
-
-                                <div className="pt-6 border-t font-medium text-sm text-muted-foreground italic">
-                                    En soumettant ce formulaire, je certifie être membre du SAYC Tchad et accepte que mes informations soient publiées si ma candidature est retenue.
-                                </div>
-
-                                <Button
-                                    type="submit"
-                                    className="w-full h-14 text-lg font-bold bg-[#1e3a8a] hover:bg-[#1e40af] rounded-2xl shadow-lg shadow-blue-900/10"
-                                    disabled={applicationMutation.isPending}
-                                >
-                                    {applicationMutation.isPending ? (
-                                        <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Soumission...</>
-                                    ) : (
-                                        "Soumettre ma Candidature"
-                                    )}
-                                </Button>
-                            </form>
-                        </Form>
-                    </CardContent>
-                </Card>
-
-                {/* Bloc aide / contact */}
-                <div className="mt-8 rounded-2xl border border-blue-200 bg-blue-50 p-6 flex flex-col sm:flex-row items-center gap-4 shadow-sm">
-                    <div className="flex-1 text-center sm:text-left">
-                        <p className="font-semibold text-[#1e3a8a] text-base">
-                            🆘 Vous avez un souci pour postuler ?
-                        </p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                            Notre équipe est disponible pour vous aider à compléter votre dossier ou résoudre un problème technique.
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
-                        <a
-                            href="mailto:sayctchad@gmail.com?subject=Aide%20Candidature%20Élections"
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-[#1e3a8a] text-white text-sm font-semibold hover:bg-[#1e40af] transition-colors"
-                        >
-                            ✉️ Écrire par email
-                        </a>
-                        <Link
-                            href="/contact"
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-[#1e3a8a] text-[#1e3a8a] text-sm font-semibold hover:bg-blue-100 transition-colors"
-                        >
-                            📬 Formulaire de contact
-                        </Link>
-                    </div>
+                    <p className="text-sm text-slate-400 italic">
+                        Merci aux nombreux candidats pour leur engagement envers le futur numérique du Tchad.
+                    </p>
                 </div>
+
+                <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                    <Link href="/elections">
+                        <Button variant="outline" size="lg" className="h-14 px-8 rounded-2xl border-2 hover:bg-slate-50 font-bold">
+                            Retour aux Élections
+                        </Button>
+                    </Link>
+                    <Link href="/">
+                        <Button size="lg" className="h-14 px-8 rounded-2xl bg-[#1e3a8a] hover:bg-[#1e40af] font-bold shadow-lg shadow-blue-900/10">
+                            Retour à l'accueil
+                        </Button>
+                    </Link>
+                </div>
+
+                {/* Contact support */}
+                <p className="text-xs text-slate-400 pt-8">
+                    Un problème ? Contactez-nous à <a href="mailto:sayctchad@gmail.com" className="text-blue-500 hover:underline">sayctchad@gmail.com</a>
+                </p>
             </div>
         </div>
     );
