@@ -83,32 +83,32 @@ export default function AwsRestartProgram() {
                 path="/programmes/aws-restart"
             />
 
-            {/* Hero Section with AWS Theme */}
-            <section className="py-20 bg-gradient-to-br from-[#232F3E] to-[#121921] text-white">
+            {/* Hero Section with Theme Colors */}
+            <section className="py-20 bg-gradient-to-br from-[#0c1b33] to-[#1a3a5f] text-white">
                 <div className="container mx-auto px-4 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF9900]/10 text-[#FF9900] border border-[#FF9900]/30 mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <Cloud className="w-5 h-5" />
                         <span className="text-sm font-bold uppercase tracking-wider">AWS re/Start Tchad</span>
                     </div>
                     <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Devenez Spécialiste <br/>
-                        <span className="text-[#FF9900]">Cloud Junior</span>
+                        <span className="text-accent underline decoration-2 underline-offset-8">Cloud Junior</span>
                     </h1>
                     <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                         Transformez votre vie grâce au Cloud ! Une formation en ligne gratuite et intensive de 12 semaines pour vous propulser vers de nouvelles opportunités de carrière technologique.
                     </p>
                     
                     <div className="flex flex-wrap justify-center gap-4">
-                        <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-xl border border-white/10 shadow-lg">
-                            <h4 className="font-bold text-[#FF9900] text-3xl mb-1">12</h4>
+                        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
+                            <h4 className="font-bold text-accent text-3xl mb-1">12</h4>
                             <p className="text-xs uppercase tracking-wider text-slate-300">Semaines Intensives</p>
                         </div>
-                        <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-xl border border-white/10 shadow-lg">
-                            <h4 className="font-bold text-[#FF9900] text-3xl mb-1">100%</h4>
+                        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
+                            <h4 className="font-bold text-accent text-3xl mb-1">100%</h4>
                             <p className="text-xs uppercase tracking-wider text-slate-300">Gratuit et En Ligne</p>
                         </div>
-                        <div className="bg-white/5 backdrop-blur-md px-6 py-4 rounded-xl border border-white/10 shadow-lg">
-                            <h4 className="font-bold text-[#FF9900] text-3xl mb-1">0</h4>
+                        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
+                            <h4 className="font-bold text-accent text-3xl mb-1">0</h4>
                             <p className="text-xs uppercase tracking-wider text-slate-300">Expérience Requise</p>
                         </div>
                     </div>
@@ -127,8 +127,8 @@ export default function AwsRestartProgram() {
                             </p>
                             <div className="space-y-4">
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-[#FF9900]/10 flex items-center justify-center shrink-0">
-                                        <Laptop className="w-6 h-6 text-[#FF9900]" />
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                                        <Laptop className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Compétences Techniques Pratiques</h4>
@@ -136,8 +136,8 @@ export default function AwsRestartProgram() {
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-[#FF9900]/10 flex items-center justify-center shrink-0">
-                                        <Briefcase className="w-6 h-6 text-[#FF9900]" />
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                                        <Briefcase className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Soft Skills & Emploi</h4>
@@ -145,8 +145,8 @@ export default function AwsRestartProgram() {
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-[#FF9900]/10 flex items-center justify-center shrink-0">
-                                        <ShieldCheck className="w-6 h-6 text-[#FF9900]" />
+                                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                                        <ShieldCheck className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Certification Officielle</h4>
@@ -155,9 +155,9 @@ export default function AwsRestartProgram() {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-card p-8 rounded-3xl shadow-xl border-l-[6px] border-l-[#FF9900] border-t border-r border-b border-border">
+                        <div className="bg-card p-8 rounded-3xl shadow-xl border border-accent/10">
                             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                                <Target className="w-6 h-6 text-[#FF9900]" />
+                                <Target className="w-6 h-6 text-accent" />
                                 Public Cible Privilégié
                             </h3>
                             <p className="text-muted-foreground mb-6">
@@ -185,16 +185,15 @@ export default function AwsRestartProgram() {
             {/* Form Section */}
             <section className="py-20 bg-background relative overflow-hidden">
                 {/* Decorative background shapes */}
-                <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-[#FF9900]/5 blur-3xl -z-10"></div>
-                <div className="absolute bottom-0 left-0 -ml-32 -mb-32 w-96 h-96 rounded-full bg-[#232F3E]/5 blur-3xl -z-10"></div>
+                <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-accent/5 blur-3xl -z-10"></div>
                 
                 <div className="container mx-auto px-4 max-w-4xl">
-                    <Card className="border-t-[8px] border-t-[#232F3E] shadow-2xl rounded-2xl">
+                    <Card className="border-t-8 border-t-accent shadow-2xl rounded-2xl">
                         <CardHeader className="space-y-4 pb-10 text-center relative">
-                            <div className="mx-auto w-20 h-20 rounded-full bg-[#FF9900]/10 flex items-center justify-center mb-2 shadow-sm border border-[#FF9900]/20">
-                                <Zap className="w-10 h-10 text-[#FF9900]" />
+                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2 animate-pulse">
+                                <Zap className="w-10 h-10 text-accent" />
                             </div>
-                            <CardTitle className="text-4xl font-heading text-[#232F3E]">Postuler Maintenant</CardTitle>
+                            <CardTitle className="text-4xl font-heading text-primary">Postuler Maintenant</CardTitle>
                             <CardDescription className="text-lg max-w-2xl mx-auto">
                                 Saisissez cette opportunité unique de lancer votre parcours dans le Cloud. 
                                 Les places sont limitées, seules les candidatures les plus motivées seront retenues.
@@ -205,8 +204,8 @@ export default function AwsRestartProgram() {
                                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-12">
                                     {/* Section 1: Identité */}
                                     <div className="space-y-8">
-                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-[#232F3E]">
-                                            <span className="bg-[#232F3E] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md font-heading">1</span>
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">1</span>
                                             Informations Personnelles
                                         </h3>
                                         <div className="grid md:grid-cols-2 gap-8">
@@ -216,7 +215,7 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Nom Complet <span className="text-destructive">*</span></FormLabel>
-                                                        <FormControl><Input placeholder="Prénom et Nom" className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900] transition-colors" {...field} /></FormControl>
+                                                        <FormControl><Input placeholder="Prénom et Nom" className="h-12 bg-muted/50 border-border/50 focus:border-accent transition-colors" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -229,7 +228,7 @@ export default function AwsRestartProgram() {
                                                         <FormLabel className="text-sm font-semibold">Sexe (Statistique d'inclusion) <span className="text-destructive">*</span></FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]">
+                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
                                                                     <SelectValue placeholder="Choisir" />
                                                                 </SelectTrigger>
                                                             </FormControl>
@@ -248,7 +247,7 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Date de Naissance <span className="text-destructive">*</span></FormLabel>
-                                                        <FormControl><Input type="date" className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]" {...field} /></FormControl>
+                                                        <FormControl><Input type="date" className="h-12 bg-muted/50 border-border/50 focus:border-accent" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -259,7 +258,7 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Ville de Résidence <span className="text-destructive">*</span></FormLabel>
-                                                        <FormControl><Input className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]" {...field} /></FormControl>
+                                                        <FormControl><Input className="h-12 bg-muted/50 border-border/50 focus:border-accent" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -269,8 +268,8 @@ export default function AwsRestartProgram() {
 
                                     {/* Section 2: Contact & Profil */}
                                     <div className="space-y-8">
-                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-[#232F3E]">
-                                            <span className="bg-[#232F3E] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md font-heading">2</span>
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">2</span>
                                             Contact & Profil
                                         </h3>
                                         <div className="grid md:grid-cols-2 gap-8">
@@ -280,7 +279,7 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Numéro WhatsApp <span className="text-destructive">*</span></FormLabel>
-                                                        <FormControl><Input placeholder="+235 ..." className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]" {...field} /></FormControl>
+                                                        <FormControl><Input placeholder="+235 ..." className="h-12 bg-muted/50 border-border/50 focus:border-accent" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -291,7 +290,7 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Email Actif <span className="text-destructive">*</span></FormLabel>
-                                                        <FormControl><Input type="email" placeholder="nom@exemple.com" className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]" {...field} /></FormControl>
+                                                        <FormControl><Input type="email" placeholder="nom@exemple.com" className="h-12 bg-muted/50 border-border/50 focus:border-accent" {...field} /></FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -304,7 +303,7 @@ export default function AwsRestartProgram() {
                                                         <FormLabel className="text-sm font-semibold">Statut Professionnel Actuel <span className="text-destructive">*</span></FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]">
+                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
                                                                     <SelectValue placeholder="Sélectionnez..." />
                                                                 </SelectTrigger>
                                                             </FormControl>
@@ -329,7 +328,7 @@ export default function AwsRestartProgram() {
                                                         <FormLabel className="text-sm font-semibold">Êtes-vous en situation de handicap ? <span className="text-destructive">*</span></FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-[#FF9900]">
+                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
                                                                     <SelectValue placeholder="Sélectionnez..." />
                                                                 </SelectTrigger>
                                                             </FormControl>
@@ -349,8 +348,8 @@ export default function AwsRestartProgram() {
 
                                     {/* Section 3: Motivation */}
                                     <div className="space-y-8">
-                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-[#232F3E]">
-                                            <span className="bg-[#232F3E] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md font-heading">3</span>
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">3</span>
                                             Motivation
                                         </h3>
                                         <FormField
@@ -360,7 +359,7 @@ export default function AwsRestartProgram() {
                                                 <FormItem>
                                                     <FormLabel className="text-sm font-semibold">Pourquoi souhaitez-vous intégrer le programme AWS re/Start ? <span className="text-destructive">*</span></FormLabel>
                                                     <FormDescription className="mb-2">Votre réponse est cruciale pour la sélection. Expliquez comment cette formation impactera votre carrière et vos ambitions dans le numérique (min 50 mots).</FormDescription>
-                                                    <FormControl><Textarea className="min-h-[150px] text-base bg-muted/50 border-border/50 focus:border-[#FF9900] resize-y" placeholder="Ma motivation est..." {...field} /></FormControl>
+                                                    <FormControl><Textarea className="min-h-[150px] text-base bg-muted/50 border-border/50 focus:border-accent resize-y" placeholder="Ma motivation est..." {...field} /></FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
@@ -369,11 +368,11 @@ export default function AwsRestartProgram() {
 
                                     {/* Section 4: Engagement */}
                                     <div className="space-y-8">
-                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-[#232F3E]">
-                                            <span className="bg-[#232F3E] text-white w-10 h-10 rounded-lg flex items-center justify-center shadow-md font-heading">4</span>
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">4</span>
                                             Engagement
                                         </h3>
-                                        <div className="bg-[#FF9900]/5 border border-[#FF9900]/20 rounded-xl p-6">
+                                        <div className="bg-accent/5 border border-accent/20 rounded-xl p-6">
                                             <FormField
                                                 control={form.control}
                                                 name="fullTimeCommitment"
@@ -383,7 +382,7 @@ export default function AwsRestartProgram() {
                                                             <Checkbox 
                                                                 checked={field.value} 
                                                                 onCheckedChange={field.onChange} 
-                                                                className="data-[state=checked]:bg-[#FF9900] data-[state=checked]:border-[#FF9900] w-6 h-6 rounded-md mt-1"
+                                                                className="data-[state=checked]:bg-accent data-[state=checked]:border-accent w-6 h-6 rounded-md mt-1"
                                                             />
                                                         </FormControl>
                                                         <div className="space-y-1">
@@ -403,7 +402,7 @@ export default function AwsRestartProgram() {
                                     <Button
                                         type="submit"
                                         size="lg"
-                                        className="w-full h-16 text-xl font-bold bg-[#FF9900] hover:bg-[#E88A00] text-[#232F3E] shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 rounded-xl"
+                                        className="w-full h-16 text-xl font-bold bg-accent hover:bg-accent/90 text-accent-foreground shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 rounded-full"
                                         disabled={mutation.isPending || !form.watch("fullTimeCommitment")}
                                     >
                                         {mutation.isPending ? (
@@ -424,8 +423,8 @@ export default function AwsRestartProgram() {
                     </Card>
 
                     <div className="mt-16 grid md:grid-cols-2 gap-8 text-center md:text-left">
-                        <div className="p-8 rounded-2xl bg-[#232F3E]/5 border border-border">
-                            <h4 className="font-bold text-xl mb-3 text-[#232F3E]">Modalités Pratiques</h4>
+                        <div className="p-8 rounded-2xl bg-primary/5 border border-border">
+                            <h4 className="font-bold text-xl mb-3 text-primary">Modalités Pratiques</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 Les sessions se dérouleront **entièrement en ligne**. Les candidats retenus 
                                 recevront par email les accès à la plateforme d'apprentissage AWS Educate.
