@@ -5,7 +5,8 @@ import {
   insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema,
-  insertThunderbirdApplicationSchema, insertCandidateSchema, insertVoteSchema
+  insertThunderbirdApplicationSchema, insertCandidateSchema, insertVoteSchema,
+  insertAwsRestartApplicationSchema
 } from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
@@ -556,6 +557,58 @@ Motivation: ${application.motivation}`
     } catch (error) {
       console.error("Error fetching Thunderbird applications:", error);
       res.status(500).json({ error: "Erreur lors de la récupération des candidatures." });
+    }
+  });
+
+  // AWS re/Start Applications
+  app.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
+    try {
+      const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
+      const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);
+
+      if (existingApp) {
+        return res.status(400).json({ error: "Une candidature avec cet email a déjà été enregistrée pour ce programme." });
+      }
+
+      const application = await storage.createAwsRestartApplication(validatedData);
+
+      sendNotificationEmail(
+        "Nouvelle Candidature AWS re/Start - SAYC Tchad",
+        `Nouvelle candidature AWS re/Start de ${application.fullName} (${application.email}).
+Téléphone: ${application.phone}
+Ville: ${application.city}
+Date de naissance: ${application.dateOfBirth}
+Sexe: ${application.gender}
+Statut professionnel: ${application.professionalStatus}
+Handicap: ${application.hasDisability}
+Engagement temps plein: ${application.fullTimeCommitment ? 'Oui' : 'Non'}
+
+Motivation: ${application.motivation}`
+      );
+
+      sendAutoReplyEmail(
+        application.email,
+        "Confirmation de réception de votre candidature AWS re/Start",
+        `Bonjour ${application.fullName},\n\nNous avons bien reçu votre candidature pour le programme AWS re/Start organisé en partenariat avec Smart Africa Youth Chapter Tchad.\n\nNotre équipe examinera votre profil et vous tiendra informé(e) de la suite du processus.\n\nCordialement,\n\nL'équipe SAYC Tchad`
+      );
+
+      res.status(201).json(application);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Données invalides", details: error.errors });
+      }
+      console.error("Error creating AWS re/Start application:", error);
+      res.status(500).json({ error: "Erreur lors de l'enregistrement de votre candidature." });
+    }
+  });
+
+  app.get("/api/admin/aws-restart-applications", requireAdmin, async (_req, res) => {
+    try {
+      const applications = await storage.getAllAwsRestartApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching AWS re/Start applications:", error);
+      res.status(500).json({ error: "Erreur lors de la récupération des candidatures AWS re/Start." });
     }
   });
 

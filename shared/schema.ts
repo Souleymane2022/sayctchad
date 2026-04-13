@@ -323,3 +323,38 @@ export const insertVoteSchema = createInsertSchema(electionVotes).omit({
 
 export type InsertVote = z.infer<typeof insertVoteSchema>;
 export type ElectionVote = typeof electionVotes.$inferSelect;
+
+export const awsRestartApplications = pgTable("aws_restart_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fullName: text("full_name").notNull(),
+  gender: text("gender").notNull(),
+  dateOfBirth: text("date_of_birth").notNull(),
+  city: text("city").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email").notNull(),
+  professionalStatus: text("professional_status").notNull(),
+  hasDisability: text("has_disability").notNull(),
+  motivation: text("motivation").notNull(),
+  fullTimeCommitment: boolean("full_time_commitment").notNull(),
+  status: text("status").notNull().default("pending"),
+  cohort: text("cohort").notNull().default("Tchad 2024"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {
+  fullName: z.string().min(1, "Nom complet requis"),
+  gender: z.string().min(1, "Sexe requis"),
+  dateOfBirth: z.string().min(1, "Date de naissance requise"),
+  city: z.string().min(1, "Ville requise"),
+  phone: z.string().min(1, "Numéro de téléphone requis"),
+  email: z.string().email("Email invalide").min(1, "Email requis"),
+  professionalStatus: z.string().min(1, "Statut professionnel requis"),
+  hasDisability: z.string().min(1, "Veuillez répondre à cette question"),
+  motivation: z.string().min(1, "Motivation requise"),
+}).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type InsertAwsRestartApplication = z.infer<typeof insertAwsRestartApplicationSchema>;
+export type AwsRestartApplication = typeof awsRestartApplications.$inferSelect;

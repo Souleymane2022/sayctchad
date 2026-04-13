@@ -14,9 +14,11 @@ import {
   type ThunderbirdApplication, type InsertThunderbirdApplication,
   type ElectionCandidate, type InsertCandidate,
   type ElectionVote, type InsertVote,
+  type AwsRestartApplication, type InsertAwsRestartApplication,
   users, members, contactMessages, newsletterSubscribers,
   opportunities, partners, trainings, newsArticles, events, achievements,
-  thunderbirdApplications, electionCandidates, electionVotes
+  thunderbirdApplications, electionCandidates, electionVotes,
+  awsRestartApplications
 } from "../shared/schema";
 import { db, sql as neonSql } from "./db";
 import { eq, desc, asc, sql, or, isNull, isNotNull, and } from "drizzle-orm";
@@ -88,6 +90,10 @@ export interface IStorage {
   getThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
   getApprovedThunderbirdApplications(): Promise<ThunderbirdApplication[]>;
   updateThunderbirdApplicationStatus(id: string, status: string): Promise<ThunderbirdApplication | undefined>;
+
+  createAwsRestartApplication(application: InsertAwsRestartApplication): Promise<AwsRestartApplication>;
+  getAwsRestartApplicationByEmail(email: string): Promise<AwsRestartApplication | undefined>;
+  getAllAwsRestartApplications(): Promise<AwsRestartApplication[]>;
 
   createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
   getApprovedCandidates(): Promise<ElectionCandidate[]>;
@@ -415,6 +421,20 @@ export class DatabaseStorage implements IStorage {
       .where(eq(thunderbirdApplications.id, id))
       .returning();
     return updated;
+  }
+
+  async createAwsRestartApplication(application: InsertAwsRestartApplication): Promise<AwsRestartApplication> {
+    const [newApp] = await db.insert(awsRestartApplications).values(application).returning();
+    return newApp;
+  }
+
+  async getAwsRestartApplicationByEmail(email: string): Promise<AwsRestartApplication | undefined> {
+    const [app] = await db.select().from(awsRestartApplications).where(eq(awsRestartApplications.email, email));
+    return app;
+  }
+
+  async getAllAwsRestartApplications(): Promise<AwsRestartApplication[]> {
+    return db.select().from(awsRestartApplications).orderBy(desc(awsRestartApplications.createdAt));
   }
 
   private mapCandidateRow(row: any): ElectionCandidate {
