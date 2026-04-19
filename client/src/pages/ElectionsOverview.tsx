@@ -104,9 +104,11 @@ export default function ElectionsOverview() {
                         Un moment historique pour la jeunesse technologique tchadienne.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
-                        <Button size="lg" disabled className="bg-gray-400 text-white px-8 h-14 rounded-xl text-lg font-bold cursor-not-allowed">
-                            Candidatures Closes
-                        </Button>
+                        <Link href="/elections/candidats">
+                            <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-8 h-14 rounded-xl text-lg font-bold shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all border-0">
+                                Découvrir les Candidats
+                            </Button>
+                        </Link>
                         <Link href="/elections/voter">
                             <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm opacity-60 cursor-not-allowed">
                                 <Vote className="mr-2 h-5 w-5" /> Voter (Bientôt)
@@ -248,10 +250,12 @@ export default function ElectionsOverview() {
                         <p className="text-blue-100 max-w-xl mx-auto">
                             Le comité national est le moteur du changement. Soumettez votre candidature aujourd'hui et faites partie de l'histoire.
                         </p>
-                        <div className="pt-6">
-                            <Button size="lg" disabled className="bg-gray-300 text-gray-600 px-10 h-14 rounded-xl text-lg font-bold cursor-not-allowed">
-                                Inscriptions closes
-                            </Button>
+                        <div className="pt-6 flex justify-center gap-4">
+                            <Link href="/elections/candidats">
+                                <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#0f172a] px-10 h-14 rounded-xl text-lg font-bold hover:shadow-lg transition-all border-0">
+                                    Découvrir les Candidats
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                     {/* Abstract Shapes */}
