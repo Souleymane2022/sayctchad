@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
@@ -88,17 +88,17 @@ export default function ElectionCandidates() {
       setSelectedLeader(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       
-      // Lancer des confettis
       confetti({
         particleCount: 100,
         spread: 70,
-        origin: { y: 0.6 }
+        origin: { y: 0.6 },
+        colors: ['#00a65a', '#f39c12', '#0073b7'] // couleurs sayc approx
       });
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 pb-20 overflow-hidden relative">
+    <div className="min-h-screen bg-background text-foreground pb-20 overflow-hidden relative">
       <SEOHead 
         title="Candidats Présélectionnés - SAYC"
         description="Découvrez et confirmez votre soutien pour les 4 leaders de la jeunesse."
@@ -106,20 +106,20 @@ export default function ElectionCandidates() {
       />
 
       {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-teal-50 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-sayc-teal/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm">
+      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="flex items-center gap-3 p-4 container mx-auto max-w-6xl">
-          <Button variant="ghost" size="icon" onClick={() => setLocation("/elections")} className="hover:bg-slate-100 rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => setLocation("/elections")} className="hover:bg-muted rounded-full">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-[#1e3a8a]">
+            <h1 className="text-xl font-bold text-primary">
               SAYC Elections
             </h1>
-            <p className="text-xs text-slate-500 font-medium flex items-center gap-1">
+            <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
               <ShieldCheck className="h-3 w-3 text-sayc-teal" /> Processus Transparent
             </p>
           </div>
@@ -136,44 +136,43 @@ export default function ElectionCandidates() {
               initial={{ opacity: 0, height: 0, scale: 0.9 }}
               animate={{ opacity: 1, height: "auto", scale: 1 }}
               exit={{ opacity: 0, height: 0 }}
-              className="bg-emerald-50 border border-emerald-200 rounded-3xl p-6 md:p-8 flex items-center gap-6 shadow-sm relative overflow-hidden"
+              className="bg-accent/10 border border-accent/20 rounded-3xl p-6 md:p-8 flex items-center gap-6 shadow-sm relative overflow-hidden"
             >
-              <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-100 rounded-full blur-2xl -mr-10 -mt-10"></div>
-              <div className="w-16 h-16 rounded-full bg-emerald-100 flex-shrink-0 flex items-center justify-center border-4 border-white shadow-sm z-10">
-                <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+              <div className="absolute right-0 top-0 w-32 h-32 bg-accent/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+              <div className="w-16 h-16 rounded-full bg-accent/20 flex-shrink-0 flex items-center justify-center border-4 border-background shadow-sm z-10">
+                <CheckCircle2 className="h-8 w-8 text-accent" />
               </div>
               <div className="z-10">
-                <h3 className="text-2xl font-bold text-emerald-800 mb-2">Vote Enregistré !</h3>
-                <p className="text-emerald-700 font-medium text-lg">
-                  Vous avez confirmé votre soutien pour <span className="font-bold underline decoration-2 decoration-emerald-400">{votedCandidate.name}</span>.
+                <h3 className="text-2xl font-bold text-foreground mb-2">Vote Enregistré !</h3>
+                <p className="font-medium text-lg text-foreground/90">
+                  Vous avez confirmé votre soutien pour <span className="font-bold underline decoration-2 decoration-accent">{votedCandidate.name}</span>.
                 </p>
-                <p className="text-emerald-600/80 text-sm mt-1">Merci de participer activement à la construction de l'avenir du numérique au Tchad.</p>
+                <p className="text-muted-foreground text-sm mt-1">Merci de participer activement à la construction de l'avenir du numérique au Tchad.</p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Intro Banner */}
+        {/* Intro Banner (Identique à l'Accueil) */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl shadow-xl"
+          className="relative overflow-hidden rounded-3xl shadow-xl bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-blue-900 z-0" />
           <div className="absolute -top-24 -right-24 p-8 opacity-10 scale-150 transform rotate-12">
-             <Vote className="h-96 w-96 text-white" />
+             <Vote className="h-96 w-96 text-sidebar-foreground" />
           </div>
           
           <div className="relative z-10 p-8 md:p-14 space-y-6">
-            <Badge variant="outline" className="text-blue-100 border-blue-400/50 bg-blue-900/40 backdrop-blur px-3 py-1 text-sm rounded-full">
+            <Badge variant="secondary" className="bg-accent/20 text-accent border-accent/30 text-sm rounded-full">
               Phase Découverte
             </Badge>
-            <h2 className="text-4xl md:text-6xl font-extrabold text-white leading-tight font-heading">
+            <h2 className="text-4xl md:text-6xl font-extrabold leading-tight font-heading">
               14 Leaders Présélectionnés.<br/>
-              <span className="text-sayc-teal">Un Avenir Commun.</span>
+              <span className="text-accent">Un Avenir Commun.</span>
             </h2>
-            <p className="text-blue-100 max-w-3xl text-lg md:text-xl font-light leading-relaxed">
+            <p className="text-sidebar-foreground/80 max-w-3xl text-lg md:text-xl font-light leading-relaxed">
               Découvrez les profils d'exception qui aspirent à diriger la nouvelle ère de notre écosystème numérique, et exprimez votre choix.
             </p>
           </div>
@@ -182,13 +181,13 @@ export default function ElectionCandidates() {
         {/* Candidate Grid */}
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h3 className="text-2xl font-bold flex items-center gap-3 text-[#1e3a8a]">
-              <Star className="h-6 w-6 text-sayc-teal" />
+            <h3 className="text-2xl font-heading font-bold flex items-center gap-3">
+              <Star className="h-6 w-6 text-accent" />
               Candidats à l'honneur
             </h3>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full border shadow-sm">
-               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-               <span className="text-sm font-bold text-slate-600">Vote Ouvert</span>
+            <div className="flex items-center gap-2 px-4 py-2 bg-card rounded-full border border-border shadow-sm">
+               <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+               <span className="text-sm font-bold text-muted-foreground">Vote Ouvert</span>
             </div>
           </div>
 
@@ -204,43 +203,43 @@ export default function ElectionCandidates() {
               return (
                 <motion.div key={leader.id} variants={item}>
                   <Card 
-                    className={`group cursor-pointer overflow-hidden relative bg-white flex flex-col transition-all duration-300 rounded-2xl border-2 ${isVoted ? 'border-sayc-teal shadow-lg scale-[1.02]' : 'border-transparent hover:border-slate-200 shadow-md hover:shadow-xl'}`}
+                    className={`group cursor-pointer overflow-hidden relative bg-card text-card-foreground flex flex-col transition-all duration-300 rounded-2xl border-2 hover-elevate ${isVoted ? 'border-accent shadow-lg scale-[1.02]' : 'border-transparent hover:border-border shadow-md'}`}
                     onClick={() => setSelectedLeader(leader)}
                   >
                     {isVoted && (
-                      <div className="absolute top-4 right-4 z-30 bg-white rounded-full p-1 shadow-md">
-                        <CheckCircle2 className="h-6 w-6 text-sayc-teal" />
+                      <div className="absolute top-4 right-4 z-30 bg-background rounded-full p-1 shadow-md border border-border">
+                        <CheckCircle2 className="h-6 w-6 text-accent" />
                       </div>
                     )}
 
                     {/* Image container */}
-                    <div className="relative h-72 overflow-hidden bg-slate-100">
+                    <div className="relative h-72 overflow-hidden bg-muted">
                       <img 
                         src={leader.image} 
                         alt={leader.name} 
                         className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
                       />
-                      <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-slate-900/80 to-transparent z-0" />
+                      <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-0" />
                       
                       <div className="absolute bottom-4 left-5 right-5 z-20">
-                        <h4 className="text-xl font-bold text-white drop-shadow-md">{leader.name}</h4>
-                        <p className="text-sm font-semibold text-sayc-teal">{leader.role}</p>
+                        <h4 className="text-xl font-heading font-bold text-white drop-shadow-md">{leader.name}</h4>
+                        <p className="text-sm font-semibold text-accent">{leader.role}</p>
                       </div>
                     </div>
 
                     <div className="p-5 flex-1 flex flex-col">
-                      <p className="text-sm text-slate-600 line-clamp-3 mb-6 flex-1 leading-relaxed">
+                      <p className="text-sm text-foreground/80 line-clamp-3 mb-6 flex-1 leading-relaxed">
                         {leader.bio}
                       </p>
                       <div className="flex items-center justify-between mt-auto">
                         <div className="flex gap-2 overflow-hidden flex-wrap w-[80%]">
                           {leader.skills.slice(0, 2).map((s, i) => (
-                            <span key={i} className={`text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-700`}>
+                            <span key={i} className={`text-[10px] font-bold px-2 py-1 rounded-sm bg-primary/10 text-primary`}>
                               {s}
                             </span>
                           ))}
                         </div>
-                        <div className="h-8 w-8 rounded-full bg-slate-50 flex items-center justify-center flex-shrink-0 group-hover:bg-sayc-teal group-hover:text-white transition-all duration-300 border">
+                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 border border-border">
                           <ChevronRight className="h-4 w-4" />
                         </div>
                       </div>
@@ -257,65 +256,65 @@ export default function ElectionCandidates() {
       <AnimatePresence>
         {selectedLeader && (
           <Dialog open={!!selectedLeader} onOpenChange={(open) => !open && setSelectedLeader(null)}>
-            <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white shadow-2xl rounded-2xl text-slate-800 border-0">
+            <DialogContent className="max-w-4xl p-0 overflow-hidden bg-card text-card-foreground shadow-2xl rounded-2xl border border-border">
               
               <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
                 {/* Modal Header Image - Left side on desktop */}
-                <div className="relative h-64 md:h-auto md:w-2/5 md:flex-shrink-0 bg-slate-100 overflow-hidden">
+                <div className="relative h-64 md:h-auto md:w-2/5 md:flex-shrink-0 bg-muted overflow-hidden">
                   <img src={selectedLeader.image} className="w-full h-full object-cover object-top" alt={selectedLeader.name} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent md:bg-black/10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:bg-black/10" />
                   <div className="absolute bottom-6 left-6 right-6 md:hidden">
-                    <Badge className={`mb-3 bg-gradient-to-r ${selectedLeader.color} text-white border-0 px-3 py-1 shadow-md`}>
+                    <Badge className={`mb-3 bg-accent text-accent-foreground border-0 px-3 py-1 shadow-md`}>
                       Candidat #{selectedLeader.id}
                     </Badge>
                   </div>
                 </div>
 
                 {/* Modal Body - Right side on desktop */}
-                <div className="p-6 md:p-10 md:w-3/5 overflow-y-auto w-full space-y-8 flex flex-col bg-slate-50">
+                <div className="p-6 md:p-10 md:w-3/5 overflow-y-auto w-full space-y-8 flex flex-col bg-background">
                   
                   <div className="space-y-2 hidden md:block">
-                    <Badge className={`bg-gradient-to-r ${selectedLeader.color} text-white border-0 px-3 py-1 shadow-sm`}>
+                    <Badge className={`bg-accent text-accent-foreground border-0 px-3 py-1 shadow-sm`}>
                       Candidat #{selectedLeader.id}
                     </Badge>
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-[#1e3a8a]">
+                    <h2 className="text-3xl md:text-5xl font-extrabold font-heading text-foreground">
                       {selectedLeader.name}
                     </h2>
-                    <p className="text-xl font-bold text-sayc-teal">{selectedLeader.role}</p>
+                    <p className="text-xl font-bold text-accent">{selectedLeader.role}</p>
                   </div>
                   
                   <div className="block md:hidden space-y-1">
-                    <h2 className="text-3xl font-extrabold text-[#1e3a8a]">
+                    <h2 className="text-3xl font-extrabold font-heading text-foreground">
                       {selectedLeader.name}
                     </h2>
-                    <p className="text-lg font-bold text-sayc-teal">{selectedLeader.role}</p>
+                    <p className="text-lg font-bold text-accent">{selectedLeader.role}</p>
                   </div>
 
                   <div className="space-y-6 flex-1">
                     <div>
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <span className="w-4 h-[1px] bg-slate-300 block"></span> Biographie
+                      <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="w-4 h-[1px] bg-border block"></span> Biographie
                       </h4>
-                      <div className="text-base leading-relaxed text-slate-600">
+                      <div className="text-base leading-relaxed text-foreground/90">
                         {selectedLeader.bio}
                       </div>
                     </div>
 
-                    <div className="relative border-l-[4px] border-sayc-teal pl-6 py-4 bg-white rounded-r-xl shadow-sm">
-                      <Quote className="absolute top-2 left-4 h-8 w-8 text-sayc-teal/10" />
-                      <h4 className="text-xs font-bold text-sayc-teal uppercase tracking-wide mb-2">Notre Vision Numérique</h4>
-                      <p className="text-lg font-medium italic leading-relaxed text-slate-700 relative z-10">
+                    <div className="relative border-l-[4px] border-accent pl-6 py-4 bg-accent/5 rounded-r-xl shadow-sm">
+                      <Quote className="absolute top-2 left-4 h-8 w-8 text-accent/10" />
+                      <h4 className="text-xs font-bold text-accent uppercase tracking-wide mb-2">Notre Vision Numérique</h4>
+                      <p className="text-lg font-medium italic leading-relaxed text-foreground relative z-10">
                         "{selectedLeader.vision}"
                       </p>
                     </div>
 
                     <div>
-                      <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                        <span className="w-4 h-[1px] bg-slate-300 block"></span> Domaines d'Expertise
+                      <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <span className="w-4 h-[1px] bg-border block"></span> Domaines d'Expertise
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedLeader.skills.map((s, i) => (
-                          <Badge key={i} variant="secondary" className="bg-slate-200 hover:bg-slate-300 text-slate-700 py-1.5 px-3">
+                          <Badge key={i} variant="secondary" className="bg-secondary text-secondary-foreground py-1.5 px-3">
                             {s}
                           </Badge>
                         ))}
@@ -324,16 +323,17 @@ export default function ElectionCandidates() {
                   </div>
 
                   {/* Call to Action Wrapper */}
-                  <div className="pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
-                    <p className="text-sm text-slate-500 font-medium">
+                  <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
+                    <p className="text-sm text-muted-foreground font-medium flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-accent" />
                       Exprimez votre soutien
                     </p>
                     <Button 
                       onClick={handleConfirmVote}
-                      className={`w-full sm:w-auto px-8 bg-[#1e3a8a] text-white hover:bg-blue-900 shadow-md h-12 rounded-xl text-base font-bold`} 
+                      className={`w-full sm:w-auto px-8 bg-accent text-accent-foreground hover:bg-accent/90 border-accent-border shadow-md h-12 rounded-xl text-base font-bold`} 
                     >
                       <Vote className="h-5 w-5 mr-2" />
-                      Confirmer de choix
+                      Confirmer le choix
                     </Button>
                   </div>
 
