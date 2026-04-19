@@ -27,6 +27,7 @@ import VotingInterface from "@/pages/VotingInterface";
 import NotFound from "@/pages/not-found";
 import MembersGallery from "@/pages/MembersGallery";
 import ElectionCandidates from "@/pages/ElectionCandidates";
+import ElectionPosters from "@/pages/ElectionPosters";
 
 function Router() {
   return (
@@ -49,6 +50,7 @@ function Router() {
       <Route path="/elections" component={ElectionsOverview} />
       <Route path="/elections/postuler" component={CandidateApplication} />
       <Route path="/elections/candidats" component={ElectionCandidates} />
+      <Route path="/elections/posters" component={ElectionPosters} />
       <Route path="/elections/voter" component={VotingInterface} />
       <Route path="/admin" component={Admin} />
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
