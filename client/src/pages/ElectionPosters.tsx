@@ -25,10 +25,18 @@ export default function ElectionPosters() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
+      // Appliquer une méthode robuste pour html-to-image avec le transform parent
       const dataUrl = await toPng(element, { 
         quality: 1, 
-        pixelRatio: 2,
-        backgroundColor: '#0a1d4a' // matches a good fallback for bg-sidebar
+        pixelRatio: 2, // Pour de la vraie HD (2160x2160)
+        backgroundColor: '#0a1d4a',
+        width: element.offsetWidth,
+        height: element.offsetHeight,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+          margin: '0'
+        }
       });
       
       const link = document.createElement("a");
@@ -101,64 +109,69 @@ export default function ElectionPosters() {
             </Button>
           </div>
 
-          <div className="overflow-x-auto pb-8">
-            <div className="mx-auto bg-slate-200 border-8 border-slate-300 rounded-lg p-2 w-fit shadow-2xl">
-                <div 
-                    id="group-poster" 
-                    className="w-[1080px] h-[1350px] bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 relative overflow-hidden flex flex-col"
-                >
-                    {/* Background Decor - consistent with Home */}
-                    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sayc-teal/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 z-0" />
-                    <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 z-0" />
-                    
-                    {/* Header */}
-                    <div className="p-16 pb-8 z-10 text-center space-y-6">
-                        <div className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-8 py-3 shadow-lg">
-                            <span className="text-sayc-teal font-bold uppercase tracking-widest text-2xl">Élections Officielles SAYC Tchad</span>
+          <div className="overflow-hidden pb-8 flex justify-center">
+            {/* Conteneur pour la prévisualisation (redimensionne visuellement sans altérer l'élément cible pour html-to-image) */}
+            <div className="bg-slate-200 border-8 border-slate-300 rounded-xl shadow-2xl overflow-hidden flex items-start justify-start" style={{ width: '448px', height: '556px' }}>
+                {/* Scale wrapper pour le visuel à l'écran uniquement */}
+                <div style={{ transform: 'scale(0.4)', transformOrigin: 'top left', width: '1080px', height: '1350px', margin: '4px' }}>
+                    {/* LE VRAI ÉLÉMENT CAPTURÉ (Taille Réelle - Aucune modification de transform inline) */}
+                    <div 
+                        id="group-poster" 
+                        className="w-[1080px] h-[1350px] bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 relative overflow-hidden flex flex-col"
+                    >
+                        {/* Background Decor - consistent with Home */}
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sayc-teal/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 z-0" />
+                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 z-0" />
+                        
+                        {/* Header */}
+                        <div className="p-16 pb-8 z-10 text-center space-y-6">
+                            <div className="inline-block bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-8 py-3 shadow-lg">
+                                <span className="text-sayc-teal font-bold uppercase tracking-widest text-2xl">Élections Officielles SAYC Tchad</span>
+                            </div>
+                            <h1 className="text-7xl font-extrabold text-sidebar-foreground font-heading leading-tight drop-shadow-lg">
+                                DÉCOUVREZ NOS <br/>
+                                <span className="text-accent">{candidates.length} CANDIDATS</span>
+                            </h1>
                         </div>
-                        <h1 className="text-7xl font-extrabold text-sidebar-foreground font-heading leading-tight drop-shadow-lg">
-                            DÉCOUVREZ NOS <br/>
-                            <span className="text-accent">{candidates.length} CANDIDATS</span>
-                        </h1>
-                    </div>
 
-                    {/* Grid of Candidates */}
-                    <div className="flex-1 px-12 py-4 z-10 flex flex-col items-center justify-center">
-                        <div className="grid grid-cols-3 gap-6 w-full max-h-full">
-                            {candidates.slice(0, 9).map((c) => ( // limit to 9 for a perfect grid look if more
-                                <div key={c.id} className="bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50">
-                                    <div className="h-48 relative bg-muted">
-                                        <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top" />
-                                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
-                                        <div className="absolute bottom-3 left-4 right-4">
-                                            <h3 className="text-white font-bold text-xl leading-tight">{c.firstName} {c.nomSpecifiqueUnique}</h3>
+                        {/* Grid of Candidates */}
+                        <div className="flex-1 px-12 py-4 z-10 flex flex-col items-center justify-center">
+                            <div className="grid grid-cols-3 gap-6 w-full max-h-full">
+                                {candidates.slice(0, 9).map((c) => ( // limit to 9 for a perfect grid look if more
+                                    <div key={c.id} className="bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col border border-border/50">
+                                        <div className="h-48 relative bg-muted">
+                                            <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top" />
+                                            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
+                                            <div className="absolute bottom-3 left-4 right-4">
+                                                <h3 className="text-white font-bold text-xl leading-tight">{c.firstName} {c.nomSpecifiqueUnique}</h3>
+                                            </div>
+                                        </div>
+                                        <div className="bg-sayc-teal/10 p-3 text-center border-t border-sayc-teal/20">
+                                            <span className="text-sayc-teal text-sm font-extrabold uppercase tracking-wide">{c.role}</span>
                                         </div>
                                     </div>
-                                    <div className="bg-sayc-teal/10 p-3 text-center border-t border-sayc-teal/20">
-                                        <span className="text-sayc-teal text-sm font-extrabold uppercase tracking-wide">{c.role}</span>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
+                            {candidates.length > 9 && (
+                                <p className="text-sidebar-foreground/60 mt-8 text-xl font-medium">Et d'autres candidats exceptionnels à découvrir...</p>
+                            )}
                         </div>
-                        {candidates.length > 9 && (
-                            <p className="text-sidebar-foreground/60 mt-8 text-xl font-medium">Et d'autres candidats exceptionnels à découvrir...</p>
-                        )}
-                    </div>
 
-                    {/* Footer aligned with logos */}
-                    <div className="p-10 z-10 bg-black/20 backdrop-blur-sm border-t border-white/10 flex items-center justify-between">
-                        <div className="flex items-center gap-6">
-                            <div className="bg-white p-3 rounded-2xl shadow-xl h-24 w-auto flex items-center justify-center">
-                                <img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" />
+                        {/* Footer aligned with logos */}
+                        <div className="p-10 z-10 bg-black/20 backdrop-blur-sm border-t border-white/10 flex items-center justify-between">
+                            <div className="flex items-center gap-6">
+                                <div className="bg-white p-3 rounded-2xl shadow-xl h-24 w-auto flex items-center justify-center">
+                                    <img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" />
+                                </div>
+                                <div className="bg-white p-3 rounded-2xl shadow-xl h-24 w-auto flex items-center justify-center">
+                                    <img src={SMART_AFRICA_LOGO} alt="Smart Africa Logo" className="h-full object-contain" />
+                                </div>
                             </div>
-                            <div className="bg-white p-3 rounded-2xl shadow-xl h-24 w-auto flex items-center justify-center">
-                                <img src={SMART_AFRICA_LOGO} alt="Smart Africa Logo" className="h-full object-contain" />
+                            
+                            <div className="text-right text-sidebar-foreground space-y-1">
+                                <p className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">www.sayctchad.org</p>
+                                <p className="text-sidebar-foreground/80 text-xl font-medium">L'avenir se construit avec vous</p>
                             </div>
-                        </div>
-                        
-                        <div className="text-right text-sidebar-foreground space-y-1">
-                            <p className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">www.sayctchad.org</p>
-                            <p className="text-sidebar-foreground/80 text-xl font-medium">L'avenir se construit avec vous</p>
                         </div>
                     </div>
                 </div>
@@ -189,63 +202,64 @@ export default function ElectionPosters() {
                     </Button>
                 </div>
 
-                {/* 1080x1080 Actual Square Poster Wrapper */}
-                <div className="w-full flex items-center justify-center bg-slate-800 rounded-lg p-4 overflow-x-auto">
-                    {/* The HD element */}
-                    <div 
-                        id={`poster-${candidate.id}`}
-                        className="w-[1080px] h-[1080px] flex-shrink-0 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 relative overflow-hidden flex flex-row"
-                        style={{ transform: 'scale(0.4)', transformOrigin: 'top left', marginBottom: '-648px', marginRight: '-648px' }}
-                    >
-                        {/* Background Decor aligned to Home components */}
-                        <div className="absolute top-0 right-0 w-[800px] h-[1080px] bg-primary/20 -skew-x-12 translate-x-32 z-0" />
-                        <div className="absolute top-0 right-0 w-[600px] h-[1080px] bg-sayc-teal/30 -skew-x-12 translate-x-48 z-0" />
+                {/* 1080x1080 Conteneur de prévisualisation */}
+                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[460px]">
+                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'top center', width: '1080px', height: '1080px' }}>
+                        {/* LE VRAI ÉLÉMENT CAPTURÉ */}
+                        <div 
+                            id={`poster-${candidate.id}`}
+                            className="w-[1080px] h-[1080px] bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 relative overflow-hidden flex flex-row"
+                        >
+                            {/* Background Decor aligned to Home components */}
+                            <div className="absolute top-0 right-0 w-[800px] h-[1080px] bg-primary/20 -skew-x-12 translate-x-32 z-0" />
+                            <div className="absolute top-0 right-0 w-[600px] h-[1080px] bg-sayc-teal/30 -skew-x-12 translate-x-48 z-0" />
 
-                        {/* Text Content (Left Side) */}
-                        <div className="w-1/2 p-14 z-10 flex flex-col text-sidebar-foreground h-full relative">
-                            {/* Logo Row */}
-                            <div className="absolute top-14 left-14 flex items-center gap-4">
-                                <div className="h-20 w-auto bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center">
-                                    <img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" />
-                                </div>
-                                <div className="h-20 w-auto bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center">
-                                    <img src={SMART_AFRICA_LOGO} alt="Smart Africa Logo" className="h-full object-contain" />
-                                </div>
-                            </div>
-
-                            <div className="space-y-6 mt-40">
-                                <div className="inline-block bg-accent/20 border border-accent/30 text-accent font-bold uppercase tracking-widest text-xl px-4 py-2 rounded-lg shadow-xl">
-                                    Élections du Chapitre
-                                </div>
-                                <h1 className="text-[5.5rem] font-extrabold font-heading leading-tight drop-shadow-xl text-sidebar-foreground">
-                                    {candidate.firstName.toUpperCase()} <br/>
-                                    <span className="text-accent">{candidate.nomSpecifiqueUnique.toUpperCase()}</span>
-                                </h1>
-                                <div className="w-24 h-2 bg-sayc-teal rounded-full" />
-                                <div>
-                                    <p className="text-2xl text-sidebar-foreground/70 font-medium">Je me porte candidat(e) au rôle de</p>
-                                    <p className="text-4xl font-extrabold mt-2 text-sayc-teal uppercase tracking-wide">{candidate.role}</p>
-                                </div>
-                            </div>
-
-                            <div className="absolute bottom-14 left-14">
-                                <div className="flex items-center gap-4 bg-white/5 backdrop-blur-xl px-8 py-5 rounded-2xl border border-white/10 shadow-lg">
-                                    <div className="bg-accent/20 p-3 rounded-full text-accent">
-                                        <VoteIcon /> 
+                            {/* Text Content (Left Side) */}
+                            <div className="w-1/2 p-14 z-10 flex flex-col text-sidebar-foreground h-full relative">
+                                {/* Logo Row */}
+                                <div className="absolute top-14 left-14 flex items-center gap-4">
+                                    <div className="h-20 w-auto bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center">
+                                        <img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" />
                                     </div>
+                                    <div className="h-20 w-auto bg-white p-2 rounded-xl shadow-2xl flex items-center justify-center">
+                                        <img src={SMART_AFRICA_LOGO} alt="Smart Africa Logo" className="h-full object-contain" />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6 mt-40">
+                                    <div className="inline-block bg-accent/20 border border-accent/30 text-accent font-bold uppercase tracking-widest text-xl px-4 py-2 rounded-lg shadow-xl">
+                                        Élections du Chapitre
+                                    </div>
+                                    <h1 className="text-[5.5rem] font-extrabold font-heading leading-tight drop-shadow-xl text-sidebar-foreground">
+                                        {candidate.firstName.toUpperCase()} <br/>
+                                        <span className="text-accent">{candidate.nomSpecifiqueUnique.toUpperCase()}</span>
+                                    </h1>
+                                    <div className="w-24 h-2 bg-sayc-teal rounded-full" />
                                     <div>
-                                        <p className="text-xl text-sidebar-foreground/70">Votez en ligne sur</p>
-                                        <p className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">www.sayctchad.org</p>
+                                        <p className="text-2xl text-sidebar-foreground/70 font-medium">Je me porte candidat(e) au rôle de</p>
+                                        <p className="text-4xl font-extrabold mt-2 text-sayc-teal uppercase tracking-wide">{candidate.role}</p>
+                                    </div>
+                                </div>
+
+                                <div className="absolute bottom-14 left-14">
+                                    <div className="flex items-center gap-4 bg-white/5 backdrop-blur-xl px-8 py-5 rounded-2xl border border-white/10 shadow-lg">
+                                        <div className="bg-accent/20 p-3 rounded-full text-accent">
+                                            <VoteIcon /> 
+                                        </div>
+                                        <div>
+                                            <p className="text-xl text-sidebar-foreground/70">Votez en ligne sur</p>
+                                            <p className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">www.sayctchad.org</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Image Content (Right Side) */}
-                        <div className="w-1/2 h-full z-10 relative">
-                            <div className="absolute inset-y-14 inset-x-10 rounded-[30px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.6)] border-4 border-sayc-teal/50 bg-sidebar/50">
-                                <img src={candidate.photoUrl} alt={candidate.firstName} className="w-full h-full object-cover object-top" />
-                                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                            {/* Image Content (Right Side) */}
+                            <div className="w-1/2 h-full z-10 relative">
+                                <div className="absolute inset-y-14 inset-x-10 rounded-[30px] overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.6)] border-4 border-sayc-teal/50 bg-sidebar/50">
+                                    <img src={candidate.photoUrl} alt={candidate.firstName} className="w-full h-full object-cover object-top" />
+                                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                </div>
                             </div>
                         </div>
                     </div>

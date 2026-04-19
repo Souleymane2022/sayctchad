@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import { storage } from "./server/storage";
 
 async function approveFirst50() {
