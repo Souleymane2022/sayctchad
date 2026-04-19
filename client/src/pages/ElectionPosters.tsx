@@ -80,10 +80,12 @@ export default function ElectionPosters() {
     );
   }
 
-  // Calcul du nombre optimal de colonnes pour l'affiche de groupe (jusqu'à 16 candidats)
-  // On utilise 4 colonnes si plus de 9 candidats pour s'assurer que ça rentre
-  const colsClass = candidates.length > 9 ? "grid-cols-4 gap-4" : "grid-cols-3 gap-6";
-  const cardHeightClass = candidates.length > 9 ? "h-36" : "h-52"; // Hauteur plus petite si beaucoup de candidats
+  // Calcul du nombre optimal de colonnes pour l'affiche de groupe
+  // Si plus de 12 candidats, 4 colonnes. 9-12 : 4 colonnes mais plus grand. Moins de 9 : 3 colonnes.
+  const colsClass = candidates.length > 12 ? "grid-cols-4 gap-3" 
+                  : candidates.length > 8 ? "grid-cols-4 gap-4" 
+                  : "grid-cols-3 gap-6";
+  const cardHeightClass = candidates.length > 12 ? "h-36" : "h-48";
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 pb-20">
@@ -129,41 +131,38 @@ export default function ElectionPosters() {
                         <div className="absolute top-1/2 left-1/2 w-[2px] h-full bg-white/5 -translate-x-1/2 z-0" />
                         
                         {/* Header & Logos */}
-                        <div className="p-12 pb-6 z-10 flex flex-col items-center space-y-6">
-                            <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md p-4 rounded-3xl border border-white/10 shadow-2xl">
-                                <div className="h-16 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
-                                <div className="h-16 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
-                                <div className="h-16 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
+                        <div className="p-8 pb-4 z-10 flex flex-col items-center space-y-4">
+                            <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl">
+                                <div className="h-12 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
+                                <div className="h-12 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
+                                <div className="h-12 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
                             </div>
 
-                            <div className="text-center space-y-2">
-                                <span className="inline-block bg-sayc-teal/20 text-sayc-teal border border-sayc-teal/50 font-bold uppercase tracking-widest text-xl px-6 py-2 rounded-full shadow-[0_0_20px_rgba(45,212,191,0.3)]">
-                                    Élections Officielles Tchad 2024
-                                </span>
-                                <h1 className="text-[4rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 font-heading leading-[1.1] drop-shadow-2xl">
-                                    DÉCOUVREZ NOS <br/>
-                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-accent">{candidates.length} LEADERS</span>
+                            <div className="text-center space-y-1">
+                                <h1 className="text-[3.5rem] font-extrabold text-white font-heading leading-tight drop-shadow-2xl">
+                                    ÉLECTIONS <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-accent">SAYC</span>
                                 </h1>
+                                <p className="text-xl text-white/80 font-medium tracking-widest uppercase mb-1">Nos {candidates.length} candidats officiels</p>
                             </div>
                         </div>
 
                         {/* Grid of Candidates - Adaptative */}
-                        <div className="flex-1 px-10 py-2 z-10 flex flex-col items-center justify-center">
-                            <div className={`grid ${colsClass} w-full max-h-full`}>
-                                {/* Ne pas couper à 9, montrer tout le monde jusqu'à ~16 */}
-                                {candidates.slice(0, 16).map((c) => (
-                                    <div key={c.id} className="relative group bg-white/10 backdrop-blur-sm rounded-[1.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/20 flex flex-col">
+                        <div className="flex-1 px-8 z-10 flex flex-col items-center justify-center -mt-2">
+                            <div className={`grid ${colsClass} w-full`}>
+                                {/* Afficher jusqu'à 16 ou 20 candidats */}
+                                {candidates.slice(0, 20).map((c) => (
+                                    <div key={c.id} className="relative group bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-white/20 flex flex-col">
                                         <div className={`${cardHeightClass} relative bg-gradient-to-b from-transparent to-black/80`}>
                                             <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top mix-blend-overlay opacity-90" style={{ mixBlendMode: 'normal' }} />
                                             {/* Glow effect at bottom of image */}
-                                            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-sidebar via-sidebar/80 to-transparent" />
-                                            <div className="absolute bottom-3 left-4 right-4">
-                                                <h3 className="text-white font-extrabold text-[1.4rem] leading-tight drop-shadow-lg">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
+                                            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-sidebar via-sidebar/80 to-transparent" />
+                                            <div className="absolute bottom-2 left-3 right-3 text-center">
+                                                <h3 className="text-white font-bold text-[1.1rem] leading-[1.1] drop-shadow-lg">{c.firstName} {c.nomSpecifiqueUnique}</h3>
                                             </div>
                                         </div>
-                                        <div className="bg-sidebar/95 p-3 px-4 text-center border-t border-sayc-teal/30 relative overflow-hidden flex-1 flex items-center justify-center">
-                                            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-sayc-teal to-accent" />
-                                            <span className="text-sayc-teal text-xs sm:text-sm font-extrabold uppercase tracking-widest line-clamp-2 leading-tight">{c.role}</span>
+                                        <div className="bg-sidebar/95 py-2 px-2 text-center border-t border-sayc-teal/30 relative flex items-center justify-center min-h-[3rem]">
+                                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-sayc-teal to-accent" />
+                                            <span className="text-sayc-teal text-[0.7rem] sm:text-xs font-bold uppercase tracking-wider line-clamp-2 leading-tight">{c.role}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -171,15 +170,14 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Footer */}
-                        <div className="p-8 z-10 bg-black/40 backdrop-blur-xl border-t border-white/10 flex items-center justify-between mt-auto">
-                            <div className="flex items-center gap-4 text-white">
+                        <div className="px-8 py-5 z-10 bg-black/40 backdrop-blur-xl border-t border-white/10 flex items-center justify-between mt-4">
+                            <div className="flex items-center gap-3 text-white">
                                 <VoteIcon />
-                                <span className="text-2xl font-bold uppercase tracking-wider">Votez pour le changement</span>
+                                <span className="text-xl font-bold uppercase tracking-wider">Votez pour le changement</span>
                             </div>
                             
-                            <div className="text-right space-y-1">
-                                <p className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent drop-shadow-md">🔗 WWW.SAYCTCHAD.ORG</p>
-                                <p className="text-white/60 text-xl font-medium tracking-widest uppercase text-sm">L'avenir du numérique est ici</p>
+                            <div className="text-right">
+                                <p className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent drop-shadow-md">WWW.SAYCTCHAD.ORG</p>
                             </div>
                         </div>
                     </div>
