@@ -82,10 +82,10 @@ export default function ElectionPosters() {
 
   // Calcul du nombre optimal de colonnes pour l'affiche de groupe
   // Si plus de 12 candidats, 4 colonnes. 9-12 : 4 colonnes mais plus grand. Moins de 9 : 3 colonnes.
-  const colsClass = candidates.length > 12 ? "grid-cols-4 gap-3" 
-                  : candidates.length > 8 ? "grid-cols-4 gap-4" 
+  const colsClass = candidates.length > 12 ? "grid-cols-4 gap-3 lg:gap-4" 
+                  : candidates.length > 8 ? "grid-cols-4 gap-5" 
                   : "grid-cols-3 gap-6";
-  const cardHeightClass = candidates.length > 12 ? "h-36" : "h-48";
+  const cardHeightClass = candidates.length > 12 ? "h-40" : "h-56";
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 pb-20">
@@ -151,18 +151,14 @@ export default function ElectionPosters() {
                             <div className={`grid ${colsClass} w-full`}>
                                 {/* Afficher jusqu'à 16 ou 20 candidats */}
                                 {candidates.slice(0, 20).map((c) => (
-                                    <div key={c.id} className="relative group bg-white/10 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-white/20 flex flex-col">
-                                        <div className={`${cardHeightClass} relative bg-gradient-to-b from-transparent to-black/80`}>
-                                            <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top mix-blend-overlay opacity-90" style={{ mixBlendMode: 'normal' }} />
-                                            {/* Glow effect at bottom of image */}
-                                            <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-sidebar via-sidebar/80 to-transparent" />
-                                            <div className="absolute bottom-2 left-3 right-3 text-center">
-                                                <h3 className="text-white font-bold text-[1.1rem] leading-[1.1] drop-shadow-lg">{c.firstName} {c.nomSpecifiqueUnique}</h3>
-                                            </div>
+                                    <div key={c.id} className="group bg-sidebar rounded-xl overflow-hidden shadow-2xl border border-white/20 flex flex-col">
+                                        <div className={`${cardHeightClass} relative`}>
+                                            <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top opacity-100" />
                                         </div>
-                                        <div className="bg-sidebar/95 py-2 px-2 text-center border-t border-sayc-teal/30 relative flex items-center justify-center min-h-[3rem]">
-                                            <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-sayc-teal to-accent" />
-                                            <span className="text-sayc-teal text-[0.7rem] sm:text-xs font-bold uppercase tracking-wider line-clamp-2 leading-tight">{c.role}</span>
+                                        <div className="p-3 text-center border-t border-sayc-teal/40 flex-1 flex flex-col justify-center bg-gradient-to-b from-[#0a1536] to-black">
+                                            <h3 className="text-white font-extrabold text-[0.85rem] sm:text-[0.95rem] leading-tight mb-1 truncate px-1">{c.firstName} {c.nomSpecifiqueUnique}</h3>
+                                            <div className="w-8 h-[2px] bg-sayc-teal mx-auto mb-1" />
+                                            <span className="text-sayc-teal/90 text-[0.65rem] sm:text-[0.7rem] font-bold uppercase tracking-wider line-clamp-2 leading-[1.1]">{c.role}</span>
                                         </div>
                                     </div>
                                 ))}
