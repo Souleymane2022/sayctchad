@@ -226,7 +226,7 @@ export default function ElectionPosters() {
                             <div className="absolute bottom-0 left-0 w-full h-[500px] bg-gradient-to-t from-accent/10 to-transparent z-0 opacity-50" />
 
                             {/* Text Content Block (Left absolute) */}
-                            <div className="absolute left-0 top-0 w-[600px] h-[1080px] p-16 pt-14 z-20 flex flex-col justify-between">
+                            <div className="absolute left-0 top-0 w-[540px] h-[1080px] p-16 pt-14 pr-4 z-20 flex flex-col justify-between">
                                 {/* Triple Logo Row */}
                                 <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)] w-fit mt-4">
                                     <div className="h-14 w-auto bg-white p-2 rounded-xl shadow-inner flex items-center justify-center">
@@ -247,14 +247,14 @@ export default function ElectionPosters() {
                                             Candidat Officiel
                                         </div>
                                     </div>
-                                    <h1 className="text-[6.5rem] font-black font-heading leading-[0.9] drop-shadow-2xl text-white">
+                                    <h1 className="text-[5.2rem] font-black font-heading leading-[1] drop-shadow-2xl text-white break-words">
                                         {candidate.firstName.toUpperCase()} <br/>
                                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-accent">{candidate.nomSpecifiqueUnique.toUpperCase()}</span>
                                     </h1>
                                     
-                                    <div className="bg-white/5 backdrop-blur-sm border-l-4 border-accent p-6 rounded-r-2xl mt-6 w-[120%]">
-                                        <p className="text-2xl text-white/60 font-medium uppercase tracking-widest text-sm mb-2">Visant le poste de</p>
-                                        <p className="text-4xl font-extrabold text-white leading-[1.1]">{candidate.role}</p>
+                                    <div className="bg-white/5 backdrop-blur-sm border-l-4 border-accent p-6 rounded-r-2xl mt-6 w-full">
+                                        <p className="text-xl text-white/60 font-medium uppercase tracking-widest mb-2">Visant le poste de</p>
+                                        <p className="text-3xl font-extrabold text-white leading-[1.1] pr-2">{candidate.role}</p>
                                     </div>
                                 </div>
 
@@ -273,7 +273,7 @@ export default function ElectionPosters() {
                             </div>
 
                             {/* Image Content absolute (Right Side) */}
-                            <div className="absolute right-10 bottom-14 w-[430px] h-[850px] z-10 flex">
+                            <div className="absolute right-10 bottom-14 w-[460px] h-[850px] z-10 flex">
                                 {/* Premium Glass Image Frame */}
                                 <div className="w-full h-full relative rounded-[40px] overflow-hidden shadow-[0_30px_80px_-15px_rgba(0,0,0,0.8)] bg-sidebar">
                                     {/* Subtle glowing animated border effect using gradients */}
