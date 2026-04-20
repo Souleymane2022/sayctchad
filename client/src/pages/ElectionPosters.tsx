@@ -421,9 +421,13 @@ export default function ElectionPosters() {
                     <Textarea 
                         value={campaignQuote}
                         onChange={(e) => setCampaignQuote(e.target.value)}
-                        placeholder="Entrez le slogan du candidat ici..."
-                        className="min-h-[140px] resize-none mb-6 text-base shadow-inner bg-slate-50 border-slate-300 focus-visible:ring-sayc-teal"
+                        placeholder="Entrez le slogan (Max 250 caractères)..."
+                        maxLength={250}
+                        className="min-h-[140px] resize-none mb-2 text-base shadow-inner bg-slate-50 border-slate-300 focus-visible:ring-sayc-teal"
                     />
+                    <p className="text-xs text-slate-500 mb-6 text-right font-medium">
+                        {campaignQuote.length}/250 caractères (la taille s'ajuste dynamiquement)
+                    </p>
 
                     <Button 
                         onClick={() => {
@@ -476,10 +480,15 @@ export default function ElectionPosters() {
                                     <span className="font-black text-2xl tracking-[0.2em]">ÉLECTIONS 2026</span>
                                 </div>
 
-                                {/* Quote area (Left) */}
-                                <div className="absolute top-[280px] left-16 w-[600px] z-30 flex flex-col">
-                                    <Quote className="w-32 h-32 text-accent/80 mb-6 drop-shadow-2xl" />
-                                    <h2 className="text-[3.5rem] font-bold text-white font-heading leading-[1.3] drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] break-words break-all-words whitespace-pre-wrap">
+                                {/* Quote area (Left) constraining it to a box so it never hits the footer */}
+                                <div className="absolute top-[220px] left-16 w-[620px] h-[520px] z-30 flex flex-col justify-center">
+                                    <Quote className="w-24 h-24 text-accent/80 mb-4 drop-shadow-2xl shrink-0" />
+                                    <h2 className={`font-bold text-white font-heading drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] break-words break-all-words whitespace-pre-wrap overflow-hidden ${
+                                        campaignQuote.length < 60 ? 'text-[4.2rem] leading-[1.2]' :
+                                        campaignQuote.length < 110 ? 'text-[3.2rem] leading-[1.25]' :
+                                        campaignQuote.length < 180 ? 'text-[2.6rem] leading-[1.3]' :
+                                        'text-[2.2rem] leading-[1.3]'
+                                    }`}>
                                         "{campaignQuote}"
                                     </h2>
                                 </div>
