@@ -87,6 +87,14 @@ export default function ElectionPosters() {
                   : "grid-cols-3 gap-6";
   const cardHeightClass = candidates.length > 12 ? "h-40" : "h-56";
 
+  // Grouper les candidats par rôle pour les affiches par poste
+  const candidatesByRole = candidates?.reduce((acc, candidate) => {
+    const roleKey = candidate.role.trim();
+    if (!acc[roleKey]) acc[roleKey] = [];
+    acc[roleKey].push(candidate);
+    return acc;
+  }, {} as Record<string, ElectionCandidate[]>) || {};
+
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 pb-20">
       <SEOHead title="Générateur d'Affiches - Élections" path="/elections/posters" />
@@ -181,6 +189,87 @@ export default function ElectionPosters() {
             </div>
           </div>
         </div>
+
+        {/* Section Affiches par Poste */}
+        {Object.keys(candidatesByRole).length > 0 && (
+        <div className="space-y-6">
+          <div className="bg-white p-4 rounded-xl border shadow-sm">
+            <h2 className="text-2xl font-bold text-sidebar flex items-center gap-2">
+              <Users className="w-6 h-6 text-accent" /> Affiches par Poste (1080x1080)
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12">
+            {Object.entries(candidatesByRole).map(([role, roleCandidates], idx) => {
+              const safeRoleId = `role-${idx}`;
+              return (
+              <Card key={idx} className="p-6 overflow-hidden bg-slate-200 border-4 border-slate-300 shadow-xl flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                    <h3 className="font-bold text-xl text-slate-700">Poste : {role}</h3>
+                    <Button 
+                        onClick={() => downloadPoster(safeRoleId, `Affiche_Poste_${role.replace(/[^a-z0-9]/gi, '_')}.png`, safeRoleId)}
+                        disabled={downloadingId === safeRoleId}
+                        className="bg-accent hover:bg-accent/90 text-white shadow-lg transition-all"
+                    >
+                        {downloadingId === safeRoleId ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
+                        Télécharger
+                    </Button>
+                </div>
+
+                {/* Conteneur prévisualisation */}
+                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[460px] shadow-inner">
+                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'top center', width: '1080px', height: '1080px' }}>
+                        <div id={safeRoleId} className="w-[1080px] h-[1080px] bg-[#0a1536] relative overflow-hidden flex flex-col items-center justify-between py-12">
+                            {/* Graphic elements */}
+                            <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-sayc-teal/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen" />
+                            <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-accent/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 z-0 mix-blend-screen" />
+                            
+                            {/* Header */}
+                            <div className="z-10 flex flex-col items-center space-y-6 w-full px-16">
+                                <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl">
+                                    <div className="h-12 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
+                                    <div className="h-12 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
+                                    <div className="h-12 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
+                                </div>
+                                <div className="text-center">
+                                    <span className="text-sayc-teal font-extrabold tracking-[0.3em] uppercase text-xl">Candidats au poste de</span>
+                                    <h1 className="text-[3.5rem] font-black text-white font-heading leading-tight drop-shadow-2xl mt-2 break-words max-w-[900px] mx-auto line-clamp-2">
+                                        {role.toUpperCase()}
+                                    </h1>
+                                </div>
+                            </div>
+                            
+                            {/* Candidates flex grid */}
+                            <div className="flex flex-wrap items-center justify-center gap-10 z-10 w-full px-12 my-auto">
+                                {roleCandidates.slice(0, 6).map(c => (
+                                    <div key={c.id} className="w-[270px] bg-sidebar rounded-[2rem] overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col">
+                                        <div className="h-[280px] relative">
+                                            <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top opacity-100" />
+                                        </div>
+                                        <div className="p-5 text-center border-t border-sayc-teal/40 bg-gradient-to-b from-[#0a1536] to-black min-h-[90px] flex items-center justify-center">
+                                            <h3 className="text-white font-extrabold text-[1.2rem] leading-[1.2] line-clamp-2">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Footer */}
+                            <div className="z-10 w-full px-16 flex items-center justify-between pt-6 border-t border-white/10">
+                                <div className="flex items-center gap-4 text-white">
+                                    <VoteIcon />
+                                    <span className="text-[1.4rem] font-bold uppercase tracking-wider">Élections 2024</span>
+                                </div>
+                                <p className="text-[1.8rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">WWW.SAYCTCHAD.ORG</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              </Card>
+              );
+            })}
+          </div>
+        </div>
+        )}
 
         {/* Section Affiches Individuelles */}
         <div className="space-y-6">
