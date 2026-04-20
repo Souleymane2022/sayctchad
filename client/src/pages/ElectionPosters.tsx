@@ -98,7 +98,7 @@ export default function ElectionPosters() {
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 pb-20">
-      <SEOHead title="Générateur d'Affiches - Élections" path="/elections/posters" />
+      <SEOHead title="Générateur d'Affiches Électorales | SAYC Tchad" path="/elections/posters" description="Générateur d'affiches des candidats pour les élections" />
       
       <div className="max-w-7xl mx-auto space-y-12">
         <div className="text-center space-y-4">

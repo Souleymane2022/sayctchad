@@ -1556,6 +1556,57 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
+function ElectionVotesHistory() {
+  const { data: votes = [], isLoading } = useQuery<any[]>({
+    queryKey: ["/api/admin/elections/votes"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/elections/votes", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch votes");
+      return res.json();
+    },
+  });
+
+  if (isLoading) return <LoadingTable />;
+
+  return (
+    <div className="space-y-4 pt-4">
+      <h3 className="text-lg font-semibold flex items-center gap-2">
+        <Award className="w-5 h-5 text-sayc-teal" /> Registre détaillé des votes
+      </h3>
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Votant (ID - Email)</TableHead>
+              <TableHead>Candidat Choisi</TableHead>
+              <TableHead>Poste Électif</TableHead>
+              <TableHead>Date et Heure du Vote</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {votes.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground py-8">Aucun vote enregistré pour le moment.</TableCell>
+              </TableRow>
+            ) : (
+              votes.map((v) => (
+                <TableRow key={v.id}>
+                  <TableCell className="font-mono text-xs">{v.voterId}</TableCell>
+                  <TableCell className="font-medium text-[#1e3a8a]">{v.candidateFirstName} {v.candidateLastName}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="bg-yellow-50">{v.role}</Badge>
+                  </TableCell>
+                  <TableCell>{new Date(v.createdAt).toLocaleString("fr-FR")}</TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
 function ElectionCandidatesTab() {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -1621,14 +1672,21 @@ function ElectionCandidatesTab() {
   });
 
   return (
-    <div className="space-y-8">
+    <Tabs defaultValue="candidates" className="space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <h2 className="text-2xl font-bold text-[#1e3a8a]">{t("admin.elections.title")}</h2>
-        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-          {t("admin.elections.total_applications", { count: candidates.length })}
-        </Badge>
+        <div className="flex items-center gap-4 flex-wrap">
+          <TabsList>
+            <TabsTrigger value="candidates">Candidats</TabsTrigger>
+            <TabsTrigger value="votes">Historique des Votes</TabsTrigger>
+          </TabsList>
+          <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+            {t("admin.elections.total_applications", { count: candidates.length })}
+          </Badge>
+        </div>
       </div>
 
+      <TabsContent value="candidates" className="space-y-8">
       {/* Results Summary */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
@@ -1774,7 +1832,11 @@ function ElectionCandidatesTab() {
           </Table>
         </div>
       </div>
-    </div>
+      </TabsContent>
+      <TabsContent value="votes">
+        <ElectionVotesHistory />
+      </TabsContent>
+    </Tabs>
   );
 }
 

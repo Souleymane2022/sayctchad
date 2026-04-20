@@ -898,6 +898,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  app.get("/api/admin/elections/votes", requireAdmin, async (_req, res) => {
+    try {
+      const votes = await storage.getAllVotesWithDetails();
+      res.json(votes);
+    } catch (error: any) {
+      console.error("Error fetching votes:", error);
+      res.status(500).json({ error: "Erreur serveur", details: error.message });
+    }
+  });
+
   app.patch("/api/admin/elections/candidates/:id/status", requireAdmin, async (req, res) => {
     try {
       const { status } = req.body;

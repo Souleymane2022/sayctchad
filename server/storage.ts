@@ -105,6 +105,7 @@ export interface IStorage {
   hasVoted(voterId: string, role: string): Promise<boolean>;
   getVotesForRole(role: string): Promise<ElectionVote[]>;
   getVotedRoles(voterId: string): Promise<string[]>;
+  getAllVotesWithDetails(): Promise<any[]>;
   generateMissingMembershipIds(): Promise<number>;
   getGalleryMembers(options: { page: number, limit: number, search?: string }): Promise<{ members: Member[], total: number, totalPages: number }>;
 }
@@ -523,6 +524,22 @@ export class DatabaseStorage implements IStorage {
   async getVotedRoles(voterId: string): Promise<string[]> {
     const rows = await neonSql`SELECT role FROM election_votes WHERE voter_id = ${voterId}`;
     return rows.map((r: any) => r.role);
+  }
+
+  async getAllVotesWithDetails(): Promise<any[]> {
+    const rows = await neonSql`
+      SELECT 
+        v.id, 
+        v.voter_id as "voterId", 
+        v.role, 
+        v.created_at as "createdAt",
+        c.first_name as "candidateFirstName", 
+        c.last_name as "candidateLastName"
+      FROM election_votes v
+      LEFT JOIN election_candidates c ON v.candidate_id = c.id
+      ORDER BY v.created_at DESC
+    `;
+    return rows;
   }
 
   async generateMissingMembershipIds(): Promise<number> {
