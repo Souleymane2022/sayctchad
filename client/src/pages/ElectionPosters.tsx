@@ -481,13 +481,13 @@ export default function ElectionPosters() {
                                 </div>
 
                                 {/* Quote area (Left) constraining it to a box so it never hits the footer */}
-                                <div className="absolute top-[220px] left-16 w-[620px] h-[520px] z-30 flex flex-col justify-center">
-                                    <Quote className="w-24 h-24 text-accent/80 mb-4 drop-shadow-2xl shrink-0" />
+                                <div className="absolute top-[200px] left-16 w-[580px] h-[380px] z-30 flex flex-col justify-center">
+                                    <Quote className="w-20 h-20 text-accent/80 mb-2 drop-shadow-2xl shrink-0" />
                                     <h2 className={`font-bold text-white font-heading drop-shadow-[0_10px_10px_rgba(0,0,0,0.8)] break-words break-all-words whitespace-pre-wrap overflow-hidden ${
-                                        campaignQuote.length < 60 ? 'text-[4.2rem] leading-[1.2]' :
-                                        campaignQuote.length < 110 ? 'text-[3.2rem] leading-[1.25]' :
-                                        campaignQuote.length < 180 ? 'text-[2.6rem] leading-[1.3]' :
-                                        'text-[2.2rem] leading-[1.3]'
+                                        campaignQuote.length < 60 ? 'text-[3.5rem] leading-[1.2]' :
+                                        campaignQuote.length < 110 ? 'text-[2.8rem] leading-[1.25]' :
+                                        campaignQuote.length < 180 ? 'text-[2.2rem] leading-[1.3]' :
+                                        'text-[1.7rem] leading-[1.3]'
                                     }`}>
                                         "{campaignQuote}"
                                     </h2>
