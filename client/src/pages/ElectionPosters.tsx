@@ -195,7 +195,7 @@ export default function ElectionPosters() {
         <div className="space-y-6">
           <div className="bg-white p-4 rounded-xl border shadow-sm">
             <h2 className="text-2xl font-bold text-sidebar flex items-center gap-2">
-              <Users className="w-6 h-6 text-accent" /> Affiches par Poste (1080x1080)
+              <Users className="w-6 h-6 text-accent" /> Affiches par Poste (1080x1350)
             </h2>
           </div>
 
@@ -217,9 +217,9 @@ export default function ElectionPosters() {
                 </div>
 
                 {/* Conteneur prévisualisation */}
-                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[460px] shadow-inner">
-                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'top center', width: '1080px', height: '1080px' }}>
-                        <div id={safeRoleId} className="w-[1080px] h-[1080px] bg-[#0a1536] relative overflow-hidden flex flex-col items-center justify-between py-12">
+                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[556px] shadow-inner">
+                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'top center', width: '1080px', height: '1350px' }}>
+                        <div id={safeRoleId} className="w-[1080px] h-[1350px] bg-[#0a1536] relative overflow-hidden flex flex-col items-center justify-between py-16">
                             {/* Graphic elements */}
                             <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-sayc-teal/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen" />
                             <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-accent/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 z-0 mix-blend-screen" />
@@ -233,31 +233,31 @@ export default function ElectionPosters() {
                                 </div>
                                 <div className="text-center">
                                     <span className="text-sayc-teal font-extrabold tracking-[0.3em] uppercase text-xl">Candidats au poste de</span>
-                                    <h1 className="text-[3.5rem] font-black text-white font-heading leading-tight drop-shadow-2xl mt-2 break-words max-w-[900px] mx-auto line-clamp-2">
+                                    <h1 className="text-[3.2rem] font-black text-white font-heading leading-tight drop-shadow-2xl mt-4 break-words max-w-[950px] mx-auto">
                                         {role.toUpperCase()}
                                     </h1>
                                 </div>
                             </div>
                             
                             {/* Candidates flex grid */}
-                            <div className="flex flex-wrap items-center justify-center gap-10 z-10 w-full px-12 my-auto">
-                                {roleCandidates.slice(0, 6).map(c => (
-                                    <div key={c.id} className="w-[270px] bg-sidebar rounded-[2rem] overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col">
-                                        <div className="h-[280px] relative">
+                            <div className="flex flex-wrap items-center justify-center gap-10 z-10 w-full px-10 my-auto">
+                                {roleCandidates.slice(0, 10).map(c => (
+                                    <div key={c.id} className="w-[280px] bg-sidebar rounded-[2rem] overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col shrink-0">
+                                        <div className="h-[300px] relative">
                                             <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top opacity-100" />
                                         </div>
-                                        <div className="p-5 text-center border-t border-sayc-teal/40 bg-gradient-to-b from-[#0a1536] to-black min-h-[90px] flex items-center justify-center">
-                                            <h3 className="text-white font-extrabold text-[1.2rem] leading-[1.2] line-clamp-2">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
+                                        <div className="p-6 text-center border-t border-sayc-teal/40 bg-gradient-to-b from-[#0a1536] to-black min-h-[110px] flex items-center justify-center">
+                                            <h3 className="text-white font-extrabold text-[1.2rem] leading-[1.3] break-words">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                             
                             {/* Footer */}
-                            <div className="z-10 w-full px-16 flex items-center justify-between pt-6 border-t border-white/10">
+                            <div className="z-10 w-full px-16 flex items-center justify-between pt-6 border-t border-white/10 mt-auto">
                                 <div className="flex items-center gap-4 text-white">
                                     <VoteIcon />
-                                    <span className="text-[1.4rem] font-bold uppercase tracking-wider">Élections 2024</span>
+                                    <span className="text-[1.4rem] font-bold uppercase tracking-wider">Élections 2026</span>
                                 </div>
                                 <p className="text-[1.8rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">WWW.SAYCTCHAD.ORG</p>
                             </div>
@@ -370,7 +370,7 @@ export default function ElectionPosters() {
                                     
                                     {/* Overlay aesthetic badge */}
                                     <div className="absolute bottom-10 -right-5 bg-white text-sidebar font-black uppercase tracking-widest px-8 py-3 -rotate-90 origin-bottom-right shadow-2xl rounded-t-xl text-[1.2rem]">
-                                        ÉLECTIONS '24
+                                        ÉLECTIONS '26
                                     </div>
                                 </div>
                             </div>
