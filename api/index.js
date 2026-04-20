@@ -38264,11 +38264,13 @@ var init_drizzle_zod = __esm({
 var schema_exports = {};
 __export(schema_exports, {
   achievements: () => achievements,
+  awsRestartApplications: () => awsRestartApplications,
   contactMessages: () => contactMessages,
   electionCandidates: () => electionCandidates,
   electionVotes: () => electionVotes,
   events: () => events,
   insertAchievementSchema: () => insertAchievementSchema,
+  insertAwsRestartApplicationSchema: () => insertAwsRestartApplicationSchema,
   insertCandidateSchema: () => insertCandidateSchema,
   insertContactMessageSchema: () => insertContactMessageSchema,
   insertEventSchema: () => insertEventSchema,
@@ -38290,7 +38292,7 @@ __export(schema_exports, {
   trainings: () => trainings,
   users: () => users
 });
-var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema;
+var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, insertAwsRestartApplicationSchema;
 var init_schema2 = __esm({
   "shared/schema.ts"() {
     "use strict";
@@ -38554,6 +38556,36 @@ var init_schema2 = __esm({
       createdAt: timestamp("created_at").defaultNow()
     });
     insertVoteSchema = createInsertSchema(electionVotes).omit({
+      id: true,
+      createdAt: true
+    });
+    awsRestartApplications = pgTable("aws_restart_applications", {
+      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      fullName: text("full_name").notNull(),
+      gender: text("gender").notNull(),
+      dateOfBirth: text("date_of_birth").notNull(),
+      city: text("city").notNull(),
+      phone: text("phone").notNull(),
+      email: text("email").notNull(),
+      professionalStatus: text("professional_status").notNull(),
+      hasDisability: text("has_disability").notNull(),
+      motivation: text("motivation").notNull(),
+      fullTimeCommitment: boolean("full_time_commitment").notNull(),
+      status: text("status").notNull().default("pending"),
+      cohort: text("cohort").notNull().default("Tchad 2024"),
+      createdAt: timestamp("created_at").defaultNow()
+    });
+    insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {
+      fullName: z.string().min(1, "Nom complet requis"),
+      gender: z.string().min(1, "Sexe requis"),
+      dateOfBirth: z.string().min(1, "Date de naissance requise"),
+      city: z.string().min(1, "Ville requise"),
+      phone: z.string().min(1, "Num\xE9ro de t\xE9l\xE9phone requis"),
+      email: z.string().email("Email invalide").min(1, "Email requis"),
+      professionalStatus: z.string().min(1, "Statut professionnel requis"),
+      hasDisability: z.string().min(1, "Veuillez r\xE9pondre \xE0 cette question"),
+      motivation: z.string().min(1, "Motivation requise")
+    }).omit({
       id: true,
       createdAt: true
     });
@@ -64213,6 +64245,35 @@ var DatabaseStorage = class {
   async getAllMembers() {
     return db.select().from(members).orderBy(desc(members.createdAt));
   }
+  async getGalleryMembers(options) {
+    const { page, limit, search } = options;
+    const offset = (page - 1) * limit;
+    let filters = and(
+      isNotNull(members.photoUrl),
+      sql`${members.photoUrl} != ''`
+    );
+    if (search && search.trim() !== "") {
+      const searchTerm = `%${search.trim().toLowerCase()}%`;
+      filters = and(
+        filters,
+        or(
+          sql`lower(${members.firstName}) ilike ${searchTerm}`,
+          sql`lower(${members.nomSpecifiqueUnique}) ilike ${searchTerm}`,
+          sql`lower(${members.membershipId}) ilike ${searchTerm}`,
+          sql`lower(${members.city}) ilike ${searchTerm}`
+        )
+      );
+    }
+    const countResult = await db.select({ count: sql`count(*)` }).from(members).where(filters);
+    const total = Number(countResult[0]?.count || 0);
+    const totalPages = Math.ceil(total / limit);
+    const galleryMembers = await db.select().from(members).where(filters).limit(limit).offset(offset).orderBy(desc(members.createdAt));
+    return {
+      members: galleryMembers,
+      total,
+      totalPages
+    };
+  }
   async updateMemberPhoto(membershipId, email, photoUrl) {
     const [updated] = await db.update(members).set({ photoUrl }).where(sql`${members.membershipId} = ${membershipId.trim()} AND lower(${members.email}) = lower(${email.trim()})`).returning();
     return updated;
@@ -64381,6 +64442,17 @@ var DatabaseStorage = class {
     const [updated] = await db.update(thunderbirdApplications).set({ status }).where(eq(thunderbirdApplications.id, id)).returning();
     return updated;
   }
+  async createAwsRestartApplication(application) {
+    const [newApp] = await db.insert(awsRestartApplications).values(application).returning();
+    return newApp;
+  }
+  async getAwsRestartApplicationByEmail(email) {
+    const [app2] = await db.select().from(awsRestartApplications).where(eq(awsRestartApplications.email, email));
+    return app2;
+  }
+  async getAllAwsRestartApplications() {
+    return db.select().from(awsRestartApplications).orderBy(desc(awsRestartApplications.createdAt));
+  }
   mapCandidateRow(row) {
     return {
       id: row.id,
@@ -64456,6 +64528,21 @@ var DatabaseStorage = class {
   async getVotedRoles(voterId) {
     const rows = await sql2`SELECT role FROM election_votes WHERE voter_id = ${voterId}`;
     return rows.map((r) => r.role);
+  }
+  async getAllVotesWithDetails() {
+    const rows = await sql2`
+      SELECT 
+        v.id, 
+        v.voter_id as "voterId", 
+        v.role, 
+        v.created_at as "createdAt",
+        c.first_name as "candidateFirstName", 
+        c.last_name as "candidateLastName"
+      FROM election_votes v
+      LEFT JOIN election_candidates c ON v.candidate_id = c.id
+      ORDER BY v.created_at DESC
+    `;
+    return rows;
   }
   async generateMissingMembershipIds() {
     console.log("Starting membership ID generation...");
@@ -65697,6 +65784,19 @@ async function registerRoutes(httpServer2, app2) {
       }
     })
   );
+  app2.get("/api/admin/test-email", requireAdmin, async (_req, res) => {
+    try {
+      const result = await debugSmtpConnection();
+      res.json({
+        timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+        smtpUser: process.env.SMTP_USER || "NOT SET",
+        smtpPassPresent: !!process.env.SMTP_PASS,
+        result
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
   app2.get("/sitemap.xml", async (_req, res) => {
     const baseUrl = "https://sayctchad.org";
     const pages = [
@@ -65818,6 +65918,28 @@ L'\xE9quipe SAYC Tchad`
     } catch (error) {
       console.error("Error fetching members:", error);
       res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des membres" });
+    }
+  });
+  app2.get("/api/members/gallery", async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 24;
+      const search = req.query.search || "";
+      const result = await storage.getGalleryMembers({ page, limit, search });
+      res.json(result);
+    } catch (error) {
+      console.error("Error fetching gallery members:", error);
+      res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration de la galerie" });
+    }
+  });
+  app2.get("/api/members/stats", async (_req, res) => {
+    try {
+      const allMembers = await storage.getAllMembers();
+      const withPhoto = allMembers.filter((m2) => m2.photoUrl && m2.photoUrl.trim() !== "").length;
+      res.json({ total: allMembers.length, withPhoto });
+    } catch (error) {
+      console.error("Error fetching member stats:", error);
+      res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des statistiques" });
     }
   });
   app2.post("/api/contact", apiLimiter, async (req, res) => {
@@ -66092,6 +66214,58 @@ L'\xE9quipe SAYC Tchad`
       res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des candidatures." });
     }
   });
+  app2.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
+    try {
+      const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
+      const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);
+      if (existingApp) {
+        return res.status(400).json({ error: "Une candidature avec cet email a d\xE9j\xE0 \xE9t\xE9 enregistr\xE9e pour ce programme." });
+      }
+      const application = await storage.createAwsRestartApplication(validatedData);
+      sendNotificationEmail(
+        "Nouvelle Candidature AWS re/Start - SAYC Tchad",
+        `Nouvelle candidature AWS re/Start de ${application.fullName} (${application.email}).
+T\xE9l\xE9phone: ${application.phone}
+Ville: ${application.city}
+Date de naissance: ${application.dateOfBirth}
+Sexe: ${application.gender}
+Statut professionnel: ${application.professionalStatus}
+Handicap: ${application.hasDisability}
+Engagement temps plein: ${application.fullTimeCommitment ? "Oui" : "Non"}
+
+Motivation: ${application.motivation}`
+      );
+      sendAutoReplyEmail(
+        application.email,
+        "Confirmation de r\xE9ception de votre candidature AWS re/Start",
+        `Bonjour ${application.fullName},
+
+Nous avons bien re\xE7u votre candidature pour le programme AWS re/Start organis\xE9 en partenariat avec Smart Africa Youth Chapter Tchad.
+
+Notre \xE9quipe examinera votre profil et vous tiendra inform\xE9(e) de la suite du processus.
+
+Cordialement,
+
+L'\xE9quipe SAYC Tchad`
+      );
+      res.status(201).json(application);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
+      }
+      console.error("Error creating AWS re/Start application:", error);
+      res.status(500).json({ error: "Erreur lors de l'enregistrement de votre candidature." });
+    }
+  });
+  app2.get("/api/admin/aws-restart-applications", requireAdmin, async (_req, res) => {
+    try {
+      const applications = await storage.getAllAwsRestartApplications();
+      res.json(applications);
+    } catch (error) {
+      console.error("Error fetching AWS re/Start applications:", error);
+      res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des candidatures AWS re/Start." });
+    }
+  });
   app2.get("/robots.txt", (req, res) => {
     const baseUrl = `${req.protocol}://${req.get("host")}`;
     const robotsTxt = `User-agent: *
@@ -66289,7 +66463,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     try {
       const validatedData = insertCandidateSchema.parse(req.body);
       const candidate = await storage.createCandidate(validatedData);
-      await sendNotificationEmail(
+      sendNotificationEmail(
         "Nouvelle Candidature Election - SAYC Tchad",
         `Nouvelle candidature de ${candidate.firstName} ${candidate.nomSpecifiqueUnique} pour le poste de ${candidate.role}.
 Email: ${candidate.email}`
@@ -66383,6 +66557,15 @@ Email: ${candidate.email}`
       res.json(candidates);
     } catch (error) {
       console.error("Error fetching candidates:", error);
+      res.status(500).json({ error: "Erreur serveur", details: error.message });
+    }
+  });
+  app2.get("/api/admin/elections/votes", requireAdmin, async (_req, res) => {
+    try {
+      const votes = await storage.getAllVotesWithDetails();
+      res.json(votes);
+    } catch (error) {
+      console.error("Error fetching votes:", error);
       res.status(500).json({ error: "Erreur serveur", details: error.message });
     }
   });
