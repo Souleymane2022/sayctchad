@@ -81,11 +81,12 @@ export default function ElectionPosters() {
   }
 
   // Calcul du nombre optimal de colonnes pour l'affiche de groupe
-  // Si plus de 12 candidats, 4 colonnes. 9-12 : 4 colonnes mais plus grand. Moins de 9 : 3 colonnes.
-  const colsClass = candidates.length > 12 ? "grid-cols-4 gap-3 lg:gap-4" 
+  // Adapté pour le format 1080x1080 optimal Facebook
+  const colsClass = candidates.length > 15 ? "grid-cols-5 gap-2" 
+                  : candidates.length > 11 ? "grid-cols-4 gap-3 lg:gap-4" 
                   : candidates.length > 8 ? "grid-cols-4 gap-5" 
                   : "grid-cols-3 gap-6";
-  const cardHeightClass = candidates.length > 12 ? "h-40" : "h-56";
+  const cardHeightClass = candidates.length > 15 ? "h-28" : candidates.length > 11 ? "h-32" : "h-40";
 
   // Grouper les candidats par rôle pour les affiches par poste
   const candidatesByRole = candidates?.reduce((acc, candidate) => {
@@ -121,16 +122,16 @@ export default function ElectionPosters() {
                 className="bg-sayc-teal hover:bg-sayc-teal/90 text-white shadow-lg w-full sm:w-auto"
             >
               {downloadingId === 'group' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
-              Télécharger l'Affiche Complète (1080x1350)
+              Télécharger l'Affiche Complète (1080x1080)
             </Button>
           </div>
 
           <div className="overflow-hidden pb-8 flex justify-center">
-            <div className="bg-slate-200 border-8 border-slate-300 rounded-xl shadow-2xl overflow-hidden flex items-start justify-start" style={{ width: '448px', height: '640px' }}>
-                <div style={{ transform: 'scale(0.35)', transformOrigin: 'top left', width: '1080px', height: '1920px', margin: '4px' }}>
+            <div className="bg-slate-200 border-8 border-slate-300 rounded-xl shadow-2xl overflow-hidden flex items-start justify-start" style={{ width: '460px', height: '460px' }}>
+                <div style={{ transform: 'scale(0.4)', transformOrigin: 'top left', width: '1080px', height: '1080px', margin: '4px' }}>
                     <div 
                         id="group-poster" 
-                        className="w-[1080px] h-[1920px] bg-gradient-to-br from-sidebar via-[#0a1536] to-black relative overflow-hidden flex flex-col"
+                        className="w-[1080px] h-[1080px] bg-gradient-to-br from-sidebar via-[#0a1536] to-black relative overflow-hidden flex flex-col pt-10"
                     >
                         {/* Glow and Elements */}
                         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sayc-teal/30 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 z-0 mix-blend-screen" />
@@ -139,15 +140,15 @@ export default function ElectionPosters() {
                         <div className="absolute top-1/2 left-1/2 w-[2px] h-full bg-white/5 -translate-x-1/2 z-0" />
                         
                         {/* Header & Logos */}
-                        <div className="p-8 pb-4 z-10 flex flex-col items-center space-y-4">
-                            <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl">
-                                <div className="h-12 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
-                                <div className="h-12 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
-                                <div className="h-12 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
+                        <div className="z-10 flex flex-col items-center space-y-3 w-full px-12">
+                            <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-2 rounded-2xl border border-white/10 shadow-2xl">
+                                <div className="h-10 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
+                                <div className="h-10 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
+                                <div className="h-10 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
                             </div>
 
                             <div className="text-center space-y-1">
-                                <h1 className="text-[3.5rem] font-extrabold text-white font-heading leading-tight drop-shadow-2xl">
+                                <h1 className="text-[3rem] font-extrabold text-white font-heading leading-tight drop-shadow-2xl">
                                     ÉLECTIONS <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-accent">SAYC</span>
                                 </h1>
                                 <p className="text-xl text-white/80 font-medium tracking-widest uppercase mb-1">Nos {candidates.length} candidats officiels</p>
@@ -155,18 +156,18 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Grid of Candidates - Adaptative */}
-                        <div className="flex-1 px-8 z-10 flex flex-col items-center justify-center -mt-2">
+                        <div className="flex-1 px-8 z-10 flex flex-col items-center justify-center my-2 w-full">
                             <div className={`grid ${colsClass} w-full`}>
                                 {/* Afficher jusqu'à 16 ou 20 candidats */}
                                 {candidates.slice(0, 20).map((c) => (
-                                    <div key={c.id} className="group bg-sidebar rounded-xl overflow-hidden shadow-2xl border border-white/20 flex flex-col shrink-0">
+                                    <div key={c.id} className="group bg-sidebar rounded-xl overflow-hidden shadow-xl border border-white/20 flex flex-col shrink-0">
                                         <div className={`${cardHeightClass} relative`}>
                                             <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top opacity-100" />
                                         </div>
-                                        <div className="p-4 text-center border-t border-sayc-teal/40 flex-1 flex flex-col justify-center bg-gradient-to-b from-[#0a1536] to-black min-h-[90px]">
-                                            <h3 className="text-white font-extrabold text-[0.95rem] leading-[1.2] mb-1 break-words">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
-                                            <div className="w-8 h-[2px] bg-sayc-teal mx-auto mb-2" />
-                                            <span className="text-sayc-teal/90 text-[0.7rem] font-bold uppercase tracking-wider line-clamp-2 leading-[1.1]">{c.role}</span>
+                                        <div className="p-3 text-center border-t border-sayc-teal/40 flex-1 flex flex-col justify-center bg-gradient-to-b from-[#0a1536] to-black min-h-[75px]">
+                                            <h3 className="text-white font-extrabold text-[0.85rem] leading-[1.2] mb-1 break-words">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
+                                            <div className="w-6 h-[2px] bg-sayc-teal mx-auto mb-1" />
+                                            <span className="text-sayc-teal/90 text-[0.6rem] font-bold uppercase tracking-wider line-clamp-2 leading-[1.1]">{c.role}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -174,14 +175,14 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Footer */}
-                        <div className="px-10 py-6 z-10 bg-black/40 backdrop-blur-xl border-t border-white/10 flex items-center justify-between mt-auto">
+                        <div className="px-10 py-5 z-10 bg-black/40 backdrop-blur-xl border-t border-white/10 flex items-center justify-between mt-auto">
                             <div className="flex items-center gap-4 text-white">
                                 <VoteIcon />
-                                <span className="text-[1.4rem] font-bold uppercase tracking-wider">Votez pour le changement</span>
+                                <span className="text-[1.2rem] font-bold uppercase tracking-wider">Votez pour le changement - Élections 2026</span>
                             </div>
                             
                             <div className="text-right">
-                                <p className="text-[2rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent drop-shadow-md">WWW.SAYCTCHAD.ORG</p>
+                                <p className="text-[1.6rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent drop-shadow-md">WWW.SAYCTCHAD.ORG</p>
                             </div>
                         </div>
                     </div>
@@ -195,7 +196,7 @@ export default function ElectionPosters() {
         <div className="space-y-6">
           <div className="bg-white p-4 rounded-xl border shadow-sm">
             <h2 className="text-2xl font-bold text-sidebar flex items-center gap-2">
-              <Users className="w-6 h-6 text-accent" /> Affiches par Poste (1080x1350)
+              <Users className="w-6 h-6 text-accent" /> Affiches par Poste (1080x1080)
             </h2>
           </div>
 
@@ -217,9 +218,9 @@ export default function ElectionPosters() {
                 </div>
 
                 {/* Conteneur prévisualisation */}
-                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[640px] shadow-inner">
-                    <div style={{ transform: 'scale(0.35)', transformOrigin: 'top center', width: '1080px', height: '1920px' }}>
-                        <div id={safeRoleId} className="w-[1080px] h-[1920px] bg-[#0a1536] relative overflow-hidden flex flex-col items-center justify-between py-16">
+                <div className="w-full flex justify-center bg-slate-800 rounded-lg overflow-hidden py-4 h-[460px] shadow-inner">
+                    <div style={{ transform: 'scale(0.4)', transformOrigin: 'top center', width: '1080px', height: '1080px' }}>
+                        <div id={safeRoleId} className="w-[1080px] h-[1080px] bg-[#0a1536] relative overflow-hidden flex flex-col items-center justify-between py-12">
                             {/* Graphic elements */}
                             <div className="absolute top-0 left-0 w-[800px] h-[800px] bg-sayc-teal/20 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 z-0 mix-blend-screen" />
                             <div className="absolute bottom-0 right-0 w-[800px] h-[800px] bg-accent/20 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 z-0 mix-blend-screen" />
@@ -227,39 +228,39 @@ export default function ElectionPosters() {
                             {/* Header */}
                             <div className="z-10 flex flex-col items-center space-y-6 w-full px-16">
                                 <div className="flex items-center gap-6 bg-white/5 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl">
-                                    <div className="h-12 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
-                                    <div className="h-12 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
-                                    <div className="h-12 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
+                                    <div className="h-10 bg-white rounded-xl p-2"><img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" /></div>
+                                    <div className="h-10 bg-white rounded-xl p-2"><img src={smartAfricaAllianceLogo} alt="Smart Africa Logo" className="h-full object-contain" /></div>
+                                    <div className="h-10 bg-white rounded-xl p-2"><img src={sadaLogo} alt="SADA Logo" className="h-full object-contain" /></div>
                                 </div>
                                 <div className="text-center">
-                                    <span className="text-sayc-teal font-extrabold tracking-[0.3em] uppercase text-xl">Candidats au poste de</span>
-                                    <h1 className="text-[3.2rem] font-black text-white font-heading leading-tight drop-shadow-2xl mt-4 break-words max-w-[950px] mx-auto">
+                                    <span className="text-sayc-teal font-extrabold tracking-[0.3em] uppercase text-lg">Candidats au poste de</span>
+                                    <h1 className="text-[2.8rem] font-black text-white font-heading leading-tight drop-shadow-2xl mt-1 break-words max-w-[950px] mx-auto">
                                         {role.toUpperCase()}
                                     </h1>
                                 </div>
                             </div>
                             
                             {/* Candidates flex grid */}
-                            <div className="flex flex-wrap items-center justify-center gap-10 z-10 w-full px-10 my-auto">
+                            <div className="flex flex-wrap items-center justify-center gap-6 z-10 w-full px-10 my-auto">
                                 {roleCandidates.slice(0, 10).map(c => (
-                                    <div key={c.id} className="w-[280px] bg-sidebar rounded-[2rem] overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col shrink-0">
-                                        <div className="h-[300px] relative">
+                                    <div key={c.id} className="w-[240px] bg-sidebar rounded-[1.5rem] overflow-hidden shadow-2xl border-2 border-white/20 flex flex-col shrink-0">
+                                        <div className="h-[220px] relative">
                                             <img src={c.photoUrl} alt={c.firstName} className="w-full h-full object-cover object-top opacity-100" />
                                         </div>
-                                        <div className="p-6 text-center border-t border-sayc-teal/40 bg-gradient-to-b from-[#0a1536] to-black min-h-[110px] flex items-center justify-center">
-                                            <h3 className="text-white font-extrabold text-[1.2rem] leading-[1.3] break-words">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
+                                        <div className="p-4 text-center border-t border-sayc-teal/40 bg-gradient-to-b from-[#0a1536] to-black min-h-[90px] flex items-center justify-center">
+                                            <h3 className="text-white font-extrabold text-[1rem] leading-[1.2] break-words">{c.firstName} <br/> {c.nomSpecifiqueUnique}</h3>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                             
                             {/* Footer */}
-                            <div className="z-10 w-full px-16 flex items-center justify-between pt-8 pb-6 border-t border-white/10 mt-auto bg-black/40 backdrop-blur-xl">
+                            <div className="z-10 w-full px-16 flex items-center justify-between pt-6 pb-6 border-t border-white/10 mt-auto bg-black/40 backdrop-blur-xl">
                                 <div className="flex items-center gap-4 text-white">
                                     <VoteIcon />
-                                    <span className="text-[1.4rem] font-bold uppercase tracking-wider">Élections 2026</span>
+                                    <span className="text-[1.2rem] font-bold uppercase tracking-wider">Élections 2026</span>
                                 </div>
-                                <p className="text-[1.8rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">WWW.SAYCTCHAD.ORG</p>
+                                <p className="text-[1.6rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-sayc-teal to-accent">WWW.SAYCTCHAD.ORG</p>
                             </div>
                         </div>
                     </div>
