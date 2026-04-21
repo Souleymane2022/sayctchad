@@ -421,12 +421,12 @@ export default function ElectionPosters() {
                     <Textarea 
                         value={campaignQuote}
                         onChange={(e) => setCampaignQuote(e.target.value)}
-                        placeholder="Entrez le slogan (Max 250 caractères)..."
-                        maxLength={250}
+                        placeholder="Entrez le slogan (Max 500 caractères)..."
+                        maxLength={500}
                         className="min-h-[140px] resize-none mb-2 text-base shadow-inner bg-slate-50 border-slate-300 focus-visible:ring-sayc-teal"
                     />
                     <p className="text-xs text-slate-500 mb-6 text-right font-medium">
-                        {campaignQuote.length}/250 caractères (la taille s'ajuste dynamiquement)
+                        {campaignQuote.length}/500 caractères (la taille s'ajuste dynamiquement)
                     </p>
 
                     <Button 
@@ -487,7 +487,9 @@ export default function ElectionPosters() {
                                         campaignQuote.length < 60 ? 'text-[3.5rem] leading-[1.2]' :
                                         campaignQuote.length < 110 ? 'text-[2.8rem] leading-[1.25]' :
                                         campaignQuote.length < 180 ? 'text-[2.2rem] leading-[1.3]' :
-                                        'text-[1.7rem] leading-[1.3]'
+                                        campaignQuote.length < 300 ? 'text-[1.7rem] leading-[1.3]' :
+                                        campaignQuote.length < 400 ? 'text-[1.4rem] leading-[1.4]' :
+                                        'text-[1.25rem] leading-[1.4]'
                                     }`}>
                                         "{campaignQuote}"
                                     </h2>
