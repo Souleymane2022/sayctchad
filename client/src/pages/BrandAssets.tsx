@@ -137,83 +137,95 @@ export default function BrandAssets() {
                     </div>
                   </div>
 
-                  {/* ALL ELEMENTS RE-POSITIONED MANUALLY FOR PIXEL-PERFECT BALANCE */}
+                  {/* TARGET DESIGN IMPLEMENTATION - EXACTLY AS REQUESTED */}
                   
-                  {/* HUGE Background Logo (The "Cool" SAYC background) */}
-                  <div className="absolute top-[25%] right-[-150px] scale-[4] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
+                  {/* Left Accent Bar */}
+                  <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50 shadow-[10px_0_40px_rgba(234,88,12,0.3)]" />
+
+                  {/* HUGE Background Logo */}
+                  <div className="absolute top-[20%] right-[-200px] scale-[4.5] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
                     <img src={logoSayc} alt="" className="w-[500px]" />
                   </div>
 
-                  {/* Header Branding */}
-                  <div className="absolute top-12 left-24 right-20 flex justify-between items-center z-30">
-                    <div className="bg-white flex items-center gap-8 px-10 py-5 rounded-3xl shadow-2xl border-b-[8px] border-orange-600">
+                  {/* HEADER AREA */}
+                  <div className="absolute top-12 left-24 right-16 flex justify-between items-start z-30">
+                    <div className="bg-white flex items-center gap-8 px-10 py-5 rounded-3xl shadow-2xl">
                        <img src={logoSayc} alt="SAYC" className="h-[55px]" />
                        <div className="w-[1px] h-10 bg-slate-200" />
                        <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" />
                        <div className="w-[1px] h-10 bg-slate-200" />
                        <img src={sadaLogo} alt="SADA" className="h-[50px]" />
                     </div>
-                    <div className="text-right">
-                       <p className="text-orange-500 font-black text-2xl tracking-[0.3em] uppercase mb-1">Session 2026</p>
-                       <div className="h-1 w-32 bg-orange-600 ml-auto rounded-full" />
+                    <div className="bg-[#e65100] px-10 py-6 rounded-3xl shadow-2xl border-b-8 border-black/20">
+                       <p className="text-white font-black text-[2.2rem] leading-[1.0] uppercase italic tracking-tighter">
+                          FORMATION <br/> AWS
+                       </p>
                     </div>
                   </div>
 
-                  {/* Subtitle Box */}
-                  <div className="absolute top-[200px] left-24 right-20 flex items-center gap-6 z-20">
-                     <p className="text-white/40 font-bold uppercase tracking-[0.5em] text-xl">Smart Africa Academy</p>
-                     <div className="h-[1px] flex-1 bg-white/10" />
+                  {/* SUBTITLE */}
+                  <div className="absolute top-[210px] left-24 z-20">
+                     <div className="px-8 py-3 border-2 border-orange-600/50 rounded-full inline-block">
+                        <p className="text-orange-500 font-black text-2xl uppercase tracking-[0.3em]">
+                           PROCHAINEMENT AU TCHAD
+                        </p>
+                     </div>
                   </div>
 
-                  {/* Main Title Stack */}
-                  <div className="absolute top-[270px] left-24 z-20 flex flex-col gap-0">
-                     <h1 className="text-[100px] font-black text-white leading-none tracking-tighter m-0 uppercase">
+                  {/* MAIN TITLE */}
+                  <div className="absolute top-[300px] left-24 z-20">
+                     <h1 className="text-[115px] font-black text-white leading-none tracking-tighter m-0 uppercase">
                         LANCEZ VOTRE
                      </h1>
-                     <h1 className="text-[145px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[20px]">
+                     <h1 className="text-[155px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[10px]">
                         CARRIÈRE
                      </h1>
-                     <h1 className="text-[195px] font-black text-orange-600 leading-none tracking-[-0.05em] m-0 uppercase mt-[10px]">
+                     <h1 className="text-[175px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
                         CLOUD
                      </h1>
                   </div>
 
-                  {/* Program Badge */}
-                  <div className="absolute top-[700px] left-24 flex items-center gap-10 z-20">
-                     <div className="px-10 py-5 bg-orange-600 text-white rounded-2xl font-black text-4xl uppercase tracking-widest shadow-2xl">
-                        AWS re/Start
+                  {/* TWO COLUMNS SECTION */}
+                  <div className="absolute top-[660px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
+                     {/* Left Column: Le Programme */}
+                     <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl">
+                        <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest mb-6 italic">LE PROGRAMME</h3>
+                        <p className="text-white/80 text-2xl font-bold leading-[1.4]">
+                           Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS) et les métiers du futur.
+                        </p>
                      </div>
-                     <div className="w-[4px] h-16 bg-white/20" />
-                     <p className="text-white font-bold text-3xl italic tracking-tight leading-tight">
-                        Formation Certifiante <br/> 100% Gratuite
-                     </p>
+
+                     {/* Right Column: Skills Stack */}
+                     <div className="flex flex-col gap-4">
+                        {[
+                           "CLOUD ARCHITECTURE",
+                           "PYTHON & LINUX",
+                           "NETWORKING & SECURITY",
+                           "DATABASE MANAGEMENT"
+                        ].map((skill, i) => (
+                           <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/10 flex items-center gap-6">
+                              <div className="w-4 h-4 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
+                              <span className="text-white font-black text-2xl tracking-tight uppercase">{skill}</span>
+                           </div>
+                        ))}
+                     </div>
                   </div>
 
-                  {/* Info Grid */}
-                  <div className="absolute top-[840px] left-24 right-24 grid grid-cols-3 gap-10 z-20">
-                     {[
-                        { label: "Durée", value: "12 Semaines" },
-                        { label: "Coût", value: "Gratuit" },
-                        { label: "Mode", value: "En Ligne" }
-                     ].map((item, i) => (
-                        <div key={i} className="bg-white/5 border-l-[8px] border-orange-600 p-6 rounded-2xl border border-white/5 backdrop-blur-xl">
-                           <p className="text-white/40 font-black text-lg uppercase tracking-widest italic mb-1">{item.label}</p>
-                           <p className="text-white font-black text-2xl uppercase">{item.value}</p>
+                  {/* FOOTER AREA */}
+                  <div className="absolute bottom-12 left-24 right-16 flex justify-between items-end z-40">
+                     <div className="flex items-center gap-8">
+                        <div className="p-6 bg-orange-600 rounded-3xl shadow-2xl">
+                           <Sparkles className="w-10 h-10 text-white" />
                         </div>
-                     ))}
-                  </div>
-
-                  {/* Footer Bar */}
-                  <div className="absolute bottom-0 left-0 right-0 h-[120px] bg-black/80 backdrop-blur-3xl border-t border-white/10 px-24 flex items-center justify-between z-40">
-                     <div className="flex items-center gap-6">
-                        <div className="p-4 bg-orange-600 rounded-2xl">
-                           <Sparkles className="w-8 h-8 text-white" />
+                        <div>
+                           <p className="text-white font-black text-4xl uppercase tracking-tighter leading-none mb-2">FORMATION 100% GRATUITE</p>
+                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-widest">SOUTENUE PAR SMART AFRICA ACADEMY</p>
                         </div>
-                        <p className="text-white font-black text-4xl uppercase tracking-tighter">POSTULEZ SUR :</p>
                      </div>
 
                      <div className="text-right">
-                        <p className="text-6xl font-black text-white leading-none tracking-tight">
+                        <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-xl mb-4">INSCREVEZ-VOUS SUR</p>
+                        <p className="text-[5.5rem] font-black text-white leading-none tracking-tighter uppercase">
                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                         </p>
                      </div>
