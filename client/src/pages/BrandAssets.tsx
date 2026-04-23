@@ -108,93 +108,109 @@ export default function BrandAssets() {
                 {/* THE REAL POSTER ELEMENT (1080x1080) */}
                 <div 
                   id="aws-promo-poster"
-                  className="w-[1080px] h-[1080px] bg-[#020202] relative overflow-hidden flex flex-col font-sans"
+                  className="w-[1080px] h-[1080px] bg-[#050505] relative overflow-hidden flex flex-col font-sans"
                 >
-                  {/* Background Accents */}
-                  <div className="absolute top-[-200px] left-[-200px] w-[800px] h-[800px] bg-orange-600/20 rounded-full blur-[150px] z-0" />
-                  <div className="absolute bottom-[-200px] right-[-200px] w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[150px] z-0" />
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30 z-0" />
+                  {/* Background Image with Overlay */}
+                  <div className="absolute inset-0 z-0">
+                    <img 
+                      src="/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/aws_training_poster_background_1776968081448.png" 
+                      alt="" 
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent z-10" />
+                  </div>
+
+                  {/* Decorative Elements */}
+                  <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-orange-600/30 rounded-full blur-[120px] z-20" />
+                  <div className="absolute top-1/3 left-0 w-full h-[1px] bg-gradient-to-r from-orange-500 via-transparent to-transparent z-20 opacity-50" />
                   
-                  {/* Glassmorphism Sidebar Left */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[40px] bg-gradient-to-b from-orange-500 to-orange-700 z-20 shadow-2xl" />
+                  {/* Branding Bar Top */}
+                  <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-orange-400 via-yellow-500 to-sayc-teal z-30" />
 
                   {/* Header Logos */}
-                  <div className="absolute top-14 left-20 right-14 z-20 flex items-center justify-between">
-                    <div className="flex items-center gap-6 bg-white px-8 py-4 rounded-2xl shadow-2xl border-b-4 border-orange-500">
-                       <img src={logoSayc} alt="SAYC" className="h-14 object-contain" />
-                       <div className="w-[2px] h-10 bg-slate-200" />
-                       <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-10 object-contain" />
-                       <div className="w-[2px] h-10 bg-slate-200" />
-                       <img src={sadaLogo} alt="SADA" className="h-12 object-contain" />
+                  <div className="absolute top-12 left-16 right-16 z-30 flex items-center justify-between">
+                    <div className="flex items-center gap-6 bg-white/10 backdrop-blur-2xl px-10 py-5 rounded-[2.5rem] border border-white/20 shadow-[0_0_40px_rgba(255,255,255,0.1)]">
+                       <img src={logoSayc} alt="SAYC" className="h-16 object-contain brightness-0 invert" />
+                       <div className="w-[1px] h-12 bg-white/20" />
+                       <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-12 object-contain brightness-0 invert" />
+                       <div className="w-[1px] h-12 bg-white/20" />
+                       <img src={sadaLogo} alt="SADA" className="h-14 object-contain brightness-0 invert" />
                     </div>
                     
-                    <div className="bg-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl border border-white/20">
-                       <span className="font-black text-2xl tracking-widest uppercase">Formation AWS</span>
+                    <div className="flex flex-col items-end">
+                      <div className="bg-orange-600 text-white px-8 py-3 rounded-full shadow-[0_0_50px_rgba(234,88,12,0.4)] border border-orange-400/50">
+                         <span className="font-black text-2xl tracking-[0.2em] uppercase italic">PROGRAMME 2026</span>
+                      </div>
                     </div>
                   </div>
 
                   {/* Main Content Area */}
-                  <div className="relative z-10 pl-24 pt-48 flex-1 flex flex-col justify-center">
-                    <div className="space-y-8">
-                       <div className="inline-block bg-orange-600/10 border border-orange-500/30 text-orange-500 px-6 py-2 rounded-full font-black text-xl tracking-[0.3em] uppercase">
-                         Prochainement au Tchad
-                       </div>
-                       
-                       <h1 className="text-[110px] font-black text-white leading-[0.9] tracking-tighter drop-shadow-2xl">
-                         LANCEZ VOTRE <br/> 
-                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-600 to-yellow-300">CARRIÈRE CLOUD</span>
-                       </h1>
-                       
-                       <div className="h-4 w-64 bg-orange-600 rounded-full shadow-[0_0_30px_rgba(234,88,12,0.6)]" />
-                       
-                       <div className="grid grid-cols-2 gap-8 pt-8 max-w-[850px]">
-                          <div className="bg-white/5 backdrop-blur-xl border-l-4 border-orange-600 p-8 rounded-r-3xl space-y-4">
-                             <h3 className="text-orange-500 font-black text-2xl uppercase tracking-widest">Le Programme</h3>
-                             <p className="text-white/80 text-xl font-medium leading-relaxed">
-                               Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS) et les métiers du futur.
-                             </p>
-                          </div>
-                          <div className="grid grid-cols-1 gap-3">
-                             {[
-                               "Cloud Architecture", 
-                               "Python & Linux", 
-                               "Networking & Security", 
-                               "Database Management"
-                             ].map((skill, i) => (
-                               <div key={i} className="bg-white/10 backdrop-blur-md px-6 py-3 rounded-xl border border-white/10 flex items-center gap-4">
-                                  <div className="w-3 h-3 bg-orange-500 rounded-full" />
-                                  <span className="text-white font-bold text-xl uppercase tracking-tight">{skill}</span>
-                               </div>
-                             ))}
-                          </div>
-                       </div>
-                    </div>
-                  </div>
-
-                  {/* Footer / Call to action */}
-                  <div className="relative z-10 pl-24 pr-16 py-14 flex items-end justify-between">
-                    <div className="space-y-4">
+                  <div className="relative z-20 pl-16 pt-32 flex-1 flex flex-col justify-center">
+                    <div className="space-y-10">
                        <div className="flex items-center gap-4">
-                          <div className="p-4 bg-orange-600 rounded-2xl shadow-[0_10px_30px_rgba(234,88,12,0.4)]">
-                             <Sparkles className="w-8 h-8 text-white" />
+                          <div className="w-16 h-[4px] bg-orange-600 rounded-full" />
+                          <div className="text-orange-500 font-black text-3xl tracking-[0.4em] uppercase drop-shadow-[0_0_15px_rgba(234,88,12,0.5)]">
+                            DEVENEZ UN EXPERT
                           </div>
-                          <div>
-                             <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none mb-1">FORMATION 100% GRATUITE</p>
-                             <p className="text-orange-500 font-bold text-xl uppercase tracking-widest">Soutenue par Smart Africa Academy</p>
-                          </div>
+                       </div>
+                       
+                       <div className="space-y-0">
+                          <h1 className="text-[145px] font-black text-white leading-[0.8] tracking-[-0.05em] drop-shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+                            FORMATION <br/> 
+                            <span className="text-transparent bg-clip-text bg-gradient-to-br from-orange-400 via-orange-600 to-yellow-500 italic">AWS RE/START</span>
+                          </h1>
+                       </div>
+                       
+                       <p className="text-white/80 text-[2.5rem] font-bold max-w-[800px] leading-tight">
+                         Maîtrisez le <span className="text-orange-400">Cloud Computing</span> et propulsez votre avenir technologique.
+                       </p>
+
+                       <div className="flex flex-wrap gap-4 pt-4">
+                          {[
+                            "Cloud Practitioner", 
+                            "Python & Linux", 
+                            "Networking", 
+                            "DevOps"
+                          ].map((skill, i) => (
+                            <div key={i} className="bg-white/5 backdrop-blur-md px-10 py-4 rounded-2xl border border-white/10 flex items-center gap-4 shadow-xl">
+                               <div className="w-4 h-4 bg-orange-500 rounded-full animate-pulse shadow-[0_0_10px_#f97316]" />
+                               <span className="text-white font-black text-2xl tracking-tighter uppercase">{skill}</span>
+                            </div>
+                          ))}
+                       </div>
+                    </div>
+                  </div>
+
+                  {/* Footer Stats / CTA */}
+                  <div className="relative z-20 px-16 py-16 flex items-end justify-between bg-gradient-to-t from-black/80 to-transparent">
+                    <div className="flex gap-12">
+                       <div className="space-y-1">
+                          <p className="text-orange-500 font-black text-5xl tracking-tighter">12</p>
+                          <p className="text-white/40 font-bold uppercase tracking-widest text-lg">Semaines</p>
+                       </div>
+                       <div className="w-[1px] h-16 bg-white/10" />
+                       <div className="space-y-1">
+                          <p className="text-orange-500 font-black text-5xl tracking-tighter">100%</p>
+                          <p className="text-white/40 font-bold uppercase tracking-widest text-lg">Gratuit</p>
+                       </div>
+                       <div className="w-[1px] h-16 bg-white/10" />
+                       <div className="space-y-1">
+                          <p className="text-orange-500 font-black text-5xl tracking-tighter">EN LIGNE</p>
+                          <p className="text-white/40 font-bold uppercase tracking-widest text-lg">Formation</p>
                        </div>
                     </div>
 
-                    <div className="text-right space-y-4">
-                       <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-lg">Inscrivez-vous sur</p>
-                       <p className="text-[3.5rem] font-black text-white leading-none tracking-tighter drop-shadow-2xl">WWW.SAYCTCHAD.ORG</p>
+                    <div className="text-right">
+                       <div className="inline-block bg-gradient-to-r from-orange-600 to-orange-800 px-12 py-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(234,88,12,0.3)] border-t border-white/20 transform hover:scale-105 transition-transform cursor-pointer">
+                          <p className="text-white/60 font-bold uppercase tracking-[0.3em] text-lg mb-2">Inscrivez-vous sur</p>
+                          <p className="text-6xl font-black text-white leading-none tracking-tighter">SAYCTCHAD.ORG</p>
+                       </div>
                     </div>
                   </div>
 
-                  {/* Background Large Overlay Logo */}
-                  <div className="absolute right-[-100px] top-1/2 -translate-y-1/2 opacity-10 scale-[2.5] z-0 pointer-events-none grayscale invert">
-                    <img src={logoSayc} alt="" />
-                  </div>
+                  {/* Aesthetic Glowing Border Layer */}
+                  <div className="absolute inset-0 border-[20px] border-white/5 pointer-events-none z-40" />
                 </div>
               </div>
 
