@@ -137,44 +137,47 @@ export default function BrandAssets() {
                     </div>
                   </div>
 
-                  {/* MAIN CONTENT AREA */}
-                  <div className="absolute top-[280px] left-24 right-20 z-20">
-                    <div className="space-y-10">
-                       <div className="flex items-center gap-4">
-                          <p className="text-white/40 font-bold uppercase tracking-[0.6em] text-xl">Smart Africa Academy</p>
-                          <div className="h-[1px] flex-1 bg-white/10" />
-                       </div>
+                   {/* MAIN CONTENT AREA - FULLY ABSOLUTE FOR STABILITY */}
+                  <div className="absolute top-[240px] left-24 right-20 bottom-0 z-20">
+                     {/* Subtitle */}
+                     <div className="absolute top-0 left-0 right-0 flex items-center gap-4">
+                        <p className="text-white/40 font-bold uppercase tracking-[0.6em] text-xl">Smart Africa Academy</p>
+                        <div className="h-[1px] flex-1 bg-white/10" />
+                     </div>
 
-                       <div className="flex flex-col">
-                          <h1 className="text-[110px] font-black text-white leading-[1.1] tracking-[-0.04em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                            LANCEZ VOTRE
-                          </h1>
-                          <h1 className="text-[145px] font-black text-orange-500 leading-[1.0] tracking-[-0.05em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                             CARRIÈRE
-                          </h1>
-                          <h1 className="text-[170px] font-black text-orange-600 leading-[0.9] tracking-[-0.06em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                             CLOUD
-                          </h1>
-                       </div>
+                     {/* Title Line 1 */}
+                     <h1 className="absolute top-[60px] left-0 text-[110px] font-black text-white leading-none tracking-[-0.04em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
+                        LANCEZ VOTRE
+                     </h1>
 
-                       <div className="flex items-center gap-6 pt-6">
-                          <div className="px-6 py-3 bg-orange-600/20 border border-orange-500/40 text-orange-500 rounded-xl font-black text-2xl uppercase tracking-widest shadow-lg">
-                            AWS re/Start Academy
-                          </div>
-                          <div className="w-[2px] h-12 bg-white/20" />
-                          <p className="text-white font-bold text-2xl italic tracking-wide">Devenez Praticien Cloud Certifié</p>
-                       </div>
-                    </div>
+                     {/* Title Line 2 */}
+                     <h1 className="absolute top-[185px] left-0 text-[160px] font-black text-orange-500 leading-none tracking-[-0.05em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
+                        CARRIÈRE
+                     </h1>
+
+                     {/* Title Line 3 */}
+                     <h1 className="absolute top-[335px] left-0 text-[190px] font-black text-orange-600 leading-none tracking-[-0.06em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
+                        CLOUD
+                     </h1>
+
+                     {/* Sub-header Box */}
+                     <div className="absolute top-[540px] left-0 flex items-center gap-6">
+                        <div className="px-8 py-4 bg-orange-600/20 border border-orange-500/40 text-orange-500 rounded-xl font-black text-3xl uppercase tracking-widest shadow-lg">
+                           AWS re/Start Academy
+                        </div>
+                        <div className="w-[3px] h-14 bg-white/20" />
+                        <p className="text-white font-bold text-3xl italic tracking-wide">Devenez Praticien Cloud Certifié</p>
+                     </div>
                   </div>
 
-                  {/* FEATURES GRID */}
-                  <div className="absolute top-[780px] left-24 right-20 grid grid-cols-3 gap-8 z-20">
+                  {/* FEATURES GRID - MOVED DOWN FOR SPACE */}
+                  <div className="absolute top-[830px] left-24 right-20 grid grid-cols-3 gap-8 z-20">
                      {[
                        { label: "Durée", value: "12 Semaines" },
                        { label: "Coût", value: "100% Gratuit" },
                        { label: "Mode", value: "En Ligne" }
                      ].map((item, i) => (
-                        <div key={i} className="bg-white/5 backdrop-blur-3xl border-l-[6px] border-orange-600 p-8 rounded-2xl border border-white/5 shadow-2xl">
+                        <div key={i} className="bg-[#111] border-l-[8px] border-orange-600 p-8 rounded-2xl border border-white/5 shadow-2xl">
                            <p className="text-white/40 font-black text-lg uppercase tracking-widest italic mb-2">{item.label}</p>
                            <p className="text-white font-black text-3xl uppercase tracking-widest">{item.value}</p>
                         </div>
