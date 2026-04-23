@@ -15,10 +15,10 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import { processAndWatermark } from "@/lib/imageUtils";
-import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate } from "@shared/schema";
+import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate, AwsRestartApplication } from "@shared/schema";
 
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
@@ -1230,6 +1230,220 @@ function NewsletterTab() {
   );
 }
 
+function AwsRestartApplicationsTab() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [cityFilter, setCityFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+
+  const { data: applications = [], isLoading } = useQuery<AwsRestartApplication[]>({
+    queryKey: ["/api/admin", "aws-restart-applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/aws-restart-applications", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+  });
+
+  const filteredApps = applications.filter(app => {
+    const matchesSearch = 
+      app.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      app.email?.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesCity = cityFilter === "all" || app.city === cityFilter;
+    const matchesStatus = statusFilter === "all" || app.status === statusFilter;
+
+    return matchesSearch && matchesCity && matchesStatus;
+  });
+
+  const cities = Array.from(new Set(applications.map(a => a.city).filter(Boolean)));
+  const statuses = Array.from(new Set(applications.map(a => a.status).filter(Boolean)));
+
+  const exportToExcel = () => {
+    const headers = [
+      "Nom Complet", "Email", "Téléphone", "Sexe", "Date de Naissance",
+      "Ville", "Statut Professionnel", "Handicap", "Engagement Temps Plein",
+      "Motivation", "Cohorte", "Statut Admin", "Date Inscription"
+    ];
+
+    const rows = applications.map(app => [
+      app.fullName, app.email, app.phone, app.gender, app.dateOfBirth,
+      app.city, app.professionalStatus, app.hasDisability, app.fullTimeCommitment ? "Oui" : "Non",
+      app.motivation, app.cohort, app.status, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Candidatures_AWS_reStart_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (isLoading) return <LoadingTable />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#FF9900] rounded-lg flex items-center justify-center shadow-sm">
+             <span className="text-white font-black text-xs">AWS</span>
+          </div>
+          <h2 className="text-lg font-semibold">
+            Candidatures AWS re/Start ({filteredApps.length} / {applications.length})
+          </h2>
+        </div>
+        <Button variant="outline" onClick={exportToExcel} disabled={filteredApps.length === 0}>
+          <Download className="h-4 w-4 mr-2" />
+          Exporter Excel (CSV)
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg">
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Rechercher</Label>
+          <div className="relative">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              placeholder="Nom ou email..." 
+              className="pl-8 h-9" 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Ville</Label>
+          <select 
+            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            value={cityFilter}
+            onChange={(e) => setCityFilter(e.target.value)}
+          >
+            <option value="all">Toutes les villes</option>
+            {cities.map(city => <option key={city} value={city}>{city}</option>)}
+          </select>
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs text-muted-foreground uppercase font-bold">Statut</Label>
+          <select 
+            className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">Tous les statuts</option>
+            {statuses.map(s => <option key={s} value={s}>{s}</option>)}
+          </select>
+        </div>
+        <div className="flex items-end">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="text-xs w-full h-9" 
+            onClick={() => {
+              setSearchTerm("");
+              setCityFilter("all");
+              setStatusFilter("all");
+            }}
+          >
+            <XCircle className="h-4 w-4 mr-2" />
+            Réinitialiser
+          </Button>
+        </div>
+      </div>
+
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Nom Complet</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Téléphone</TableHead>
+              <TableHead>Ville</TableHead>
+              <TableHead>Statut Pro</TableHead>
+              <TableHead>Statut</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredApps.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucune candidature trouvée</TableCell>
+              </TableRow>
+            ) : (
+              filteredApps.map((app) => (
+                <TableRow key={app.id}>
+                  <TableCell className="font-medium">{app.fullName}</TableCell>
+                  <TableCell>{app.email}</TableCell>
+                  <TableCell>{app.phone}</TableCell>
+                  <TableCell>{app.city}</TableCell>
+                  <TableCell className="text-xs">{app.professionalStatus}</TableCell>
+                  <TableCell>
+                    <Badge variant={app.status === "pending" ? "outline" : "default"}>
+                      {app.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{app.createdAt ? new Date(app.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">Détails</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Détails AWS re/Start - {app.fullName}</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Sexe</Label>
+                            <p className="text-sm font-medium">{app.gender}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Date de naissance</Label>
+                            <p className="text-sm font-medium">{app.dateOfBirth}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Ville de résidence</Label>
+                            <p className="text-sm font-medium">{app.city}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Handicap</Label>
+                            <p className="text-sm font-medium">{app.hasDisability}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Engagement plein temps (12 sem)</Label>
+                            <p className="text-sm font-medium">{app.fullTimeCommitment ? "Oui" : "Non"}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <Label className="text-xs text-muted-foreground">Cohorte</Label>
+                            <p className="text-sm font-medium">{app.cohort}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1 pt-2">
+                             <Label className="text-xs text-muted-foreground font-bold">Motivation pour le Cloud & AWS</Label>
+                             <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed">
+                               {app.motivation}
+                             </div>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
 function ThunderbirdApplicationsTab() {
   const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -1517,6 +1731,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="news" className="border">Actualités</TabsTrigger>
               <TabsTrigger value="events" className="border">Événements</TabsTrigger>
               <TabsTrigger value="achievements" className="border">Réalisations</TabsTrigger>
+              <TabsTrigger value="aws-restart" className="border text-orange-600 font-bold">AWS</TabsTrigger>
               <TabsTrigger value="thunderbird" className="border">T-Bird</TabsTrigger>
               <TabsTrigger value="elections" className="border">Élections</TabsTrigger>
               <TabsTrigger value="members" className="border">Membres</TabsTrigger>
@@ -1532,6 +1747,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             </TabsContent>
           ))}
 
+          <TabsContent value="aws-restart">
+            <AwsRestartApplicationsTab />
+          </TabsContent>
           <TabsContent value="thunderbird">
             <ThunderbirdApplicationsTab />
           </TabsContent>
