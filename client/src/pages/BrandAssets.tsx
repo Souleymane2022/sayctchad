@@ -108,24 +108,23 @@ export default function BrandAssets() {
                 {/* THE REAL POSTER ELEMENT (1080x1080) */}
                 <div 
                   id="aws-promo-poster"
-                  className="w-[1080px] h-[1080px] bg-[#020308] relative overflow-hidden flex flex-col font-sans"
+                  className="w-[1080px] h-[1080px] bg-[#020202] relative overflow-hidden flex flex-col font-sans"
                 >
-                  {/* Background Tech Layer */}
-                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] opacity-40 z-0" />
-                  <div className="absolute top-[-300px] left-[-300px] w-[900px] h-[900px] bg-orange-600/10 rounded-full blur-[180px] z-0 animate-pulse" />
-                  <div className="absolute bottom-[-200px] right-[-200px] w-[700px] h-[700px] bg-sayc-teal/10 rounded-full blur-[150px] z-0" />
+                  {/* Background Layers - Robust CSS only */}
+                  <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,#1e1e1e,transparent),radial-gradient(circle_at_80%_80%,#000,transparent)]" />
                   
-                  {/* Neon Circuit Overlay */}
-                  <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cartographer.png')]" />
+                  {/* Decorative Tech Grid (CSS Pattern) */}
+                  <div className="absolute inset-0 z-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+                  
+                  <div className="absolute top-[-300px] left-[-300px] w-[900px] h-[900px] bg-orange-600/10 rounded-full blur-[180px] z-0 animate-pulse" />
+                  <div className="absolute bottom-[-200px] right-[-300px] w-[800px] h-[800px] bg-sayc-teal/10 rounded-full blur-[180px] z-0" />
+                  
+                  {/* Left Accent Bar */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[50px] bg-gradient-to-b from-orange-600 via-orange-500 to-orange-900 z-20 shadow-2xl" />
 
-                  {/* Left Accent Bar - Improved */}
-                  <div className="absolute left-0 top-0 bottom-0 w-[60px] bg-gradient-to-b from-orange-600 via-[#ff8800] to-orange-900 z-20 shadow-[10px_0_40px_rgba(234,88,12,0.3)]">
-                     <div className="w-full h-full opacity-30 bg-[url('https://www.transparenttextures.com/patterns/pixel-weave.png')]" />
-                  </div>
-
-                  {/* Header Branding - Ultra Clean */}
-                  <div className="absolute top-14 left-24 right-14 z-30 flex items-center justify-between">
-                    <div className="flex items-center gap-8 bg-white px-10 py-5 rounded-[2rem] shadow-[0_20px_60px_rgba(0,0,0,0.4)] border-b-8 border-orange-600">
+                  {/* Header Branding */}
+                  <div className="absolute top-14 left-24 right-16 z-30 flex items-center justify-between">
+                    <div className="flex items-center gap-8 bg-white px-10 py-5 rounded-[2rem] shadow-2xl border-b-8 border-orange-600">
                        <img src={logoSayc} alt="SAYC" className="h-16 object-contain" />
                        <div className="w-[1px] h-12 bg-slate-200" />
                        <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-10 object-contain" />
@@ -134,51 +133,48 @@ export default function BrandAssets() {
                     </div>
                     
                     <div className="flex flex-col items-end gap-2">
-                       <div className="bg-orange-600 text-white px-10 py-3 rounded-2xl shadow-[0_10px_30px_rgba(234,88,12,0.5)] border border-orange-400">
+                       <div className="bg-orange-600 text-white px-10 py-3 rounded-2xl shadow-xl border border-orange-400">
                           <span className="font-black text-2xl tracking-[0.2em] uppercase italic">SESSION 2026</span>
                        </div>
                        <div className="text-white/40 font-bold text-lg tracking-[0.3em] mr-4 uppercase">Smart Africa Academy</div>
                     </div>
                   </div>
 
-                  {/* Main Content Area - Impactful */}
-                  <div className="relative z-20 pl-32 pt-40 flex-1 flex flex-col justify-center">
-                    <div className="space-y-12">
-                       <div className="inline-flex items-center gap-6 bg-orange-600/10 border border-orange-500/40 text-orange-400 px-8 py-3 rounded-full">
+                  {/* Main Content Area */}
+                  <div className="relative z-20 pl-32 pt-32 flex-1 flex flex-col justify-center">
+                    <div className="space-y-10">
+                       <div className="inline-flex items-center gap-6 bg-orange-600/10 border border-orange-500/30 text-orange-400 px-8 py-3 rounded-full">
                           <div className="w-4 h-4 bg-orange-500 rounded-full animate-ping" />
-                          <span className="font-black text-2xl tracking-[0.4em] uppercase">Tchad Digital Transformation</span>
+                          <span className="font-black text-2xl tracking-[0.4em] uppercase tracking-widest">Tchad Digital Transformation</span>
                        </div>
                        
-                       <div className="space-y-2">
-                          <h2 className="text-white/60 text-4xl font-bold tracking-[0.4em] mb-4 uppercase">Propulsez votre futur</h2>
-                          <h1 className="text-[140px] font-black text-white leading-[0.8] tracking-[-0.04em] drop-shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+                       <div className="space-y-4">
+                          <h2 className="text-white/60 text-4xl font-bold tracking-[0.4em] uppercase">Propulsez votre futur</h2>
+                          <h1 className="text-[142px] font-black text-white leading-[0.8] tracking-[-0.04em] drop-shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
                             FORMATION <br/> 
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] via-[#ffcc00] to-[#ffaa00] drop-shadow-[0_0_30px_rgba(255,153,0,0.3)]">AWS RE/START</span>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-orange-500">AWS RE/START</span>
                           </h1>
                        </div>
                        
-                       <div className="h-2 w-96 bg-gradient-to-r from-orange-600 to-transparent rounded-full" />
+                       <div className="h-3 w-80 bg-orange-600 rounded-full shadow-[0_0_30px_rgba(234,88,12,0.4)]" />
                        
-                       <div className="grid grid-cols-2 gap-10 pt-10 max-w-[900px]">
-                          <div className="bg-white/5 backdrop-blur-2xl border-l-8 border-orange-500 p-10 rounded-tr-[3rem] rounded-br-[3rem] space-y-6 shadow-2xl relative group overflow-hidden">
-                             <div className="absolute top-0 right-0 p-8 opacity-10">
-                                <ImageIcon className="w-20 h-20 text-white" />
-                             </div>
-                             <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest italic leading-none">Objectif 100% Emploi</h3>
-                             <p className="text-white/90 text-2xl font-semibold leading-relaxed">
+                       <div className="grid grid-cols-2 gap-10 pt-10 max-w-[950px]">
+                          <div className="bg-white/10 backdrop-blur-3xl border-l-[12px] border-orange-500 p-10 rounded-tr-[3rem] rounded-br-[3rem] space-y-6 shadow-2xl border border-white/5">
+                             <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest italic leading-none">Objectif Emploi</h3>
+                             <p className="text-white text-[1.6rem] font-bold leading-relaxed">
                                Un programme intensif conçu pour les jeunes talents afin d'intégrer l'écosystème Cloud mondial.
                              </p>
                           </div>
                           <div className="grid grid-cols-1 gap-4">
                              {[
                                "Cloud Practitioner Academy", 
-                               "Infrastructures & Sécurité", 
-                               "Python pour le Cloud", 
-                               "Systèmes Linux & DevOps"
+                               "Networking & Security", 
+                               "Python for Cloud", 
+                               "Linux & DevOps"
                              ].map((skill, i) => (
-                               <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/10 flex items-center gap-6 transform hover:translate-x-2 transition-transform">
-                                  <div className="w-5 h-5 bg-orange-600 rounded-lg rotate-45 shadow-[0_0_15px_#ea580c]" />
-                                  <span className="text-white font-black text-2xl tracking-tighter uppercase">{skill}</span>
+                               <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/10 flex items-center gap-6">
+                                  <div className="w-5 h-5 bg-orange-600 rounded-lg shadow-[0_0_15px_#ea580c]" />
+                                  <span className="text-white font-black text-[1.6rem] tracking-tighter uppercase">{skill}</span>
                                </div>
                              ))}
                           </div>
@@ -186,30 +182,28 @@ export default function BrandAssets() {
                     </div>
                   </div>
 
-                  {/* Footer - Call to Action - High Contrast */}
-                  <div className="relative z-20 pl-32 pr-16 py-16 flex items-end justify-between bg-black/40 backdrop-blur-xl border-t border-white/5">
+                  {/* Footer - Call to Action */}
+                  <div className="relative z-30 ml-28 mr-16 mb-16 py-12 px-12 bg-white/5 backdrop-blur-2xl rounded-[3rem] border border-white/10 flex items-center justify-between shadow-2xl">
                     <div className="flex items-center gap-8">
-                       <div className="p-6 bg-gradient-to-br from-orange-500 to-orange-700 rounded-3xl shadow-[0_15px_40px_rgba(234,88,12,0.4)]">
+                       <div className="p-6 bg-gradient-to-br from-orange-500 to-orange-700 rounded-[2rem] shadow-[0_15px_40px_rgba(234,88,12,0.4)]">
                           <Sparkles className="w-12 h-12 text-white" />
                        </div>
-                       <div>
-                          <p className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none mb-2">FORMATION GRATUITE</p>
-                          <div className="flex items-center gap-3">
-                             <span className="px-3 py-1 bg-sayc-teal text-white font-bold rounded-lg text-lg uppercase tracking-widest">SAYC TCHAD × AWS</span>
-                          </div>
+                       <div className="space-y-1">
+                          <p className="text-white font-black text-4xl uppercase tracking-tighter leading-none">FORMATION GRATUITE</p>
+                          <p className="text-orange-500 font-bold text-xl uppercase tracking-widest leading-none">SAYC TCHAD × AWS RE/START</p>
                        </div>
                     </div>
 
                     <div className="text-right">
-                       <p className="text-white/40 font-bold uppercase tracking-[0.5em] text-xl mb-4">Postulez sur le portail</p>
-                       <p className="text-[4.8rem] font-black text-white leading-none tracking-tight drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                       <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-lg mb-2">Inscrivez-vous sur</p>
+                       <p className="text-[4rem] font-black text-white leading-none tracking-tight">
                           WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                        </p>
                     </div>
                   </div>
 
                   {/* Aesthetic Background Logo Overlay */}
-                  <div className="absolute right-[-150px] top-1/2 -translate-y-1/2 opacity-[0.03] scale-[4] z-0 pointer-events-none grayscale invert rotate-12">
+                  <div className="absolute right-[-150px] top-1/2 -translate-y-1/2 opacity-[0.05] scale-[4] z-0 pointer-events-none grayscale invert">
                     <img src={logoSayc} alt="" />
                   </div>
                 </div>
