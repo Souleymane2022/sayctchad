@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -15,7 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database, Sparkles } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import { processAndWatermark } from "@/lib/imageUtils";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate, AwsRestartApplication } from "@shared/schema";
@@ -1715,10 +1716,18 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <h1 className="text-xl font-bold line-clamp-1" data-testid="text-dashboard-title">Administration SAYC</h1>
             <p className="text-xs text-muted-foreground">Gestion du portail</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => logoutMutation.mutate()} disabled={logoutMutation.isPending} data-testid="button-admin-logout">
-            <LogOut className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Déconnexion</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href="/branding">
+              <Button variant="outline" size="sm" className="gap-2 border-sayc-teal hover:bg-sayc-teal/10 text-sayc-teal">
+                <Sparkles className="h-4 w-4" />
+                <span className="hidden sm:inline">Creative Studio (Branding)</span>
+              </Button>
+            </Link>
+            <Button variant="outline" size="sm" onClick={() => logoutMutation.mutate()} disabled={logoutMutation.isPending} data-testid="button-admin-logout">
+              <LogOut className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Déconnexion</span>
+            </Button>
+          </div>
         </div>
       </div>
       <div className="container mx-auto py-6 px-4">

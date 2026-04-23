@@ -28,6 +28,7 @@ import NotFound from "@/pages/not-found";
 import MembersGallery from "@/pages/MembersGallery";
 import ElectionCandidates from "@/pages/ElectionCandidates";
 import ElectionPosters from "@/pages/ElectionPosters";
+import BrandAssets from "@/pages/BrandAssets";
 
 function Router() {
   return (
@@ -56,6 +57,7 @@ function Router() {
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route path="/verify/:membershipId" component={VerifyMember} />
       <Route path="/sayc-membres-galerie" component={MembersGallery} />
+      <Route path="/branding" component={BrandAssets} />
       <Route component={NotFound} />
     </Switch>
   );
