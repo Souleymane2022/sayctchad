@@ -172,59 +172,59 @@ export default function BrandAssets() {
                      </div>
                   </div>
 
-                  {/* MAIN TITLE */}
-                  <div className="absolute top-[300px] left-24 z-20">
+                  {/* MAIN TITLE - ADJUSTED POSITION TO PREVENT OVERLAP */}
+                  <div className="absolute top-[260px] left-24 z-20">
                      <h1 className="text-[115px] font-black text-white leading-none tracking-tighter m-0 uppercase">
                         LANCEZ VOTRE
                      </h1>
                      <h1 className="text-[155px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[10px]">
                         CARRIÈRE
                      </h1>
-                     <h1 className="text-[175px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
+                     <h1 className="text-[165px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
                         CLOUD
                      </h1>
                   </div>
 
-                  {/* TWO COLUMNS SECTION */}
-                  <div className="absolute top-[660px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
+                  {/* TWO COLUMNS SECTION - SHIFTED DOWN FOR CLEARANCE */}
+                  <div className="absolute top-[690px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
                      {/* Left Column: Le Programme */}
-                     <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl">
-                        <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest mb-6 italic">LE PROGRAMME</h3>
-                        <p className="text-white/80 text-2xl font-bold leading-[1.4]">
-                           Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS) et les métiers du futur.
+                     <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl h-[230px] flex flex-col justify-center">
+                        <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest mb-4 italic leading-none">LE PROGRAMME</h3>
+                        <p className="text-white/80 text-[1.4rem] font-bold leading-[1.3]">
+                           Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS).
                         </p>
                      </div>
 
                      {/* Right Column: Skills Stack */}
-                     <div className="flex flex-col gap-4">
+                     <div className="flex flex-col gap-3">
                         {[
                            "CLOUD ARCHITECTURE",
                            "PYTHON & LINUX",
                            "NETWORKING & SECURITY",
                            "DATABASE MANAGEMENT"
                         ].map((skill, i) => (
-                           <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/10 flex items-center gap-6">
-                              <div className="w-4 h-4 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
-                              <span className="text-white font-black text-2xl tracking-tight uppercase">{skill}</span>
+                           <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-3 rounded-2xl border border-white/10 flex items-center gap-6">
+                              <div className="w-3 h-3 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
+                              <span className="text-white font-black text-xl tracking-tight uppercase leading-none">{skill}</span>
                            </div>
                         ))}
                      </div>
                   </div>
 
-                  {/* FOOTER AREA */}
-                  <div className="absolute bottom-12 left-24 right-16 flex justify-between items-end z-40">
+                  {/* FOOTER AREA - MOVED TO BOTTOM */}
+                  <div className="absolute bottom-10 left-24 right-16 flex justify-between items-end z-40">
                      <div className="flex items-center gap-8">
                         <div className="p-6 bg-orange-600 rounded-3xl shadow-2xl">
                            <Sparkles className="w-10 h-10 text-white" />
                         </div>
                         <div>
-                           <p className="text-white font-black text-4xl uppercase tracking-tighter leading-none mb-2">FORMATION 100% GRATUITE</p>
-                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-widest">SOUTENUE PAR SMART AFRICA ACADEMY</p>
+                           <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none mb-2">FORMATION 100% GRATUITE</p>
+                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-widest leading-none">SUPPORTED BY SMART AFRICA ACADEMY</p>
                         </div>
                      </div>
 
                      <div className="text-right">
-                        <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-xl mb-4">INSCREVEZ-VOUS SUR</p>
+                        <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-lg mb-3">VISITEZ-NOUS SUR</p>
                         <p className="text-[5.5rem] font-black text-white leading-none tracking-tighter uppercase">
                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                         </p>
