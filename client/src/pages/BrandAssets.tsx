@@ -211,21 +211,23 @@ export default function BrandAssets() {
                      </div>
                   </div>
 
-                  {/* FOOTER AREA - MOVED TO BOTTOM */}
-                  <div className="absolute bottom-10 left-24 right-16 flex justify-between items-end z-40">
+                  {/* FOOTER AREA - FINAL REFINEMENT FOR PERFECT ALIGNMENT */}
+                  <div className="absolute bottom-12 left-24 right-20 flex justify-between items-end z-40">
+                     {/* Left: Scholarship Info */}
                      <div className="flex items-center gap-8">
-                        <div className="p-6 bg-orange-600 rounded-3xl shadow-2xl">
-                           <Sparkles className="w-10 h-10 text-white" />
+                        <div className="p-7 bg-orange-600 rounded-[2rem] shadow-2xl">
+                           <Sparkles className="w-12 h-12 text-white" />
                         </div>
-                        <div>
-                           <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none mb-2">FORMATION 100% GRATUITE</p>
-                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-widest leading-none">SUPPORTED BY SMART AFRICA ACADEMY</p>
+                        <div className="space-y-1">
+                           <p className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none">FORMATION 100% GRATUITE</p>
+                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-[0.2em] leading-none">SOUTENUE PAR SMART AFRICA ACADEMY</p>
                         </div>
                      </div>
 
-                     <div className="text-right">
-                        <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-lg mb-3">VISITEZ-NOUS SUR</p>
-                        <p className="text-[5.5rem] font-black text-white leading-none tracking-tighter uppercase">
+                     {/* Right: Registration URL */}
+                     <div className="text-right pb-1">
+                        <p className="text-white/30 font-black uppercase tracking-[0.6em] text-xl mb-4">INCRIVEZ-VOUS SUR</p>
+                        <p className="text-[5.8rem] font-black text-white leading-none tracking-tighter uppercase">
                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                         </p>
                      </div>
