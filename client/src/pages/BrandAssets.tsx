@@ -137,73 +137,71 @@ export default function BrandAssets() {
                     </div>
                   </div>
 
-                   {/* MAIN CONTENT AREA - FULLY ABSOLUTE FOR STABILITY */}
-                  <div className="absolute top-[240px] left-24 right-20 bottom-0 z-20">
-                     {/* Subtitle */}
-                     <div className="absolute top-0 left-0 right-0 flex items-center gap-4">
-                        <p className="text-white/40 font-bold uppercase tracking-[0.6em] text-xl">Smart Africa Academy</p>
-                        <div className="h-[1px] flex-1 bg-white/10" />
+                  {/* NEW SIMPLIFIED CONTENT AREA */}
+                  <div className="absolute inset-0 px-24 py-32 flex flex-col z-20">
+                     {/* Subtitle Line */}
+                     <div className="flex items-center gap-6 mt-[220px]">
+                        <p className="text-white/40 font-bold uppercase tracking-[0.6em] text-2xl">Smart Africa Academy</p>
+                        <div className="h-[2px] flex-1 bg-white/20" />
                      </div>
 
-                     {/* Title Line 1 */}
-                     <h1 className="absolute top-[60px] left-0 text-[110px] font-black text-white leading-none tracking-[-0.04em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                        LANCEZ VOTRE
-                     </h1>
+                     {/* MAIN TITLE STACK - WITH MASSIVE GAPS */}
+                     <div className="mt-12 flex flex-col gap-4">
+                        <h1 className="text-[100px] font-black text-white leading-none m-0 uppercase tracking-tighter">
+                           LANCEZ VOTRE
+                        </h1>
+                        <h1 className="text-[130px] font-black text-orange-500 leading-none m-0 uppercase tracking-tighter">
+                           CARRIÈRE
+                        </h1>
+                        <h1 className="text-[150px] font-black text-orange-600 leading-none m-0 uppercase tracking-tighter">
+                           CLOUD
+                        </h1>
+                     </div>
 
-                     {/* Title Line 2 */}
-                     <h1 className="absolute top-[185px] left-0 text-[160px] font-black text-orange-500 leading-none tracking-[-0.05em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                        CARRIÈRE
-                     </h1>
-
-                     {/* Title Line 3 */}
-                     <h1 className="absolute top-[335px] left-0 text-[190px] font-black text-orange-600 leading-none tracking-[-0.06em] drop-shadow-[5px_15px_30px_rgba(0,0,0,1)] uppercase">
-                        CLOUD
-                     </h1>
-
-                     {/* Sub-header Box */}
-                     <div className="absolute top-[540px] left-0 flex items-center gap-6">
-                        <div className="px-8 py-4 bg-orange-600/20 border border-orange-500/40 text-orange-500 rounded-xl font-black text-3xl uppercase tracking-widest shadow-lg">
-                           AWS re/Start Academy
+                     {/* SUB-HEADER BOX */}
+                     <div className="mt-16 flex items-center gap-10">
+                        <div className="px-10 py-5 bg-orange-600 text-white rounded-2xl font-black text-4xl uppercase tracking-widest shadow-2xl">
+                           AWS re/Start
                         </div>
-                        <div className="w-[3px] h-14 bg-white/20" />
-                        <p className="text-white font-bold text-3xl italic tracking-wide">Devenez Praticien Cloud Certifié</p>
+                        <div className="w-[4px] h-20 bg-white/30" />
+                        <p className="text-white font-bold text-4xl italic tracking-tight leading-tight">
+                           Devenez Praticien <br/> Cloud Certifié
+                        </p>
+                     </div>
+
+                     {/* INFO GRID */}
+                     <div className="mt-auto mb-32 grid grid-cols-3 gap-10">
+                        {[
+                           { label: "Durée", value: "12 Semaines" },
+                           { label: "Coût", value: "100% Gratuit" },
+                           { label: "Mode", value: "En Ligne" }
+                        ].map((item, i) => (
+                           <div key={i} className="bg-white/5 border-l-[10px] border-orange-600 p-8 rounded-2xl border border-white/5 shadow-2xl backdrop-blur-xl">
+                              <p className="text-white/40 font-black text-xl uppercase tracking-widest italic mb-2">{item.label}</p>
+                              <p className="text-white font-black text-3xl uppercase">{item.value}</p>
+                           </div>
+                        ))}
                      </div>
                   </div>
 
-                  {/* FEATURES GRID - MOVED DOWN FOR SPACE */}
-                  <div className="absolute top-[830px] left-24 right-20 grid grid-cols-3 gap-8 z-20">
-                     {[
-                       { label: "Durée", value: "12 Semaines" },
-                       { label: "Coût", value: "100% Gratuit" },
-                       { label: "Mode", value: "En Ligne" }
-                     ].map((item, i) => (
-                        <div key={i} className="bg-[#111] border-l-[8px] border-orange-600 p-8 rounded-2xl border border-white/5 shadow-2xl">
-                           <p className="text-white/40 font-black text-lg uppercase tracking-widest italic mb-2">{item.label}</p>
-                           <p className="text-white font-black text-3xl uppercase tracking-widest">{item.value}</p>
+                  {/* SIMPLIFIED FOOTER - FIXED AT BOTTOM */}
+                  <div className="absolute bottom-0 left-0 right-0 h-[180px] bg-black/60 backdrop-blur-3xl border-t border-white/10 px-24 flex items-center justify-between z-30">
+                     <div className="flex items-center gap-8">
+                        <div className="p-6 bg-orange-600 rounded-3xl shadow-[0_20px_40px_rgba(234,88,12,0.4)]">
+                           <Sparkles className="w-12 h-12 text-white" />
                         </div>
-                     ))}
-                  </div>
+                        <div className="space-y-1">
+                           <p className="text-white font-black text-5xl uppercase tracking-tighter leading-none">POSTULEZ MAINTENANT</p>
+                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-[0.2em]">Places Limitées / Tchad</p>
+                        </div>
+                     </div>
 
-                  {/* FOOTER AREA */}
-                  <div className="absolute bottom-16 left-24 right-20 flex justify-between items-end z-30">
-                    <div className="space-y-4">
-                       <div className="flex items-center gap-6">
-                          <div className="p-5 bg-gradient-to-br from-orange-500 to-orange-700 rounded-2xl shadow-[0_15px_30px_rgba(234,88,12,0.4)]">
-                            <Sparkles className="w-10 h-10 text-white" />
-                          </div>
-                          <div>
-                            <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none mb-1">Postulez Maintenant</p>
-                            <p className="text-orange-500 font-bold text-xl uppercase tracking-widest">Places Limitées / Tchad</p>
-                          </div>
-                       </div>
-                    </div>
-
-                    <div className="text-right">
-                       <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-xl mb-3">Rejoignez-nous sur</p>
-                       <p className="text-7xl font-black text-white leading-none tracking-tighter">
-                         WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                       </p>
-                    </div>
+                     <div className="text-right">
+                        <p className="text-white/40 font-bold uppercase tracking-[0.5em] text-xl mb-2">Rejoignez-nous</p>
+                        <p className="text-7xl font-black text-white leading-none tracking-tighter uppercase">
+                           WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                        </p>
+                     </div>
                   </div>
 
                   {/* Corner Accent */}
