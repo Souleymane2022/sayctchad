@@ -19,6 +19,7 @@ export default function ElectionPosters() {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [campaignCandidateId, setCampaignCandidateId] = useState<string | null>(null);
   const [campaignQuote, setCampaignQuote] = useState("Votons pour l'avenir numérique du Tchad soutenu par la jeunesse !");
+  const [selectedFinalists, setSelectedFinalists] = useState<string[]>([]);
 
   const { data: candidates, isLoading } = useQuery<ElectionCandidate[]>({
     queryKey: ["/api/elections/candidates"],
@@ -191,6 +192,154 @@ export default function ElectionPosters() {
                     </div>
                 </div>
             </div>
+          </div>
+        </div>
+
+        {/* Section Affiche des Finalistes (Premium Golden) */}
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-xl border shadow-sm gap-4">
+            <h2 className="text-2xl font-bold text-sidebar flex items-center gap-2">
+              <CheckCircle2 className="w-6 h-6 text-yellow-500" /> Affiche des Finalistes Premium
+            </h2>
+            <div className="flex gap-2">
+                <Button 
+                    onClick={() => {
+                        const approved = candidates.slice(0, 5).map(c => c.id);
+                        setSelectedFinalists(approved);
+                    }}
+                    variant="outline"
+                    className="hidden sm:inline-flex"
+                >
+                    Sélectionner Top 5
+                </Button>
+                <Button 
+                    onClick={() => downloadPoster('finalists-poster', 'SAYC_Elections_Finalistes.png', 'finalists')}
+                    disabled={downloadingId === 'finalists' || selectedFinalists.length === 0}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white shadow-lg w-full sm:w-auto"
+                >
+                {downloadingId === 'finalists' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
+                Télécharger le Visuel (1080x1080)
+                </Button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+             <Card className="xl:col-span-3 p-4 bg-white border-slate-200 h-[500px] flex flex-col">
+                <h3 className="font-bold text-sm uppercase text-slate-500 mb-4 tracking-widest">Choisir les Finalistes</h3>
+                <div className="flex flex-col gap-2 overflow-y-auto pr-2 scrollbar-thin">
+                    {candidates.map(candidate => (
+                        <button
+                            key={candidate.id}
+                            onClick={() => {
+                                setSelectedFinalists(prev => 
+                                    prev.includes(candidate.id) 
+                                    ? prev.filter(id => id !== candidate.id)
+                                    : [...prev, candidate.id].slice(0, 6) // Max 6 for design
+                                );
+                            }}
+                            className={`flex items-center gap-3 p-2 rounded-lg border text-left transition-all ${selectedFinalists.includes(candidate.id) ? 'border-yellow-500 bg-yellow-50' : 'border-slate-100 hover:bg-slate-50'}`}
+                        >
+                            <img src={candidate.photoUrl} alt="" className="w-8 h-8 rounded-full object-cover border" />
+                            <span className="text-xs font-bold truncate">{candidate.firstName} {candidate.nomSpecifiqueUnique}</span>
+                        </button>
+                    ))}
+                </div>
+                <p className="mt-4 text-[10px] text-slate-400 italic font-medium">Sélectionnez jusqu'à 6 candidats pour un rendu optimal.</p>
+             </Card>
+
+             <Card className="xl:col-span-9 p-6 bg-slate-200 border-4 border-slate-300 shadow-xl flex flex-col justify-center items-center overflow-hidden min-h-[500px]">
+                {selectedFinalists.length === 0 ? (
+                    <div className="text-center text-slate-400 py-20">
+                         <Users className="w-12 h-12 mx-auto opacity-20 mb-4" />
+                         <p className="font-medium uppercase tracking-widest text-sm">Veuillez sélectionner des candidats</p>
+                    </div>
+                ) : (
+                    <div style={{ transform: 'scale(0.42)', transformOrigin: 'center center', width: '1080px', height: '1080px' }} className="my-[-280px]">
+                        <div id="finalists-poster" className="relative w-[1080px] h-[1080px] bg-[#020202] overflow-hidden">
+                            {/* Premium Background */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#050505]" />
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-yellow-900/20 via-transparent to-transparent z-0" />
+                            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
+
+                            {/* Golden Ribbons */}
+                            <div className="absolute top-0 right-0 w-[600px] h-full bg-yellow-600/5 -skew-x-12 translate-x-32 z-0" />
+                            <div className="absolute top-0 right-10 w-[2px] h-full bg-gradient-to-b from-transparent via-yellow-500/30 to-transparent z-0" />
+
+                            {/* Header */}
+                            <div className="absolute top-14 inset-x-0 z-20 flex flex-col items-center">
+                                <div className="flex items-center gap-6 bg-white/5 backdrop-blur-2xl px-8 py-4 rounded-[30px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] mb-8">
+                                    <img src={logoSayc} alt="" className="h-12 bg-white p-1 rounded-lg" />
+                                    <div className="w-[1px] h-10 bg-white/20" />
+                                    <img src={smartAfricaAllianceLogo} alt="" className="h-12 bg-white p-1 rounded-lg" />
+                                    <div className="w-[1px] h-10 bg-white/20" />
+                                    <img src={sadaLogo} alt="" className="h-12 bg-white p-1 rounded-lg" />
+                                </div>
+                                
+                                <div className="text-center">
+                                    <div className="inline-flex items-center gap-4 px-6 py-2 bg-yellow-600/20 border border-yellow-600/40 rounded-full mb-4">
+                                        <div className="w-2 h-2 bg-yellow-500 rounded-full animate-pulse" />
+                                        <span className="text-yellow-500 font-black tracking-[0.4em] uppercase text-xl">SAYC TCHAD ÉLECTIONS 2026</span>
+                                    </div>
+                                    <h1 className="text-[100px] font-black text-white font-heading leading-none tracking-tighter italic shadow-text">
+                                        LES <span className="text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 via-yellow-500 to-yellow-700">FINALISTES</span>
+                                    </h1>
+                                </div>
+                            </div>
+
+                            {/* Finalists Layout */}
+                            <div className="absolute bottom-40 inset-x-0 z-10 flex items-end justify-center px-12 gap-4">
+                                {candidates.filter(c => selectedFinalists.includes(c.id)).map((c, i) => {
+                                    const isCenter = i === Math.floor(selectedFinalists.length / 2);
+                                    const scale = isCenter ? '1.15' : '1.0';
+                                    const zIndex = isCenter ? '20' : '10';
+                                    
+                                    return (
+                                        <div key={c.id} className="relative group transition-all duration-500" style={{ transform: `scale(${scale})`, zIndex }}>
+                                            {/* Glow behind */}
+                                            <div className="absolute -inset-4 bg-yellow-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            
+                                            <div className="relative w-[180px] flex flex-col items-center">
+                                                {/* Premium Photo Frame */}
+                                                <div className="w-full h-[260px] relative rounded-2xl overflow-hidden border-2 border-yellow-500/50 shadow-[0_20px_40px_rgba(0,0,0,0.8)] mb-4 bg-zinc-900">
+                                                     <img src={c.photoUrl} alt="" className="w-full h-full object-cover object-top" />
+                                                     <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                                                     {/* Name overlay */}
+                                                     <div className="absolute bottom-0 inset-x-0 p-3 text-center bg-black/80 backdrop-blur-md">
+                                                        <p className="text-white font-black text-sm uppercase leading-tight">{c.firstName}</p>
+                                                        <p className="text-yellow-500 font-extrabold text-[10px] uppercase tracking-tighter">{c.nomSpecifiqueUnique}</p>
+                                                     </div>
+                                                </div>
+                                                
+                                                {/* Role Badge */}
+                                                <div className="bg-gradient-to-r from-yellow-600 to-yellow-400 px-4 py-1 rounded-full shadow-lg">
+                                                    <p className="text-black font-black text-[9px] uppercase tracking-widest whitespace-nowrap">{c.role}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Footer */}
+                            <div className="absolute bottom-0 inset-x-0 px-20 py-10 z-20 flex items-center justify-between">
+                                <div className="flex items-center gap-6">
+                                    <div className="p-4 bg-yellow-500 rounded-2xl shadow-[0_0_30px_rgba(234,179,8,0.4)]">
+                                        <CheckCircle2 className="w-8 h-8 text-black" strokeWidth={3} />
+                                    </div>
+                                    <div>
+                                        <p className="text-white/60 font-bold tracking-widest uppercase text-lg">PROFIL VÉRIFIÉ</p>
+                                        <p className="text-white font-black text-2xl uppercase tracking-tighter">LISTE OFFICIELLE</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[3.5rem] font-black text-white leading-none tracking-tighter drop-shadow-2xl">WWW.SAYCTCHAD.ORG</p>
+                                    <p className="text-yellow-500 font-bold tracking-[0.5em] text-xl uppercase mt-2">Le futur est maintenant</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+             </Card>
           </div>
         </div>
 
