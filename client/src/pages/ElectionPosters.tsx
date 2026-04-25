@@ -114,7 +114,109 @@ export default function ElectionPosters() {
           </p>
         </div>
 
-        {/* Section Affiche de Groupe */}
+        {/* Section Affiche d'Annonce Officielle (Nouveau) */}
+        <div className="space-y-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-xl border shadow-sm gap-4">
+            <h2 className="text-2xl font-bold text-[#1e3a8a] flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-orange-500" /> Affiche d'Annonce du Scrutin (J-2)
+            </h2>
+            <Button 
+                onClick={() => downloadPoster('announcement-poster', 'SAYC_Annonce_Scrutin_27_Avril.png', 'announcement')}
+                disabled={downloadingId === 'announcement'}
+                className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg w-full sm:w-auto"
+            >
+              {downloadingId === 'announcement' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Download className="w-4 h-4 mr-2" />}
+              Télécharger l'Annonce (1080x1080)
+            </Button>
+          </div>
+
+          <div className="overflow-hidden pb-8 flex justify-center">
+            <div className="bg-slate-200 border-8 border-slate-300 rounded-xl shadow-2xl overflow-hidden flex items-start justify-start" style={{ width: '460px', height: '460px' }}>
+                <div style={{ transform: 'scale(0.4)', transformOrigin: 'top left', width: '1080px', height: '1080px', margin: '4px' }}>
+                    <div 
+                        id="announcement-poster" 
+                        className="w-[1080px] h-[1080px] bg-[#0a1d4a] relative overflow-hidden flex flex-col items-center justify-start"
+                    >
+                        {/* High-Tech Background */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1536] via-[#1e3a8a] to-black z-0" />
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 z-0" />
+                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 z-0" />
+                        
+                        {/* Grid lines */}
+                        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
+
+                        {/* Top Bar logos */}
+                        <div className="z-10 w-full px-16 h-[180px] flex items-center justify-between border-b border-white/10 bg-white/5 backdrop-blur-md">
+                           <div className="flex items-center gap-6">
+                              <div className="h-16 bg-white p-2 rounded-xl shadow-xl flex items-center justify-center">
+                                 <img src={logoSayc} alt="" className="h-full object-contain" />
+                              </div>
+                              <div className="h-16 bg-white p-2 rounded-xl shadow-xl flex items-center justify-center">
+                                 <img src={smartAfricaAllianceLogo} alt="" className="h-full object-contain" />
+                              </div>
+                              <div className="h-16 bg-white p-2 rounded-xl shadow-xl flex items-center justify-center">
+                                 <img src={sadaLogo} alt="" className="h-full object-contain" />
+                              </div>
+                           </div>
+                           <div className="px-8 py-3 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.4)]">
+                              <span className="text-white font-black text-2xl uppercase tracking-widest">SCRUTIN NATIONAL</span>
+                           </div>
+                        </div>
+
+                        {/* J-2 Header */}
+                        <div className="z-10 mt-16 text-center">
+                           <div className="inline-block px-10 py-4 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-full mb-8">
+                              <span className="text-orange-500 font-extrabold text-[2.5rem] tracking-[0.4em] uppercase">JOUR J - 2</span>
+                           </div>
+                        </div>
+
+                        {/* Main Title Center */}
+                        <div className="z-10 flex flex-col items-center gap-2">
+                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
+                              VOTEZ LE
+                           </h1>
+                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
+                              27 AVRIL
+                           </h1>
+                        </div>
+
+                        {/* Times Section */}
+                        <div className="z-10 mt-14 grid grid-cols-2 gap-10 px-24 w-full">
+                           <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
+                              <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Lancement</span>
+                              <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
+                              <div className="w-[80px] h-2 bg-sayc-teal mt-6 rounded-full" />
+                           </div>
+                           <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
+                              <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Résultats</span>
+                              <span className="text-orange-500 font-black text-[5rem] tracking-tighter leading-none">15H:00</span>
+                              <div className="w-[80px] h-2 bg-orange-600 mt-6 rounded-full" />
+                           </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="absolute bottom-0 inset-x-0 h-[180px] z-10 px-20 flex items-center justify-between border-t border-white/10 bg-black/40 backdrop-blur-xl">
+                            <div className="flex items-center gap-6">
+                                <div className="p-6 bg-orange-600 rounded-[2rem] shadow-2xl">
+                                    <VoteIcon />
+                                </div>
+                                <div>
+                                    <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none">BÂTISSONS LE FUTUR</p>
+                                    <p className="text-orange-500 font-bold text-2xl uppercase tracking-[0.2em] mt-2">DU NUMÉRIQUE AU TCHAD</p>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-white/40 font-bold uppercase tracking-[0.4em] text-lg mb-3">PARTICIPEZ SUR</p>
+                                <p className="text-[3.5rem] font-black text-white leading-none tracking-tighter uppercase whitespace-nowrap">
+                                    WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-xl border shadow-sm gap-4">
             <h2 className="text-2xl font-bold text-sidebar flex items-center gap-2">
