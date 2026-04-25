@@ -30,30 +30,39 @@ const electionPhases = [
     },
     {
         title: "Filtrage & Validation",
-        status: "En cours",
-        date: "Actuellement",
+        status: "Terminé",
+        date: "Clôturé",
         description: "Vérification des critères d'éligibilité et sélection des finalistes par le comité technique.",
         icon: ShieldCheck,
+        color: "text-gray-500",
+        bgColor: "bg-gray-100"
+    },
+    {
+        title: "Campagne Électorale",
+        status: "En cours",
+        date: "J-2",
+        description: "Présentation des programmes, débats publics et vision des candidats pour le numérique.",
+        icon: Globe,
         color: "text-amber-600",
         bgColor: "bg-amber-50"
     },
     {
-        title: "Campagne Électorale",
-        status: "À venir",
-        date: "5 jours",
-        description: "Présentation des programmes, débats publics et vision des candidats pour le numérique.",
-        icon: Globe,
-        color: "text-purple-600",
-        bgColor: "bg-purple-50"
-    },
-    {
         title: "Vote des Membres",
         status: "À venir",
-        date: "24-48 heures",
+        date: "27 Avril, 12h00",
         description: "Scrutin numérique sécurisé sur sayctchad.org réservé aux membres inscrits.",
         icon: Vote,
         color: "text-sayc-teal",
         bgColor: "bg-sayc-teal/10"
+    },
+    {
+        title: "Proclamation des Résultats",
+        status: "À venir",
+        date: "27 Avril, 15h00",
+        description: "Annonce officielle des élus du premier Comité National SAYC Tchad.",
+        icon: Award,
+        color: "text-purple-600",
+        bgColor: "bg-purple-50"
     }
 ];
 
@@ -93,15 +102,15 @@ export default function ElectionsOverview() {
             <div className="bg-[#1e3a8a] text-white py-20 px-4">
                 <div className="container mx-auto max-w-5xl text-center space-y-6">
                     <Badge variant="outline" className="text-blue-100 border-blue-100/30 uppercase tracking-widest text-[10px] font-bold">
-                        Scrutin National 2026
+                        Scrutin National 2026 • J-2 avant le Vote
                     </Badge>
                     <h1 className="text-4xl md:text-6xl font-heading font-bold">
                         Bâtissons le Futur Numérique <br /> 
                         <span className="text-sayc-teal">du Tchad Ensemble</span>
                     </h1>
                     <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                        Le SAYC Tchad lance le processus démocratique pour élire son premier Comité National. 
-                        Un moment historique pour la jeunesse technologique tchadienne.
+                        Le scrutin se déroulera le <span className="font-bold text-white">Lundi 27 Avril à 12h00</span>. 
+                        Les résultats seront proclamés le jour même à <span className="font-bold text-white">15h00</span>.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
                         <Link href="/elections/candidats">
@@ -111,7 +120,7 @@ export default function ElectionsOverview() {
                         </Link>
                         <Link href="/elections/voter">
                             <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm opacity-60 cursor-not-allowed">
-                                <Vote className="mr-2 h-5 w-5" /> Voter (Bientôt)
+                                <Vote className="mr-2 h-5 w-5" /> Voter le 27 Avril (12h00)
                             </Button>
                         </Link>
                     </div>
