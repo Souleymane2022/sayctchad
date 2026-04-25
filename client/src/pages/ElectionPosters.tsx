@@ -147,11 +147,13 @@ export default function ElectionPosters() {
                         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 z-0" />
                         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 z-0" />
                         
-                        {/* Grid lines */}
-                        <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
-
+                        {/* High-Tech Background */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1536] via-[#1e3a8a] to-black z-0" />
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 z-0" />
+                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 z-0" />
+                        
                         {/* Top Bar logos */}
-                        <div className="z-10 w-full px-16 h-[180px] flex items-center justify-between border-b border-white/10 bg-white/5 backdrop-blur-md">
+                        <div className="z-10 w-full px-16 h-[180px] flex items-center justify-between border-b border-white/10 bg-[#0a1d4a]/80">
                            <div className="flex items-center gap-6">
                               <div className="h-16 bg-white p-2 rounded-xl shadow-xl flex items-center justify-center">
                                  <img src={logoSayc} alt="" className="h-full object-contain" />
@@ -163,36 +165,36 @@ export default function ElectionPosters() {
                                  <img src={sadaLogo} alt="" className="h-full object-contain" />
                               </div>
                            </div>
-                           <div className="px-8 py-3 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.4)]">
+                           <div className="px-8 py-3 bg-orange-600 rounded-full shadow-2xl">
                               <span className="text-white font-black text-2xl uppercase tracking-widest">SCRUTIN NATIONAL</span>
                            </div>
                         </div>
 
                         {/* J-2 Header */}
                         <div className="z-10 mt-16 text-center">
-                           <div className="inline-block px-10 py-4 bg-white/10 backdrop-blur-2xl border border-white/20 rounded-full mb-8">
+                           <div className="inline-block px-10 py-4 bg-white/10 border border-white/20 rounded-full mb-8">
                               <span className="text-orange-500 font-extrabold text-[2.5rem] tracking-[0.4em] uppercase">JOUR J - 2</span>
                            </div>
                         </div>
 
                         {/* Main Title Center */}
-                        <div className="z-10 flex flex-col items-center gap-2 text-center">
-                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
+                        <div className="z-10 flex flex-col items-center gap-2 text-center" style={{ fontFamily: 'sans-serif' }}>
+                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase shadow-black/80">
                               FIN DES VOTES LE
                            </h1>
-                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
+                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase">
                               27 AVRIL
                            </h1>
                         </div>
 
                         {/* Times Section */}
                         <div className="z-10 mt-14 grid grid-cols-2 gap-10 px-24 w-full">
-                           <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
+                           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
                               <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Clôture</span>
                               <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
                               <div className="w-[80px] h-2 bg-sayc-teal mt-6 rounded-full" />
                            </div>
-                           <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
+                           <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
                               <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Résultats</span>
                               <span className="text-orange-500 font-black text-[5rem] tracking-tighter leading-none">15H:00</span>
                               <div className="w-[80px] h-2 bg-orange-600 mt-6 rounded-full" />
@@ -200,7 +202,7 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Footer */}
-                        <div className="absolute bottom-0 inset-x-0 h-[180px] z-10 px-20 flex items-center justify-between border-t border-white/10 bg-black/40 backdrop-blur-xl">
+                        <div className="absolute bottom-0 inset-x-0 h-[180px] z-10 px-20 flex items-center justify-between border-t border-white/10 bg-black/80">
                             <div className="flex items-center gap-6">
                                 <div className="p-6 bg-orange-600 rounded-[2rem] shadow-2xl">
                                     <VoteIcon />
@@ -366,7 +368,7 @@ export default function ElectionPosters() {
                             {/* Premium Background */}
                             <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#050505]" />
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] bg-[radial-gradient(circle,_var(--tw-gradient-stops))] from-yellow-900/20 via-transparent to-transparent z-0" />
-                            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] pointer-events-none" />
+                            <div className="absolute inset-0 opacity-10 pointer-events-none" />
 
                             {/* Golden Ribbons */}
                             <div className="absolute top-0 right-0 w-[600px] h-full bg-yellow-600/5 -skew-x-12 translate-x-32 z-0" />
@@ -374,7 +376,7 @@ export default function ElectionPosters() {
 
                             {/* Header */}
                             <div className="absolute top-14 inset-x-0 z-20 flex flex-col items-center">
-                                <div className="flex items-center gap-6 bg-white/5 backdrop-blur-2xl px-8 py-4 rounded-[30px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] mb-8">
+                                <div className="flex items-center gap-6 bg-white/10 px-8 py-4 rounded-[30px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] mb-8">
                                     <img src={logoSayc} alt="" className="h-12 bg-white p-1 rounded-lg" />
                                     <div className="w-[1px] h-10 bg-white/20" />
                                     <img src={smartAfricaAllianceLogo} alt="" className="h-12 bg-white p-1 rounded-lg" />
@@ -411,7 +413,7 @@ export default function ElectionPosters() {
                                                      <img src={c.photoUrl} alt="" className="w-full h-full object-cover object-top" />
                                                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
                                                      {/* Name overlay */}
-                                                     <div className="absolute bottom-0 inset-x-0 p-3 text-center bg-black/80 backdrop-blur-md">
+                                                     <div className="absolute bottom-0 inset-x-0 p-3 text-center bg-black/90">
                                                         <p className="text-white font-black text-sm uppercase leading-tight">{c.firstName}</p>
                                                         <p className="text-yellow-500 font-extrabold text-[10px] uppercase tracking-tighter">{c.nomSpecifiqueUnique}</p>
                                                      </div>
@@ -428,7 +430,7 @@ export default function ElectionPosters() {
                             </div>
 
                             {/* Footer */}
-                            <div className="absolute bottom-0 inset-x-0 px-20 py-10 z-20 flex items-center justify-between">
+                            <div className="absolute bottom-0 inset-x-0 px-20 py-10 z-20 flex items-center justify-between bg-black/50">
                                 <div className="flex items-center gap-6">
                                     <div className="p-4 bg-yellow-500 rounded-2xl shadow-[0_0_30px_rgba(234,179,8,0.4)]">
                                         <CheckCircle2 className="w-8 h-8 text-black" strokeWidth={3} />
@@ -571,7 +573,7 @@ export default function ElectionPosters() {
                             {/* Text Content Block (Left absolute) */}
                             <div className="absolute left-0 top-0 w-[540px] h-[1080px] p-16 pt-14 pr-4 z-20 flex flex-col justify-between">
                                 {/* Triple Logo Row */}
-                                <div className="flex items-center gap-4 bg-white/5 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)] w-fit mt-4">
+                                <div className="flex items-center gap-4 bg-white/10 p-4 rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.05)] w-fit mt-4">
                                     <div className="h-14 w-auto bg-white p-2 rounded-xl shadow-inner flex items-center justify-center">
                                         <img src={logoSayc} alt="SAYC Logo" className="h-full object-contain" />
                                     </div>
