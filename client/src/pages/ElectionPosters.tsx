@@ -40,6 +40,7 @@ export default function ElectionPosters() {
         width: 1080,
         height: 1080,
         cacheBust: true,
+        skipFonts: true, // Prevent CORS SecurityError with Google Fonts
         style: {
           transform: 'scale(1)',
           transformOrigin: 'top left',
