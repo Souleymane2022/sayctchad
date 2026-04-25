@@ -183,7 +183,7 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Times Section (Absolute Centered) */}
-                        <div className="absolute top-[720px] left-1/2 -translate-x-1/2 z-10 grid grid-cols-2 gap-10 px-0 w-[900px]">
+                        <div className="absolute top-[630px] left-1/2 -translate-x-1/2 z-10 grid grid-cols-2 gap-10 px-0 w-[900px]">
                            <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
                               <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Clôture</span>
                               <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
