@@ -140,20 +140,15 @@ export default function ElectionPosters() {
                 <div style={{ transform: 'scale(0.4)', transformOrigin: 'top left', width: '1080px', height: '1080px', margin: '4px' }}>
                     <div 
                         id="announcement-poster" 
-                        className="w-[1080px] h-[1080px] bg-[#0a1d4a] relative overflow-hidden flex flex-col items-center justify-start"
+                        className="w-[1080px] h-[1080px] bg-[#0a1d4a] relative overflow-hidden"
                     >
                         {/* High-Tech Background */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#0a1536] via-[#1e3a8a] to-black z-0" />
                         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 z-0" />
                         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 z-0" />
                         
-                        {/* High-Tech Background */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1536] via-[#1e3a8a] to-black z-0" />
-                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/20 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/3 z-0" />
-                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] translate-y-1/3 -translate-x-1/3 z-0" />
-                        
-                        {/* Top Bar logos */}
-                        <div className="z-10 w-full px-16 h-[180px] flex items-center justify-between border-b border-white/10 bg-[#0a1d4a]/80">
+                        {/* Top Bar logos (Absolute) */}
+                        <div className="absolute top-0 left-0 z-10 w-full px-16 h-[180px] flex items-center justify-between border-b border-white/10 bg-[#0a1d4a]">
                            <div className="flex items-center gap-6">
                               <div className="h-16 bg-white p-2 rounded-xl shadow-xl flex items-center justify-center">
                                  <img src={logoSayc} alt="" className="h-full object-contain" />
@@ -170,25 +165,25 @@ export default function ElectionPosters() {
                            </div>
                         </div>
 
-                        {/* J-2 Header */}
-                        <div className="z-10 mt-16 text-center">
-                           <div className="inline-block px-10 py-4 bg-white/10 border border-white/20 rounded-full mb-8">
+                        {/* J-2 Header (Absolute Centered) */}
+                        <div className="absolute top-[230px] left-1/2 -translate-x-1/2 z-10 text-center">
+                           <div className="inline-block px-10 py-4 bg-white/10 border border-white/20 rounded-full">
                               <span className="text-orange-500 font-extrabold text-[2.5rem] tracking-[0.4em] uppercase">JOUR J - 2</span>
                            </div>
                         </div>
 
-                        {/* Main Title Center */}
-                        <div className="z-10 flex flex-col items-center gap-2 text-center" style={{ fontFamily: 'sans-serif' }}>
-                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase shadow-black/80">
+                        {/* Main Title Center (Absolute Centered) */}
+                        <div className="absolute top-[370px] left-0 w-full z-10 flex flex-col items-center gap-2 text-center" style={{ fontFamily: 'sans-serif' }}>
+                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)]">
                               FIN DES VOTES LE
                            </h1>
-                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase">
+                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]">
                               27 AVRIL
                            </h1>
                         </div>
 
-                        {/* Times Section */}
-                        <div className="z-10 mt-14 grid grid-cols-2 gap-10 px-24 w-full">
+                        {/* Times Section (Absolute Centered) */}
+                        <div className="absolute top-[670px] left-1/2 -translate-x-1/2 z-10 grid grid-cols-2 gap-10 px-0 w-[900px]">
                            <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
                               <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Clôture</span>
                               <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
@@ -201,8 +196,8 @@ export default function ElectionPosters() {
                            </div>
                         </div>
 
-                        {/* Footer */}
-                        <div className="absolute bottom-0 inset-x-0 h-[180px] z-10 px-20 flex items-center justify-between border-t border-white/10 bg-black/80">
+                        {/* Footer (Absolute Bottom) */}
+                        <div className="absolute bottom-0 inset-x-0 h-[180px] z-10 px-20 flex items-center justify-between border-t border-white/10 bg-black">
                             <div className="flex items-center gap-6">
                                 <div className="p-6 bg-orange-600 rounded-[2rem] shadow-2xl">
                                     <VoteIcon />
