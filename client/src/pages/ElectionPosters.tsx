@@ -166,24 +166,24 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* J-2 Header (Absolute Centered) */}
-                        <div className="absolute top-[230px] left-1/2 -translate-x-1/2 z-10 text-center">
+                        <div className="absolute top-[210px] left-1/2 -translate-x-1/2 z-10 text-center">
                            <div className="inline-block px-10 py-4 bg-white/10 border border-white/20 rounded-full">
                               <span className="text-orange-500 font-extrabold text-[2.5rem] tracking-[0.4em] uppercase">JOUR J - 2</span>
                            </div>
                         </div>
 
                         {/* Main Title Center (Absolute Centered) */}
-                        <div className="absolute top-[370px] left-0 w-full z-10 flex flex-col items-center gap-2 text-center" style={{ fontFamily: 'sans-serif' }}>
-                           <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)]">
+                        <div className="absolute top-[320px] left-0 w-full z-10 flex flex-col items-center gap-2 text-center" style={{ fontFamily: 'sans-serif' }}>
+                           <h1 className="text-[7rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.8)]">
                               FIN DES VOTES LE
                            </h1>
-                           <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]">
+                           <h1 className="text-[8.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]">
                               27 AVRIL
                            </h1>
                         </div>
 
                         {/* Times Section (Absolute Centered) */}
-                        <div className="absolute top-[670px] left-1/2 -translate-x-1/2 z-10 grid grid-cols-2 gap-10 px-0 w-[900px]">
+                        <div className="absolute top-[720px] left-1/2 -translate-x-1/2 z-10 grid grid-cols-2 gap-10 px-0 w-[900px]">
                            <div className="bg-white/5 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
                               <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Clôture</span>
                               <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
