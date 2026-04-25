@@ -174,64 +174,61 @@ export default function BrandAssets() {
                      </div>
                   </div>
 
-                  {/* MAIN TITLE - ADJUSTED POSITION TO PREVENT OVERLAP */}
-                  <div className="absolute top-[250px] left-24 z-20" style={{ fontFamily: 'sans-serif' }}>
-                     <h1 className="text-[105px] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                  {/* MAIN TITLE (REDUCED SIZE AND MOVED UP) */}
+                  <div className="absolute top-[220px] left-24 z-20" style={{ fontFamily: 'sans-serif' }}>
+                     <h1 className="text-[100px] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                         LANCEZ VOTRE
                      </h1>
-                     <h1 className="text-[145px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[5px] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
+                     <h1 className="text-[130px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[5px] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                         CARRIÈRE
                      </h1>
-                     <h1 className="text-[150px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
+                     <h1 className="text-[140px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
                         CLOUD
                      </h1>
                   </div>
 
-                  {/* TWO COLUMNS SECTION - SHIFTED DOWN FOR CLEARANCE */}
-                  <div className="absolute top-[680px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
-                     {/* Left Column: Le Programme */}
-                     <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl h-[230px] flex flex-col justify-center">
-                        <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest mb-4 italic leading-none">LE PROGRAMME</h3>
-                        <p className="text-white/80 text-[1.4rem] font-bold leading-[1.3]">
+                  {/* TWO COLUMNS SECTION (MOVED UP) */}
+                  <div className="absolute top-[590px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
+                     <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-8 shadow-2xl h-[200px] flex flex-col justify-center">
+                        <h3 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-3 italic leading-none">LE PROGRAMME</h3>
+                        <p className="text-white/80 text-[1.2rem] font-bold leading-[1.3]">
                            Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS).
                         </p>
                      </div>
 
-                     {/* Right Column: Skills Stack */}
                      <div className="flex flex-col gap-3">
                         {[
                            "CLOUD ARCHITECTURE",
                            "PYTHON & LINUX",
-                           "NETWORKING & SECURITY",
-                           "DATABASE MANAGEMENT"
+                           "NETWORKING"
                         ].map((skill, i) => (
-                           <div key={i} className="bg-white/10 px-8 py-3 rounded-2xl border border-white/10 flex items-center gap-6">
-                              <div className="w-3 h-3 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
-                              <span className="text-white font-black text-xl tracking-tight uppercase leading-none">{skill}</span>
+                           <div key={i} className="bg-white/10 px-6 py-3 rounded-2xl border border-white/10 flex items-center gap-4">
+                              <div className="w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
+                              <span className="text-white font-black text-lg tracking-tight uppercase leading-none">{skill}</span>
                            </div>
                         ))}
                      </div>
                   </div>
 
-                  {/* FOOTER AREA - FINAL REFINEMENT FOR PERFECT ALIGNMENT */}
-                  <div className="absolute bottom-12 left-24 right-20 flex justify-between items-end z-40">
-                     {/* Left: Scholarship Info */}
-                     <div className="flex items-center gap-8">
-                        <div className="p-7 bg-orange-600 rounded-[2rem] shadow-2xl">
-                           <Sparkles className="w-12 h-12 text-white" />
+                  {/* FOOTER AREA (FIXED BOTTOM) */}
+                  <div className="absolute top-[850px] left-24 right-20 z-40 bg-[#020202]/90 pt-8 border-t border-white/5">
+                     <div className="flex justify-between items-end">
+                        <div className="flex items-center gap-6">
+                           <div className="p-6 bg-orange-600 rounded-[2rem] shadow-2xl">
+                              <Sparkles className="w-10 h-10 text-white" />
+                           </div>
+                           <div className="space-y-1">
+                              <p className="text-white font-black text-[2.2rem] uppercase tracking-tighter leading-none">FORMATION 100% GRATUITE</p>
+                              <p className="text-orange-500 font-bold text-xl uppercase tracking-[0.2em] leading-none">SOUTENUE PAR SMART AFRICA ACADEMY</p>
+                           </div>
                         </div>
-                        <div className="space-y-1">
-                           <p className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none">FORMATION 100% GRATUITE</p>
-                           <p className="text-orange-500 font-bold text-2xl uppercase tracking-[0.2em] leading-none">SOUTENUE PAR SMART AFRICA ACADEMY</p>
-                        </div>
-                     </div>
 
-                     {/* Right: Registration URL */}
-                     <div className="text-right pb-1">
-                        <p className="text-white/30 font-black uppercase tracking-[0.6em] text-xl mb-4">INCRIVEZ-VOUS SUR</p>
-                        <p className="text-[5.8rem] font-black text-white leading-none tracking-tighter uppercase">
-                           WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                        </p>
+                        <div className="text-right">
+                           <p className="text-white/30 font-black uppercase tracking-[0.6em] text-lg mb-3">INCRIVEZ-VOUS SUR</p>
+                           <p className="text-[4.5rem] font-black text-white leading-none tracking-tighter uppercase">
+                              WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                           </p>
+                        </div>
                      </div>
                   </div>
 
