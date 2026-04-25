@@ -182,8 +182,7 @@ export default function VotingInterface() {
                             <div>
                                 <CardTitle className="text-2xl">{t("vote.verify_title") || "Vérification Électeur"}</CardTitle>
                                 <CardDescription>
-                                    Le scrutin ouvrira le <span className="font-bold text-[#1e3a8a]">Lundi 27 Avril à 12h00</span>. 
-                                    Veuillez vous identifier pour accéder au bulletin de vote dès l'ouverture.
+                                    Les votes sont actuellement ouverts. Le scrutin sera clôturé le <span className="font-bold text-[#1e3a8a]">Lundi 27 Avril à 12h00</span>.
                                 </CardDescription>
                             </div>
                         </CardHeader>

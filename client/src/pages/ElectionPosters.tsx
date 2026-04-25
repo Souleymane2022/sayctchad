@@ -4,7 +4,7 @@ import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Loader2, Image as ImageIcon, Users, CheckCircle2, MessageSquare, Quote } from "lucide-react";
+import { Download, Loader2, Image as ImageIcon, Users, CheckCircle2, MessageSquare, Quote, Calendar } from "lucide-react";
 import type { ElectionCandidate } from "@shared/schema";
 import SEOHead from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
@@ -118,10 +118,10 @@ export default function ElectionPosters() {
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-center justify-between bg-white p-4 rounded-xl border shadow-sm gap-4">
             <h2 className="text-2xl font-bold text-[#1e3a8a] flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-orange-500" /> Affiche d'Annonce du Scrutin (J-2)
+              <Calendar className="w-6 h-6 text-orange-500" /> Affiche Clôture du Scrutin (J-2)
             </h2>
             <Button 
-                onClick={() => downloadPoster('announcement-poster', 'SAYC_Annonce_Scrutin_27_Avril.png', 'announcement')}
+                onClick={() => downloadPoster('announcement-poster', 'SAYC_Cloture_Scrutin_27_Avril.png', 'announcement')}
                 disabled={downloadingId === 'announcement'}
                 className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg w-full sm:w-auto"
             >
@@ -171,9 +171,9 @@ export default function ElectionPosters() {
                         </div>
 
                         {/* Main Title Center */}
-                        <div className="z-10 flex flex-col items-center gap-2">
+                        <div className="z-10 flex flex-col items-center gap-2 text-center">
                            <h1 className="text-[7.5rem] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
-                              VOTEZ LE
+                              FIN DES VOTES LE
                            </h1>
                            <h1 className="text-[9.5rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600 leading-none tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)]">
                               27 AVRIL
@@ -183,7 +183,7 @@ export default function ElectionPosters() {
                         {/* Times Section */}
                         <div className="z-10 mt-14 grid grid-cols-2 gap-10 px-24 w-full">
                            <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl flex flex-col items-center text-center">
-                              <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Lancement</span>
+                              <span className="text-white/60 font-black text-xl uppercase tracking-widest mb-3">Clôture</span>
                               <span className="text-white font-black text-[5rem] tracking-tighter leading-none">12H:00</span>
                               <div className="w-[80px] h-2 bg-sayc-teal mt-6 rounded-full" />
                            </div>

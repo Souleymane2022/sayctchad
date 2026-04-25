@@ -36,7 +36,7 @@ export function Header() {
         </span>
         <span className="hidden sm:inline opacity-30">|</span>
         <span className="animate-pulse tracking-tight sm:tracking-normal">
-          J-2 : Scrutin le Lundi 27 Avril à 12h00
+          VOTES EN COURS : Clôture le Lundi 27 Avril à 12h00
         </span>
         <Link href="/elections">
           <button className="bg-[#020817] text-white px-3 py-0.5 rounded-full text-[9px] uppercase hover:bg-black transition-colors font-black ml-1">
