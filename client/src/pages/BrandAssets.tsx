@@ -25,6 +25,8 @@ export default function BrandAssets() {
         pixelRatio: 2, 
         width: 1080,
         height: 1080,
+        cacheBust: true,
+        skipFonts: true,
         style: {
           transform: 'scale(1)',
           transformOrigin: 'top left',
@@ -173,22 +175,22 @@ export default function BrandAssets() {
                   </div>
 
                   {/* MAIN TITLE - ADJUSTED POSITION TO PREVENT OVERLAP */}
-                  <div className="absolute top-[260px] left-24 z-20">
-                     <h1 className="text-[115px] font-black text-white leading-none tracking-tighter m-0 uppercase">
+                  <div className="absolute top-[250px] left-24 z-20" style={{ fontFamily: 'sans-serif' }}>
+                     <h1 className="text-[105px] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                         LANCEZ VOTRE
                      </h1>
-                     <h1 className="text-[155px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[10px]">
+                     <h1 className="text-[145px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[5px] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">
                         CARRIÈRE
                      </h1>
-                     <h1 className="text-[165px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
+                     <h1 className="text-[150px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">
                         CLOUD
                      </h1>
                   </div>
 
                   {/* TWO COLUMNS SECTION - SHIFTED DOWN FOR CLEARANCE */}
-                  <div className="absolute top-[690px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
+                  <div className="absolute top-[680px] left-24 right-16 grid grid-cols-2 gap-10 z-20">
                      {/* Left Column: Le Programme */}
-                     <div className="bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 shadow-2xl h-[230px] flex flex-col justify-center">
+                     <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-10 shadow-2xl h-[230px] flex flex-col justify-center">
                         <h3 className="text-orange-500 font-black text-3xl uppercase tracking-widest mb-4 italic leading-none">LE PROGRAMME</h3>
                         <p className="text-white/80 text-[1.4rem] font-bold leading-[1.3]">
                            Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS).
@@ -203,7 +205,7 @@ export default function BrandAssets() {
                            "NETWORKING & SECURITY",
                            "DATABASE MANAGEMENT"
                         ].map((skill, i) => (
-                           <div key={i} className="bg-white/10 backdrop-blur-md px-8 py-3 rounded-2xl border border-white/10 flex items-center gap-6">
+                           <div key={i} className="bg-white/10 px-8 py-3 rounded-2xl border border-white/10 flex items-center gap-6">
                               <div className="w-3 h-3 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
                               <span className="text-white font-black text-xl tracking-tight uppercase leading-none">{skill}</span>
                            </div>
