@@ -1,14 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { toPng } from "html-to-image";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Download, Loader2, Image as ImageIcon, Sparkles, Megaphone, 
   Smartphone, Facebook, Instagram, MessageSquare, Calendar, 
-  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock
+  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock, Lock, Shield
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -19,11 +21,95 @@ import sadaLogo from "@assets/SADA_1770443171461.jpg";
 
 type Category = "formation" | "news" | "testimony" | "event";
 
+function BrandLogin({ onLogin }: { onLogin: () => void }) {
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { toast } = useToast();
+
+  const loginMutation = useMutation({
+    mutationFn: async (pw: string) => {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw data;
+      return data;
+    },
+    onSuccess: () => {
+      onLogin();
+      toast({ title: "Accès Autorisé", description: "Bienvenue dans le Creative Studio" });
+    },
+    onError: (err: any) => {
+      setErrorMessage(err?.error || "Mot de passe incorrect");
+    },
+  });
+
+  return (
+    <div className="min-h-screen bg-[#0a0c10] flex items-center justify-center p-4">
+      <Card className="w-full max-w-md p-8 bg-[#14171f] border-slate-800 shadow-2xl rounded-[2rem] space-y-6">
+        <div className="flex flex-col items-center gap-4">
+          <div className="p-4 bg-orange-600/20 rounded-2xl">
+            <Lock className="h-10 w-10 text-orange-500" />
+          </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-black text-white">Creative Studio</h1>
+            <p className="text-sm text-slate-400">Accès restreint aux administrateurs</p>
+          </div>
+        </div>
+        
+        {errorMessage && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm text-destructive text-center font-bold">
+            {errorMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            loginMutation.mutate(password);
+          }}
+          className="space-y-4"
+        >
+          <div className="space-y-2">
+            <Label className="text-slate-400 font-bold uppercase text-[10px] tracking-widest px-1">MOT DE PASSE</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-slate-900 border-slate-800 h-14 rounded-xl text-white"
+              placeholder="••••••••"
+            />
+          </div>
+          <Button type="submit" className="w-full h-14 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-black text-lg shadow-lg" disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? <Loader2 className="animate-spin" /> : "Vérifier l'identitié"}
+          </Button>
+        </form>
+      </Card>
+    </div>
+  );
+}
+
 export default function BrandAssets() {
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<Category>("formation");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  // Auth Check
+  useQuery({
+    queryKey: ["/api/admin/check-brand"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/check", { credentials: "include" });
+      const data = await res.json();
+      setIsAuthenticated(data.isAdmin);
+      setChecking(false);
+      return data;
+    },
+  });
   
   // Dynamic State for Editor
   const [formData, setFormData] = useState({
@@ -64,11 +150,11 @@ export default function BrandAssets() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
-      await new Promise(resolve => setTimeout(resolve, 800)); // Longer wait for font rendering
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       const dataUrl = await toPng(element, { 
         quality: 1, 
-        pixelRatio: 2.5, // Even higher quality
+        pixelRatio: 2.5,
         width: 1080,
         height: 1080,
         cacheBust: true,
@@ -88,6 +174,18 @@ export default function BrandAssets() {
       setDownloadingId(null);
     }
   };
+
+  if (checking) {
+    return (
+      <div className="min-h-screen bg-[#0a0c10] flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <BrandLogin onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0c10] text-slate-100 pt-24 pb-12 px-4 md:px-8 font-sans selection:bg-orange-500/30">
@@ -130,7 +228,7 @@ export default function BrandAssets() {
 
             {/* Dynamic Content Form */}
             <div className="space-y-6 pt-6 border-t border-slate-800">
-               <Label className="uppercase text-xs font-bold text-slate-500 tracking-[0.2em]">CONFIGURATION DU CONTENU</Label>
+               <Label className="uppercase text-xs font-bold text-slate-500 tracking-[0.2em]">CONFIGURATION DU CONTENU ({activeCategory.toUpperCase()})</Label>
                
                <div className="grid gap-5">
                   {(activeCategory === "formation" || activeCategory === "news" || activeCategory === "event") && (
@@ -231,7 +329,7 @@ export default function BrandAssets() {
             <div className="overflow-hidden w-[600px] h-[600px] relative rounded-[2rem] bg-[#020202] ring-1 ring-white/10 shadow-2xl">
               <div 
                 style={{ 
-                  transform: 'scale(0.5555)', // To fit 1080 into 600
+                  transform: 'scale(0.5555)',
                   transformOrigin: 'top center', 
                   width: '1080px', 
                   height: '1080px',
@@ -248,18 +346,14 @@ export default function BrandAssets() {
                   
                   {activeCategory === "formation" && (
                     <div className="w-full h-full bg-[#020202]">
-                       {/* Background FX */}
                        <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c0c] to-black z-0" />
                        <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[180px] z-0 animate-pulse" />
                        <div className="absolute top-[20%] right-[-200px] scale-[4] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
                           <img src={logoSayc} alt="" className="w-[500px]" />
                        </div>
-
-                       {/* Decorative sidebar */}
                        <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50" />
                        <div className="absolute left-8 top-0 bottom-0 w-8 bg-orange-600/20 z-40" />
 
-                       {/* Header Bar */}
                        <div className="absolute top-12 left-28 right-20 flex justify-between items-center z-30">
                           <div className="bg-white flex items-center gap-10 px-12 py-5 rounded-[2rem] shadow-2xl">
                              <img src={logoSayc} alt="SAYC" className="h-[55px]" />
@@ -273,7 +367,6 @@ export default function BrandAssets() {
                           </div>
                        </div>
 
-                       {/* Headline */}
                        <div className="absolute top-[210px] left-28 z-20">
                           <p className="text-orange-500 font-black text-[2.2rem] uppercase tracking-[0.5em] mb-4 drop-shadow-md">{formData.subtitle}</p>
                           <h1 className="text-[120px] font-black text-white leading-[0.85] tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]">
@@ -283,7 +376,6 @@ export default function BrandAssets() {
                           </h1>
                        </div>
 
-                       {/* Content Split */}
                        <div className="absolute top-[710px] left-28 right-20 grid grid-cols-2 gap-12 z-20">
                           <div className="bg-white/5 border-l-8 border-orange-600 p-10 shadow-2xl backdrop-blur-3xl rounded-[2.5rem]">
                              <h4 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-4">PROGRAMME</h4>
@@ -305,14 +397,12 @@ export default function BrandAssets() {
                     <div className="w-full h-full bg-[#050510]">
                        <div className="absolute inset-0 bg-gradient-to-tr from-[#1e40af] via-black to-[#1e1e1e] opacity-80 z-0" />
                        <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] grayscale z-0" />
-                       
                        <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
                           <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" />
                           <div className="px-10 py-4 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.3)]">
                              <span className="text-white font-black text-2xl uppercase tracking-[0.3em]">BREAKING NEWS</span>
                           </div>
                        </div>
-
                        <div className="absolute top-[220px] left-16 right-16 z-20">
                           <p className="text-sayc-teal font-black text-4xl uppercase tracking-[0.5em] mb-10">{formData.subtitle}</p>
                           <h1 className="text-[140px] font-black text-white leading-[0.9] tracking-tighter uppercase italic select-none">
@@ -320,13 +410,10 @@ export default function BrandAssets() {
                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400 drop-shadow-2xl">{formData.titleLine2}</span>
                           </h1>
                        </div>
-
                        <div className="absolute bottom-[200px] left-16 right-16 z-20">
                           <div className="bg-white/5 border border-white/10 backdrop-blur-3xl p-16 rounded-[4rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
                              <Quote className="w-20 h-20 text-sayc-teal opacity-20 absolute top-[-30px] right-8" />
-                             <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">
-                                {formData.mainText}
-                             </p>
+                             <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">{formData.mainText}</p>
                           </div>
                        </div>
                     </div>
@@ -334,30 +421,25 @@ export default function BrandAssets() {
 
                   {activeCategory === "testimony" && (
                     <div className="w-full h-full bg-slate-50 text-slate-900">
-                       <div className="absolute top-0 right-0 w-[550px] h-full bg-[#0f172a] clip-path-polygon-[20%_0,100%_0,100%_100%,0_%100%]" 
+                       <div className="absolute top-0 right-0 w-[550px] h-full bg-[#0f172a]" 
                           style={{ clipPath: 'polygon(25% 0, 100% 0, 100% 100%, 0% 100%)' }} />
-                       
                        <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
                           <img src={logoSayc} alt="SAYC" className="h-[50px]" />
                           <div className="w-[1px] h-8 bg-slate-300" />
                           <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" />
                        </div>
-
                        <div className="absolute top-[200px] left-16 w-[550px] z-20">
                           <Quote className="w-[150px] h-[150px] text-sayc-teal/10 absolute -top-12 -left-12" />
-                          <p className="text-[#0f172a] font-black text-[3.2rem] leading-[1.15] italic mb-16 relative z-10">
-                             "{formData.mainText}"
-                          </p>
+                          <p className="text-[#0f172a] font-black text-[3.2rem] leading-[1.15] italic mb-16 relative z-10">"{formData.mainText}"</p>
                           <div className="space-y-2">
                              <div className="w-20 h-2 bg-orange-600 rounded-full" />
                              <h4 className="text-4xl font-black uppercase tracking-tight text-[#0f172a]">{formData.personName}</h4>
                              <p className="text-sayc-teal font-bold text-xl uppercase tracking-widest">{formData.personRole}</p>
                           </div>
                        </div>
-
                        <div className="absolute inset-y-0 right-[-50px] w-[650px] z-10 p-24 pr-[150px] flex items-center">
                           <div className="w-full aspect-square rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-[15px] border-white overflow-hidden rotate-[3deg]">
-                             <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700" />
+                             <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" />
                           </div>
                        </div>
                     </div>
@@ -367,14 +449,12 @@ export default function BrandAssets() {
                      <div className="w-full h-full bg-[#050510] overflow-hidden">
                         <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent z-0" />
-                        
                         <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
                            <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" />
                            <div className="bg-orange-600 px-8 py-3 rounded-full">
                               <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
                            </div>
                         </div>
-
                         <div className="absolute top-[280px] left-16 right-16 z-20 space-y-10 group">
                            <div className="inline-block px-6 py-2 bg-sayc-teal/20 border border-sayc-teal/30 rounded-xl">
                               <span className="text-sayc-teal font-black text-[2.2rem] uppercase italic tracking-[0.4em]">{formData.subtitle}</span>
@@ -384,7 +464,6 @@ export default function BrandAssets() {
                               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400">{formData.titleLine2}</span>
                            </h1>
                         </div>
-
                         <div className="absolute top-[700px] left-16 right-16 z-20 grid grid-cols-2 gap-12">
                            <div className="flex items-center gap-8 bg-white/5 border border-white/10 p-8 rounded-[3rem] shadow-2xl backdrop-blur-xl">
                               <div className="p-5 bg-sayc-teal/20 rounded-[1.5rem]"><Clock className="w-10 h-10 text-sayc-teal" /></div>
