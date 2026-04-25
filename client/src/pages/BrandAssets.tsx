@@ -1,15 +1,14 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { 
   Download, Loader2, Image as ImageIcon, Sparkles, Megaphone, 
   Smartphone, Facebook, Instagram, MessageSquare, Calendar, 
-  Award, Briefcase, User, GraduationCap, MapPin, Clock 
+  Award, Briefcase, GraduationCap, MapPin, Zap
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,7 +54,6 @@ export default function BrandAssets() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
-      // Give browser time to stabilize
       await new Promise(resolve => setTimeout(resolve, 500));
 
       const dataUrl = await toPng(element, { 
@@ -169,19 +167,6 @@ export default function BrandAssets() {
                       </div>
                    </div>
                 )}
-
-                {(activeCategory === "testimony" || activeCategory === "event") && (
-                   <div className="space-y-4 pt-2">
-                      <div className="space-y-2">
-                        <Label className="text-xs">Nom de la Personne / Lieu</Label>
-                        <Input name="personName" value={formData.personName} onChange={handleInputChange} className="rounded-xl" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs">URL Photo / Date</Label>
-                        <Input name="imageUrl" value={formData.imageUrl} onChange={handleInputChange} className="rounded-xl" />
-                      </div>
-                   </div>
-                )}
               </div>
             </div>
 
@@ -197,219 +182,183 @@ export default function BrandAssets() {
         </Card>
 
         {/* RIGHT PANEL: PREVIEW & RENDER */}
-        <div className="lg:col-span-8 flex flex-col items-center justify-center space-y-8">
+        <div className="lg:col-span-8 flex flex-col items-center w-full px-0 md:px-4 space-y-8">
           
           <div className="text-center space-y-2">
             <h3 className="text-slate-400 font-bold uppercase tracking-widest text-sm italic">Prévisualisation du Rendu Final</h3>
-            <p className="text-slate-500 font-medium">Capture HD (1080x1080) garantie</p>
+            <p className="text-slate-500 font-medium italic">Le rendu sera généré en HD (1080x1080)</p>
           </div>
 
-          <div className="relative group bg-white p-4 rounded-[2.5rem] shadow-2xl border border-white/50 transition-all hover:scale-[1.02]">
+          <div className="relative bg-white p-6 rounded-[2.5rem] shadow-2xl border border-white/50 w-fit mx-auto">
             {/* SCALED PREVIEW ENGINE */}
-            <div 
-              style={{ transform: 'scale(0.6)', transformOrigin: 'center center', width: '1080px', height: '1080px' }} 
-              className="my-[-216px]" // Adjusted overflow margin for 0.6 scale
-            >
+            <div className="overflow-hidden w-[648px] h-[648px] relative rounded-2xl bg-slate-100 shadow-inner">
               <div 
-                id="poster-render"
-                className="w-[1080px] h-[1080px] relative overflow-hidden font-sans"
+                style={{ 
+                  transform: 'scale(0.6)', 
+                  transformOrigin: 'top center', 
+                  width: '1080px', 
+                  height: '1080px',
+                  position: 'absolute',
+                  left: '50%',
+                  marginLeft: '-540px'
+                }} 
               >
-                {/* --- TEMPLATE ENGINE --- */}
-                
-                {activeCategory === "formation" && (
-                  <div className="w-full h-full bg-[#020202]">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,#1a1a1a,transparent)] z-0" />
-                    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[150px] z-0" />
-                    <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50 shadow-[10px_0_40px_rgba(234,88,12,0.3)]" />
-                    
-                    {/* Header Logos */}
-                    <div className="absolute top-10 left-24 right-16 flex justify-between items-center z-30">
-                      <div className="bg-white flex items-center gap-8 px-10 py-4 rounded-2xl shadow-xl border-b-4 border-slate-100">
-                        <img src={logoSayc} alt="SAYC" className="h-[45px]" />
-                        <div className="w-[1px] h-8 bg-slate-200" />
-                        <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[32px]" />
-                        <div className="w-[1px] h-8 bg-slate-200" />
-                        <img src={sadaLogo} alt="SADA" className="h-[40px]" />
+                <div 
+                  id="poster-render"
+                  className="w-[1080px] h-[1080px] relative overflow-hidden font-sans"
+                >
+                  {/* --- TEMPLATES --- */}
+                  {activeCategory === "formation" && (
+                    <div className="w-full h-full bg-[#020202]">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,#1a1a1a,transparent)] z-0" />
+                      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[150px] z-0" />
+                      <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50 shadow-[10px_0_40px_rgba(234,88,12,0.3)]" />
+                      
+                      <div className="absolute top-10 left-24 right-16 flex justify-between items-center z-30">
+                        <div className="bg-white flex items-center gap-8 px-10 py-4 rounded-2xl shadow-xl border-b-4 border-slate-100">
+                          <img src={logoSayc} alt="SAYC" className="h-[45px]" />
+                          <div className="w-[1px] h-8 bg-slate-200" />
+                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[32px]" />
+                          <div className="w-[1px] h-8 bg-slate-200" />
+                          <img src={sadaLogo} alt="SADA" className="h-[40px]" />
+                        </div>
+                        <div className="bg-[#e65100]/90 border border-white/20 px-8 py-4 rounded-2xl shadow-lg">
+                          <p className="text-white font-black text-2xl uppercase italic tracking-tighter">{formData.badge}</p>
+                        </div>
                       </div>
-                      <div className="bg-[#e65100]/90 border border-white/20 px-8 py-4 rounded-2xl shadow-lg">
-                        <p className="text-white font-black text-2xl uppercase italic tracking-tighter">{formData.badge}</p>
+
+                      <div className="absolute top-[180px] left-24 z-20">
+                        <div className="px-6 py-2 border border-orange-600/40 rounded-full inline-block">
+                          <p className="text-orange-500 font-extrabold text-xl uppercase tracking-[0.4em]">{formData.subtitle}</p>
+                        </div>
+                      </div>
+
+                      <div className="absolute top-[250px] left-24 z-20" style={{ fontFamily: 'sans-serif' }}>
+                        <h1 className="text-[100px] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">{formData.titleLine1}</h1>
+                        <h1 className="text-[140px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[10px] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">{formData.titleLine2}</h1>
+                        <h1 className="text-[150px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">{formData.titleLine3}</h1>
+                      </div>
+
+                      <div className="absolute top-[650px] left-24 right-16 grid grid-cols-2 gap-10 z-20 items-stretch">
+                        <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-8 shadow-2xl h-full flex flex-col justify-center">
+                          <h3 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-3 italic leading-none text-left">LE PROGRAMME</h3>
+                          <p className="text-white/80 text-[1.2rem] font-bold leading-[1.3] text-left">{formData.mainText}</p>
+                        </div>
+                        <div className="flex flex-col gap-3 justify-center">
+                          {[formData.skill1, formData.skill2, formData.skill3].map((skill, i) => (
+                             <div key={i} className="bg-white/10 px-6 py-3 rounded-2xl border border-white/10 flex items-center gap-4">
+                                <div className="w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
+                                <span className="text-white font-black text-[1.1rem] tracking-tight uppercase leading-none">{skill}</span>
+                             </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
+                  )}
 
-                    {/* Subtitle */}
-                    <div className="absolute top-[180px] left-24 z-20">
-                      <div className="px-6 py-2 border border-orange-600/40 rounded-full inline-block">
-                        <p className="text-orange-500 font-extrabold text-xl uppercase tracking-[0.4em]">{formData.subtitle}</p>
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <div className="absolute top-[250px] left-24 z-20" style={{ fontFamily: 'sans-serif' }}>
-                      <h1 className="text-[100px] font-black text-white leading-none tracking-tighter m-0 uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">{formData.titleLine1}</h1>
-                      <h1 className="text-[140px] font-black text-orange-500 leading-none tracking-tighter m-0 uppercase mt-[10px] drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">{formData.titleLine2}</h1>
-                      <h1 className="text-[150px] font-black text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em] m-0 uppercase">{formData.titleLine3}</h1>
-                    </div>
-
-                    {/* Programme Blocks */}
-                    <div className="absolute top-[650px] left-24 right-16 grid grid-cols-2 gap-10 z-20 items-stretch">
-                      <div className="bg-white/10 border border-white/10 rounded-[2.5rem] p-8 shadow-2xl h-full flex flex-col justify-center">
-                        <h3 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-3 italic leading-none text-left">LE PROGRAMME</h3>
-                        <p className="text-white/80 text-[1.2rem] font-bold leading-[1.3] text-left">{formData.mainText}</p>
-                      </div>
-                      <div className="flex flex-col gap-3 justify-center">
-                        {[formData.skill1, formData.skill2, formData.skill3].map((skill, i) => (
-                           <div key={i} className="bg-white/10 px-6 py-3 rounded-2xl border border-white/10 flex items-center gap-4">
-                              <div className="w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_15px_#ea580c]" />
-                              <span className="text-white font-black text-[1.1rem] tracking-tight uppercase leading-none">{skill}</span>
-                           </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeCategory === "news" && (
-                  <div className="w-full h-full bg-[#0a1d4a]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-black opacity-60 z-0" />
-                    <div className="absolute top-[-200px] left-[-200px] w-[600px] h-[600px] bg-sayc-teal/20 rounded-full blur-[120px] z-0" />
-                    <div className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[100px] z-0" />
-                    
-                    {/* Header Logos */}
-                    <div className="absolute top-10 left-16 right-16 flex justify-between items-center z-30">
-                      <div className="flex items-center gap-6">
+                  {activeCategory === "news" && (
+                    <div className="w-full h-full bg-[#0a1d4a]">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#1e3a8a] to-black opacity-60 z-0" />
+                      <div className="absolute top-10 left-16 right-16 flex justify-between items-center z-30">
                         <img src={logoSayc} alt="SAYC" className="h-[50px] bg-white p-2 rounded-xl" />
+                        <div className="px-6 py-2 bg-orange-600 rounded-full">
+                          <span className="text-white font-black text-xl uppercase tracking-widest">ACTUALITÉ</span>
+                        </div>
                       </div>
-                      <div className="px-6 py-2 bg-orange-600 rounded-full">
-                        <span className="text-white font-black text-xl uppercase tracking-widest">ACTUALITÉ</span>
+                      <div className="absolute top-[200px] left-16 right-16 z-20 space-y-6">
+                         <p className="text-orange-500 font-black text-3xl uppercase tracking-[0.5em]">{formData.subtitle}</p>
+                         <h1 className="text-[120px] font-black text-white leading-[0.9] tracking-tighter uppercase break-words border-l-[15px] border-sayc-teal pl-10">
+                            {formData.titleLine1} <br/>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400">{formData.titleLine2}</span>
+                         </h1>
+                      </div>
+                      <div className="absolute top-[650px] left-16 right-16 z-20 bg-white/5 border border-white/10 p-12 rounded-[3rem] shadow-2xl">
+                         <p className="text-white font-bold text-[2rem] leading-[1.4] opacity-90 italic">"{formData.mainText}"</p>
                       </div>
                     </div>
+                  )}
 
-                    <div className="absolute top-[200px] left-16 right-16 z-20 space-y-6">
-                       <p className="text-orange-500 font-black text-3xl uppercase tracking-[0.5em]">{formData.subtitle}</p>
-                       <h1 className="text-[120px] font-black text-white leading-[0.9] tracking-tighter uppercase break-words border-l-[15px] border-sayc-teal pl-10">
-                          {formData.titleLine1} <br/>
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400">{formData.titleLine2}</span>
-                       </h1>
+                  {activeCategory === "testimony" && (
+                    <div className="w-full h-full bg-[#f8fafc]">
+                      <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-white z-0" />
+                      <div className="absolute top-0 right-0 w-full h-[400px] bg-[#0f172a] z-0" 
+                        style={{ clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)' }} 
+                      />
+                      <div className="absolute top-10 left-16 flex items-center gap-8 z-30">
+                         <img src={logoSayc} alt="SAYC" className="h-[45px]" />
+                         <div className="w-[1px] h-8 bg-white/20" />
+                         <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[35px] brightness-0 invert" />
+                      </div>
+                      <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                         <div className="w-[350px] h-[350px] rounded-full border-[15px] border-white shadow-2xl overflow-hidden bg-slate-200">
+                            <img src={formData.imageUrl} className="w-full h-full object-cover" alt="Profile" />
+                         </div>
+                      </div>
+                      <div className="absolute top-[680px] left-0 w-full z-20 px-24 text-center">
+                         <p className="text-slate-800 font-bold text-[2.4rem] leading-[1.3] italic mb-10">"{formData.mainText}"</p>
+                         <h4 className="text-[#0f172a] font-black text-4xl uppercase tracking-tight">{formData.personName}</h4>
+                         <p className="text-sayc-teal font-bold text-xl uppercase tracking-widest">{formData.personRole}</p>
+                      </div>
                     </div>
+                  )}
 
-                    <div className="absolute top-[650px] left-16 right-16 z-20 bg-white/5 border border-white/10 p-12 rounded-[3rem] shadow-2xl">
-                       <p className="text-white font-bold text-[2rem] leading-[1.4] opacity-90 italic">
-                          "{formData.mainText}"
-                       </p>
+                  {activeCategory === "event" && (
+                    <div className="w-full h-full bg-slate-900 overflow-hidden">
+                      <div className="absolute inset-0 bg-slate-800 z-0" />
+                      <div className="absolute top-10 left-16 right-16 flex justify-between items-center z-30">
+                         <img src={logoSayc} alt="SAYC" className="h-[50px] bg-white p-2 rounded-xl" />
+                         <div className="px-6 py-2 bg-sayc-teal rounded-full shadow-[0_0_30px_rgba(20,184,166,0.3)]">
+                            <span className="text-white font-black text-xl uppercase tracking-[0.2em]">{formData.badge}</span>
+                         </div>
+                      </div>
+                      <div className="absolute top-[250px] left-16 right-16 z-20 space-y-8">
+                         <span className="text-sayc-teal font-black text-2xl uppercase px-4 py-1 bg-white/10 border border-white/20 rounded-lg">{formData.subtitle}</span>
+                         <h1 className="text-[110px] font-black text-white leading-none tracking-tighter uppercase">
+                            {formData.titleLine1} <br/>
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-300">{formData.titleLine2}</span>
+                         </h1>
+                      </div>
+                      <div className="absolute top-[680px] left-16 right-16 z-20 grid grid-cols-2 gap-8">
+                         <div className="flex items-start gap-4">
+                            <div className="p-4 bg-sayc-teal/20 rounded-2xl border border-sayc-teal/30">
+                               <Calendar className="w-8 h-8 text-sayc-teal" />
+                            </div>
+                            <div>
+                               <p className="text-white/40 font-bold uppercase text-sm tracking-widest mb-1">DATE & HEURE</p>
+                               <p className="text-white font-bold text-2xl">{formData.date}</p>
+                            </div>
+                         </div>
+                         <div className="flex items-start gap-4">
+                            <div className="p-4 bg-orange-600/20 rounded-2xl border border-orange-600/30">
+                               <MapPin className="w-8 h-8 text-orange-500" />
+                            </div>
+                            <div>
+                               <p className="text-white/40 font-bold uppercase text-sm tracking-widest mb-1">LIEU / PLATEFORME</p>
+                               <p className="text-white font-bold text-2xl">{formData.location}</p>
+                            </div>
+                         </div>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {activeCategory === "testimony" && (
-                  <div className="w-full h-full bg-[#f8fafc]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-slate-100 to-white z-0" />
-                    <div className="absolute top-0 right-0 w-full h-[400px] bg-[#0f172a] clip-path-polygon-[0_0,100%_0,100%_80%,0_100%] z-0" 
-                      style={{ clipPath: 'polygon(0 0, 100% 0, 100% 80%, 0 100%)' }} 
-                    />
-                    
-                    {/* Logos Fixed */}
-                    <div className="absolute top-10 left-16 flex items-center gap-8 z-30">
-                       <img src={logoSayc} alt="SAYC" className="h-[45px]" />
-                       <div className="w-[1px] h-8 bg-white/20" />
-                       <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[35px] brightness-0 invert" />
+                  {/* UNIVERSAL FOOTER */}
+                  <div className="absolute bottom-0 inset-x-0 h-[150px] z-[60] px-16 flex items-center justify-between border-t border-white/5 bg-black/40 backdrop-blur-sm">
+                    <div className="flex items-center gap-5">
+                      <div className="p-5 bg-orange-600 rounded-2xl shadow-xl">
+                        <Zap className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <p className="text-white font-black text-2xl uppercase leading-none">SAYC TCHAD</p>
+                        <p className="text-orange-500 font-black text-lg uppercase tracking-widest mt-1">SMART AFRICA YOUTH CHAPTER</p>
+                      </div>
                     </div>
-
-                    <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
-                       <div className="w-[350px] h-[350px] rounded-full border-[15px] border-white shadow-2xl overflow-hidden bg-slate-200">
-                          <img src={formData.imageUrl} className="w-full h-full object-cover" alt="Profile" />
-                       </div>
+                    <div className="text-right">
+                      <p className="text-[3.2rem] font-black text-white leading-none tracking-tighter uppercase whitespace-nowrap">
+                        WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                      </p>
                     </div>
-
-                    <div className="absolute top-[680px] left-0 w-full z-20 px-24 text-center">
-                       <div className="relative inline-block mb-10">
-                          <MessageSquare className="absolute -top-10 -left-12 w-20 h-20 text-sayc-teal/10 rotate-12" />
-                          <p className="text-slate-800 font-bold text-[2.4rem] leading-[1.3] relative z-10 italic">
-                             "{formData.mainText}"
-                          </p>
-                       </div>
-                       <div className="space-y-1">
-                          <h4 className="text-[#0f172a] font-black text-4xl uppercase tracking-tight">{formData.personName}</h4>
-                          <p className="text-sayc-teal font-bold text-xl uppercase tracking-widest">{formData.personRole}</p>
-                       </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeCategory === "event" && (
-                  <div className="w-full h-full bg-slate-900">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1080&auto=format&fit=crop&q=80')] bg-cover bg-center brightness-[0.3] z-0" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent z-0" />
-                    
-                    {/* Event Logos */}
-                    <div className="absolute top-10 left-16 right-16 flex justify-between items-center z-30">
-                       <img src={logoSayc} alt="SAYC" className="h-[50px] bg-white p-2 rounded-xl" />
-                       <div className="px-6 py-2 bg-sayc-teal rounded-full shadow-[0_0_30px_rgba(20,184,166,0.3)]">
-                          <span className="text-white font-black text-xl uppercase tracking-[0.2em]">{formData.badge}</span>
-                       </div>
-                    </div>
-
-                    <div className="absolute top-[250px] left-16 right-16 z-20 space-y-8">
-                       <div className="flex items-center gap-4">
-                          <div className="px-4 py-1 bg-white/10 border border-white/20 rounded-lg backdrop-blur-md">
-                             <span className="text-sayc-teal font-black text-2xl uppercase">{formData.subtitle}</span>
-                          </div>
-                          <div className="h-[2px] w-20 bg-white/20" />
-                       </div>
-                       
-                       <h1 className="text-[110px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl">
-                          {formData.titleLine1} <br/>
-                          <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-300">{formData.titleLine2}</span>
-                       </h1>
-                    </div>
-
-                    <div className="absolute top-[680px] left-16 right-16 z-20 grid grid-cols-2 gap-8">
-                       <div className="flex items-start gap-4">
-                          <div className="p-4 bg-sayc-teal/20 rounded-2xl border border-sayc-teal/30">
-                             <Calendar className="w-8 h-8 text-sayc-teal" />
-                          </div>
-                          <div>
-                             <p className="text-white/40 font-bold uppercase text-sm tracking-widest mb-1">DATE & HEURE</p>
-                             <p className="text-white font-bold text-2xl">{formData.date}</p>
-                          </div>
-                       </div>
-                       <div className="flex items-start gap-4">
-                          <div className="p-4 bg-orange-600/20 rounded-2xl border border-orange-600/30">
-                             <MapPin className="w-8 h-8 text-orange-500" />
-                          </div>
-                          <div>
-                             <p className="text-white/40 font-bold uppercase text-sm tracking-widest mb-1">LIEU / PLATEFORME</p>
-                             <p className="text-white font-bold text-2xl">{formData.location}</p>
-                          </div>
-                       </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* --- UNIVERSAL FOOTER (Absolute Bottom) --- */}
-                <div className="absolute bottom-0 inset-x-0 h-[150px] z-[60] px-16 flex items-center justify-between border-t border-white/5 bg-black/40 backdrop-blur-sm">
-                  <div className="flex items-center gap-5">
-                    <div className="p-5 bg-orange-600 rounded-2xl shadow-xl">
-                      <Zap className="w-8 h-8 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-white font-black text-2xl uppercase leading-none">SAYC TCHAD</p>
-                      <p className="text-orange-500 font-black text-lg uppercase tracking-widest mt-1">SMART AFRICA YOUTH CHAPTER</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-[3.2rem] font-black text-white leading-none tracking-tighter uppercase whitespace-nowrap">
-                      WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                    </p>
                   </div>
                 </div>
-
-              </div>
-            </div>
-
-            {/* Interaction Hint */}
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/60 rounded-[2.5rem] pointer-events-none z-[100]">
-              <div className="bg-white text-[#0f172a] px-8 py-4 rounded-full font-black text-lg flex items-center gap-3 shadow-2xl transform translate-y-4 group-hover:translate-y-0 transition-transform">
-                <ImageIcon className="w-6 h-6 text-orange-500" /> MODE ÉDITION EN DIRECT
               </div>
             </div>
           </div>
@@ -436,24 +385,5 @@ export default function BrandAssets() {
          </div>
       </div>
     </div>
-  );
-}
-
-function Zap({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-    </svg>
   );
 }
