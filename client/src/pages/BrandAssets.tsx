@@ -124,22 +124,11 @@ export default function BrandAssets() {
                   {/* Left Decoration Bar */}
                   <div className="absolute left-0 top-0 bottom-0 w-4 bg-orange-600 z-50 shadow-[5px_0_30px_#ea580c]" />
 
-                  {/* HEADER AREA */}
-                  <div className="absolute top-12 left-20 right-20 flex justify-between items-center z-30">
-                    <div className="bg-white flex items-center gap-8 px-10 py-5 rounded-3xl shadow-2xl border-b-[10px] border-orange-600">
-                       <img src={logoSayc} alt="SAYC" className="h-[60px]" />
-                       <div className="w-[2px] h-10 bg-slate-100" />
-                       <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px]" />
-                       <div className="w-[2px] h-10 bg-slate-100" />
-                       <img src={sadaLogo} alt="SADA" className="h-[55px]" />
-                    </div>
-                    <div className="text-right">
-                  {/* TARGET DESIGN IMPLEMENTATION - EXACTLY AS REQUESTED */}
-                                    {/* Left Accent Bar */}
-                   <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50 shadow-[10px_0_40px_rgba(234,88,12,0.3)]" />
+                  {/* Left Accent Bar */}
+                  <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50 shadow-[10px_0_40px_rgba(234,88,12,0.3)]" />
 
-                   {/* SUBTLE BACKGROUND TEXTURE (Replaces Ghost Letters) */}
-                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,#ea580c11,transparent)] z-0" />
+                  {/* SUBTLE BACKGROUND TEXTURE (Replaces Ghost Letters) */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,#ea580c11,transparent)] z-0" />
 
 
                    {/* HEADER AREA (Optimized Integration) */}
