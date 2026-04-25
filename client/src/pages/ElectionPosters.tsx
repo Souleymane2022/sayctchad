@@ -31,15 +31,19 @@ export default function ElectionPosters() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
+      // Small delay to ensure rendering and image readiness
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const dataUrl = await toPng(element, { 
         quality: 1, 
         pixelRatio: 2, 
-        backgroundColor: '#0a1d4a',
-        width: element.offsetWidth,
-        height: element.offsetHeight,
+        width: 1080,
+        height: 1080,
+        cacheBust: true,
         style: {
           transform: 'scale(1)',
           transformOrigin: 'top left',
+          padding: '0',
           margin: '0'
         }
       });
