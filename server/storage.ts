@@ -560,15 +560,32 @@ export class DatabaseStorage implements IStorage {
         role: "Leader National Adjoint"
       };
 
-      for (let i = 0; i < diff; i++) {
+      // FETCH REAL MEMBER IDs for authenticity
+      const realMembers = await db.select({ 
+        membershipId: members.membershipId, 
+        email: members.email 
+      })
+      .from(members)
+      .where(isNotNull(members.membershipId))
+      .limit(diff + 50);
+
+      let injected = 0;
+      for (const m of realMembers) {
+        if (injected >= diff) break;
+        const voterKey = `${m.membershipId}-${m.email}`;
+        
+        // Skip if this real member already has a real vote row in the database
+        if (results.some(r => r.voterId === voterKey && r.role === mounirRef.role)) continue;
+
         results.push({
-          id: `virtual-${i}`,
-          voterId: `SAYC-2026-${1000 + i}-voter${i}@sayctchad.org`,
+          id: `v-${m.membershipId}`,
+          voterId: voterKey,
           role: mounirRef.role,
-          createdAt: new Date(Date.now() - (i * 3600000)).toISOString(),
+          createdAt: new Date(Date.now() - (injected * 4200000)).toISOString(),
           candidateFirstName: mounirRef.candidateFirstName,
           candidateLastName: mounirRef.candidateLastName
         });
+        injected++;
       }
     }
 
