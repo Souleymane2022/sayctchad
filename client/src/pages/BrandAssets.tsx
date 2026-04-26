@@ -118,7 +118,7 @@ export default function BrandAssets() {
     titleLine3: "CLOUD",
     subtitle: "PROCHAINEMENT AU TCHAD",
     badge: "FORMATION AWS",
-    mainText: "Mon expérience avec la formation SADA a été une révélation. Ce cursus intensif de 12 semaines m'a non seulement permis de maîtriser les technologies complexes d'Amazon Web Services (AWS), mais il a aussi totalement transformé ma perspective de carrière.\\n\\nL'encadrement expert et les projets pratiques ont fait toute la différence. Aujourd'hui, je me sens pleinement outillé pour relever les défis du cloud computing en Afrique avec le soutien de Smart Africa.",
+    mainText: "Mon expérience avec la formation SADA a été une révélation. Ce cursus intensif de 12 semaines m'a non seulement permis de maîtriser les technologies complexes d'Amazon Web Services (AWS), mais il a aussi totalement transformé ma perspective de carrière.\\n\\nL'encadrement expert et les projets pratiques ont fait toute la différence. Aujourd'hui, je me sens pleinement outillé pour relever les défis du cloud computing en Afrique avec le soutien de Smart Africa et du SAYC Tchad.",
     skill1: "ARCHITECTURES CLOUD",
     skill2: "DEV OPS & LINUX",
     skill3: "SÉCURITÉ RÉSEAU",
@@ -126,7 +126,7 @@ export default function BrandAssets() {
     location: "N'Djamena & En ligne",
     personName: "MAHAMAT SALEH",
     personRole: "Ancien Étudiant SADA",
-    quote: "Grâce à SAYC, j'ai pu obtenir ma certification AWS et décrocher mon premier emploi dans le Cloud.",
+    quote: "Grâce au SAYC Tchad, j'ai pu obtenir ma certification AWS et décrocher mon premier emploi dans le Cloud.",
     imageUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&auto=format&fit=crop&q=60"
   });
 
@@ -469,7 +469,7 @@ export default function BrandAssets() {
                           <Quote className="w-[180px] h-[180px] text-sayc-teal/10 absolute -top-16 -left-16" />
                           <div className="space-y-6 mb-16 relative z-10">
                             {formData.mainText.split('\\n').filter(p => p.trim()).map((para, idx) => (
-                              <p key={idx} className="text-[#0f172a] font-bold text-[2.4rem] leading-[1.3] italic text-left">
+                              <p key={idx} className="text-[#0f172a] font-bold text-[2.2rem] leading-[1.3] italic text-left">
                                 {idx === 0 ? `"${para}` : para}{idx === formData.mainText.split('\\n').filter(p => p.trim()).length - 1 ? '"' : ''}
                               </p>
                             ))}
@@ -527,23 +527,25 @@ export default function BrandAssets() {
                      </div>
                   )}
 
-                  {/* UNIVERSAL ELITE FOOTER */}
-                  <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center justify-between border-t border-white/10 bg-black/70 backdrop-blur-3xl">
-                    <div className="flex items-center gap-8">
-                      <div className="p-6 bg-orange-600 rounded-[2rem] shadow-[0_0_40px_rgba(234,88,12,0.4)]">
-                        <Zap className="w-10 h-10 text-white animate-pulse" />
-                      </div>
-                      <div className="flex flex-col justify-center">
-                        <p className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none mb-1">SAYC TCHAD</p>
-                        <p className="text-orange-500 font-black text-lg uppercase tracking-[0.25em]">SMART AFRICA YOUTH CHAPTER TCHAD — <span className="text-slate-100 font-bold">OFFICIEL</span></p>
-                      </div>
-                    </div>
-                    <div className="text-right flex flex-col justify-center">
-                      <p className="text-slate-300 font-black text-[3.8rem] leading-none tracking-tighter uppercase">
-                        WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                      </p>
-                    </div>
-                  </div>
+                   {/* UNIVERSAL ELITE FOOTER */}
+                   <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center justify-between border-t border-white/10 bg-black/80 backdrop-blur-3xl">
+                     <div className="flex items-center gap-10">
+                       <div className="p-6 bg-orange-600 rounded-[2.2rem] shadow-[0_0_50px_rgba(234,88,12,0.5)]">
+                         <Zap className="w-10 h-10 text-white animate-pulse" />
+                       </div>
+                       <div className="flex flex-col">
+                         <h3 className="text-white font-black text-[3.2rem] uppercase tracking-tighter leading-none mb-2">SAYC TCHAD</h3>
+                         <p className="text-orange-500 font-black text-base uppercase tracking-[0.4em] opacity-90">
+                           SMART AFRICA YOUTH CHAPTER — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">OFFICIEL</span>
+                         </p>
+                       </div>
+                     </div>
+                     <div className="text-right flex flex-col items-end pb-4">
+                       <p className="text-slate-200 font-black text-[3.2rem] leading-none tracking-tighter uppercase translate-y-[2px]">
+                         WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                       </p>
+                     </div>
+                   </div>
                 </div>
               </div>
             </div>
