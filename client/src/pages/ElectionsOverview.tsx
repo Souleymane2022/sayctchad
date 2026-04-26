@@ -123,6 +123,11 @@ export default function ElectionsOverview() {
                                 <Vote className="mr-2 h-5 w-5" /> Voter Maintenant
                             </Button>
                         </Link>
+                        <Link href="/elections/transparence">
+                            <Button size="lg" variant="ghost" className="text-blue-100 hover:text-white hover:bg-white/5 px-8 h-14 rounded-xl text-lg font-bold transition-all">
+                                <ShieldCheck className="mr-2 h-5 w-5" /> Registre de Transparence
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>

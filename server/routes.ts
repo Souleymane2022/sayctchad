@@ -777,6 +777,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  app.get("/api/elections/audit-votes", async (_req, res) => {
+    try {
+      const votes = await storage.getAllVotesWithDetails();
+      // Remove sensitive info if necessary (already pretty limited in the query)
+      res.json(votes);
+    } catch (error: any) {
+      console.error("Error fetching audit votes:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   app.post("/api/elections/apply", async (req, res) => {
     try {
       const validatedData = insertCandidateSchema.parse(req.body);

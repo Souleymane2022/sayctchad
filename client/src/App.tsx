@@ -29,6 +29,7 @@ import MembersGallery from "@/pages/MembersGallery";
 import ElectionCandidates from "@/pages/ElectionCandidates";
 import ElectionPosters from "@/pages/ElectionPosters";
 import BrandAssets from "@/pages/BrandAssets";
+import VotersAudit from "@/pages/elections/VotersAudit";
 
 function Router() {
   return (
@@ -57,6 +58,7 @@ function Router() {
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route path="/verify/:membershipId" component={VerifyMember} />
       <Route path="/sayc-membres-galerie" component={MembersGallery} />
+      <Route path="/elections/transparence" component={VotersAudit} />
       <Route path="/branding" component={BrandAssets} />
       <Route component={NotFound} />
     </Switch>
