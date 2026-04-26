@@ -118,7 +118,7 @@ export default function BrandAssets() {
     titleLine3: "CLOUD",
     subtitle: "PROCHAINEMENT AU TCHAD",
     badge: "FORMATION AWS",
-    mainText: "Mon expérience avec la formation SADA a été une révélation. Ce cursus intensif de 12 semaines m'a non seulement permis de maîtriser les technologies complexes d'Amazon Web Services (AWS), mais il a aussi totalement transformé ma perspective de carrière.\n\nL'encadrement expert et les projets pratiques ont fait toute la différence. Aujourd'hui, je me sens pleinement outillé pour relever les défis du cloud computing en Afrique.",
+    mainText: "Mon expérience avec la formation SADA a été une révélation. Ce cursus intensif de 12 semaines m'a non seulement permis de maîtriser les technologies complexes d'Amazon Web Services (AWS), mais il a aussi totalement transformé ma perspective de carrière.\\n\\nL'encadrement expert et les projets pratiques ont fait toute la différence. Aujourd'hui, je me sens pleinement outillé pour relever les défis du cloud computing en Afrique avec le soutien de Smart Africa.",
     skill1: "ARCHITECTURES CLOUD",
     skill2: "DEV OPS & LINUX",
     skill3: "SÉCURITÉ RÉSEAU",
@@ -453,21 +453,24 @@ export default function BrandAssets() {
 
                   {activeCategory === "testimony" && (
                     <div className="w-full h-full bg-slate-50 text-slate-900">
-                       <div className="absolute top-0 right-0 w-[500px] h-full bg-[#0f172a]" 
-                          style={{ clipPath: 'polygon(35% 0, 100% 0, 100% 100%, 0% 100%)' }} />
+                       {/* Dark overlay significantly pushed to the right */}
+                       <div className="absolute top-0 right-0 w-[450px] h-full bg-[#0f172a]" 
+                          style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 0% 100%)' }} />
+                       
                        <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
-                          <img src={logoSayc} alt="SAYC" className="h-[50px]" />
+                          <img src={logoSayc} alt="SAYC" className="h-[50px] object-contain" />
                           <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" />
+                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] object-contain" />
                           <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={sadaLogo} alt="SADA" className="h-[45px] grayscale" />
+                          <img src={sadaLogo} alt="SADA" className="h-[45px] object-contain" />
                        </div>
-                       <div className="absolute top-[180px] left-16 w-[650px] z-20">
+
+                       <div className="absolute top-[180px] left-16 w-[600px] z-20">
                           <Quote className="w-[180px] h-[180px] text-sayc-teal/10 absolute -top-16 -left-16" />
                           <div className="space-y-6 mb-16 relative z-10">
-                            {formData.mainText.split('\n').filter(p => p.trim()).map((para, idx) => (
-                              <p key={idx} className="text-[#0f172a] font-bold text-[2.4rem] leading-[1.25] italic text-justify">
-                                {idx === 0 ? `"${para}` : para}{idx === formData.mainText.split('\n').filter(p => p.trim()).length - 1 ? '"' : ''}
+                            {formData.mainText.split('\\n').filter(p => p.trim()).map((para, idx) => (
+                              <p key={idx} className="text-[#0f172a] font-bold text-[2.4rem] leading-[1.3] italic text-left">
+                                {idx === 0 ? `"${para}` : para}{idx === formData.mainText.split('\\n').filter(p => p.trim()).length - 1 ? '"' : ''}
                               </p>
                             ))}
                           </div>
@@ -477,8 +480,9 @@ export default function BrandAssets() {
                              <p className="text-sayc-teal font-bold text-2xl uppercase tracking-widest">{formData.personRole}</p>
                           </div>
                        </div>
-                       <div className="absolute inset-y-0 right-[-80px] w-[550px] z-10 p-12 flex items-center transform translate-y-[60px]">
-                          <div className="w-full aspect-[4/5] rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-[12px] border-white overflow-hidden rotate-[2deg]">
+
+                       <div className="absolute inset-y-0 right-[-100px] w-[500px] z-10 p-12 flex items-center transform translate-y-[80px]">
+                          <div className="w-full aspect-[4/5] rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-[12px] border-white overflow-hidden rotate-[1.5deg]">
                              <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
                           </div>
                        </div>
@@ -524,19 +528,18 @@ export default function BrandAssets() {
                   )}
 
                   {/* UNIVERSAL ELITE FOOTER */}
-                  <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center justify-between border-t border-white/10 bg-black/50 backdrop-blur-3xl">
-                    <div className="flex items-center gap-6">
-                      <div className="p-6 bg-orange-600 rounded-[2rem] shadow-[0_0_40px_rgba(234,88,12,0.5)]">
+                  <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center justify-between border-t border-white/10 bg-black/70 backdrop-blur-3xl">
+                    <div className="flex items-center gap-8">
+                      <div className="p-6 bg-orange-600 rounded-[2rem] shadow-[0_0_40px_rgba(234,88,12,0.4)]">
                         <Zap className="w-10 h-10 text-white animate-pulse" />
                       </div>
-                      <div>
-                        <p className="text-white font-black text-3xl uppercase tracking-tighter leading-none">SAYC TCHAD</p>
-                        <p className="text-orange-500 font-black text-xl uppercase tracking-[0.3em] mt-2">SMART AFRICA YOUTH CHAPTER</p>
+                      <div className="flex flex-col justify-center">
+                        <p className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none mb-1">SAYC TCHAD</p>
+                        <p className="text-orange-500 font-black text-lg uppercase tracking-[0.25em]">SMART AFRICA YOUTH CHAPTER TCHAD — <span className="text-slate-100 font-bold">OFFICIEL</span></p>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="text-white/40 font-bold uppercase tracking-[0.5em] text-lg mb-2">OFFICIEL</p>
-                      <p className="text-[3.8rem] font-black text-white leading-none tracking-tighter uppercase">
+                    <div className="text-right flex flex-col justify-center">
+                      <p className="text-slate-300 font-black text-[3.8rem] leading-none tracking-tighter uppercase">
                         WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                       </p>
                     </div>
