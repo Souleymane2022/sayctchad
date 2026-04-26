@@ -172,11 +172,11 @@ export default function BrandAssets() {
       document.body.appendChild(link);
       link.click();
       
-      // Cleanup
+      // Cleanup - wait longer for the browser to trigger download
       setTimeout(() => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-      }, 100);
+      }, 5000);
       
       toast({ title: "Visuel Généré !", description: "Votre support est prêt." });
     } catch (err) {
@@ -361,18 +361,18 @@ export default function BrandAssets() {
                        <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c0c] to-black z-0" />
                        <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[180px] z-0 animate-pulse" />
                        <div className="absolute top-[20%] right-[-200px] scale-[4] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
-                          <img src={logoSayc} alt="" className="w-[500px]" crossOrigin="anonymous" />
+                          <img src={logoSayc} alt="" className="w-[500px]" />
                        </div>
                        <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50" />
                        <div className="absolute left-8 top-0 bottom-0 w-8 bg-orange-600/20 z-40" />
 
                        <div className="absolute top-12 left-28 right-20 flex justify-between items-center z-30">
                           <div className="bg-white flex items-center gap-10 px-12 py-5 rounded-[2rem] shadow-2xl">
-                             <img src={logoSayc} alt="SAYC" className="h-[55px]" crossOrigin="anonymous" />
+                             <img src={logoSayc} alt="SAYC" className="h-[55px]" />
                              <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" crossOrigin="anonymous" />
+                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" />
                              <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={sadaLogo} alt="SADA" className="h-[50px]" crossOrigin="anonymous" />
+                             <img src={sadaLogo} alt="SADA" className="h-[50px]" />
                           </div>
                           <div className="bg-orange-600 px-10 py-5 rounded-[2rem] shadow-2xl">
                              <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
@@ -410,7 +410,7 @@ export default function BrandAssets() {
                        <div className="absolute inset-0 bg-gradient-to-tr from-[#1e40af] via-black to-[#1e1e1e] opacity-80 z-0" />
                        <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] grayscale z-0" />
                        <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                          <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" crossOrigin="anonymous" />
+                          <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" />
                           <div className="px-10 py-4 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.3)]">
                              <span className="text-white font-black text-2xl uppercase tracking-[0.3em]">BREAKING NEWS</span>
                           </div>
@@ -436,11 +436,11 @@ export default function BrandAssets() {
                        <div className="absolute top-0 right-0 w-[500px] h-full bg-[#0f172a]" 
                           style={{ clipPath: 'polygon(35% 0, 100% 0, 100% 100%, 0% 100%)' }} />
                        <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
-                          <img src={logoSayc} alt="SAYC" className="h-[50px]" crossOrigin="anonymous" />
+                          <img src={logoSayc} alt="SAYC" className="h-[50px]" />
                           <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" crossOrigin="anonymous" />
+                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" />
                           <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={sadaLogo} alt="SADA" className="h-[45px] grayscale" crossOrigin="anonymous" />
+                          <img src={sadaLogo} alt="SADA" className="h-[45px] grayscale" />
                        </div>
                        <div className="absolute top-[180px] left-16 w-[650px] z-20">
                           <Quote className="w-[180px] h-[180px] text-sayc-teal/10 absolute -top-16 -left-16" />
@@ -470,7 +470,7 @@ export default function BrandAssets() {
                         <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" crossOrigin="anonymous" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent z-0" />
                         <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                           <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" crossOrigin="anonymous" />
+                           <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" />
                            <div className="bg-orange-600 px-8 py-3 rounded-full">
                               <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
                            </div>
