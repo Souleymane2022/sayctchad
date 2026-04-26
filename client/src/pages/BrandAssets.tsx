@@ -150,8 +150,28 @@ export default function BrandAssets() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
-      // Wait for fonts and images to be ready
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // BOOSTER : Conversion des images en DataURL pour éviter les erreurs CORS/Blob
+      const images = element.getElementsByTagName('img');
+      const imageConversionPromises = Array.from(images).map(async (img) => {
+        try {
+          const response = await fetch(img.src, { mode: 'cors' });
+          const blob = await response.blob();
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              img.src = reader.result as string;
+              resolve(true);
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        } catch (e) {
+          console.warn("Could not pre-process image for export:", img.src);
+        }
+      });
+
+      await Promise.all(imageConversionPromises);
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const blob = await toBlob(element, { 
         quality: 0.95, 
