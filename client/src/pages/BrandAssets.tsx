@@ -118,7 +118,7 @@ export default function BrandAssets() {
     titleLine3: "CLOUD",
     subtitle: "PROCHAINEMENT AU TCHAD",
     badge: "FORMATION AWS",
-    mainText: "Un cursus intensif de 12 semaines pour maîtriser les technologies Amazon Web Services (AWS).",
+    mainText: "Mon expérience avec la formation SADA a été une révélation. Ce cursus intensif de 12 semaines m'a non seulement permis de maîtriser les technologies complexes d'Amazon Web Services (AWS), mais il a aussi totalement transformé ma perspective de carrière.\n\nL'encadrement expert et les projets pratiques ont fait toute la différence. Aujourd'hui, je me sens pleinement outillé pour relever les défis du cloud computing en Afrique.",
     skill1: "ARCHITECTURES CLOUD",
     skill2: "DEV OPS & LINUX",
     skill3: "SÉCURITÉ RÉSEAU",
@@ -433,24 +433,32 @@ export default function BrandAssets() {
 
                   {activeCategory === "testimony" && (
                     <div className="w-full h-full bg-slate-50 text-slate-900">
-                       <div className="absolute top-0 right-0 w-[550px] h-full bg-[#0f172a]" 
-                          style={{ clipPath: 'polygon(25% 0, 100% 0, 100% 100%, 0% 100%)' }} />
+                       <div className="absolute top-0 right-0 w-[500px] h-full bg-[#0f172a]" 
+                          style={{ clipPath: 'polygon(35% 0, 100% 0, 100% 100%, 0% 100%)' }} />
                        <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
                           <img src={logoSayc} alt="SAYC" className="h-[50px]" crossOrigin="anonymous" />
                           <div className="w-[1px] h-8 bg-slate-300" />
                           <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" crossOrigin="anonymous" />
+                          <div className="w-[1px] h-8 bg-slate-300" />
+                          <img src={sadaLogo} alt="SADA" className="h-[45px] grayscale" crossOrigin="anonymous" />
                        </div>
-                       <div className="absolute top-[200px] left-16 w-[550px] z-20">
-                          <Quote className="w-[150px] h-[150px] text-sayc-teal/10 absolute -top-12 -left-12" />
-                          <p className="text-[#0f172a] font-black text-[3.2rem] leading-[1.15] italic mb-16 relative z-10">"{formData.mainText}"</p>
-                          <div className="space-y-2">
-                             <div className="w-20 h-2 bg-orange-600 rounded-full" />
-                             <h4 className="text-4xl font-black uppercase tracking-tight text-[#0f172a]">{formData.personName}</h4>
-                             <p className="text-sayc-teal font-bold text-xl uppercase tracking-widest">{formData.personRole}</p>
+                       <div className="absolute top-[180px] left-16 w-[650px] z-20">
+                          <Quote className="w-[180px] h-[180px] text-sayc-teal/10 absolute -top-16 -left-16" />
+                          <div className="space-y-6 mb-16 relative z-10">
+                            {formData.mainText.split('\n').filter(p => p.trim()).map((para, idx) => (
+                              <p key={idx} className="text-[#0f172a] font-bold text-[2.4rem] leading-[1.25] italic text-justify">
+                                {idx === 0 ? `"${para}` : para}{idx === formData.mainText.split('\n').filter(p => p.trim()).length - 1 ? '"' : ''}
+                              </p>
+                            ))}
+                          </div>
+                          <div className="space-y-2 mt-8">
+                             <div className="w-24 h-2 bg-orange-600 rounded-full" />
+                             <h4 className="text-5xl font-black uppercase tracking-tight text-[#0f172a]">{formData.personName}</h4>
+                             <p className="text-sayc-teal font-bold text-2xl uppercase tracking-widest">{formData.personRole}</p>
                           </div>
                        </div>
-                       <div className="absolute inset-y-0 right-[-50px] w-[650px] z-10 p-24 pr-[150px] flex items-center">
-                          <div className="w-full aspect-square rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-[15px] border-white overflow-hidden rotate-[3deg]">
+                       <div className="absolute inset-y-0 right-[-80px] w-[550px] z-10 p-12 flex items-center transform translate-y-[60px]">
+                          <div className="w-full aspect-[4/5] rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-[12px] border-white overflow-hidden rotate-[2deg]">
                              <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
                           </div>
                        </div>
