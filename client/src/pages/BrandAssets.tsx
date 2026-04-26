@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { toPng } from "html-to-image";
+import { toPng, toBlob } from "html-to-image";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -150,26 +150,38 @@ export default function BrandAssets() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Wait for fonts and images to be ready
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const dataUrl = await toPng(element, { 
-        quality: 1, 
-        pixelRatio: 2.5,
+      const blob = await toBlob(element, { 
+        quality: 0.95, 
+        pixelRatio: 2, // 2 is enough for 1080x1080 (2160x2160 actually)
         width: 1080,
         height: 1080,
         cacheBust: true,
-        style: { transform: 'scale(1)', transformOrigin: 'top left' }
       });
+
+      if (!blob) throw new Error("Blob generation failed");
       
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
       link.download = filename;
-      link.href = dataUrl;
+      
+      document.body.appendChild(link);
       link.click();
       
-      toast({ title: "Visuel d'Élite Généré !", description: "Votre support est prêt pour une diffusion nationale." });
+      // Cleanup
+      setTimeout(() => {
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      }, 100);
+      
+      toast({ title: "Visuel Généré !", description: "Votre support est prêt." });
     } catch (err) {
-      console.error(err);
-      toast({ title: "Erreur", description: "Échec de la génération HD.", variant: "destructive" });
+      console.error("Export error:", err);
+      toast({ title: "Erreur d'exportation", description: "Le rendu a échoué. Vérifiez votre connexion.", variant: "destructive" });
     } finally {
       setDownloadingId(null);
     }
@@ -349,18 +361,18 @@ export default function BrandAssets() {
                        <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c0c] to-black z-0" />
                        <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[180px] z-0 animate-pulse" />
                        <div className="absolute top-[20%] right-[-200px] scale-[4] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
-                          <img src={logoSayc} alt="" className="w-[500px]" />
+                          <img src={logoSayc} alt="" className="w-[500px]" crossOrigin="anonymous" />
                        </div>
                        <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50" />
                        <div className="absolute left-8 top-0 bottom-0 w-8 bg-orange-600/20 z-40" />
 
                        <div className="absolute top-12 left-28 right-20 flex justify-between items-center z-30">
                           <div className="bg-white flex items-center gap-10 px-12 py-5 rounded-[2rem] shadow-2xl">
-                             <img src={logoSayc} alt="SAYC" className="h-[55px]" />
+                             <img src={logoSayc} alt="SAYC" className="h-[55px]" crossOrigin="anonymous" />
                              <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" />
+                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" crossOrigin="anonymous" />
                              <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={sadaLogo} alt="SADA" className="h-[50px]" />
+                             <img src={sadaLogo} alt="SADA" className="h-[50px]" crossOrigin="anonymous" />
                           </div>
                           <div className="bg-orange-600 px-10 py-5 rounded-[2rem] shadow-2xl">
                              <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
@@ -398,7 +410,7 @@ export default function BrandAssets() {
                        <div className="absolute inset-0 bg-gradient-to-tr from-[#1e40af] via-black to-[#1e1e1e] opacity-80 z-0" />
                        <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] grayscale z-0" />
                        <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                          <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" />
+                          <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" crossOrigin="anonymous" />
                           <div className="px-10 py-4 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.3)]">
                              <span className="text-white font-black text-2xl uppercase tracking-[0.3em]">BREAKING NEWS</span>
                           </div>
@@ -424,9 +436,9 @@ export default function BrandAssets() {
                        <div className="absolute top-0 right-0 w-[550px] h-full bg-[#0f172a]" 
                           style={{ clipPath: 'polygon(25% 0, 100% 0, 100% 100%, 0% 100%)' }} />
                        <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
-                          <img src={logoSayc} alt="SAYC" className="h-[50px]" />
+                          <img src={logoSayc} alt="SAYC" className="h-[50px]" crossOrigin="anonymous" />
                           <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" />
+                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] grayscale" crossOrigin="anonymous" />
                        </div>
                        <div className="absolute top-[200px] left-16 w-[550px] z-20">
                           <Quote className="w-[150px] h-[150px] text-sayc-teal/10 absolute -top-12 -left-12" />
@@ -439,7 +451,7 @@ export default function BrandAssets() {
                        </div>
                        <div className="absolute inset-y-0 right-[-50px] w-[650px] z-10 p-24 pr-[150px] flex items-center">
                           <div className="w-full aspect-square rounded-[4rem] shadow-[0_50px_100px_rgba(0,0,0,0.5)] border-[15px] border-white overflow-hidden rotate-[3deg]">
-                             <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" />
+                             <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
                           </div>
                        </div>
                     </div>
@@ -447,10 +459,10 @@ export default function BrandAssets() {
 
                   {activeCategory === "event" && (
                      <div className="w-full h-full bg-[#050510] overflow-hidden">
-                        <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" />
+                        <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" crossOrigin="anonymous" />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent z-0" />
                         <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                           <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" />
+                           <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" crossOrigin="anonymous" />
                            <div className="bg-orange-600 px-8 py-3 rounded-full">
                               <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
                            </div>
