@@ -114,6 +114,27 @@ export default function VotersAudit() {
             </Card>
         </div>
 
+        {/* Leaderboard Summary */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+           {Array.from(new Set(votes?.map(v => `${v.candidateFirstName} ${v.candidateLastName}`))).map(name => {
+              const count = votes?.filter(v => `${v.candidateFirstName} ${v.candidateLastName}` === name).length;
+              return (
+                <Card 
+                  key={name} 
+                  className={`border-2 transition-all cursor-pointer hover:shadow-lg ${searchTerm === name ? 'border-sayc-teal bg-sayc-teal/5' : 'border-transparent bg-white'}`}
+                  onClick={() => setSearchTerm(searchTerm === name ? "" : name)}
+                >
+                  <CardContent className="p-4 text-center space-y-1">
+                    <p className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Candidat</p>
+                    <h4 className="font-black text-[#1e3a8a] text-sm truncate uppercase">{name}</h4>
+                    <p className="text-2xl font-black text-sayc-teal">{count}</p>
+                    <p className="text-[9px] font-bold text-slate-400 italic">Cliquez pour filtrer</p>
+                  </CardContent>
+                </Card>
+              );
+           })}
+        </div>
+
         <Card className="border-none shadow-2xl overflow-hidden rounded-3xl">
           <CardHeader className="bg-white border-b p-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
