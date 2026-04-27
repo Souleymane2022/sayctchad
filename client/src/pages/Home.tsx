@@ -268,29 +268,29 @@ export default function Home() {
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-6 md:p-10 shadow-2xl overflow-hidden relative group">
               <div className="absolute top-0 right-0 p-4">
-                <Badge className="bg-slate-600 text-white border-none px-4 py-1 text-xs font-black">VOTE TERMINÉ</Badge>
+                <Badge className="bg-sayc-teal text-white border-none px-4 py-1 text-xs font-black">RÉSULTATS PROCLAMÉS</Badge>
               </div>
               
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="text-left space-y-6">
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/20 rounded-full border border-accent/30">
-                    <Vote className="w-5 h-5 text-accent" />
+                    <Award className="w-5 h-5 text-accent" />
                     <span className="text-accent font-black text-xs uppercase tracking-widest">Élections SAYC Tchad 2026</span>
                   </div>
                   <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-                    SCRUTIN <span className="text-accent">CLÔTURÉ</span>
+                    BUREAU <span className="text-accent">INVESTI</span>
                   </h2>
                   <p className="text-lg text-white/70 leading-relaxed">
-                    La période de vote est officiellement terminée. Le Comité de Transparence procède actuellement à la vérification finale des suffrages.
+                    Le scrutin est terminé et les résultats ont été officiellement proclamés ce Lundi 27 Avril. Découvrez l'équipe qui dirigera le SAYC Tchad pour le mandat 2026-2028.
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
                     <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10 opacity-50">
                       <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center font-black">12H</div>
-                      <p className="text-sm font-bold text-white">CLÔTURE EFFECTUÉE</p>
+                      <p className="text-sm font-bold text-white">CLÔTURE</p>
                     </div>
-                    <div className="flex items-center gap-3 bg-sayc-teal/20 p-4 rounded-2xl border border-sayc-teal/30 animate-pulse">
+                    <div className="flex items-center gap-3 bg-sayc-teal/20 p-4 rounded-2xl border border-sayc-teal/30">
                       <div className="w-10 h-10 rounded-full bg-sayc-teal flex items-center justify-center font-black">15H</div>
-                      <p className="text-sm font-bold text-white">PROCLAMATION DES RÉSULTATS</p>
+                      <p className="text-sm font-bold text-white">RÉSULTATS DISPONIBLES</p>
                     </div>
                   </div>
                   <Link href="/elections/transparence">
@@ -307,12 +307,12 @@ export default function Home() {
                       <div className="space-y-4">
                          <div className="rounded-2xl aspect-[4/5] bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-white/20 shadow-2xl flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
                             <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <Vote className="w-16 h-16 text-slate-500 mb-4" />
-                            <p className="text-white font-black text-4xl mb-2">12H</p>
-                            <p className="text-accent font-bold text-xs uppercase tracking-widest">SCRUTIN<br/>CLÔTURÉ</p>
-                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-600" />
+                            <Award className="w-16 h-16 text-accent mb-4" />
+                            <p className="text-white font-black text-4xl mb-2">2026</p>
+                            <p className="text-accent font-bold text-xs uppercase tracking-widest">BUREAU<br/>NATIONAL</p>
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-accent" />
                          </div>
-                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Session Terminée</p>
+                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Équipe Investie</p>
                       </div>
 
                       {/* CSS-ONLY SMART POSTER 2: PROCLAMATION */}
@@ -321,12 +321,12 @@ export default function Home() {
                             <div className="absolute top-2 right-2">
                                <div className="w-2 h-2 bg-sayc-teal rounded-full animate-ping" />
                             </div>
-                            <Award className="w-16 h-16 text-sayc-teal mb-4" />
-                            <p className="text-white font-black text-4xl mb-2">15H</p>
-                            <p className="text-sayc-teal font-bold text-xs uppercase tracking-widest">RÉSULTATS<br/>EN DIRECT</p>
+                            <ShieldCheck className="w-16 h-16 text-sayc-teal mb-4" />
+                            <p className="text-white font-black text-4xl mb-2">100%</p>
+                            <p className="text-sayc-teal font-bold text-xs uppercase tracking-widest">INTÉGRITÉ<br/>CERTIFIÉE</p>
                             <div className="absolute bottom-0 left-0 right-0 h-1 bg-sayc-teal" />
                          </div>
-                         <p className="text-[10px] text-center text-sayc-teal/60 font-bold uppercase tracking-widest">Prochainement</p>
+                         <p className="text-[10px] text-center text-sayc-teal/60 font-bold uppercase tracking-widest">PV Disponible</p>
                       </div>
                    </div>
                 </div>
@@ -342,11 +342,10 @@ export default function Home() {
               {t("hero.badge", { defaultValue: "7e Chapitre Jeunesse de Smart Africa" })}
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-testid="text-hero-title">
-              LES VOTES SONT <span className="text-accent">CLOS</span>
+              BIENVENUE AU <span className="text-accent">NOUVEAU BUREAU</span>
             </h1>
             <p className="text-lg md:text-xl text-sidebar-foreground/80 mb-4 max-w-2xl mx-auto leading-relaxed" data-testid="text-hero-description">
-              Merci à tous les membres pour leur participation massive. Le dépouillement est en cours. 
-              Rendez-vous à <span className="text-white font-black underline decoration-sayc-teal underline-offset-8">15H00</span> pour les résultats officiels.
+              Découvrez les leaders élus pour le mandat 2026-2028. Un bureau engagé pour l'innovation et le leadership de la jeunesse tchadienne.
             </p>
             <p className="text-sm text-sidebar-foreground/60 mb-8 max-w-xl mx-auto" data-testid="text-hero-tagline">
               {t("hero.tagline", { defaultValue: "Jeunes de 15 à 35 ans" })} | {t("hero.initiative_of", { defaultValue: "Une initiative de" })}{" "}

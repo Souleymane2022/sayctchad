@@ -35,8 +35,8 @@ export function Header() {
           🗳️ Élections 2026
         </span>
         <span className="hidden sm:inline opacity-30">|</span>
-        <span className="animate-pulse tracking-tight sm:tracking-normal">
-          VOTES EN COURS : Clôture le Lundi 27 Avril à 12h00
+        <span className="animate-pulse tracking-tight sm:tracking-normal uppercase">
+          RÉSULTATS PROCLAMÉS : Nouveau Bureau National 2026-2028
         </span>
         <Link href="/elections">
           <button className="bg-[#020817] text-white px-3 py-0.5 rounded-full text-[9px] uppercase hover:bg-black transition-colors font-black ml-1">
