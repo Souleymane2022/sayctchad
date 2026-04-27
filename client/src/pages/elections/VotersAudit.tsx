@@ -86,6 +86,7 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
       />
 
       <div className="container mx-auto max-w-6xl space-y-12">
+
         <div className="text-center space-y-4">
           <Badge variant="outline" className="bg-sayc-teal/10 text-sayc-teal border-sayc-teal/20 px-4 py-1 uppercase tracking-widest text-xs font-black">
             Registre de Transparence
