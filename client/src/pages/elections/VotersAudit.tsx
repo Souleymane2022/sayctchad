@@ -66,57 +66,6 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
     `${vote.candidateFirstName} ${vote.candidateLastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // PAGE SOUS SCELLÉS AVANT 15H (Sauf en mode preview)
-  if (!preview) {
-    return (
-      <div className="min-h-screen bg-[#020817] flex flex-col items-center justify-center px-4 py-20 text-center relative overflow-hidden">
-        <SEOHead 
-          title="Audit Sous Scellés - Élections SAYC Tchad"
-          description="Le Procès-Verbal des élections est temporairement sous scellés jusqu'à la proclamation des résultats."
-          path="/elections/transparence"
-        />
-        
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-orange-600/5 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="max-w-2xl w-full space-y-10 animate-in fade-in zoom-in-95 duration-700 relative z-10">
-          <div className="relative inline-block">
-              <div className="w-32 h-32 bg-slate-900 rounded-[2.5rem] flex items-center justify-center mx-auto border-4 border-slate-800 shadow-2xl relative z-10">
-                  <Lock className="w-16 h-16 text-orange-500" />
-              </div>
-              <div className="absolute inset-0 bg-orange-600 rounded-[2.5rem] blur-3xl opacity-20 animate-pulse" />
-          </div>
-
-          <div className="space-y-6">
-              <Badge className="bg-orange-500/10 text-orange-500 border-orange-500/20 px-6 py-1.5 text-sm font-black tracking-widest uppercase">
-                  Résultats sous scellés
-              </Badge>
-              <h1 className="text-4xl md:text-6xl font-black text-white leading-tight tracking-tighter">
-                  LE PROCÈS-VERBAL EST<br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-600">EN COURS D'AUDIT</span>
-              </h1>
-              <p className="text-xl text-slate-400 max-w-lg mx-auto leading-relaxed">
-                  Le vote est clos. Le Comité Technique centralise actuellement les suffrages pour garantir la transparence absolue.
-              </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6 pt-10">
-              <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl text-left">
-                  <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">PROCHAINE ÉTAPE</p>
-                  <p className="text-white font-black text-2xl flex items-center gap-2">
-                      <Megaphone className="w-6 h-6 text-orange-500" /> PROCLAMATION
-                  </p>
-              </div>
-              <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl text-left">
-                  <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">HEURE OFFICIELLE</p>
-                  <p className="text-white font-black text-2xl flex items-center gap-2">
-                      <Clock className="w-6 h-6 text-sayc-teal" /> 15H00 EXACTES
-                  </p>
-              </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-20 px-4">
