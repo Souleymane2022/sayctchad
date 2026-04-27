@@ -91,14 +91,14 @@ export default function ElectionsOverview() {
             />
 
             {/* Hero Section - Proclamation Edition */}
-            <div className="bg-[#1e3a8a] text-white py-16 md:py-28 px-4 relative overflow-hidden">
+            <div className="bg-primary text-white py-16 md:py-28 px-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                    <Award className="w-96 h-96 rotate-12" />
                 </div>
                 
                 <div className="container mx-auto max-w-6xl relative z-10 text-center space-y-10">
                     <div className="flex justify-center">
-                        <Badge className="bg-emerald-500 text-white border-none px-6 py-2 text-sm font-black animate-bounce">
+                        <Badge className="bg-accent text-white border-none px-6 py-2 text-sm font-black animate-bounce shadow-lg shadow-accent/20">
                             RÉSULTATS PROCLAMÉS
                         </Badge>
                     </div>
@@ -115,7 +115,7 @@ export default function ElectionsOverview() {
 
                     <div className="flex flex-wrap justify-center gap-6 pt-6">
                         <Link href="/elections/candidats">
-                            <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-slate-100 px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-2xl transition-all border-0">
+                            <Button size="lg" className="bg-white text-primary hover:bg-slate-100 px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-2xl transition-all border-0">
                                 <Users className="w-6 h-6 mr-3 text-sayc-teal" /> VOIR LE BUREAU ÉLU
                             </Button>
                         </Link>
@@ -133,24 +133,24 @@ export default function ElectionsOverview() {
                 {/* Statistics Cards */}
                 <section className="grid grid-cols-1 md:grid-cols-3 gap-8 -mt-24 relative z-20">
                     <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
-                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-2">
+                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-2">
                             <Vote className="w-6 h-6" />
                         </div>
-                        <h3 className="text-4xl font-black text-[#1e3a8a]">1697</h3>
+                        <h3 className="text-4xl font-black text-primary">1697</h3>
                         <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Votes Exprimés</p>
                     </Card>
                     <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
                         <div className="w-12 h-12 bg-sayc-teal/10 rounded-2xl flex items-center justify-center text-sayc-teal mx-auto mb-2">
                             <Award className="w-6 h-6" />
                         </div>
-                        <h3 className="text-4xl font-black text-[#1e3a8a]">04</h3>
+                        <h3 className="text-4xl font-black text-primary">04</h3>
                         <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Départements Clés</p>
                     </Card>
                     <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
                         <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mx-auto mb-2">
                             <CheckCircle2 className="w-6 h-6" />
                         </div>
-                        <h3 className="text-4xl font-black text-[#1e3a8a]">100%</h3>
+                        <h3 className="text-4xl font-black text-primary">100%</h3>
                         <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Intégrité Certifiée</p>
                     </Card>
                 </section>
@@ -159,7 +159,7 @@ export default function ElectionsOverview() {
                 <section className="space-y-12">
                     <div className="text-center space-y-4">
                         <Badge variant="outline" className="border-sayc-teal text-sayc-teal px-4 py-1 rounded-full font-black text-xs">ARCHIVES DU SCRUTIN</Badge>
-                        <h2 className="text-3xl md:text-4xl font-black text-[#1e3a8a]">Historique du Processus</h2>
+                        <h2 className="text-3xl md:text-4xl font-black text-primary">Historique du Processus</h2>
                     </div>
 
                     <div className="grid md:grid-cols-4 gap-6">
@@ -172,7 +172,7 @@ export default function ElectionsOverview() {
                                     <Badge variant="outline" className={`${phase.color} border-current text-[10px] font-black`}>
                                         {phase.status}
                                     </Badge>
-                                    <CardTitle className="text-lg font-black text-[#1e3a8a]">{phase.title}</CardTitle>
+                                    <CardTitle className="text-lg font-black text-primary">{phase.title}</CardTitle>
                                     <div className="flex items-center text-[10px] text-slate-400 font-bold uppercase">
                                         <History className="mr-1 h-3 w-3" /> {phase.date}
                                     </div>
@@ -191,7 +191,7 @@ export default function ElectionsOverview() {
                 <section className="grid lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
                         <div className="space-y-4">
-                            <h2 className="text-3xl font-black text-[#1e3a8a]">Le Mandat 2026-2028</h2>
+                            <h2 className="text-3xl font-black text-primary">Le Mandat 2026-2028</h2>
                             <p className="text-lg text-slate-600 font-medium">
                                 Le nouveau bureau s'engage pour une durée de 2 ans non renouvelable autour des piliers suivants :
                             </p>
@@ -213,7 +213,7 @@ export default function ElectionsOverview() {
                         </div>
                     </div>
 
-                    <Card className="border-none shadow-2xl bg-[#1e3a8a] text-white rounded-[3rem] overflow-hidden relative">
+                    <Card className="border-none shadow-2xl bg-primary text-white rounded-[3rem] overflow-hidden relative">
                         <div className="absolute bottom-0 right-0 p-8 opacity-10">
                             <Users className="w-64 h-64" />
                         </div>
@@ -248,7 +248,7 @@ export default function ElectionsOverview() {
                         </p>
                         <div className="pt-6 flex justify-center gap-4">
                             <Link href="/elections/candidats">
-                                <Button size="lg" className="bg-[#1e3a8a] hover:bg-blue-900 text-white px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-xl border-0">
+                                <Button size="lg" className="bg-primary hover:bg-blue-900 text-white px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-xl border-0">
                                     REJOINDRE LA DYNAMIQUE
                                 </Button>
                             </Link>
@@ -257,7 +257,7 @@ export default function ElectionsOverview() {
                     
                     {/* Abstract Decoration */}
                     <div className="absolute top-0 left-0 w-64 h-64 bg-white/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#1e3a8a]/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
+                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-primary/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
                 </section>
 
             </div>
