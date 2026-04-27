@@ -9,12 +9,13 @@ import {
     Award, 
     Vote, 
     ChevronRight, 
-    UserPlus, 
     Globe, 
     ShieldCheck, 
     Target,
     LayoutDashboard,
-    Heart
+    Heart,
+    Star,
+    History
 } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
@@ -23,46 +24,37 @@ const electionPhases = [
         title: "Appel à Candidature",
         status: "Terminé",
         date: "Clôturé",
-        description: "La période de réception des dossiers est désormais terminée. Merci à tous les candidats.",
+        description: "La période de réception des dossiers est terminée.",
         icon: CheckCircle2,
-        color: "text-gray-500",
+        color: "text-gray-400",
         bgColor: "bg-gray-100"
     },
     {
         title: "Filtrage & Validation",
         status: "Terminé",
         date: "Clôturé",
-        description: "Vérification des critères d'éligibilité et sélection des finalistes par le comité technique.",
+        description: "Vérification des critères d'éligibilité terminée.",
         icon: ShieldCheck,
-        color: "text-gray-500",
+        color: "text-gray-400",
         bgColor: "bg-gray-100"
     },
     {
-        title: "Campagne Électorale",
-        status: "En cours",
-        date: "J-2",
-        description: "Présentation des programmes, débats publics et vision des candidats pour le numérique.",
-        icon: Globe,
-        color: "text-amber-600",
-        bgColor: "bg-amber-50"
-    },
-    {
         title: "Vote des Membres",
-        status: "En cours",
-        date: "Clôture : 27 Avr. 12h00",
-        description: "Scrutin numérique sécurisé sur sayctchad.org ouvert depuis le 20 Avril.",
+        status: "Terminé",
+        date: "Clôturé le 27 Avr. 12h00",
+        description: "Scrutin numérique sécurisé clôturé avec 1697 votants.",
         icon: Vote,
-        color: "text-sayc-teal",
-        bgColor: "bg-sayc-teal/10"
+        color: "text-emerald-500",
+        bgColor: "bg-emerald-50"
     },
     {
         title: "Proclamation des Résultats",
-        status: "À venir",
+        status: "Effectué",
         date: "27 Avril, 15h00",
-        description: "Annonce officielle des élus du premier Comité National SAYC Tchad.",
+        description: "Le Bureau National 2026-2028 est officiellement investi.",
         icon: Award,
-        color: "text-purple-600",
-        bgColor: "bg-purple-50"
+        color: "text-sayc-teal",
+        bgColor: "bg-sayc-teal/10"
     }
 ];
 
@@ -93,144 +85,153 @@ export default function ElectionsOverview() {
     return (
         <div className="min-h-screen bg-slate-50">
             <SEOHead 
-                title="Élections Comité National SAYC Tchad"
-                description="Participez à la mise en place du Comité National du Smart Africa Youth Chapter Tchad."
+                title="Résultats Proclamés - Élections SAYC Tchad"
+                description="Le Bureau National 2026-2028 du SAYC Tchad a été officiellement proclamé. Consultez les résultats."
                 path="/elections"
             />
 
-            {/* Hero Section with Live Posters */}
-            <div className="bg-[#1e3a8a] text-white py-12 md:py-20 px-4 relative overflow-hidden">
+            {/* Hero Section - Proclamation Edition */}
+            <div className="bg-[#1e3a8a] text-white py-16 md:py-28 px-4 relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-10">
-                   <Vote className="w-64 h-64 rotate-12" />
+                   <Award className="w-96 h-96 rotate-12" />
                 </div>
                 
-                <div className="container mx-auto max-w-6xl relative z-10">
-                    <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <div className="space-y-8 text-left">
-                            <Badge className="bg-slate-600 text-white border-none px-4 py-1 text-xs font-black">
-                                SCRUTIN CLÔTURÉ
-                            </Badge>
-                            <h1 className="text-4xl md:text-6xl font-heading font-bold leading-tight">
-                                Les Urnes sont <br /> 
-                                <span className="text-sayc-teal font-black">Scellées</span>
-                            </h1>
-                            <p className="text-lg text-blue-100 max-w-xl">
-                                Le vote a pris fin ce jour à <span className="font-black text-white underline decoration-sayc-teal underline-offset-4">12H00</span>. 
-                                Les résultats officiels seront proclamés à <span className="font-black text-white underline decoration-orange-500 underline-offset-4 animate-pulse">15H00</span>.
-                            </p>
-                            <div className="flex flex-wrap gap-4">
-                                <Link href="/elections/voter">
-                                    <Button size="lg" className="bg-white/10 hover:bg-white/20 text-white px-10 h-14 rounded-2xl text-lg font-black transition-all border border-white/20">
-                                        REVOIR LES CANDIDATS
-                                    </Button>
-                                </Link>
-                                <Link href="/elections/transparence">
-                                    <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-10 h-14 rounded-2xl text-lg font-black shadow-2xl transition-all border-0">
-                                        AUDIT DE TRANSPARENCE
-                                    </Button>
-                                </Link>
-                            </div>
-                        </div>
+                <div className="container mx-auto max-w-6xl relative z-10 text-center space-y-10">
+                    <div className="flex justify-center">
+                        <Badge className="bg-emerald-500 text-white border-none px-6 py-2 text-sm font-black animate-bounce">
+                            RÉSULTATS PROCLAMÉS
+                        </Badge>
+                    </div>
+                    
+                    <div className="space-y-6">
+                        <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
+                            Une Nouvelle Ère <br /> 
+                            <span className="text-sayc-teal">pour le SAYC Tchad</span>
+                        </h1>
+                        <p className="text-xl text-blue-100 max-w-3xl mx-auto font-medium">
+                            Le scrutin du 20 au 27 avril 2026 a rendu son verdict. Nous sommes fiers d'annoncer la mise en place officielle du **Bureau National** pour un mandat de 2 ans.
+                        </p>
+                    </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4">
-                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl opacity-60">
-                                    <img src="https://images.unsplash.com/photo-1540910419892-f0c07d16538d?q=80&w=400&h=600&fit=crop" alt="Clôture 12h" className="w-full h-auto object-cover aspect-[4/5]" />
-                                </div>
-                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Scrutin Terminé</p>
-                            </div>
-                            <div className="space-y-4 mt-8">
-                                <div className="rounded-[2rem] overflow-hidden border-4 border-sayc-teal shadow-2xl animate-pulse">
-                                    <img src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=400&h=600&fit=crop" alt="Proclamation 15h" className="w-full h-auto object-cover aspect-[4/5]" />
-                                </div>
-                                <p className="text-center text-[10px] font-black text-sayc-teal uppercase tracking-widest">Résultats à 15H</p>
-                            </div>
-                        </div>
+                    <div className="flex flex-wrap justify-center gap-6 pt-6">
+                        <Link href="/elections/candidats">
+                            <Button size="lg" className="bg-white text-[#1e3a8a] hover:bg-slate-100 px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-2xl transition-all border-0">
+                                <Users className="w-6 h-6 mr-3 text-sayc-teal" /> VOIR LE BUREAU ÉLU
+                            </Button>
+                        </Link>
+                        <Link href="/elections/transparence">
+                            <Button size="lg" className="bg-sayc-teal/10 hover:bg-sayc-teal/20 text-white px-10 h-16 rounded-[1.5rem] text-xl font-black transition-all border-2 border-sayc-teal/30">
+                                <ShieldCheck className="w-6 h-6 mr-3 text-sayc-teal" /> AUDIT & TRANSPARENCE
+                            </Button>
+                        </Link>
                     </div>
                 </div>
             </div>
 
             <div className="container mx-auto max-w-6xl px-4 py-16 space-y-24">
                 
-                {/* Phases Section */}
+                {/* Statistics Cards */}
+                <section className="grid grid-cols-1 md:grid-cols-3 gap-8 -mt-24 relative z-20">
+                    <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
+                        <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-2">
+                            <Vote className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-[#1e3a8a]">1697</h3>
+                        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Votes Exprimés</p>
+                    </Card>
+                    <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
+                        <div className="w-12 h-12 bg-sayc-teal/10 rounded-2xl flex items-center justify-center text-sayc-teal mx-auto mb-2">
+                            <Award className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-[#1e3a8a]">04</h3>
+                        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Départements Clés</p>
+                    </Card>
+                    <Card className="bg-white border-none shadow-xl rounded-[2rem] p-8 text-center space-y-2">
+                        <div className="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 mx-auto mb-2">
+                            <CheckCircle2 className="w-6 h-6" />
+                        </div>
+                        <h3 className="text-4xl font-black text-[#1e3a8a]">100%</h3>
+                        <p className="text-slate-500 font-bold uppercase text-xs tracking-widest">Intégrité Certifiée</p>
+                    </Card>
+                </section>
+
+                {/* Timeline Section */}
                 <section className="space-y-12">
                     <div className="text-center space-y-4">
-                        <h2 className="text-3xl font-heading font-bold text-[#1e3a8a]">Processus Électoral</h2>
-                        <p className="text-muted-foreground max-w-2xl mx-auto">
-                            Un parcours transparent et rigoureux pour garantir un leadership de qualité.
-                        </p>
+                        <Badge variant="outline" className="border-sayc-teal text-sayc-teal px-4 py-1 rounded-full font-black text-xs">ARCHIVES DU SCRUTIN</Badge>
+                        <h2 className="text-3xl md:text-4xl font-black text-[#1e3a8a]">Historique du Processus</h2>
                     </div>
 
                     <div className="grid md:grid-cols-4 gap-6">
                         {electionPhases.map((phase, i) => (
-                            <Card key={i} className="border-none shadow-md hover:shadow-xl transition-all duration-300 relative overflow-hidden group">
+                            <Card key={i} className="border-none shadow-md bg-white rounded-[2rem] overflow-hidden relative group opacity-90 hover:opacity-100 transition-opacity">
                                 <CardHeader className="space-y-4 pb-2">
-                                    <div className={`w-14 h-14 rounded-2xl ${phase.bgColor} ${phase.color} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                                        <phase.icon className="w-8 h-8" />
+                                    <div className={`w-12 h-12 rounded-xl ${phase.bgColor} ${phase.color} flex items-center justify-center`}>
+                                        <phase.icon className="w-6 h-6" />
                                     </div>
-                                    <Badge variant="outline" className={`${phase.color} border-current text-[10px]`}>
+                                    <Badge variant="outline" className={`${phase.color} border-current text-[10px] font-black`}>
                                         {phase.status}
                                     </Badge>
-                                    <CardTitle className="text-xl">{phase.title}</CardTitle>
-                                    <div className="flex items-center text-xs text-muted-foreground font-medium">
-                                        <Calendar className="mr-1 h-3 w-3" /> {phase.date}
+                                    <CardTitle className="text-lg font-black text-[#1e3a8a]">{phase.title}</CardTitle>
+                                    <div className="flex items-center text-[10px] text-slate-400 font-bold uppercase">
+                                        <History className="mr-1 h-3 w-3" /> {phase.date}
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
+                                    <p className="text-sm text-slate-500 font-medium leading-relaxed">
                                         {phase.description}
                                     </p>
                                 </CardContent>
-                                <div className="absolute top-0 right-0 p-4 opacity-10 font-bold text-4xl -mr-2 -mt-2">
-                                    0{i + 1}
-                                </div>
                             </Card>
                         ))}
                     </div>
                 </section>
 
-                {/* Eligibility & Roles */}
+                {/* Roles & Mandate */}
                 <section className="grid lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8">
                         <div className="space-y-4">
-                            <h2 className="text-3xl font-heading font-bold text-[#1e3a8a]">Qui peut postuler ?</h2>
-                            <p className="text-muted-foreground">
-                                Conformément au cadre de gouvernance de Smart Africa, les candidats doivent répondre aux critères suivants :
+                            <h2 className="text-3xl font-black text-[#1e3a8a]">Le Mandat 2026-2028</h2>
+                            <p className="text-lg text-slate-600 font-medium">
+                                Le nouveau bureau s'engage pour une durée de 2 ans non renouvelable autour des piliers suivants :
                             </p>
                         </div>
 
                         <div className="space-y-4">
                             {[
-                                "Être âgé de 18 à 35 ans au moment de l'élection.",
-                                "Être de nationalité tchadienne ou résident actif dans l'écosystème numérique.",
-                                "Être membre inscrit et vérifié du SAYC Tchad.",
-                                "Avoir une expérience prouvée dans la technologie, l'innovation ou l'engagement jeunesse.",
-                                "Être disponible pour un mandat de 2 ans non renouvelable."
+                                "Développement de l'écosystème numérique dans les 23 provinces.",
+                                "Renforcement des capacités technologiques de la jeunesse.",
+                                "Inclusion numérique active des femmes et des zones rurales.",
+                                "Création de ponts entre le secteur privé et l'innovation locale.",
+                                "Garantie d'une gouvernance transparente et participative."
                             ].map((text, i) => (
-                                <div key={i} className="flex gap-4 items-start bg-white p-4 rounded-xl border-l-4 border-sayc-teal shadow-sm">
-                                    <CheckCircle2 className="w-6 h-6 text-sayc-teal shrink-0 mt-0.5" />
-                                    <span className="text-sm font-medium text-slate-700">{text}</span>
+                                <div key={i} className="flex gap-4 items-start bg-white p-5 rounded-2xl border-l-4 border-sayc-teal shadow-sm">
+                                    <Star className="w-5 h-5 text-sayc-teal shrink-0 mt-0.5 fill-sayc-teal/20" />
+                                    <span className="text-sm font-bold text-slate-700 leading-relaxed">{text}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
 
-                    <Card className="border-none shadow-2xl bg-[#1e3a8a] text-white">
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Postes à pourvoir</CardTitle>
-                            <CardDescription className="text-blue-100/70">
-                                4 représentants pour piloter la stratégie nationale (en complément du Leader National).
+                    <Card className="border-none shadow-2xl bg-[#1e3a8a] text-white rounded-[3rem] overflow-hidden relative">
+                        <div className="absolute bottom-0 right-0 p-8 opacity-10">
+                            <Users className="w-64 h-64" />
+                        </div>
+                        <CardHeader className="p-8 md:p-12 pb-4">
+                            <CardTitle className="text-3xl font-black">Architecture du Bureau</CardTitle>
+                            <CardDescription className="text-blue-100/70 font-medium">
+                                Structure opérationnelle pilotée par le Leader National.
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="p-8 md:p-12 pt-0 space-y-6">
                             {committeeRoles.map((role, i) => (
-                                <div key={i} className="flex gap-4 items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                                    <div className="w-10 h-10 rounded-lg bg-sayc-teal/20 text-sayc-teal flex items-center justify-center shrink-0">
-                                        <role.icon className="w-5 h-5" />
+                                <div key={i} className="flex gap-4 items-center p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all group">
+                                    <div className="w-12 h-12 rounded-xl bg-sayc-teal/20 text-sayc-teal flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                        <role.icon className="w-6 h-6" />
                                     </div>
                                     <div className="space-y-0.5">
-                                        <h4 className="font-bold text-sm">{role.title}</h4>
-                                        <p className="text-xs text-blue-100/60">{role.desc}</p>
+                                        <h4 className="font-black text-lg">{role.title}</h4>
+                                        <p className="text-sm text-blue-100/60 font-medium leading-tight">{role.desc}</p>
                                     </div>
                                 </div>
                             ))}
@@ -238,61 +239,25 @@ export default function ElectionsOverview() {
                     </Card>
                 </section>
 
-                {/* Instructions de Vote */}
-                <section className="bg-white rounded-3xl p-8 md:p-12 border shadow-sm space-y-8">
-                    <div className="text-center space-y-4">
-                        <h2 className="text-3xl font-heading font-bold text-[#1e3a8a]">Comment voter ? (Prochainement)</h2>
-                        <p className="text-muted-foreground">Voici les étapes pour participer au scrutin numérique lorsqu'il sera ouvert :</p>
-                    </div>
-                    
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div className="space-y-4 text-center">
-                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto">
-                                <UserPlus className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-bold text-lg">1. Devenir Membre</h4>
-                            <p className="text-sm text-muted-foreground">Seuls les membres inscrits et vérifiés du SAYC Tchad peuvent voter.</p>
-                            <Link href="/rejoindre">
-                                <Button variant="ghost" className="text-sayc-teal font-bold p-0">S'inscrire ici</Button>
-                            </Link>
-                        </div>
-                        
-                        <div className="space-y-4 text-center">
-                            <div className="w-16 h-16 bg-sayc-teal/10 text-sayc-teal rounded-2xl flex items-center justify-center mx-auto">
-                                <ShieldCheck className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-bold text-lg">2. Identifiants</h4>
-                            <p className="text-sm text-muted-foreground">Munissez-vous de votre **ID de Membre (SAYC-XXXXXX)** et de votre adresse email d'inscription.</p>
-                        </div>
-                        
-                        <div className="space-y-4 text-center">
-                            <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto">
-                                <Vote className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-bold text-lg">3. Vote Sécurisé</h4>
-                            <p className="text-sm text-muted-foreground">Une fois le scrutin ouvert, cliquez sur "Voter" et suivez les instructions pour chaque poste.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Call to Action */}
-                <section className="bg-gradient-to-br from-[#1e3a8a] to-blue-900 rounded-3xl p-8 md:p-16 text-white text-center space-y-8 relative overflow-hidden">
-                    <div className="relative z-10 space-y-4">
-                        <h2 className="text-3xl md:text-4xl font-heading font-bold">Prêt à porter la voix de la jeunesse numérique ?</h2>
-                        <p className="text-blue-100 max-w-xl mx-auto">
-                            Le comité national est le moteur du changement. Soumettez votre candidature aujourd'hui et faites partie de l'histoire.
+                {/* Final Call to Action */}
+                <section className="bg-gradient-to-br from-sayc-teal to-emerald-600 rounded-[3rem] p-8 md:p-16 text-[#0f172a] text-center space-y-8 relative overflow-hidden shadow-2xl">
+                    <div className="relative z-10 space-y-6">
+                        <h2 className="text-3xl md:text-5xl font-black tracking-tight">Le Futur se construit Ensemble.</h2>
+                        <p className="text-[#0f172a]/70 max-w-2xl mx-auto text-xl font-bold">
+                            Félicitations au nouveau Bureau National et merci à tous les membres pour cette leçon de démocratie numérique.
                         </p>
                         <div className="pt-6 flex justify-center gap-4">
                             <Link href="/elections/candidats">
-                                <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#0f172a] px-10 h-14 rounded-xl text-lg font-bold hover:shadow-lg transition-all border-0">
-                                    Découvrir les Candidats
+                                <Button size="lg" className="bg-[#1e3a8a] hover:bg-blue-900 text-white px-10 h-16 rounded-[1.5rem] text-xl font-black shadow-xl border-0">
+                                    REJOINDRE LA DYNAMIQUE
                                 </Button>
                             </Link>
                         </div>
                     </div>
-                    {/* Abstract Shapes */}
-                    <div className="absolute top-0 left-0 w-64 h-64 bg-sayc-teal/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
-                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
+                    
+                    {/* Abstract Decoration */}
+                    <div className="absolute top-0 left-0 w-64 h-64 bg-white/20 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
+                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#1e3a8a]/10 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
                 </section>
 
             </div>
