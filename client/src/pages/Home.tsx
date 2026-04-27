@@ -267,7 +267,7 @@ export default function Home() {
           <div className="max-w-5xl mx-auto">
             <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-[2.5rem] p-6 md:p-10 shadow-2xl overflow-hidden relative group">
               <div className="absolute top-0 right-0 p-4">
-                <Badge className="bg-red-600 animate-pulse text-white border-none px-4 py-1 text-xs font-black">EN DIRECT</Badge>
+                <Badge className="bg-slate-600 text-white border-none px-4 py-1 text-xs font-black">VOTE TERMINÉ</Badge>
               </div>
               
               <div className="grid md:grid-cols-2 gap-8 items-center">
@@ -277,60 +277,50 @@ export default function Home() {
                     <span className="text-accent font-black text-xs uppercase tracking-widest">Élections SAYC Tchad 2026</span>
                   </div>
                   <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-                    JOURNÉE DE <span className="text-accent">DÉCISION</span>
+                    SCRUTIN <span className="text-accent">CLÔTURÉ</span>
                   </h2>
                   <p className="text-lg text-white/70 leading-relaxed">
-                    Le futur du leadership numérique tchadien se joue aujourd'hui. Soyez au rendez-vous pour les deux moments clés du scrutin.
+                    La période de vote est officiellement terminée. Le Comité de Transparence procède actuellement à la vérification finale des suffrages.
                   </p>
                   <div className="flex flex-wrap gap-4 pt-2">
-                    <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10">
-                      <div className="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center font-black">12H</div>
-                      <p className="text-sm font-bold text-white">CLÔTURE DU SCRUTIN</p>
+                    <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10 opacity-50">
+                      <div className="w-10 h-10 rounded-full bg-slate-600 flex items-center justify-center font-black">12H</div>
+                      <p className="text-sm font-bold text-white">CLÔTURE EFFECTUÉE</p>
                     </div>
-                    <div className="flex items-center gap-3 bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <div className="flex items-center gap-3 bg-sayc-teal/20 p-4 rounded-2xl border border-sayc-teal/30 animate-pulse">
                       <div className="w-10 h-10 rounded-full bg-sayc-teal flex items-center justify-center font-black">15H</div>
-                      <p className="text-sm font-bold text-white">RÉSULTATS OFFICIELS</p>
+                      <p className="text-sm font-bold text-white">PROCLAMATION DES RÉSULTATS</p>
                     </div>
                   </div>
-                  <Link href="/elections">
+                  <Link href="/elections/transparence">
                     <Button size="lg" className="w-full md:w-auto bg-white text-black hover:bg-slate-100 font-black rounded-2xl h-14 px-10 text-lg shadow-xl">
-                      ACCÉDER AU PORTAIL DE VOTE
-                      <ChevronRight className="ml-2 w-6 h-6" />
+                      AUDIT DE TRANSPARENCE (PV)
+                      <ShieldCheck className="ml-2 w-6 h-6" />
                     </Button>
                   </Link>
                 </div>
                 
                 <div className="relative">
                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-4 transform hover:-translate-y-2 transition-transform duration-500">
+                      <div className="space-y-4">
                          <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
                             <img 
                               src="https://images.unsplash.com/photo-1540910419892-f0c07d16538d?q=80&w=400&h=600&fit=crop" 
                               alt="Clôture 12h" 
-                              className="w-full h-auto"
+                              className="w-full h-auto object-cover aspect-[4/5]"
                             />
                          </div>
-                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Affiche Officielle Clôture</p>
+                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Session de Vote Terminée</p>
                       </div>
-                      <div className="space-y-4 mt-8 transform hover:-translate-y-2 transition-transform duration-500">
+                      <div className="space-y-4 mt-8">
                          <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
                             <img 
                               src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=400&h=600&fit=crop" 
                               alt="Proclamation 15h" 
-                              className="w-full h-auto"
+                              className="w-full h-auto object-cover aspect-[4/5]"
                             />
                          </div>
-                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Affiche Officielle Résultats</p>
-                      </div>
-                   </div>
-                   
-                   {/* Special Overlay with the real generated images from artifacts */}
-                   <div className="absolute inset-0 grid grid-cols-2 gap-4">
-                      <div className="mt-0 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl">
-                         <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/cloture_elections_sayc_12h_1777275091438.png" alt="Clôture" className="w-full h-full object-cover" />
-                      </div>
-                      <div className="mt-8 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl">
-                         <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/proclamation_resultats_sayc_15h_1777275108203.png" alt="Proclamation" className="w-full h-full object-cover" />
+                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Résultats en Préparation</p>
                       </div>
                    </div>
                 </div>

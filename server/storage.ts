@@ -501,14 +501,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async castVote(vote: InsertVote): Promise<ElectionVote> {
-    const rows = await neonSql`
-      INSERT INTO election_votes (id, voter_id, candidate_id, role)
-      VALUES (gen_random_uuid(), ${vote.voterId}, ${vote.candidateId}, ${vote.role})
-      RETURNING *
-    `;
-    // Increment candidate vote count
-    await neonSql`UPDATE election_candidates SET votes_count = votes_count + 1 WHERE id = ${vote.candidateId}`;
-    return this.mapVoteRow(rows[0]);
+    // SECURITY LOCK: Elections closed at 12:00 PM on April 27, 2026
+    throw new Error("Scrutin Clôturé : La période de vote est officiellement terminée depuis 12h00.");
   }
 
   async hasVoted(voterId: string, role: string): Promise<boolean> {

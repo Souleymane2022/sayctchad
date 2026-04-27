@@ -107,26 +107,26 @@ export default function ElectionsOverview() {
                 <div className="container mx-auto max-w-6xl relative z-10">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="space-y-8 text-left">
-                            <Badge className="bg-red-600 animate-pulse text-white border-none px-4 py-1 text-xs font-black">
-                                JOUR DU SCRUTIN • DIRECT
+                            <Badge className="bg-slate-600 text-white border-none px-4 py-1 text-xs font-black">
+                                SCRUTIN CLÔTURÉ
                             </Badge>
                             <h1 className="text-4xl md:text-6xl font-heading font-bold leading-tight">
-                                Le Verdict des Urnes <br /> 
-                                <span className="text-sayc-teal">est pour Aujourd'hui</span>
+                                Les Urnes sont <br /> 
+                                <span className="text-sayc-teal font-black">Scellées</span>
                             </h1>
                             <p className="text-lg text-blue-100 max-w-xl">
-                                Les votes se terminent à <span className="font-black text-white underline decoration-sayc-teal underline-offset-4">12H00 précises</span>. 
-                                La proclamation solennelle des résultats aura lieu à <span className="font-black text-white underline decoration-orange-500 underline-offset-4">15H00</span>.
+                                Le vote a pris fin ce jour à <span className="font-black text-white underline decoration-sayc-teal underline-offset-4">12H00</span>. 
+                                Les résultats officiels seront proclamés à <span className="font-black text-white underline decoration-orange-500 underline-offset-4 animate-pulse">15H00</span>.
                             </p>
                             <div className="flex flex-wrap gap-4">
                                 <Link href="/elections/voter">
-                                    <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-10 h-14 rounded-2xl text-lg font-black shadow-2xl transition-all border-0">
-                                        VOTER AVANT 12H
+                                    <Button size="lg" className="bg-white/10 hover:bg-white/20 text-white px-10 h-14 rounded-2xl text-lg font-black transition-all border border-white/20">
+                                        REVOIR LES CANDIDATS
                                     </Button>
                                 </Link>
                                 <Link href="/elections/transparence">
-                                    <Button size="lg" variant="outline" className="bg-white/5 border-white/20 text-white px-8 h-14 rounded-2xl text-lg font-bold backdrop-blur-sm">
-                                        <ShieldCheck className="mr-2 h-5 w-5" /> Audit Direct
+                                    <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-10 h-14 rounded-2xl text-lg font-black shadow-2xl transition-all border-0">
+                                        AUDIT DE TRANSPARENCE
                                     </Button>
                                 </Link>
                             </div>
@@ -134,16 +134,16 @@ export default function ElectionsOverview() {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-4">
-                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
-                                    <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/cloture_elections_sayc_12h_1777275091438.png" alt="Clôture 12h" className="w-full h-auto" />
+                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl opacity-60">
+                                    <img src="https://images.unsplash.com/photo-1540910419892-f0c07d16538d?q=80&w=400&h=600&fit=crop" alt="Clôture 12h" className="w-full h-auto object-cover aspect-[4/5]" />
                                 </div>
-                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Fin du Scrutin</p>
+                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Scrutin Terminé</p>
                             </div>
                             <div className="space-y-4 mt-8">
-                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
-                                    <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/proclamation_resultats_sayc_15h_1777275108203.png" alt="Proclamation 15h" className="w-full h-auto" />
+                                <div className="rounded-[2rem] overflow-hidden border-4 border-sayc-teal shadow-2xl animate-pulse">
+                                    <img src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=400&h=600&fit=crop" alt="Proclamation 15h" className="w-full h-auto object-cover aspect-[4/5]" />
                                 </div>
-                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Résultats</p>
+                                <p className="text-center text-[10px] font-black text-sayc-teal uppercase tracking-widest">Résultats à 15H</p>
                             </div>
                         </div>
                     </div>
