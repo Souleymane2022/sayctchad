@@ -16,6 +16,7 @@ import {
 import SEOHead from "@/components/SEOHead";
 import type { ElectionCandidate } from "@shared/schema";
 
+// Last Update: 2026-04-27 17:35
 export default function ElectionCandidates() {
   const [, setLocation] = useLocation();
   const [selectedLeader, setSelectedLeader] = useState<ElectionCandidate | null>(null);
