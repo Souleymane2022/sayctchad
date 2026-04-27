@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -1796,33 +1796,50 @@ function ElectionVotesHistory() {
   });
 
   const exportVotesPDF = (role: string) => {
-    const doc: any = new jsPDF();
-    const filteredVotes = votes.filter(v => v.role === role);
-    const dateStr = new Date().toLocaleDateString("fr-FR");
+    try {
+      console.log(`Generating PDF for ${role}...`);
+      const doc = new jsPDF();
+      const filteredVotes = votes.filter(v => v.role === role);
+      const dateStr = new Date().toLocaleDateString("fr-FR");
 
-    doc.setFontSize(20);
-    doc.text("SAYC TCHAD - ÉLECTIONS 2026", 14, 22);
-    doc.setFontSize(14);
-    doc.text(`Procès-Verbal d'Audit - Poste: ${role}`, 14, 32);
-    doc.setFontSize(10);
-    doc.text(`Généré le: ${dateStr}`, 14, 40);
-    doc.text(`Nombre total de suffrages exprimés: ${filteredVotes.length}`, 14, 46);
+      doc.setFontSize(20);
+      doc.setTextColor(30, 58, 138); // #1e3a8a
+      doc.text("SAYC TCHAD - ÉLECTIONS 2026", 14, 22);
+      
+      doc.setFontSize(14);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Procès-Verbal d'Audit - Poste: ${role}`, 14, 32);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Généré le: ${dateStr}`, 14, 40);
+      doc.text(`Nombre total de suffrages exprimés: ${filteredVotes.length}`, 14, 46);
 
-    const tableData = filteredVotes.map(v => [
-      v.voterId,
-      `${v.candidateFirstName} ${v.candidateLastName}`,
-      new Date(v.createdAt).toLocaleString("fr-FR")
-    ]);
+      const tableData = filteredVotes.map(v => [
+        v.voterId,
+        `${v.candidateFirstName} ${v.candidateLastName}`,
+        new Date(v.createdAt).toLocaleString("fr-FR")
+      ]);
 
-    doc.autoTable({
-      startY: 55,
-      head: [['Votant (ID - Email)', 'Candidat Choisi', 'Date & Heure']],
-      body: tableData,
-      headStyles: { fillStyle: [30, 58, 138] }, // #1e3a8a
-      alternateRowStyles: { fillStyle: [241, 245, 249] },
-    });
+      autoTable(doc, {
+        startY: 55,
+        head: [['Votant (ID - Email)', 'Candidat Choisi', 'Date & Heure']],
+        body: tableData,
+        headStyles: { fillColor: [30, 58, 138] }, // #1e3a8a
+        alternateRowStyles: { fillColor: [241, 245, 249] },
+        margin: { top: 55 },
+      });
 
-    doc.save(`Archive_Audit_SAYC_${role.replace(/\s+/g, '_')}.pdf`);
+      doc.save(`Archive_Audit_SAYC_${role.replace(/\s+/g, '_')}.pdf`);
+      toast({ title: "Succès", description: "Le fichier PDF a été généré et le téléchargement devrait commencer." });
+    } catch (err: any) {
+      console.error("PDF Export Error:", err);
+      toast({ 
+        title: "Erreur d'exportation", 
+        description: "Impossible de générer le PDF. Vérifiez la console pour plus de détails.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (isLoading) return <LoadingTable />;
