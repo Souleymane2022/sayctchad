@@ -98,36 +98,54 @@ export default function ElectionsOverview() {
                 path="/elections"
             />
 
-            {/* Hero Section */}
-            <div className="bg-[#1e3a8a] text-white py-20 px-4">
-                <div className="container mx-auto max-w-5xl text-center space-y-6">
-                    <Badge variant="outline" className="text-blue-100 border-blue-100/30 uppercase tracking-widest text-[10px] font-bold">
-                        Scrutin en Cours • Fin dans 2 jours
-                    </Badge>
-                    <h1 className="text-4xl md:text-6xl font-heading font-bold">
-                        Bâtissons le Futur Numérique <br /> 
-                        <span className="text-sayc-teal">du Tchad Ensemble</span>
-                    </h1>
-                    <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                        Les votes sont ouverts depuis le <span className="font-bold text-white">20 Avril</span>. 
-                        La clôture est fixée au <span className="font-bold text-white">Lundi 27 Avril à 12h00</span>.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4 pt-4">
-                        <Link href="/elections/candidats">
-                            <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-8 h-14 rounded-xl text-lg font-bold shadow-[0_0_20px_rgba(45,212,191,0.4)] transition-all border-0">
-                                Découvrir les Candidats
-                            </Button>
-                        </Link>
-                        <Link href="/elections/voter">
-                            <Button size="lg" variant="outline" className="bg-white/10 hover:bg-white/20 border-white/20 text-white px-8 h-14 rounded-xl text-lg font-bold backdrop-blur-sm">
-                                <Vote className="mr-2 h-5 w-5" /> Voter Maintenant
-                            </Button>
-                        </Link>
-                        <Link href="/elections/transparence">
-                            <Button size="lg" variant="ghost" className="text-blue-100 hover:text-white hover:bg-white/5 px-8 h-14 rounded-xl text-lg font-bold transition-all">
-                                <ShieldCheck className="mr-2 h-5 w-5" /> Registre de Transparence
-                            </Button>
-                        </Link>
+            {/* Hero Section with Live Posters */}
+            <div className="bg-[#1e3a8a] text-white py-12 md:py-20 px-4 relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-10">
+                   <Vote className="w-64 h-64 rotate-12" />
+                </div>
+                
+                <div className="container mx-auto max-w-6xl relative z-10">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div className="space-y-8 text-left">
+                            <Badge className="bg-red-600 animate-pulse text-white border-none px-4 py-1 text-xs font-black">
+                                JOUR DU SCRUTIN • DIRECT
+                            </Badge>
+                            <h1 className="text-4xl md:text-6xl font-heading font-bold leading-tight">
+                                Le Verdict des Urnes <br /> 
+                                <span className="text-sayc-teal">est pour Aujourd'hui</span>
+                            </h1>
+                            <p className="text-lg text-blue-100 max-w-xl">
+                                Les votes se terminent à <span className="font-black text-white underline decoration-sayc-teal underline-offset-4">12H00 précises</span>. 
+                                La proclamation solennelle des résultats aura lieu à <span className="font-black text-white underline decoration-orange-500 underline-offset-4">15H00</span>.
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <Link href="/elections/voter">
+                                    <Button size="lg" className="bg-sayc-teal hover:bg-sayc-teal/90 text-[#020817] px-10 h-14 rounded-2xl text-lg font-black shadow-2xl transition-all border-0">
+                                        VOTER AVANT 12H
+                                    </Button>
+                                </Link>
+                                <Link href="/elections/transparence">
+                                    <Button size="lg" variant="outline" className="bg-white/5 border-white/20 text-white px-8 h-14 rounded-2xl text-lg font-bold backdrop-blur-sm">
+                                        <ShieldCheck className="mr-2 h-5 w-5" /> Audit Direct
+                                    </Button>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-4">
+                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl transform -rotate-2 hover:rotate-0 transition-transform duration-500">
+                                    <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/cloture_elections_sayc_12h_1777275091438.png" alt="Clôture 12h" className="w-full h-auto" />
+                                </div>
+                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Fin du Scrutin</p>
+                            </div>
+                            <div className="space-y-4 mt-8">
+                                <div className="rounded-[2rem] overflow-hidden border-4 border-white/20 shadow-2xl transform rotate-2 hover:rotate-0 transition-transform duration-500">
+                                    <img src="/api/proxy-image?path=C:/Users/Hp/.gemini/antigravity/brain/b5d80a73-9f72-4c56-bc99-1fe576e7731e/proclamation_resultats_sayc_15h_1777275108203.png" alt="Proclamation 15h" className="w-full h-auto" />
+                                </div>
+                                <p className="text-center text-[10px] font-black text-white/40 uppercase tracking-widest">Résultats</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
