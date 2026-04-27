@@ -22,7 +22,8 @@ import {
     Linkedin,
     Facebook,
     Twitter,
-    Vote as VoteIcon
+    Vote as VoteIcon,
+    Lock
 } from "lucide-react";
 
 const roles = [
