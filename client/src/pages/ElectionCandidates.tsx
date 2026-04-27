@@ -117,6 +117,61 @@ export default function ElectionCandidates() {
           </div>
         </motion.div>
 
+        {/* National Leader Special Section */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring" }}
+          className="relative max-w-4xl mx-auto"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-sayc-teal/20 to-[#1e3a8a]/20 blur-3xl rounded-full" />
+          <Card className="relative overflow-hidden bg-white border-4 border-[#1e3a8a] shadow-[0_20px_50px_rgba(30,58,138,0.3)] rounded-[3rem]">
+            <div className="flex flex-col md:flex-row">
+              <div className="md:w-1/2 relative h-[450px] overflow-hidden">
+                <img 
+                  src="/images/leader.jpg" 
+                  alt="Souleymane Mahamat Saleh" 
+                  className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/40 to-transparent" />
+                <div className="absolute top-6 left-6">
+                  <Badge className="bg-[#1e3a8a] text-white border-none px-4 py-2 rounded-full font-black text-xs shadow-lg">
+                    REPRÉSENTANT OFFICIEL
+                  </Badge>
+                </div>
+              </div>
+              <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center space-y-6">
+                <div className="space-y-2">
+                  <Badge variant="outline" className="border-sayc-teal text-sayc-teal px-3 py-1 font-black text-[10px] uppercase tracking-widest">
+                    Smart Africa Alliance
+                  </Badge>
+                  <h2 className="text-4xl md:text-5xl font-black text-[#1e3a8a] leading-tight">
+                    Souleymane <br/>
+                    <span className="text-sayc-teal italic">Mahamat Saleh</span>
+                  </h2>
+                </div>
+                <div className="space-y-4">
+                   <div className="flex items-center gap-3">
+                     <Award className="w-8 h-8 text-amber-400" />
+                     <p className="text-xl font-black text-[#1e3a8a] uppercase tracking-tighter">Leader National</p>
+                   </div>
+                   <p className="text-slate-500 font-medium leading-relaxed">
+                     Mandaté par l'alliance mère **Smart Africa**, il assure la direction stratégique et la représentation diplomatique du SAYC Tchad au niveau continental.
+                   </p>
+                </div>
+                <div className="pt-4 flex gap-4">
+                  <div className="h-12 w-12 rounded-2xl bg-slate-50 border flex items-center justify-center text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all cursor-pointer shadow-sm">
+                    <Linkedin className="w-5 h-5" />
+                  </div>
+                  <div className="h-12 w-12 rounded-2xl bg-slate-50 border flex items-center justify-center text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all cursor-pointer shadow-sm">
+                    <Twitter className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
         {/* Board Grid */}
         <div className="space-y-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
