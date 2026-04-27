@@ -303,25 +303,30 @@ export default function Home() {
                 
                 <div className="relative">
                    <div className="grid grid-cols-2 gap-4">
+                      {/* CSS-ONLY SMART POSTER 1: CLÔTURE */}
                       <div className="space-y-4">
-                         <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
-                            <img 
-                              src="https://images.unsplash.com/photo-1540910419892-f0c07d16538d?q=80&w=400&h=600&fit=crop" 
-                              alt="Clôture 12h" 
-                              className="w-full h-auto object-cover aspect-[4/5]"
-                            />
+                         <div className="rounded-2xl aspect-[4/5] bg-gradient-to-br from-slate-800 to-slate-900 border-2 border-white/20 shadow-2xl flex flex-col items-center justify-center p-6 text-center relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-red-600/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <Vote className="w-16 h-16 text-slate-500 mb-4" />
+                            <p className="text-white font-black text-4xl mb-2">12H</p>
+                            <p className="text-accent font-bold text-xs uppercase tracking-widest">SCRUTIN<br/>CLÔTURÉ</p>
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-red-600" />
                          </div>
-                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Session de Vote Terminée</p>
+                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Session Terminée</p>
                       </div>
+
+                      {/* CSS-ONLY SMART POSTER 2: PROCLAMATION */}
                       <div className="space-y-4 mt-8">
-                         <div className="rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl">
-                            <img 
-                              src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=400&h=600&fit=crop" 
-                              alt="Proclamation 15h" 
-                              className="w-full h-auto object-cover aspect-[4/5]"
-                            />
+                         <div className="rounded-2xl aspect-[4/5] bg-gradient-to-br from-sayc-teal/20 to-sidebar border-2 border-sayc-teal/30 shadow-2xl flex flex-col items-center justify-center p-6 text-center relative overflow-hidden animate-pulse">
+                            <div className="absolute top-2 right-2">
+                               <div className="w-2 h-2 bg-sayc-teal rounded-full animate-ping" />
+                            </div>
+                            <Award className="w-16 h-16 text-sayc-teal mb-4" />
+                            <p className="text-white font-black text-4xl mb-2">15H</p>
+                            <p className="text-sayc-teal font-bold text-xs uppercase tracking-widest">RÉSULTATS<br/>EN DIRECT</p>
+                            <div className="absolute bottom-0 left-0 right-0 h-1 bg-sayc-teal" />
                          </div>
-                         <p className="text-[10px] text-center text-white/40 font-bold uppercase tracking-widest">Résultats en Préparation</p>
+                         <p className="text-[10px] text-center text-sayc-teal/60 font-bold uppercase tracking-widest">Prochainement</p>
                       </div>
                    </div>
                 </div>
@@ -337,11 +342,11 @@ export default function Home() {
               {t("hero.badge", { defaultValue: "7e Chapitre Jeunesse de Smart Africa" })}
             </Badge>
             <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight" data-testid="text-hero-title">
-              {t("hero.title")}{" "}
-              <span className="text-accent">{t("hero.tchad")}</span>
+              LES VOTES SONT <span className="text-accent">CLOS</span>
             </h1>
             <p className="text-lg md:text-xl text-sidebar-foreground/80 mb-4 max-w-2xl mx-auto leading-relaxed" data-testid="text-hero-description">
-              {t("hero.description")}
+              Merci à tous les membres pour leur participation massive. Le dépouillement est en cours. 
+              Rendez-vous à <span className="text-white font-black underline decoration-sayc-teal underline-offset-8">15H00</span> pour les résultats officiels.
             </p>
             <p className="text-sm text-sidebar-foreground/60 mb-8 max-w-xl mx-auto" data-testid="text-hero-tagline">
               {t("hero.tagline", { defaultValue: "Jeunes de 15 à 35 ans" })} | {t("hero.initiative_of", { defaultValue: "Une initiative de" })}{" "}
