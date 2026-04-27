@@ -8,9 +8,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
-  ArrowLeft, Vote, Star, ShieldCheck, ChevronRight, 
+  ArrowLeft, Star, ShieldCheck, ChevronRight, 
   FileText, Video, LayoutDashboard, MessageSquare, 
-  Linkedin, Facebook, Twitter, ExternalLink, Users
+  Linkedin, Facebook, Twitter, ExternalLink, Award, Users,
+  CheckCircle2, Megaphone
 } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import type { ElectionCandidate } from "@shared/schema";
@@ -21,6 +22,18 @@ export default function ElectionCandidates() {
 
   const { data: candidates, isLoading } = useQuery<ElectionCandidate[]>({
     queryKey: ["/api/elections/candidates"],
+  });
+
+  const roles = ["Leader Adjoint", "Académique", "Inclusion", "Secteur Privé"];
+  
+  // Logic to identify winners and runners-up
+  const board = roles.map(role => {
+    const roleCandidates = candidates?.filter(c => c.role === role).sort((a, b) => b.votesCount - a.votesCount) || [];
+    return {
+      role,
+      leader: roleCandidates[0],
+      assistant: roleCandidates[1]
+    };
   });
 
   // Animation variants
@@ -37,16 +50,11 @@ export default function ElectionCandidates() {
     show: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200 } }
   };
 
-  const handleGoToVote = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setLocation('/elections/voter');
-  };
-
   return (
-    <div className="min-h-screen bg-background text-foreground pb-20 overflow-hidden relative">
+    <div className="min-h-screen bg-slate-50 text-foreground pb-20 overflow-hidden relative">
       <SEOHead 
-        title="Candidats Présélectionnés - SAYC"
-        description="Découvrez les profils des candidats validés pour les élections SAYC Tchad."
+        title="Bureau National 2026-2028 - SAYC Tchad"
+        description="Découvrez les leaders officiellement élus pour diriger le SAYC Tchad."
         path="/elections/candidats"
       />
 
@@ -55,17 +63,17 @@ export default function ElectionCandidates() {
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-sayc-teal/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200 shadow-sm">
         <div className="flex items-center gap-3 p-4 container mx-auto max-w-6xl">
-          <Button variant="ghost" size="icon" onClick={() => setLocation("/elections")} className="hover:bg-muted rounded-full shrink-0">
+          <Button variant="ghost" size="icon" onClick={() => setLocation("/elections")} className="hover:bg-slate-100 rounded-full shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-bold text-primary truncate">
-              Découverte des Candidats
+            <h1 className="text-xl font-black text-[#1e3a8a] truncate uppercase tracking-tight">
+              Bureau National 2026-2028
             </h1>
-            <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-              <ShieldCheck className="h-3 w-3 text-sayc-teal" /> Élections Officielles
+            <p className="text-xs text-slate-500 font-bold flex items-center gap-1">
+              <CheckCircle2 className="h-3 w-3 text-emerald-500" /> Mandat Officiel Affirmé
             </p>
           </div>
         </div>
@@ -74,121 +82,131 @@ export default function ElectionCandidates() {
       {/* Main Content */}
       <main className="p-4 md:p-8 container mx-auto max-w-6xl space-y-12 mt-4">
         
-        {/* Intro Banner (Identique à l'Accueil) */}
+        {/* Proclamation Banner */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-3xl shadow-xl bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground"
+          className="relative overflow-hidden rounded-[2.5rem] shadow-2xl bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] text-white p-8 md:p-14"
         >
           <div className="absolute -top-24 -right-24 p-8 opacity-10 scale-150 transform rotate-12">
-             <Users className="h-96 w-96 text-sidebar-foreground" />
+             <Award className="h-96 w-96 text-white" />
           </div>
           
-          <div className="relative z-10 p-8 md:p-14 space-y-6">
-            <Badge variant="secondary" className="bg-accent/20 text-accent border-accent/30 text-sm rounded-full">
-              Phase Découverte
-            </Badge>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight font-heading">
-              Nos Leaders de Demain.<br/>
-              <span className="text-accent">Avenir Commun.</span>
+          <div className="relative z-10 space-y-6">
+            <div className="flex items-center gap-3 mb-2">
+              <Badge className="bg-emerald-500 text-white border-none px-4 py-1.5 rounded-full font-black text-xs">OFFICIEL</Badge>
+              <Badge className="bg-white/10 text-white border-white/20 px-4 py-1.5 rounded-full font-black text-xs uppercase">Mandat 2026-2028</Badge>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-black leading-tight">
+              L'excellence au service <br/>
+              <span className="text-sayc-teal italic">du Numérique Tchadien.</span>
             </h2>
-            <p className="text-sidebar-foreground/80 max-w-3xl text-lg md:text-xl font-light leading-relaxed">
-              Plongez dans les programmes d'action, les pitchs et les visions portés par nos candidats exceptionnels. Préparez-vous à exprimer votre choix en toute connaissance.
+            <p className="text-blue-100 max-w-3xl text-lg md:text-xl font-medium leading-relaxed">
+              Le SAYC Tchad est fier de présenter son nouveau Bureau National. Suite à une élection transparente et une étude rigoureuse, ces leaders ont été choisis pour porter notre vision commune vers de nouveaux sommets.
             </p>
 
-            <div className="pt-4">
-               <Button 
-                 onClick={() => setLocation('/elections/voter')} 
-                 className="bg-accent text-accent-foreground hover:bg-accent/90 h-12 px-8 rounded-full font-bold shadow-lg shadow-accent/20"
-               >
-                 <Vote className="w-5 h-5 mr-2" /> Aller au bureau de vote
-               </Button>
+            <div className="flex flex-wrap gap-4 pt-4">
+               <div className="flex items-center gap-2 bg-white/10 px-6 py-3 rounded-2xl border border-white/10 font-bold">
+                 <ShieldCheck className="w-5 h-5 text-sayc-teal" /> Élection Certifiée
+               </div>
+               <div className="flex items-center gap-2 bg-white/10 px-6 py-3 rounded-2xl border border-white/10 font-bold">
+                 <Users className="w-5 h-5 text-sayc-teal" /> 1697 Votants
+               </div>
             </div>
           </div>
         </motion.div>
 
-        {/* Candidate Grid */}
-        <div className="space-y-6">
+        {/* Board Grid */}
+        <div className="space-y-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h3 className="text-2xl font-heading font-bold flex items-center gap-3">
-              <Star className="h-6 w-6 text-accent" />
-              Candidats Validés
-            </h3>
-            {candidates && candidates.length > 0 && (
-              <Badge variant="outline" className="bg-sayc-teal/10 text-sayc-teal border-sayc-teal/20 self-start md:self-center font-bold px-3 py-1">
-                {candidates.length} Profil{candidates.length > 1 ? 's' : ''} disponible{candidates.length > 1 ? 's' : ''}
-              </Badge>
-            )}
+            <div className="space-y-1">
+              <h3 className="text-3xl font-black text-[#1e3a8a] flex items-center gap-3">
+                <Star className="h-8 w-8 text-amber-400 fill-amber-400" />
+                Tableau d'Honneur
+              </h3>
+              <p className="text-slate-500 font-medium">Les Leaders et Assistants investis pour la réussite du Tchad.</p>
+            </div>
           </div>
 
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {[1, 2, 3, 4].map(n => (
-                <Card key={n} className="overflow-hidden border-border bg-card shadow-sm h-96 flex flex-col">
-                  <Skeleton className="h-72 w-full bg-muted" />
-                  <div className="p-4 flex-1 space-y-3">
-                    <Skeleton className="h-5 w-3/4 bg-muted" />
-                    <Skeleton className="h-4 w-1/2 bg-muted/60" />
-                  </div>
-                </Card>
+                <Skeleton key={n} className="h-96 w-full rounded-3xl" />
               ))}
-            </div>
-          ) : !candidates || candidates.length === 0 ? (
-            <div className="text-center py-20 bg-muted/30 rounded-3xl border border-dashed border-border">
-              <Users className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-muted-foreground mb-2">Aucun candidat validé</h3>
-              <p className="text-muted-foreground/80 max-w-sm mx-auto">
-                L'équipe administrative n'a pas encore validé les candidats finaux pour cette élection.
-              </p>
             </div>
           ) : (
             <motion.div 
               variants={container}
               initial="hidden"
               animate="show"
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              className="grid grid-cols-1 md:grid-cols-2 gap-12"
             >
-              {candidates.map((candidate) => (
-                <motion.div key={candidate.id} variants={item} className="h-full">
-                  <Card 
-                    className="group h-full cursor-pointer overflow-hidden relative bg-card text-card-foreground flex flex-col transition-all duration-300 rounded-2xl border hover-elevate border-transparent hover:border-border shadow-md"
-                    onClick={() => setSelectedLeader(candidate)}
-                  >
-                    {/* Image container */}
-                    <div className="relative h-72 overflow-hidden bg-muted flex-shrink-0">
-                      <img 
-                        src={candidate.photoUrl} 
-                        alt={`${candidate.firstName} ${candidate.nomSpecifiqueUnique}`} 
-                        className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.src = "https://via.placeholder.com/400x500?text=Candidat";
-                        }}
-                      />
-                      <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-0" />
-                      
-                      <div className="absolute bottom-4 left-5 right-5 z-20">
-                        <h4 className="text-lg md:text-xl font-heading font-bold text-white drop-shadow-md leading-tight">
-                          {candidate.firstName} <br/>
-                          <span className="opacity-90">{candidate.nomSpecifiqueUnique}</span>
-                        </h4>
-                      </div>
-                    </div>
+              {board.map((group, idx) => (
+                <motion.div key={idx} variants={item} className="space-y-6">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="w-10 h-1 bg-sayc-teal rounded-full" />
+                    <h4 className="text-xl font-black text-[#1e3a8a] uppercase tracking-wider">{group.role}</h4>
+                  </div>
 
-                    <div className="p-5 flex-1 flex flex-col bg-background">
-                      <Badge className="bg-primary/10 text-primary border-primary/20 w-fit mb-4">
-                        {candidate.role}
-                      </Badge>
-                      
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
-                        <span className="text-sm font-medium text-muted-foreground">Voir le profil & programme</span>
-                        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-accent group-hover:text-accent-foreground transition-all duration-300 border border-border">
-                          <ChevronRight className="h-4 w-4" />
+                  <div className="grid grid-cols-1 gap-6">
+                    {/* Leader Card */}
+                    {group.leader && (
+                      <Card 
+                        className="group overflow-hidden relative bg-white border-2 border-[#1e3a8a]/10 hover:border-[#1e3a8a]/30 shadow-xl rounded-[2rem] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+                        onClick={() => setSelectedLeader(group.leader!)}
+                      >
+                        <div className="flex flex-col sm:flex-row">
+                          <div className="relative h-64 sm:h-auto sm:w-48 overflow-hidden bg-slate-100 shrink-0">
+                            <img 
+                              src={group.leader.photoUrl} 
+                              alt={group.leader.firstName} 
+                              className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/60 to-transparent" />
+                          </div>
+                          <div className="p-8 flex-1 flex flex-col justify-center relative">
+                            <div className="absolute top-6 right-6">
+                               <Award className="w-10 h-10 text-amber-400 fill-amber-400/20" />
+                            </div>
+                            <Badge className="bg-amber-400 text-amber-950 border-none px-4 py-1 rounded-full font-black text-[10px] mb-3 w-fit">LEADER ÉLU</Badge>
+                            <h5 className="text-2xl font-black text-[#1e3a8a] leading-tight">
+                              {group.leader.firstName} <br/>
+                              <span className="uppercase">{group.leader.nomSpecifiqueUnique}</span>
+                            </h5>
+                            <div className="mt-4 flex items-center gap-2 text-slate-500 font-bold text-sm">
+                               Voir le profil <ChevronRight className="w-4 h-4" />
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </Card>
+                      </Card>
+                    )}
+
+                    {/* Assistant Card */}
+                    {group.assistant && (
+                      <Card 
+                        className="group overflow-hidden relative bg-slate-100/50 border border-slate-200 hover:border-slate-300 shadow-lg rounded-[1.5rem] transition-all duration-500 hover:-translate-y-1 cursor-pointer"
+                        onClick={() => setSelectedLeader(group.assistant!)}
+                      >
+                        <div className="flex items-center gap-6 p-6">
+                          <div className="relative w-20 h-20 overflow-hidden rounded-2xl shrink-0 border-2 border-white shadow-md">
+                            <img 
+                              src={group.assistant.photoUrl} 
+                              alt={group.assistant.firstName} 
+                              className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <Badge className="bg-slate-200 text-slate-600 border-none px-3 py-0.5 rounded-full font-black text-[9px] mb-1.5 w-fit uppercase">Assistant</Badge>
+                            <h6 className="text-lg font-bold text-slate-700 leading-tight">
+                              {group.assistant.firstName} {group.assistant.nomSpecifiqueUnique}
+                            </h6>
+                          </div>
+                          <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                        </div>
+                      </Card>
+                    )}
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -200,115 +218,75 @@ export default function ElectionCandidates() {
       <AnimatePresence>
         {selectedLeader && (
           <Dialog open={!!selectedLeader} onOpenChange={(open) => !open && setSelectedLeader(null)}>
-            <DialogContent className="max-w-4xl p-0 overflow-hidden bg-card text-card-foreground shadow-2xl rounded-2xl border border-border">
-              
+            <DialogContent className="max-w-4xl p-0 overflow-hidden bg-white shadow-2xl rounded-[2.5rem] border-none">
               <div className="flex flex-col md:flex-row h-full max-h-[90vh]">
-                {/* Modal Header Image - Left side on desktop */}
-                <div className="relative h-64 md:h-auto md:w-2/5 md:flex-shrink-0 bg-muted overflow-hidden">
+                <div className="relative h-64 md:h-auto md:w-2/5 md:flex-shrink-0 bg-slate-100 overflow-hidden">
                   <img 
                      src={selectedLeader.photoUrl} 
                      className="w-full h-full object-cover object-top" 
                      alt={`${selectedLeader.firstName} ${selectedLeader.nomSpecifiqueUnique}`} 
-                     onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = "https://via.placeholder.com/400x500?text=Candidat";
-                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent md:bg-black/10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/80 via-transparent to-transparent" />
                   
-                  {/* Social Links on Image */}
                   <div className="absolute top-6 left-6 right-6 flex justify-end gap-2 z-20">
                     {selectedLeader.linkedInUrl && (
-                      <a href={selectedLeader.linkedInUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-[#0a66c2] transition-colors" title="LinkedIn">
+                      <a href={selectedLeader.linkedInUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-[#0a66c2] transition-colors">
                         <Linkedin className="w-5 h-5" />
-                      </a>
-                    )}
-                    {selectedLeader.twitterUrl && (
-                      <a href={selectedLeader.twitterUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-[#1da1f2] transition-colors" title="Twitter">
-                        <Twitter className="w-5 h-5" />
-                      </a>
-                    )}
-                    {selectedLeader.facebookUrl && (
-                      <a href={selectedLeader.facebookUrl} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-white hover:bg-[#1877f2] transition-colors" title="Facebook">
-                        <Facebook className="w-5 h-5" />
                       </a>
                     )}
                   </div>
 
-                  <div className="absolute bottom-6 left-6 right-6 md:hidden">
-                     <Badge className="bg-primary/20 backdrop-blur-md text-white border-white/20 px-3 py-1 shadow-md w-fit">
+                  <div className="absolute bottom-8 left-8 right-8">
+                     <Badge className="bg-sayc-teal text-white border-none px-4 py-1 mb-3 rounded-full font-black text-[10px]">
                         {selectedLeader.role}
                      </Badge>
-                     <h2 className="text-3xl font-extrabold font-heading text-white mt-2 drop-shadow-lg">
+                     <h2 className="text-3xl font-black text-white leading-tight">
                         {selectedLeader.firstName} <br/> {selectedLeader.nomSpecifiqueUnique}
                      </h2>
                   </div>
                 </div>
 
-                {/* Modal Body - Right side on desktop */}
-                <div className="p-6 md:p-10 md:w-3/5 overflow-y-auto w-full space-y-8 flex flex-col bg-background">
-                  
-                  <div className="space-y-3 hidden md:block">
-                     <Badge className="bg-primary/10 text-primary hover:bg-primary/20 border-primary/20 text-sm tracking-wide">
-                        Poste Visé : {selectedLeader.role}
-                     </Badge>
-                     <h2 className="text-4xl md:text-5xl font-extrabold font-heading text-foreground">
-                        {selectedLeader.firstName} <br/>
-                        <span className="text-primary">{selectedLeader.nomSpecifiqueUnique}</span>
-                     </h2>
-                  </div>
-                  
-                  <div className="space-y-6 flex-1 pt-4 md:pt-0">
+                <div className="p-10 md:w-3/5 overflow-y-auto w-full space-y-8 flex flex-col bg-white">
+                  <div className="space-y-6 flex-1">
                     <div>
-                      <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4 flex items-center gap-2">
-                        <span className="w-4 h-[1px] bg-border block"></span> Documents de Campagne
+                      <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-6 flex items-center gap-3">
+                        <span className="w-8 h-[2px] bg-sayc-teal block"></span> Documents Officiels
                       </h4>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                         {selectedLeader.cvUrl && (
-                           <a href={selectedLeader.cvUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
-                              <Card className="p-4 flex flex-col items-center justify-center gap-3 bg-card hover:bg-primary hover:text-primary-foreground border border-border shadow-sm transition-colors group cursor-pointer text-center h-full">
-                                 <FileText className="w-8 h-8 text-muted-foreground group-hover:text-primary-foreground/90 transition-colors" />
-                                 <span className="font-semibold text-sm">Mon CV</span>
-                              </Card>
-                           </a>
-                         )}
-
-                         {selectedLeader.motivationUrl && (
-                           <a href={selectedLeader.motivationUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
-                              <Card className="p-4 flex flex-col items-center justify-center gap-3 bg-card hover:bg-primary hover:text-primary-foreground border border-border shadow-sm transition-colors group cursor-pointer text-center h-full">
-                                 <MessageSquare className="w-8 h-8 text-muted-foreground group-hover:text-primary-foreground/90 transition-colors" />
-                                 <span className="font-semibold text-sm">Lettre de Motivation</span>
-                              </Card>
-                           </a>
-                         )}
-
                          {selectedLeader.programUrl && (
                            <a href={selectedLeader.programUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none sm:col-span-2">
-                              <Card className="p-4 flex flex-row items-center gap-4 bg-sayc-teal/5 border-sayc-teal/20 shadow-sm hover:bg-sayc-teal hover:border-sayc-teal transition-colors group cursor-pointer h-full">
-                                 <div className="p-3 bg-sayc-teal/10 rounded-full group-hover:bg-white/20">
-                                    <LayoutDashboard className="w-6 h-6 text-sayc-teal group-hover:text-white" />
+                              <Card className="p-6 flex flex-row items-center gap-5 bg-slate-50 border border-slate-100 shadow-sm hover:bg-[#1e3a8a] hover:text-white transition-all group cursor-pointer rounded-3xl h-full">
+                                 <div className="p-4 bg-[#1e3a8a]/5 rounded-2xl group-hover:bg-white/10">
+                                    <LayoutDashboard className="w-7 h-7 text-[#1e3a8a] group-hover:text-white" />
                                  </div>
                                  <div className="text-left flex-1">
-                                    <span className="block font-bold text-sayc-teal group-hover:text-white transition-colors">Programme Électoral</span>
-                                    <span className="text-xs text-muted-foreground group-hover:text-white/80">Lire les propositions concrètes</span>
+                                    <span className="block font-black text-lg group-hover:text-white">Vision & Programme</span>
+                                    <span className="text-sm text-slate-500 group-hover:text-blue-100">Plan d'action 2026-2028</span>
                                  </div>
-                                 <ExternalLink className="w-5 h-5 text-sayc-teal group-hover:text-white" />
+                                 <ExternalLink className="w-6 h-6 opacity-30 group-hover:opacity-100 transition-opacity" />
                               </Card>
                            </a>
                          )}
 
                          {selectedLeader.videoUrl && (
-                           <a href={selectedLeader.videoUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none sm:col-span-2">
-                              <Card className="p-4 flex flex-row items-center gap-4 bg-accent/5 border-accent/20 shadow-sm hover:bg-accent hover:border-accent transition-colors group cursor-pointer h-full">
-                                 <div className="p-3 bg-accent/10 rounded-full group-hover:bg-white/20">
+                           <a href={selectedLeader.videoUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
+                              <Card className="p-5 flex flex-col items-center justify-center gap-3 bg-white border border-slate-100 shadow-sm hover:border-accent transition-all group cursor-pointer text-center h-full rounded-3xl">
+                                 <div className="p-3 bg-accent/5 rounded-2xl group-hover:bg-accent group-hover:text-white transition-colors">
                                     <Video className="w-6 h-6 text-accent group-hover:text-white" />
                                  </div>
-                                 <div className="text-left flex-1">
-                                    <span className="block font-bold text-accent group-hover:text-white transition-colors">Pitch Vidéo</span>
-                                    <span className="text-xs text-muted-foreground group-hover:text-white/80">Voir ma déclaration sur Youtube</span>
+                                 <span className="font-black text-sm">Pitch Vidéo</span>
+                              </Card>
+                           </a>
+                         )}
+
+                         {selectedLeader.cvUrl && (
+                           <a href={selectedLeader.cvUrl} target="_blank" rel="noopener noreferrer" className="block focus:outline-none">
+                              <Card className="p-5 flex flex-col items-center justify-center gap-3 bg-white border border-slate-100 shadow-sm hover:border-[#1e3a8a] transition-all group cursor-pointer text-center h-full rounded-3xl">
+                                 <div className="p-3 bg-slate-50 rounded-2xl group-hover:bg-[#1e3a8a] group-hover:text-white transition-colors">
+                                    <FileText className="w-6 h-6 text-slate-400 group-hover:text-white" />
                                  </div>
-                                 <ExternalLink className="w-5 h-5 text-accent group-hover:text-white" />
+                                 <span className="font-black text-sm">Parcours (CV)</span>
                               </Card>
                            </a>
                          )}
@@ -316,21 +294,11 @@ export default function ElectionCandidates() {
                     </div>
                   </div>
 
-                  {/* Call to Action Wrapper */}
-                  <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 mt-auto">
-                    <p className="text-sm text-muted-foreground font-medium flex items-center gap-2">
-                      <ShieldCheck className="w-4 h-4 text-sayc-teal" />
-                      Prêt(e) à voter ?
+                  <div className="pt-8 border-t border-slate-100 text-center">
+                    <p className="text-slate-400 text-xs font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                       <ShieldCheck className="w-4 h-4 text-emerald-500" /> Profil Certifié par le Comité National
                     </p>
-                    <Button 
-                      onClick={handleGoToVote}
-                      className="w-full sm:w-auto px-8 bg-[#1e3a8a] hover:bg-blue-900 text-white shadow-md h-12 rounded-xl text-base font-bold group" 
-                    >
-                      Aller Voter
-                      <ChevronRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Button>
                   </div>
-
                 </div>
               </div>
             </DialogContent>
