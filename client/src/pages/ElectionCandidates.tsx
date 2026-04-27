@@ -70,7 +70,7 @@ export default function ElectionCandidates() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-xl font-black text-[#1e3a8a] truncate uppercase tracking-tight">
+            <h1 className="text-xl font-black text-primary truncate uppercase tracking-tight">
               Bureau National 2026-2028
             </h1>
             <p className="text-xs text-slate-500 font-bold flex items-center gap-1">
@@ -88,7 +88,7 @@ export default function ElectionCandidates() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative overflow-hidden rounded-[2.5rem] shadow-2xl bg-gradient-to-br from-[#1e3a8a] to-[#1e40af] text-white p-8 md:p-14"
+          className="relative overflow-hidden rounded-[2.5rem] shadow-2xl bg-gradient-to-br from-primary to-primary/90 text-white p-8 md:p-14"
         >
           <div className="absolute -top-24 -right-24 p-8 opacity-10 scale-150 transform rotate-12">
              <Award className="h-96 w-96 text-white" />
@@ -125,8 +125,8 @@ export default function ElectionCandidates() {
           transition={{ duration: 0.8, type: "spring" }}
           className="relative max-w-4xl mx-auto"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-sayc-teal/20 to-[#1e3a8a]/20 blur-3xl rounded-full" />
-          <Card className="relative overflow-hidden bg-white border-4 border-[#1e3a8a] shadow-[0_20px_50px_rgba(30,58,138,0.3)] rounded-[3rem]">
+          <div className="absolute inset-0 bg-gradient-to-r from-sayc-teal/20 to-primary/20 blur-3xl rounded-full" />
+          <Card className="relative overflow-hidden bg-white border-4 border-primary shadow-[0_20px_50px_rgba(30,58,138,0.3)] rounded-[3rem]">
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/2 relative h-[450px] overflow-hidden">
                 <img 
@@ -134,37 +134,37 @@ export default function ElectionCandidates() {
                   alt="Souleymane Mahamat Saleh" 
                   className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-1000"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent" />
                 <div className="absolute top-6 left-6">
-                  <Badge className="bg-[#1e3a8a] text-white border-none px-4 py-2 rounded-full font-black text-xs shadow-lg">
-                    REPRÉSENTANT OFFICIEL
+                  <Badge className="bg-accent text-white border-none px-4 py-2 rounded-full font-black text-xs shadow-lg uppercase tracking-wider">
+                    Représentant Officiel
                   </Badge>
                 </div>
               </div>
-              <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center space-y-6">
+              <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center space-y-6 bg-slate-50/30">
                 <div className="space-y-2">
-                  <Badge variant="outline" className="border-sayc-teal text-sayc-teal px-3 py-1 font-black text-[10px] uppercase tracking-widest">
+                  <Badge variant="outline" className="border-sayc-teal text-sayc-teal px-3 py-1 font-black text-[10px] uppercase tracking-widest bg-sayc-teal/5">
                     Smart Africa Alliance
                   </Badge>
-                  <h2 className="text-4xl md:text-5xl font-black text-[#1e3a8a] leading-tight">
+                  <h2 className="text-4xl md:text-5xl font-black text-primary leading-tight">
                     Souleymane <br/>
                     <span className="text-sayc-teal italic">Mahamat Saleh</span>
                   </h2>
                 </div>
                 <div className="space-y-4">
                    <div className="flex items-center gap-3">
-                     <Award className="w-8 h-8 text-amber-400" />
-                     <p className="text-xl font-black text-[#1e3a8a] uppercase tracking-tighter">Leader National</p>
+                     <Award className="w-8 h-8 text-accent fill-accent/20" />
+                     <p className="text-xl font-black text-primary uppercase tracking-tighter">Leader National</p>
                    </div>
-                   <p className="text-slate-500 font-medium leading-relaxed">
+                   <p className="text-slate-600 font-medium leading-relaxed">
                      Mandaté par l'alliance mère **Smart Africa**, il assure la direction stratégique et la représentation diplomatique du SAYC Tchad au niveau continental.
                    </p>
                 </div>
                 <div className="pt-4 flex gap-4">
-                  <div className="h-12 w-12 rounded-2xl bg-slate-50 border flex items-center justify-center text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all cursor-pointer shadow-sm">
+                  <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all cursor-pointer shadow-sm">
                     <Linkedin className="w-5 h-5" />
                   </div>
-                  <div className="h-12 w-12 rounded-2xl bg-slate-50 border flex items-center justify-center text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all cursor-pointer shadow-sm">
+                  <div className="h-12 w-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all cursor-pointer shadow-sm">
                     <Twitter className="w-5 h-5" />
                   </div>
                 </div>
@@ -177,8 +177,8 @@ export default function ElectionCandidates() {
         <div className="space-y-12">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="text-3xl font-black text-[#1e3a8a] flex items-center gap-3">
-                <Star className="h-8 w-8 text-amber-400 fill-amber-400" />
+              <h3 className="text-3xl font-black text-primary flex items-center gap-3">
+                <Star className="h-8 w-8 text-accent fill-accent" />
                 Tableau d'Honneur
               </h3>
               <p className="text-slate-500 font-medium">Les Leaders et Assistants investis pour la réussite du Tchad.</p>
@@ -202,14 +202,14 @@ export default function ElectionCandidates() {
                 <motion.div key={idx} variants={item} className="space-y-6">
                   <div className="flex items-center gap-3 px-2">
                     <div className="w-10 h-1 bg-sayc-teal rounded-full" />
-                    <h4 className="text-xl font-black text-[#1e3a8a] uppercase tracking-wider">{group.role}</h4>
+                    <h4 className="text-xl font-black text-primary uppercase tracking-wider">{group.role}</h4>
                   </div>
 
                   <div className="grid grid-cols-1 gap-6">
                     {/* Leader Card */}
                     {group.leader && (
                       <Card 
-                        className="group overflow-hidden relative bg-white border-2 border-[#1e3a8a]/10 hover:border-[#1e3a8a]/30 shadow-xl rounded-[2rem] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
+                        className="group overflow-hidden relative bg-white border-2 border-primary/10 hover:border-primary/30 shadow-xl rounded-[2rem] transition-all duration-500 hover:-translate-y-2 cursor-pointer"
                         onClick={() => setSelectedLeader(group.leader!)}
                       >
                         <div className="flex flex-col sm:flex-row">
@@ -219,19 +219,19 @@ export default function ElectionCandidates() {
                               alt={group.leader.firstName} 
                               className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/60 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
                           </div>
                           <div className="p-8 flex-1 flex flex-col justify-center relative">
                             <div className="absolute top-6 right-6">
-                               <Award className="w-10 h-10 text-amber-400 fill-amber-400/20" />
+                               <Award className="w-10 h-10 text-accent fill-accent/20" />
                             </div>
-                            <Badge className="bg-amber-400 text-amber-950 border-none px-4 py-1 rounded-full font-black text-[10px] mb-3 w-fit">LEADER ÉLU</Badge>
-                            <h5 className="text-2xl font-black text-[#1e3a8a] leading-tight">
+                            <Badge className="bg-accent text-white border-none px-4 py-1 rounded-full font-black text-[10px] mb-3 w-fit tracking-wider">LEADER ÉLU</Badge>
+                            <h5 className="text-2xl font-black text-primary leading-tight">
                               {group.leader.firstName} <br/>
                               <span className="uppercase">{group.leader.nomSpecifiqueUnique}</span>
                             </h5>
                             <div className="mt-4 flex items-center gap-2 text-slate-500 font-bold text-sm">
-                               Voir le profil <ChevronRight className="w-4 h-4" />
+                               Voir le profil <ChevronRight className="w-4 h-4 text-sayc-teal" />
                             </div>
                           </div>
                         </div>
@@ -282,7 +282,7 @@ export default function ElectionCandidates() {
                      className="w-full h-full object-cover object-top" 
                      alt={`${selectedLeader.firstName} ${selectedLeader.nomSpecifiqueUnique}`} 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e3a8a]/80 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent" />
                   
                   <div className="absolute top-6 left-6 right-6 flex justify-end gap-2 z-20">
                     {selectedLeader.linkedInUrl && (
