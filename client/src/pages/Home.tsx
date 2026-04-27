@@ -43,7 +43,8 @@ import {
   Award,
   Link as LinkIcon,
   Calendar,
-  Vote
+  Vote,
+  ShieldCheck
 } from "lucide-react";
 
 import galleryImg1 from "@assets/UniPod_Mamou_J3_95_1770104422778.JPG";
