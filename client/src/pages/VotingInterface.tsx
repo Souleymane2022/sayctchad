@@ -125,30 +125,56 @@ export default function VotingInterface() {
     const currentRole = roles[currentRoleIndex];
     const roleCandidates = candidates?.filter(c => c.role === currentRole) || [];
 
-    if (step === "done") {
-        return (
-            <div className="container mx-auto px-4 py-20 flex flex-col items-center">
-                <div className="max-w-md w-full text-center space-y-8 animate-in zoom-in-95 duration-500">
-                    <div className="w-24 h-24 bg-sayc-teal/10 text-sayc-teal rounded-full flex items-center justify-center mx-auto border-4 border-sayc-teal/20">
-                        <CheckCircle2 className="w-12 h-12" />
+    // POLL CLOSED STATE: After 12:00 PM on April 27, 2026
+    return (
+        <div className="min-h-screen bg-[#020817] flex flex-col items-center justify-center px-4 py-20 text-center">
+            <SEOHead title="Scrutin Clôturé - SAYC Tchad" description="La période de vote est officiellement terminée." path="/elections/voter" />
+            
+            <div className="max-w-2xl w-full space-y-10 animate-in fade-in zoom-in-95 duration-700">
+                <div className="relative inline-block">
+                    <div className="w-32 h-32 bg-slate-800 rounded-[2.5rem] flex items-center justify-center mx-auto border-4 border-slate-700 shadow-2xl relative z-10">
+                        <Lock className="w-16 h-16 text-slate-400" />
                     </div>
-                    <div className="space-y-4">
-                        <h1 className="text-4xl font-heading font-bold text-[#1e3a8a]">{t("vote.done_title") || "Vote Terminé !"}</h1>
-                        <p className="text-muted-foreground">
-                            {t("vote.done_desc") || ""}
-                        </p>
-                    </div>
-                    <div className="pt-6">
-                        <Link href="/">
-                            <Button className="w-full h-14 rounded-2xl bg-[#1e3a8a] text-lg font-bold shadow-xl shadow-blue-900/20">
-                                {t("common.back_home") || "Retour à l'accueil"}
-                            </Button>
-                        </Link>
-                    </div>
+                    <div className="absolute inset-0 bg-red-600 rounded-[2.5rem] blur-3xl opacity-20 animate-pulse" />
                 </div>
+
+                <div className="space-y-6">
+                    <Badge className="bg-slate-700 text-slate-300 border-none px-6 py-1.5 text-sm font-black tracking-widest uppercase">
+                        Vote Terminé
+                    </Badge>
+                    <h1 className="text-5xl md:text-7xl font-black text-white leading-none tracking-tighter">
+                        SCRUTIN <br/>
+                        <span className="text-sayc-teal">CLÔTURÉ</span>
+                    </h1>
+                    <p className="text-xl text-slate-400 max-w-lg mx-auto leading-relaxed">
+                        Le portail de vote est officiellement scellé. Merci pour votre participation historique à ces élections.
+                    </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6 pt-10">
+                    <div className="bg-white/5 border border-white/10 p-8 rounded-[2rem] backdrop-blur-xl text-left">
+                        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">PROCHAINE ÉTAPE</p>
+                        <p className="text-white font-black text-2xl">PROCLAMATION</p>
+                        <p className="text-sayc-teal font-bold text-lg animate-pulse">Aujourd'hui à 15H00</p>
+                    </div>
+                    <Link href="/elections/transparence">
+                        <div className="bg-sayc-teal p-8 rounded-[2rem] text-left cursor-pointer hover:bg-sayc-teal/90 transition-all group h-full">
+                            <p className="text-black/60 font-bold text-xs uppercase tracking-widest mb-2">VÉRIFIER LE PV</p>
+                            <p className="text-[#020817] font-black text-2xl group-hover:translate-x-2 transition-transform inline-flex items-center">
+                                AUDIT LIVE <ChevronRight className="w-6 h-6" />
+                            </p>
+                        </div>
+                    </Link>
+                </div>
+
+                <Link href="/">
+                    <Button variant="ghost" className="text-slate-500 hover:text-white mt-10">
+                        <ChevronLeft className="mr-2 w-4 h-4" /> Retour à l'accueil
+                    </Button>
+                </Link>
             </div>
-        );
-    }
+        </div>
+    );
 
     return (
         <div className="min-h-screen bg-slate-50 py-12 px-4">
