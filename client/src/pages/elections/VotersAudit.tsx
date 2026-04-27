@@ -11,12 +11,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { Search, ShieldCheck, UserCheck, Clock, Award, BarChart3, TrendingUp } from "lucide-react";
+import { Search, ShieldCheck, UserCheck, Clock, Award, BarChart3, TrendingUp, Download } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import type { ElectionCandidate } from "@shared/schema";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface VoteRecord {
   id: string;
@@ -41,7 +44,6 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
   const anonymizeId = (id: string) => {
     if (!id) return "****";
     
-    // Si c'est un identifiant de vote restauré (SAYC-2026-XXXX)
     if (id.startsWith('SAYC-2026-')) {
       return id;
     }
@@ -70,12 +72,45 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
     `${vote.candidateFirstName} ${vote.candidateLastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Group candidates by role
   const roles = ["Leader Adjoint", "Académique", "Inclusion", "Secteur Privé"];
   const groupedCandidates = roles.map(role => ({
     role,
     items: candidates?.filter(c => c.role === role).sort((a, b) => b.votesCount - a.votesCount) || []
   }));
+
+  const exportPDF = async () => {
+    const element = document.getElementById("audit-table-container");
+    if (!element) return;
+
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#ffffff"
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.setFillColor(30, 58, 138); 
+    pdf.rect(0, 0, pdfWidth, 40, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(22);
+    pdf.text("SAYC TCHAD - PV D'AUDIT ÉLECTORAL", pdfWidth / 2, 20, { align: "center" });
+    pdf.setFontSize(10);
+    pdf.text(`Document certifié le ${format(new Date(), "dd/MM/yyyy HH:mm")}`, pdfWidth / 2, 30, { align: "center" });
+
+    pdf.addImage(imgData, "PNG", 0, 45, pdfWidth, pdfHeight);
+    
+    pdf.setFontSize(8);
+    pdf.setTextColor(150, 150, 150);
+    pdf.text("Ce document est un registre de transparence publique généré par le portail SAYC Tchad.", pdfWidth / 2, pdf.internal.pageSize.getHeight() - 10, { align: "center" });
+
+    pdf.save(`PV_Audit_Elections_SAYC_Tchad_${format(new Date(), "yyyyMMdd")}.pdf`);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 py-20 px-4">
@@ -86,20 +121,27 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
       />
 
       <div className="container mx-auto max-w-6xl space-y-12">
-
         <div className="text-center space-y-4">
           <Badge variant="outline" className="bg-sayc-teal/10 text-sayc-teal border-sayc-teal/20 px-4 py-1 uppercase tracking-widest text-xs font-black">
             Registre de Transparence
           </Badge>
-          <h1 className="text-4xl md:text-5xl font-heading font-black text-[#1e3a8a]">
-            Audit Public des <span className="text-sayc-teal">Suffrages</span>
-          </h1>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+            <h1 className="text-4xl md:text-5xl font-heading font-black text-[#1e3a8a]">
+              Audit Public des <span className="text-sayc-teal">Suffrages</span>
+            </h1>
+            <Button 
+              onClick={exportPDF} 
+              className="bg-sayc-teal hover:bg-sayc-teal/90 text-white font-black rounded-xl shadow-lg px-6 py-6 transition-all hover:scale-105 active:scale-95"
+            >
+              <Download className="w-5 h-5 mr-2" />
+              Télécharger le PV (PDF)
+            </Button>
+          </div>
           <p className="text-slate-600 max-w-2xl mx-auto text-lg">
             Afin de garantir l'intégrité absolue de l'élection, ce portail permet de vérifier les scores en temps réel et de consulter le registre anonymisé.
           </p>
         </div>
 
-        {/* Stats Section */}
         <div className="space-y-6">
           <div className="flex items-center gap-3">
             <BarChart3 className="w-6 h-6 text-sayc-teal" />
@@ -141,9 +183,8 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
           </div>
         </div>
 
-        {/* Audit List Section */}
-        <div className="space-y-6 pt-10">
-          <div className="flex items-center gap-3">
+        <div className="space-y-6 pt-10" id="audit-table-container">
+          <div className="flex items-center gap-3 px-4">
             <TrendingUp className="w-6 h-6 text-sayc-teal" />
             <h2 className="text-2xl font-black text-[#1e3a8a]">Registre Détaillé</h2>
           </div>
@@ -192,7 +233,7 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
                   <CardTitle className="text-xl font-black text-[#1e3a8a]">Registre des Suffrages</CardTitle>
                   <CardDescription>Liste exhaustive et anonymisée certifiée par le comité technique</CardDescription>
                 </div>
-                <div className="relative w-full md:w-96">
+                <div className="relative w-full md:w-96 no-print">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                   <Input 
                     placeholder="Rechercher un membre ou un candidat..." 
@@ -280,11 +321,9 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
                 </div>
             </div>
             
-            {/* Decoration */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full translate-x-20 -translate-y-20 blur-3xl" />
         </div>
       </div>
     </div>
   );
 }
-
