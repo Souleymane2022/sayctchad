@@ -30,6 +30,8 @@ interface VoteRecord {
   candidateLastName: string;
 }
 
+import autoTable from "jspdf-autotable";
+
 export default function VotersAudit({ preview = false }: { preview?: boolean }) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -78,36 +80,72 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
     items: candidates?.filter(c => c.role === role).sort((a, b) => b.votesCount - a.votesCount) || []
   }));
 
-  const exportPDF = async () => {
-    const element = document.getElementById("audit-table-container");
-    if (!element) return;
+  const exportPDF = () => {
+    if (!votes) return;
 
-    const canvas = await html2canvas(element, {
-      scale: 2,
-      useCORS: true,
-      logging: false,
-      backgroundColor: "#ffffff"
-    });
-
-    const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
-    const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
+    // Header
     pdf.setFillColor(30, 58, 138); 
     pdf.rect(0, 0, pdfWidth, 40, "F");
     pdf.setTextColor(255, 255, 255);
     pdf.setFontSize(22);
-    pdf.text("SAYC TCHAD - PV D'AUDIT ÉLECTORAL", pdfWidth / 2, 20, { align: "center" });
+    pdf.text("SAYC TCHAD - PV D'AUDIT ÉLECTORAL", pdfWidth / 2, 18, { align: "center" });
     pdf.setFontSize(10);
-    pdf.text(`Document certifié le ${format(new Date(), "dd/MM/yyyy HH:mm")}`, pdfWidth / 2, 30, { align: "center" });
+    pdf.text(`Document officiel certifié - Élections Bureau National 2026`, pdfWidth / 2, 26, { align: "center" });
+    pdf.text(`Généré le ${format(new Date(), "dd/MM/yyyy HH:mm")}`, pdfWidth / 2, 32, { align: "center" });
 
-    pdf.addImage(imgData, "PNG", 0, 45, pdfWidth, pdfHeight);
-    
-    pdf.setFontSize(8);
-    pdf.setTextColor(150, 150, 150);
-    pdf.text("Ce document est un registre de transparence publique généré par le portail SAYC Tchad.", pdfWidth / 2, pdf.internal.pageSize.getHeight() - 10, { align: "center" });
+    // Summary Section
+    pdf.setTextColor(30, 58, 138);
+    pdf.setFontSize(14);
+    pdf.text("SYNTHÈSE DES RÉSULTATS", 14, 50);
+
+    let yPos = 60;
+    groupedCandidates.forEach(group => {
+      pdf.setFontSize(11);
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`${group.role}:`, 14, yPos);
+      yPos += 5;
+      
+      group.items.forEach(c => {
+        pdf.setFontSize(9);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(`- ${c.firstName} ${c.nomSpecifiqueUnique}: ${c.votesCount} voix`, 20, yPos);
+        yPos += 5;
+      });
+      yPos += 5;
+    });
+
+    // Detailed Table
+    autoTable(pdf, {
+      startY: yPos + 10,
+      head: [["Membre (Anonymisé)", "Poste", "Candidat Choisi", "Date & Heure"]],
+      body: votes.map(v => [
+        anonymizeId(v.voterId),
+        v.role,
+        `${v.candidateFirstName} ${v.candidateLastName}`,
+        format(new Date(v.createdAt), "dd/MM/yyyy HH:mm")
+      ]),
+      styles: { fontSize: 8, cellPadding: 2 },
+      headStyles: { fillStyle: "F", fillColor: [30, 58, 138], textColor: 255 },
+      alternateRowStyles: { fillColor: [245, 247, 250] },
+      margin: { top: 45 }
+    });
+
+    // Footer
+    const pageCount = (pdf as any).internal.getNumberOfPages();
+    for(let i = 1; i <= pageCount; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(150, 150, 150);
+        pdf.text(
+          `Page ${i} sur ${pageCount} - Registre de transparence SAYC Tchad`, 
+          pdfWidth / 2, 
+          pdf.internal.pageSize.getHeight() - 10, 
+          { align: "center" }
+        );
+    }
 
     pdf.save(`PV_Audit_Elections_SAYC_Tchad_${format(new Date(), "yyyyMMdd")}.pdf`);
   };
