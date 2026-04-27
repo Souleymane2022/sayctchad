@@ -59,6 +59,9 @@ function Router() {
       <Route path="/verify/:membershipId" component={VerifyMember} />
       <Route path="/sayc-membres-galerie" component={MembersGallery} />
       <Route path="/elections/transparence" component={VotersAudit} />
+      <Route path="/elections/audit-interne">
+        <VotersAudit preview={true} />
+      </Route>
       <Route path="/branding" component={BrandAssets} />
       <Route component={NotFound} />
     </Switch>

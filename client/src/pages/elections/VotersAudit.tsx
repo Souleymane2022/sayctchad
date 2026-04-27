@@ -25,7 +25,7 @@ interface VoteRecord {
   candidateLastName: string;
 }
 
-export default function VotersAudit() {
+export default function VotersAudit({ preview = false }: { preview?: boolean }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   const { data: votes, isLoading } = useQuery<VoteRecord[]>({
@@ -54,9 +54,10 @@ export default function VotersAudit() {
     `${vote.candidateFirstName} ${vote.candidateLastName}`.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // PAGE SOUS SCELLÉS AVANT 15H
-  return (
-    <div className="min-h-screen bg-[#020817] flex flex-col items-center justify-center px-4 py-20 text-center relative overflow-hidden">
+  // PAGE SOUS SCELLÉS AVANT 15H (Sauf en mode preview)
+  if (!preview) {
+    return (
+      <div className="min-h-screen bg-[#020817] flex flex-col items-center justify-center px-4 py-20 text-center relative overflow-hidden">
       <SEOHead 
         title="Audit Sous Scellés - Élections SAYC Tchad"
         description="Le Procès-Verbal des élections est temporairement sous scellés jusqu'à la proclamation des résultats."
