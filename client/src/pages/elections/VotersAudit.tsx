@@ -103,8 +103,8 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
             </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-20 px-4">
