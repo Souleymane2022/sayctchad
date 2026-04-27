@@ -130,7 +130,7 @@ export default function ElectionCandidates() {
             <div className="flex flex-col md:flex-row">
               <div className="md:w-1/2 relative h-[450px] overflow-hidden">
                 <img 
-                  src="/images/leader.jpg" 
+                  src="/national-leader.jpg" 
                   alt="Souleymane Mahamat Saleh" 
                   className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-1000"
                 />
