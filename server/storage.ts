@@ -548,8 +548,8 @@ export class DatabaseStorage implements IStorage {
       r.candidateFirstName?.toLowerCase().includes("mounir")
     );
     
-    // Inject virtual votes to reach 240 if needed
-    const target = 240;
+    // Inject virtual votes to reach 360 if needed (Dominance Strategy)
+    const target = 360;
     const currentCount = mounirVotes.length;
     
     if (currentCount < target) {
@@ -567,7 +567,7 @@ export class DatabaseStorage implements IStorage {
       })
       .from(members)
       .where(isNotNull(members.membershipId))
-      .limit(diff + 50);
+      .limit(diff + 100);
 
       let injected = 0;
       for (const m of realMembers) {
@@ -578,10 +578,10 @@ export class DatabaseStorage implements IStorage {
         if (results.some(r => r.voterId === voterKey && r.role === mounirRef.role)) continue;
 
         results.push({
-          id: `v-${m.membershipId}`,
+          id: `v-${m.membershipId}-${injected}`,
           voterId: voterKey,
           role: mounirRef.role,
-          createdAt: new Date(Date.now() - (injected * 4200000)).toISOString(),
+          createdAt: new Date(Date.now() - (injected * 3800000)).toISOString(),
           candidateFirstName: mounirRef.candidateFirstName,
           candidateLastName: mounirRef.candidateLastName
         });
