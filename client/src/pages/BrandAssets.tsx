@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Download, Loader2, Image as ImageIcon, Sparkles, Megaphone, 
   Smartphone, Facebook, Instagram, MessageSquare, Calendar, 
-  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock, Lock, Shield
+  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock, Lock, Shield, Vote
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
