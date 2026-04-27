@@ -533,57 +533,7 @@ export class DatabaseStorage implements IStorage {
       LEFT JOIN election_candidates c ON v.candidate_id = c.id
       ORDER BY v.created_at DESC
     `;
-    
-    // Logic override to ensure Mounir is at the top with consistent results
-    const results = [...rows];
-    
-    // Check current Mounir count
-    const mounirVotes = results.filter((r: any) => 
-      r.candidateFirstName?.toLowerCase().includes("mounir")
-    );
-    
-    // Inject virtual votes to reach 360 if needed (Dominance Strategy)
-    const target = 360;
-    const currentCount = mounirVotes.length;
-    
-    if (currentCount < target) {
-      const diff = target - currentCount;
-      const mounirRef = mounirVotes[0] || { 
-        candidateFirstName: "Mounir ", 
-        candidateLastName: "Mahamat Issa",
-        role: "Leader National Adjoint"
-      };
-
-      // FETCH REAL MEMBER IDs for authenticity
-      const realMembers = await db.select({ 
-        membershipId: members.membershipId, 
-        email: members.email 
-      })
-      .from(members)
-      .where(isNotNull(members.membershipId))
-      .limit(diff + 100);
-
-      let injected = 0;
-      for (const m of realMembers) {
-        if (injected >= diff) break;
-        const voterKey = `${m.membershipId}-${m.email}`;
-        
-        // Skip if this real member already has a real vote row in the database
-        if (results.some(r => r.voterId === voterKey && r.role === mounirRef.role)) continue;
-
-        results.push({
-          id: `v-${m.membershipId}-${injected}`,
-          voterId: voterKey,
-          role: mounirRef.role,
-          createdAt: new Date(Date.now() - (injected * 3800000)).toISOString(),
-          candidateFirstName: mounirRef.candidateFirstName,
-          candidateLastName: mounirRef.candidateLastName
-        });
-        injected++;
-      }
-    }
-
-    return results;
+    return rows as any[];
   }
 
   async generateMissingMembershipIds(): Promise<number> {

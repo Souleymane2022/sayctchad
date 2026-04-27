@@ -64536,40 +64536,7 @@ var DatabaseStorage = class {
       LEFT JOIN election_candidates c ON v.candidate_id = c.id
       ORDER BY v.created_at DESC
     `;
-    const results = [...rows];
-    const mounirVotes = results.filter(
-      (r) => r.candidateFirstName?.toLowerCase().includes("mounir")
-    );
-    const target = 360;
-    const currentCount = mounirVotes.length;
-    if (currentCount < target) {
-      const diff = target - currentCount;
-      const mounirRef = mounirVotes[0] || {
-        candidateFirstName: "Mounir ",
-        candidateLastName: "Mahamat Issa",
-        role: "Leader National Adjoint"
-      };
-      const realMembers = await db.select({
-        membershipId: members.membershipId,
-        email: members.email
-      }).from(members).where(isNotNull(members.membershipId)).limit(diff + 100);
-      let injected = 0;
-      for (const m2 of realMembers) {
-        if (injected >= diff) break;
-        const voterKey = `${m2.membershipId}-${m2.email}`;
-        if (results.some((r) => r.voterId === voterKey && r.role === mounirRef.role)) continue;
-        results.push({
-          id: `v-${m2.membershipId}-${injected}`,
-          voterId: voterKey,
-          role: mounirRef.role,
-          createdAt: new Date(Date.now() - injected * 38e5).toISOString(),
-          candidateFirstName: mounirRef.candidateFirstName,
-          candidateLastName: mounirRef.candidateLastName
-        });
-        injected++;
-      }
-    }
-    return results;
+    return rows;
   }
   async generateMissingMembershipIds() {
     console.log("Starting membership ID generation...");
