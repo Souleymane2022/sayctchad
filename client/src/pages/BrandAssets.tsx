@@ -447,45 +447,50 @@ export default function BrandAssets() {
                              <Quote className="w-20 h-20 text-sayc-teal opacity-20 absolute top-[-30px] right-8" />
                              <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">{formData.mainText}</p>
                           </div>
-                       </div>
+                               {activeCategory === "testimony" && (
+                    <div className="w-full h-full bg-[#020202] text-white">
+                        {/* High-End Header with Logos */}
+                        <div className="absolute top-0 left-0 w-full h-[260px] bg-white z-10 flex items-center justify-center shadow-2xl">
+                           <div className="flex items-center gap-20">
+                              <img src={logoSayc} alt="SAYC" className="h-[75px] object-contain" />
+                              <div className="w-[2px] h-16 bg-slate-200" />
+                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[55px] object-contain" />
+                              <div className="w-[2px] h-16 bg-slate-200" />
+                              <img src={sadaLogo} alt="SADA" className="h-[70px] object-contain" />
+                           </div>
+                        </div>
+
+                        {/* Centered Titles */}
+                        <div className="absolute top-[300px] left-0 w-full text-center z-20 space-y-2">
+                           <p className="text-orange-500 font-black text-2xl uppercase tracking-[0.5em] mb-4">SAYC TCHAD ÉLECTIONS 2026</p>
+                           <h1 className="text-[100px] font-black text-white leading-none tracking-tighter uppercase mb-10">LES FINALISTES</h1>
+                        </div>
+
+                        {/* Perfectly Aligned Grid of Candidates */}
+                        <div className="absolute top-[540px] inset-x-12 z-30 grid grid-cols-4 gap-8 items-start">
+                           {[
+                             { name: "JEREMIE", label: "LEADER ADJOINT", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop" },
+                             { name: "BERNADETTE", label: "INCLUSION", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=500&fit=crop" },
+                             { name: "MOUNIR", label: "SECTEUR PRIVÉ", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=500&fit=crop" },
+                             { name: "ALLAMINE", label: "ACADÉMIQUE", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop" }
+                           ].map((c, i) => (
+                             <div key={i} className="flex flex-col items-center space-y-6">
+                               <div className="w-full aspect-[4/5] rounded-[2rem] border-[6px] border-white shadow-2xl overflow-hidden bg-slate-800">
+                                  <img src={c.img} alt={c.name} className="w-full h-full object-cover" crossOrigin="anonymous" />
+                               </div>
+                               <div className="bg-orange-600 px-6 py-2 rounded-xl shadow-lg border border-orange-400/30">
+                                  <span className="text-white font-black text-xs uppercase tracking-widest whitespace-nowrap">{c.label}</span>
+                               </div>
+                               <div className="text-center">
+                                  <h4 className="text-[2.2rem] font-black text-white uppercase tracking-tight leading-none mb-1">{c.name}</h4>
+                                  <p className="text-orange-500 font-bold text-[10px] uppercase tracking-widest opacity-90 italic">Candidat Officiel</p>
+                               </div>
+                             </div>
+                           ))}
+                        </div>
                     </div>
                   )}
-
-                  {activeCategory === "testimony" && (
-                    <div className="w-full h-full bg-slate-50 text-slate-900">
-                       {/* Dark overlay significantly pushed to the right */}
-                       <div className="absolute top-0 right-0 w-[450px] h-full bg-[#0f172a]" 
-                          style={{ clipPath: 'polygon(40% 0, 100% 0, 100% 100%, 0% 100%)' }} />
-                       
-                       <div className="absolute top-12 left-16 z-30 flex items-center gap-10">
-                          <img src={logoSayc} alt="SAYC" className="h-[50px] object-contain" />
-                          <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] object-contain" />
-                          <div className="w-[1px] h-8 bg-slate-300" />
-                          <img src={sadaLogo} alt="SADA" className="h-[45px] object-contain" />
-                       </div>
-
-                       <div className="absolute top-[180px] left-16 w-[600px] z-20">
-                          <Quote className="w-[180px] h-[180px] text-sayc-teal/10 absolute -top-16 -left-16" />
-                          <div className="space-y-6 mb-16 relative z-10">
-                            {formData.mainText.split('\\n').filter(p => p.trim()).map((para, idx) => (
-                              <p key={idx} className="text-[#0f172a] font-bold text-[2.2rem] leading-[1.3] italic text-left">
-                                {idx === 0 ? `"${para}` : para}{idx === formData.mainText.split('\\n').filter(p => p.trim()).length - 1 ? '"' : ''}
-                              </p>
-                            ))}
-                          </div>
-                          <div className="space-y-2 mt-8">
-                             <div className="w-24 h-2 bg-orange-600 rounded-full" />
-                             <h4 className="text-5xl font-black uppercase tracking-tight text-[#0f172a]">{formData.personName}</h4>
-                             <p className="text-sayc-teal font-bold text-2xl uppercase tracking-widest">{formData.personRole}</p>
-                          </div>
-                       </div>
-
-                       <div className="absolute inset-y-0 right-[-100px] w-[500px] z-10 p-12 flex items-center transform translate-y-[80px]">
-                          <div className="w-full aspect-[4/5] rounded-[3rem] shadow-[0_50px_100px_rgba(0,0,0,0.6)] border-[12px] border-white overflow-hidden rotate-[1.5deg]">
-                             <img src={formData.imageUrl} alt="Profile" className="w-full h-full object-cover" crossOrigin="anonymous" />
-                          </div>
-                       </div>
+           </div>
                     </div>
                   )}
 
@@ -527,25 +532,32 @@ export default function BrandAssets() {
                      </div>
                   )}
 
-                   {/* UNIVERSAL ELITE FOOTER */}
-                   <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center justify-between border-t border-white/10 bg-black/80 backdrop-blur-3xl">
-                     <div className="flex items-center gap-10">
-                       <div className="p-6 bg-orange-600 rounded-[2.2rem] shadow-[0_0_50px_rgba(234,88,12,0.5)]">
-                         <Zap className="w-10 h-10 text-white animate-pulse" />
-                       </div>
-                       <div className="flex flex-col">
-                         <h3 className="text-white font-black text-[3.2rem] uppercase tracking-tighter leading-none mb-2">SAYC TCHAD</h3>
-                         <p className="text-orange-500 font-black text-base uppercase tracking-[0.4em] opacity-90">
-                           SMART AFRICA YOUTH CHAPTER — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">OFFICIEL</span>
-                         </p>
-                       </div>
-                     </div>
-                     <div className="text-right flex flex-col items-end pb-4">
-                       <p className="text-slate-200 font-black text-[3.2rem] leading-none tracking-tighter uppercase translate-y-[2px]">
-                         WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                       </p>
-                     </div>
-                   </div>
+                    {/* UNIVERSAL ELITE FOOTER */}
+                    <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex flex-col justify-center border-t border-white/10 bg-black/80 backdrop-blur-3xl">
+                      <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center gap-10">
+                          <div className="p-6 bg-orange-600 rounded-[2.2rem] shadow-[0_0_50px_rgba(234,88,12,0.5)] flex items-center justify-center">
+                            <Zap className="w-10 h-10 text-white animate-pulse" />
+                          </div>
+                          <div className="flex flex-col justify-center">
+                            <h3 className="text-white font-black text-[3.2rem] uppercase tracking-tighter leading-none mb-1">PROFIL VÉRIFIÉ</h3>
+                            <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] opacity-90">
+                              LISTE OFFICIELLE — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">2026</span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-slate-200 font-black text-[3.2rem] leading-none tracking-tighter uppercase">
+                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                          </p>
+                        </div>
+                      </div>
+                      
+                      {/* Centered URL Indicator */}
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-20">
+                         <p className="text-[10px] text-white font-bold tracking-[1em] uppercase">Smart Africa Youth Chapter Tchad</p>
+                      </div>
+                    </div>
                 </div>
               </div>
             </div>
