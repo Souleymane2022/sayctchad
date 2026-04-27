@@ -34,17 +34,30 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
 
   const anonymizeId = (id: string) => {
     if (!id) return "****";
+    
+    // Si c'est un identifiant de vote restauré (SAYC-2026-VOTE-XXXX)
+    if (id.includes('VOTE')) {
+      return id;
+    }
+
     const parts = id.split('-');
     if (parts.length > 1) {
+        // Format: SAYC-2026-XXXX-email@test.com
         const membershipId = `${parts[0]}-${parts[1]}-${parts[2]}`;
         const email = parts[3];
-        if (email) {
-            const [user, domain] = email.split('@');
+        if (email && email.includes('@')) {
+            const domain = email.split('@')[1];
             return `${membershipId} (***@${domain})`;
         }
         return membershipId;
     }
-    return id.replace(/(.{3}).*@(.*)/, "$1***@$2");
+    
+    // Format email direct
+    if (id.includes('@')) {
+      return id.replace(/(.{3}).*@(.*)/, "$1***@$2");
+    }
+
+    return id;
   };
 
   const filteredVotes = votes?.filter(vote => 
