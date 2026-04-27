@@ -19,7 +19,7 @@ import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 import smartAfricaAllianceLogo from "@assets/SMART_AFRICA_LOGO_1770443171460.png";
 import sadaLogo from "@assets/SADA_1770443171461.jpg";
 
-type Category = "formation" | "news" | "testimony" | "event";
+type Category = "formation" | "news" | "testimony" | "event" | "announcement";
 
 function BrandLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
@@ -244,7 +244,8 @@ export default function BrandAssets() {
                   { id: "formation", icon: GraduationCap, label: "Formation" },
                   { id: "news", icon: Megaphone, label: "Actualité" },
                   { id: "event", icon: Calendar, label: "Événement" },
-                  { id: "testimony", icon: MessageSquare, label: "Témoignage" }
+                  { id: "testimony", icon: Quote, label: "Finalistes" },
+                  { id: "announcement", icon: Megaphone, label: "Annonce" }
                 ].map((cat) => (
                   <Button
                     key={cat.id}
@@ -526,6 +527,65 @@ export default function BrandAssets() {
                               <div>
                                  <p className="text-slate-400 font-bold uppercase text-sm tracking-widest mb-1">LOCALISATION</p>
                                  <p className="text-white font-black text-[2rem] leading-none">{formData.location}</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  )}
+
+                  {activeCategory === "announcement" && (
+                     <div className="w-full h-full bg-[#050b1a] overflow-hidden relative">
+                        {/* Institutional Gradient Background */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0a1a3a] to-[#050b1a]" />
+                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+                        
+                        {/* Top Logo Bar - Official */}
+                        <div className="absolute top-0 left-0 w-full h-[220px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[8px] border-orange-500">
+                           <div className="flex items-center gap-20">
+                              <img src={logoSayc} alt="SAYC" className="h-[70px] object-contain" />
+                              <div className="w-[1px] h-14 bg-slate-200" />
+                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[50px] object-contain" />
+                              <div className="w-[1px] h-14 bg-slate-200" />
+                              <img src={sadaLogo} alt="SADA" className="h-[65px] object-contain" />
+                           </div>
+                        </div>
+
+                        {/* Main Content */}
+                        <div className="absolute top-[280px] inset-x-0 flex flex-col items-center text-center z-20 space-y-12">
+                           <div className="bg-orange-600 px-10 py-3 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.4)] border border-orange-400/30">
+                              <span className="text-white font-black text-2xl uppercase tracking-[0.6em] animate-pulse">FLASH INFO</span>
+                           </div>
+
+                           <div className="space-y-6">
+                              <p className="text-sayc-teal font-black text-3xl uppercase tracking-[0.4em]">SAYC TCHAD ÉLECTIONS 2026</p>
+                              <h1 className="text-[120px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl">
+                                 {formData.titleLine1 || "SCRUTIN"}<br/>
+                                 <span className="text-orange-500">{formData.titleLine2 || "CLÔTURÉ"}</span>
+                              </h1>
+                           </div>
+
+                           <div className="w-[800px] h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                           <div className="max-w-4xl px-16">
+                              <p className="text-white/80 font-bold text-3xl leading-relaxed italic">
+                                 "{formData.mainText || "La période de vote est officiellement terminée. Le dépouillement est en cours. Rendez-vous à 15h00 pour les résultats."}"
+                              </p>
+                           </div>
+
+                           <div className="grid grid-cols-2 gap-12 pt-10">
+                              <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] backdrop-blur-xl flex flex-col items-center space-y-4">
+                                 <div className="p-5 bg-orange-600 rounded-2xl"><Vote className="w-10 h-10 text-white" /></div>
+                                 <div>
+                                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">CLÔTURE</p>
+                                    <p className="text-white font-black text-4xl">12:00</p>
+                                 </div>
+                              </div>
+                              <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] backdrop-blur-xl flex flex-col items-center space-y-4">
+                                 <div className="p-5 bg-sayc-teal rounded-2xl"><Award className="w-10 h-10 text-white" /></div>
+                                 <div>
+                                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mb-1">RÉSULTATS</p>
+                                    <p className="text-white font-black text-4xl">15:00</p>
+                                 </div>
                               </div>
                            </div>
                         </div>
