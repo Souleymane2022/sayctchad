@@ -66290,7 +66290,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       record = void 0;
     }
     const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || "admin2024";
+    const adminPassword = process.env.ADMIN_PASSWORD || "SaycTchad@2026!Secure";
     if (password === adminPassword) {
       loginAttempts.delete(ip);
       req.session.isAdmin = true;
