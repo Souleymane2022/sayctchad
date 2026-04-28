@@ -117,13 +117,20 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Build Bureau National: top vote-getter per role = leader, 2nd = assistant
+  // Identifie le Leader National dynamiquement
+  const nationalLeader = (() => {
+    if (!candidates) return null;
+    // On cherche celui qui a le plus de votes parmi tous (ou un rôle spécifique si défini)
+    return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
+  })();
+
+  // Build Bureau National: top vote-getter per role (excluding national leader)
   const bureauNational = (() => {
     if (!candidates) return null;
     const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
     return roles.map(role => {
       const sorted = candidates
-        .filter(c => c.role === role)
+        .filter(c => c.role === role && c.id !== nationalLeader?.id)
         .sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
       return { role, leader: sorted[0], assistant: sorted[1] };
     }).filter(b => b.leader);
@@ -168,7 +175,6 @@ export default function BrandAssets() {
       const element = document.getElementById(elementId);
       if (!element) throw new Error("Element not found");
 
-      // BOOSTER : Conversion des images en DataURL pour éviter les erreurs CORS/Blob
       const images = element.getElementsByTagName('img');
       const imageConversionPromises = Array.from(images).map(async (img) => {
         try {
@@ -490,17 +496,25 @@ export default function BrandAssets() {
 
                         <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
                             <div className="w-[320px] h-[380px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
-                               <img src="/national-leader.jpg" alt="National Leader" className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
+                               <img 
+                                 src={nationalLeader?.photoUrl || nationalLeader?.photo_url || "/national-leader.jpg"} 
+                                 alt="National Leader" 
+                                 className="w-full h-full object-cover object-top" 
+                                 crossOrigin="anonymous" 
+                               />
                                <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/80 to-transparent" />
                                <div className="absolute bottom-4 inset-x-0 text-center px-4">
                                   <p className="text-orange-400 font-bold text-sm uppercase tracking-widest mb-1">LEADER NATIONAL</p>
-                                  <h4 className="text-[1.8rem] font-black text-white uppercase tracking-tight leading-none">SOULEYMANE<br/>M. SALEH</h4>
+                                  <h4 className="text-[1.8rem] font-black text-white uppercase tracking-tight leading-none">
+                                    {nationalLeader?.firstName || nationalLeader?.first_name || "SOULEYMANE"}<br/>
+                                    {nationalLeader?.lastName || nationalLeader?.last_name || "M. SALEH"}
+                                  </h4>
                                </div>
                             </div>
                         </div>
 
-                        <div className="absolute top-[650px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
-                           {bureauNational ? bureauNational.map((b, i) => (
+                        <div className="absolute top-[680px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
+                           {bureauNational && bureauNational.length > 0 ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
                                   <img
