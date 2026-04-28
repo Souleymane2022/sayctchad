@@ -244,7 +244,7 @@ export default function BrandAssets() {
                   { id: "formation", icon: GraduationCap, label: "Formation" },
                   { id: "news", icon: Megaphone, label: "Actualité" },
                   { id: "event", icon: Calendar, label: "Événement" },
-                  { id: "testimony", icon: Quote, label: "Finalistes" },
+                  { id: "testimony", icon: Users, label: "Bureau National" },
                   { id: "announcement", icon: Megaphone, label: "Annonce" }
                 ].map((cat) => (
                   <Button
@@ -448,50 +448,68 @@ export default function BrandAssets() {
                              <Quote className="w-20 h-20 text-sayc-teal opacity-20 absolute top-[-30px] right-8" />
                              <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">{formData.mainText}</p>
                           </div>
-                               {activeCategory === "testimony" && (
-                    <div className="w-full h-full bg-[#020202] text-white">
+                        </div>
+                    </div>
+                  )}
+
+                  {activeCategory === "testimony" && (
+                    <div className="w-full h-full bg-[#050b1a] text-white relative overflow-hidden">
+                        {/* Background Elements */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0f2557] to-black z-0" />
+                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[150px] z-0" />
+                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/10 rounded-full blur-[120px] z-0" />
+                        
                         {/* High-End Header with Logos */}
-                        <div className="absolute top-0 left-0 w-full h-[260px] bg-white z-10 flex items-center justify-center shadow-2xl">
-                           <div className="flex items-center gap-20">
-                              <img src={logoSayc} alt="SAYC" className="h-[75px] object-contain" />
-                              <div className="w-[2px] h-16 bg-slate-200" />
-                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[55px] object-contain" />
-                              <div className="w-[2px] h-16 bg-slate-200" />
-                              <img src={sadaLogo} alt="SADA" className="h-[70px] object-contain" />
+                        <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[6px] border-orange-500">
+                           <div className="flex items-center gap-14">
+                              <img src={logoSayc} alt="SAYC" className="h-[55px] object-contain" />
+                              <div className="w-[1.5px] h-10 bg-slate-300" />
+                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] object-contain" />
+                              <div className="w-[1.5px] h-10 bg-slate-300" />
+                              <img src={sadaLogo} alt="SADA" className="h-[50px] object-contain" />
                            </div>
                         </div>
 
                         {/* Centered Titles */}
-                        <div className="absolute top-[300px] left-0 w-full text-center z-20 space-y-2">
-                           <p className="text-orange-500 font-black text-2xl uppercase tracking-[0.5em] mb-4">SAYC TCHAD ÉLECTIONS 2026</p>
-                           <h1 className="text-[100px] font-black text-white leading-none tracking-tighter uppercase mb-10">LES FINALISTES</h1>
+                        <div className="absolute top-[180px] left-0 w-full text-center z-20 space-y-1">
+                           <div className="inline-block px-8 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full mb-1">
+                              <span className="text-orange-400 font-black text-xl uppercase tracking-[0.4em]">SAYC TCHAD — MANDAT 2026-2028</span>
+                           </div>
+                           <h1 className="text-[80px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl">BUREAU NATIONAL</h1>
                         </div>
 
-                        {/* Perfectly Aligned Grid of Candidates */}
-                        <div className="absolute top-[540px] inset-x-12 z-30 grid grid-cols-4 gap-8 items-start">
+                        {/* National Leader Section */}
+                        <div className="absolute top-[310px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+                            <div className="w-[320px] h-[380px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
+                               <img src="/national-leader.jpg" alt="National Leader" className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
+                               <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/80 to-transparent" />
+                               <div className="absolute bottom-4 inset-x-0 text-center px-4">
+                                  <p className="text-orange-400 font-bold text-sm uppercase tracking-widest mb-1">LEADER NATIONAL</p>
+                                  <h4 className="text-[1.8rem] font-black text-white uppercase tracking-tight leading-none">SOULEYMANE<br/>M. SALEH</h4>
+                               </div>
+                            </div>
+                        </div>
+
+                        {/* Grid of Leaders Adjoints */}
+                        <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
                            {[
-                             { name: "JEREMIE", label: "LEADER ADJOINT", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop" },
-                             { name: "BERNADETTE", label: "INCLUSION", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=500&fit=crop" },
-                             { name: "MOUNIR", label: "SECTEUR PRIVÉ", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=500&fit=crop" },
-                             { name: "ALLAMINE", label: "ACADÉMIQUE", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop" }
+                             { name: "MOUNIR", label: "LEADER ADJOINT", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=500&fit=crop" },
+                             { name: "ALLAMINE", label: "SECTEUR PRIVÉ", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop" },
+                             { name: "JÉRÉMIE", label: "ACADÉMIQUE", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop" },
+                             { name: "ADELINE", label: "INCLUSION", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=500&fit=crop" }
                            ].map((c, i) => (
-                             <div key={i} className="flex flex-col items-center space-y-6">
-                               <div className="w-full aspect-[4/5] rounded-[2rem] border-[6px] border-white shadow-2xl overflow-hidden bg-slate-800">
-                                  <img src={c.img} alt={c.name} className="w-full h-full object-cover" crossOrigin="anonymous" />
-                               </div>
-                               <div className="bg-orange-600 px-6 py-2 rounded-xl shadow-lg border border-orange-400/30">
-                                  <span className="text-white font-black text-xs uppercase tracking-widest whitespace-nowrap">{c.label}</span>
-                               </div>
-                               <div className="text-center">
-                                  <h4 className="text-[2.2rem] font-black text-white uppercase tracking-tight leading-none mb-1">{c.name}</h4>
-                                  <p className="text-orange-500 font-bold text-[10px] uppercase tracking-widest opacity-90 italic">Candidat Officiel</p>
+                             <div key={i} className="flex flex-col items-center">
+                               <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
+                                  <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
+                                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent" />
+                                  <div className="absolute bottom-3 inset-x-0 text-center px-2">
+                                     <p className="text-sayc-teal font-black text-[10px] uppercase tracking-widest mb-1 leading-tight">{c.label}</p>
+                                     <h4 className="text-[1.4rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
+                                  </div>
                                </div>
                              </div>
                            ))}
                         </div>
-                    </div>
-                  )}
-           </div>
                     </div>
                   )}
 
