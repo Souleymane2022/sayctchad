@@ -497,7 +497,7 @@ export default function BrandAssets() {
                         </div>
 
                         {/* National Leader Section */}
-                        <div className="absolute top-[310px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+                        <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
                             <div className="w-[320px] h-[380px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
                                <img src="/national-leader.jpg" alt="National Leader" className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
                                <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/80 to-transparent" />
@@ -509,7 +509,7 @@ export default function BrandAssets() {
                         </div>
 
                         {/* Grid of Leaders Adjoints */}
-                        <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
+                        <div className="absolute top-[650px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
                            {bureauNational ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
