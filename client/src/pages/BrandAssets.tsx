@@ -193,7 +193,7 @@ export default function BrandAssets() {
 
       const blob = await toBlob(element, { 
         quality: 0.95, 
-        pixelRatio: 2, // 2 is enough for 1080x1080 (2160x2160 actually)
+        pixelRatio: 2, 
         width: 1080,
         height: 1080,
         cacheBust: true,
@@ -210,7 +210,6 @@ export default function BrandAssets() {
       document.body.appendChild(link);
       link.click();
       
-      // Cleanup - wait longer for the browser to trigger download
       setTimeout(() => {
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
@@ -254,7 +253,6 @@ export default function BrandAssets() {
           </div>
           
           <CardContent className="p-8 space-y-8">
-            {/* Category Selector */}
             <div className="space-y-4">
               <Label className="uppercase text-xs font-bold text-slate-500 tracking-[0.2em]">TYPE DE COMMUNICATION</Label>
               <div className="grid grid-cols-2 gap-3">
@@ -277,7 +275,6 @@ export default function BrandAssets() {
               </div>
             </div>
 
-            {/* Dynamic Content Form */}
             <div className="space-y-6 pt-6 border-t border-slate-800">
                <Label className="uppercase text-xs font-bold text-slate-500 tracking-[0.2em]">CONFIGURATION DU CONTENU ({activeCategory.toUpperCase()})</Label>
                
@@ -393,8 +390,6 @@ export default function BrandAssets() {
                   id="poster-render"
                   className="w-[1080px] h-[1080px] relative overflow-hidden text-white font-sans"
                 >
-                  {/* --- ULTIMATE TEMPLATE ENGINE --- */}
-                  
                   {activeCategory === "formation" && (
                     <div className="w-full h-full bg-[#020202]">
                        <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c0c] to-black z-0" />
@@ -472,12 +467,10 @@ export default function BrandAssets() {
 
                   {activeCategory === "testimony" && (
                     <div className="w-full h-full bg-[#050b1a] text-white relative overflow-hidden">
-                        {/* Background Elements */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0f2557] to-black z-0" />
                         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[150px] z-0" />
                         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/10 rounded-full blur-[120px] z-0" />
                         
-                        {/* High-End Header with Logos */}
                         <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[6px] border-orange-500">
                            <div className="flex items-center gap-24">
                               <img src={logoSayc} alt="SAYC" className="h-[55px] object-contain" />
@@ -488,7 +481,6 @@ export default function BrandAssets() {
                            </div>
                         </div>
 
-                        {/* Centered Titles */}
                         <div className="absolute top-[180px] left-0 w-full text-center z-20 space-y-2">
                            <div className="inline-block px-10 py-2.5 bg-orange-500/10 border border-orange-500/20 rounded-full mb-2">
                               <span className="text-orange-500 font-black text-lg uppercase tracking-[0.6em]">SAYC TCHAD — MANDAT 2026-2028</span>
@@ -496,7 +488,6 @@ export default function BrandAssets() {
                            <h1 className="text-[70px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">BUREAU NATIONAL</h1>
                         </div>
 
-                        {/* National Leader Section */}
                         <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
                             <div className="w-[320px] h-[380px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
                                <img src="/national-leader.jpg" alt="National Leader" className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
@@ -508,7 +499,6 @@ export default function BrandAssets() {
                             </div>
                         </div>
 
-                        {/* Grid of Leaders Adjoints */}
                         <div className="absolute top-[650px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
                            {bureauNational ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
@@ -596,11 +586,9 @@ export default function BrandAssets() {
 
                   {activeCategory === "announcement" && (
                      <div className="w-full h-full bg-[#050b1a] overflow-hidden relative">
-                        {/* Institutional Gradient Background */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0a1a3a] to-[#050b1a]" />
                         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
                         
-                        {/* Top Logo Bar - Official */}
                         <div className="absolute top-0 left-0 w-full h-[220px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[8px] border-orange-500">
                            <div className="flex items-center gap-20">
                               <img src={logoSayc} alt="SAYC" className="h-[70px] object-contain" />
@@ -611,7 +599,6 @@ export default function BrandAssets() {
                            </div>
                         </div>
 
-                        {/* Main Content */}
                         <div className="absolute top-[280px] inset-x-0 flex flex-col items-center text-center z-20 space-y-12">
                            <div className="bg-orange-600 px-10 py-3 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.4)] border border-orange-400/30">
                               <span className="text-white font-black text-2xl uppercase tracking-[0.6em] animate-pulse">FLASH INFO</span>
@@ -652,38 +639,34 @@ export default function BrandAssets() {
                      </div>
                   )}
 
-                     {/* UNIVERSAL ELITE FOOTER */}
-                     <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center bg-black/95 backdrop-blur-3xl border-t border-white/10">
-                       <div className="flex items-center justify-between w-full">
-                         <div className="flex items-center gap-8">
-                           <div className="p-5 bg-orange-600 rounded-[1.8rem] shadow-[0_0_40px_rgba(234,88,12,0.4)] flex items-center justify-center shrink-0">
-                             <Zap className="w-10 h-10 text-white animate-pulse" />
-                           </div>
-                           <div className="flex flex-col">
-                             <h3 className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none">PROFIL VÉRIFIÉ</h3>
-                             <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] opacity-90">
-                               LISTE OFFICIELLE — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">2026</span>
-                             </p>
-                           </div>
-                         </div>
+                  {/* UNIVERSAL ELITE FOOTER */}
+                  <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center bg-black/95 backdrop-blur-3xl border-t border-white/10">
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex items-center gap-8">
+                        <div className="p-5 bg-orange-600 rounded-[1.8rem] shadow-[0_0_40px_rgba(234,88,12,0.4)] flex items-center justify-center shrink-0">
+                          <Zap className="w-10 h-10 text-white animate-pulse" />
+                        </div>
+                        <div className="flex flex-col">
+                          <h3 className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none">PROFIL VÉRIFIÉ</h3>
+                          <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] opacity-90">
+                            LISTE OFFICIELLE — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">2026</span>
+                          </p>
+                        </div>
+                      </div>
 
-                         {/* Centered URL Indicator */}
-                         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
-                            <p className="text-white font-black text-4xl tracking-tighter uppercase">
-                               WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                            </p>
-                            <p className="text-[10px] text-white/40 font-bold tracking-[0.8em] uppercase">Smart Africa Youth Chapter Tchad</p>
-                         </div>
+                      <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+                         <p className="text-white font-black text-4xl tracking-tighter uppercase">
+                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
+                         </p>
+                         <p className="text-[10px] text-white/40 font-bold tracking-[0.8em] uppercase">Smart Africa Youth Chapter Tchad</p>
+                      </div>
 
-                         <div className="flex flex-col items-end">
-                            <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-1">DÉLIBÉRATION</p>
-                            <p className="text-white font-black text-4xl">OFFICIEL</p>
-                         </div>
-                       </div>
-                     </div>
+                      <div className="flex flex-col items-end">
+                         <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-1">DÉLIBÉRATION</p>
+                         <p className="text-white font-black text-4xl">OFFICIEL</p>
+                      </div>
+                    </div>
                   </div>
-               </div>
-            </div>
                 </div>
               </div>
             </div>
