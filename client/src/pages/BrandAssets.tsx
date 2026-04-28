@@ -479,21 +479,21 @@ export default function BrandAssets() {
                         
                         {/* High-End Header with Logos */}
                         <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[6px] border-orange-500">
-                           <div className="flex items-center gap-14">
+                           <div className="flex items-center gap-24">
                               <img src={logoSayc} alt="SAYC" className="h-[55px] object-contain" />
-                              <div className="w-[1.5px] h-10 bg-slate-300" />
+                              <div className="w-[1.5px] h-10 bg-slate-200" />
                               <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] object-contain" />
-                              <div className="w-[1.5px] h-10 bg-slate-300" />
+                              <div className="w-[1.5px] h-10 bg-slate-200" />
                               <img src={sadaLogo} alt="SADA" className="h-[50px] object-contain" />
                            </div>
                         </div>
 
                         {/* Centered Titles */}
-                        <div className="absolute top-[180px] left-0 w-full text-center z-20 space-y-1">
-                           <div className="inline-block px-8 py-2 bg-orange-500/20 border border-orange-500/30 rounded-full mb-1">
-                              <span className="text-orange-400 font-black text-xl uppercase tracking-[0.4em]">SAYC TCHAD — MANDAT 2026-2028</span>
+                        <div className="absolute top-[180px] left-0 w-full text-center z-20 space-y-2">
+                           <div className="inline-block px-10 py-2.5 bg-orange-500/10 border border-orange-500/20 rounded-full mb-2">
+                              <span className="text-orange-500 font-black text-lg uppercase tracking-[0.6em]">SAYC TCHAD — MANDAT 2026-2028</span>
                            </div>
-                           <h1 className="text-[80px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl">BUREAU NATIONAL</h1>
+                           <h1 className="text-[70px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">BUREAU NATIONAL</h1>
                         </div>
 
                         {/* National Leader Section */}
@@ -509,21 +509,26 @@ export default function BrandAssets() {
                         </div>
 
                         {/* Grid of Leaders Adjoints */}
-                        <div className="absolute top-[650px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
+                        <div className="absolute top-[650px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
                            {bureauNational ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
-                               <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
+                               <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
                                   <img
                                     src={b.leader?.photoUrl || b.leader?.photo_url || "/images/leaders/leader_1.png"}
                                     alt={`${b.leader?.firstName || b.leader?.first_name} ${b.leader?.lastName || b.leader?.last_name}`}
                                     className="w-full h-full object-cover object-top"
                                     crossOrigin="anonymous"
                                   />
-                                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent" />
-                                  <div className="absolute bottom-3 inset-x-0 text-center px-2">
-                                     <p className="text-sayc-teal font-black text-[10px] uppercase tracking-widest mb-1 leading-tight">{b.role.toUpperCase()}</p>
-                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-tight">
-                                       {b.leader?.firstName || b.leader?.first_name}<br/>{b.leader?.lastName || b.leader?.last_name}
+                                  <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
+                                  <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
+                                     <div className="bg-orange-600 px-3 py-1 rounded-md mb-2 shadow-lg">
+                                        <p className="text-white font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
+                                     </div>
+                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md">
+                                       {b.leader?.firstName || b.leader?.first_name}
+                                     </h4>
+                                     <h4 className="text-[1.2rem] font-black text-orange-400 uppercase tracking-tight leading-none">
+                                       {b.leader?.lastName || b.leader?.last_name}
                                      </h4>
                                   </div>
                                </div>
@@ -535,12 +540,14 @@ export default function BrandAssets() {
                              { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/leaders/leader_4.png" }
                            ].map((c, i) => (
                              <div key={i} className="flex flex-col items-center">
-                               <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
+                               <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
                                   <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
-                                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent" />
-                                  <div className="absolute bottom-3 inset-x-0 text-center px-2">
-                                     <p className="text-sayc-teal font-black text-[10px] uppercase tracking-widest mb-1 leading-tight">{c.label}</p>
-                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
+                                  <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
+                                  <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
+                                     <div className="bg-orange-600 px-3 py-1 rounded-md mb-2 shadow-lg">
+                                        <p className="text-white font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{c.label}</p>
+                                     </div>
+                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
                                   </div>
                                </div>
                              </div>
@@ -618,15 +625,14 @@ export default function BrandAssets() {
                               </h1>
                            </div>
 
-                           <div className="w-[800px] h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                            <div className="w-[800px] h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-                           <div className="max-w-4xl px-16">
-                              <p className="text-white/80 font-bold text-3xl leading-relaxed italic">
-                                 "{formData.mainText || "La période de vote est officiellement terminée. Le dépouillement est en cours. Rendez-vous à 15h00 pour les résultats."}"
-                              </p>
-                           </div>
-
-                           <div className="grid grid-cols-2 gap-12 pt-10">
+                            <div className="max-w-4xl px-16">
+                               <p className="text-white/80 font-bold text-3xl leading-relaxed italic">
+                                  "{formData.mainText || "La période de vote est officiellement terminée. Le dépouillement est en cours. Rendez-vous à 15h00 pour les résultats."}"
+                               </p>
+                            </div>
+                              <div className="grid grid-cols-2 gap-12 pt-10">
                               <div className="bg-white/5 border border-white/10 p-10 rounded-[3rem] backdrop-blur-xl flex flex-col items-center space-y-4">
                                  <div className="p-5 bg-orange-600 rounded-2xl"><Vote className="w-10 h-10 text-white" /></div>
                                  <div>
@@ -646,32 +652,38 @@ export default function BrandAssets() {
                      </div>
                   )}
 
-                    {/* UNIVERSAL ELITE FOOTER */}
-                    <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex flex-col justify-center border-t border-white/10 bg-black/80 backdrop-blur-3xl">
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-10">
-                          <div className="p-6 bg-orange-600 rounded-[2.2rem] shadow-[0_0_50px_rgba(234,88,12,0.5)] flex items-center justify-center">
-                            <Zap className="w-10 h-10 text-white animate-pulse" />
-                          </div>
-                          <div className="flex flex-col justify-center">
-                            <h3 className="text-white font-black text-[3.2rem] uppercase tracking-tighter leading-none mb-1">PROFIL VÉRIFIÉ</h3>
-                            <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] opacity-90">
-                              LISTE OFFICIELLE — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">2026</span>
+                     {/* UNIVERSAL ELITE FOOTER */}
+                     <div className="absolute bottom-0 inset-x-0 h-[170px] z-[60] px-16 flex items-center bg-black/95 backdrop-blur-3xl border-t border-white/10">
+                       <div className="flex items-center justify-between w-full">
+                         <div className="flex items-center gap-8">
+                           <div className="p-5 bg-orange-600 rounded-[1.8rem] shadow-[0_0_40px_rgba(234,88,12,0.4)] flex items-center justify-center shrink-0">
+                             <Zap className="w-10 h-10 text-white animate-pulse" />
+                           </div>
+                           <div className="flex flex-col">
+                             <h3 className="text-white font-black text-[2.8rem] uppercase tracking-tighter leading-none">PROFIL VÉRIFIÉ</h3>
+                             <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] opacity-90">
+                               LISTE OFFICIELLE — <span className="text-slate-100 font-bold tracking-normal opacity-100 italic">2026</span>
+                             </p>
+                           </div>
+                         </div>
+
+                         {/* Centered URL Indicator */}
+                         <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-1">
+                            <p className="text-white font-black text-4xl tracking-tighter uppercase">
+                               WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
                             </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-slate-200 font-black text-[3.2rem] leading-none tracking-tighter uppercase">
-                            WWW.<span className="text-orange-500">SAYCTCHAD</span>.ORG
-                          </p>
-                        </div>
-                      </div>
-                      
-                      {/* Centered URL Indicator */}
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-20">
-                         <p className="text-[10px] text-white font-bold tracking-[1em] uppercase">Smart Africa Youth Chapter Tchad</p>
-                      </div>
-                    </div>
+                            <p className="text-[10px] text-white/40 font-bold tracking-[0.8em] uppercase">Smart Africa Youth Chapter Tchad</p>
+                         </div>
+
+                         <div className="flex flex-col items-end">
+                            <p className="text-slate-400 font-black text-xs uppercase tracking-widest mb-1">DÉLIBÉRATION</p>
+                            <p className="text-white font-black text-4xl">OFFICIEL</p>
+                         </div>
+                       </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
                 </div>
               </div>
             </div>
