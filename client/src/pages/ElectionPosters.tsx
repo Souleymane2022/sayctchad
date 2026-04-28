@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Download, Loader2, Image as ImageIcon, Users, CheckCircle2, MessageSquare, Quote, Calendar } from "lucide-react";
+import { Download, Loader2, Image as ImageIcon, Users, CheckCircle2, MessageSquare, Quote, Calendar, Lock } from "lucide-react";
 import type { ElectionCandidate } from "@shared/schema";
 import SEOHead from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
@@ -14,16 +16,112 @@ import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 import smartAfricaAllianceLogo from "@assets/SMART_AFRICA_LOGO_1770443171460.png";
 import sadaLogo from "@assets/SADA_1770443171461.jpg";
 
+function PosterLogin({ onLogin }: { onLogin: () => void }) {
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const { toast } = useToast();
+
+  const loginMutation = useMutation({
+    mutationFn: async (pw: string) => {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: pw }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw data;
+      return data;
+    },
+    onSuccess: () => {
+      onLogin();
+      toast({ title: "Accès Autorisé", description: "Bienvenue dans le Générateur d'Affiches" });
+    },
+    onError: (err: any) => {
+      setErrorMessage(err?.error || "Mot de passe incorrect");
+    },
+  });
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <Card className="w-full max-w-md p-8 bg-white border-slate-200 shadow-2xl rounded-[2rem] space-y-6">
+        <div className="flex flex-col items-center gap-4">
+          <div className="p-4 bg-orange-600/20 rounded-2xl">
+            <Lock className="h-10 w-10 text-orange-600" />
+          </div>
+          <div className="text-center">
+            <h1 className="text-2xl font-black text-slate-800">Générateur d'Affiches</h1>
+            <p className="text-sm text-slate-500">Accès restreint aux administrateurs</p>
+          </div>
+        </div>
+        
+        {errorMessage && (
+          <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4 text-sm text-destructive text-center font-bold">
+            {errorMessage}
+          </div>
+        )}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            loginMutation.mutate(password);
+          }}
+          className="space-y-4"
+        >
+          <div className="space-y-2">
+            <Label className="text-slate-500 font-bold uppercase text-[10px] tracking-widest px-1">MOT DE PASSE</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="bg-slate-50 border-slate-200 h-14 rounded-xl text-slate-800"
+              placeholder="••••••••"
+            />
+          </div>
+          <Button type="submit" className="w-full h-14 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-black text-lg shadow-lg" disabled={loginMutation.isPending}>
+            {loginMutation.isPending ? <Loader2 className="animate-spin" /> : "Déverrouiller"}
+          </Button>
+        </form>
+      </Card>
+    </div>
+  );
+}
+
 export default function ElectionPosters() {
   const { toast } = useToast();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [campaignCandidateId, setCampaignCandidateId] = useState<string | null>(null);
   const [campaignQuote, setCampaignQuote] = useState("Votons pour l'avenir numérique du Tchad soutenu par la jeunesse !");
   const [selectedFinalists, setSelectedFinalists] = useState<string[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [checking, setChecking] = useState(true);
+
+  useQuery({
+    queryKey: ["/api/admin/check-posters"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/check", { credentials: "include" });
+      const data = await res.json();
+      setIsAuthenticated(data.isAdmin);
+      setChecking(false);
+      return data;
+    },
+  });
 
   const { data: candidates, isLoading } = useQuery<ElectionCandidate[]>({
     queryKey: ["/api/elections/candidates"],
+    enabled: isAuthenticated,
   });
+
+  if (checking) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <Loader2 className="w-12 h-12 text-orange-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <PosterLogin onLogin={() => setIsAuthenticated(true)} />;
+  }
 
   const downloadPoster = async (elementId: string, filename: string, id: string) => {
     setDownloadingId(id);
