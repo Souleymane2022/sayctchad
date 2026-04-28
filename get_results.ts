@@ -4,7 +4,7 @@ const sqlUrl = "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27
 const sql = neon(sqlUrl);
 
 async function main() {
-  const c = await sql`SELECT first_name, last_name, role, votes_count FROM election_candidates WHERE status = 'approved' ORDER BY role, votes_count DESC`;
+  const c = await sql`SELECT id, first_name, last_name, role, photo_url, votes_count FROM election_candidates WHERE status = 'approved' ORDER BY role, votes_count DESC`;
   console.log(JSON.stringify(c, null, 2));
 }
 

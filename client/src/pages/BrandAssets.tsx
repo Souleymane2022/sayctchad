@@ -110,6 +110,24 @@ export default function BrandAssets() {
       return data;
     },
   });
+
+  // Load real candidates from API
+  const { data: candidates } = useQuery<any[]>({
+    queryKey: ["/api/elections/candidates"],
+    enabled: isAuthenticated,
+  });
+
+  // Build Bureau National: top vote-getter per role = leader, 2nd = assistant
+  const bureauNational = (() => {
+    if (!candidates) return null;
+    const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
+    return roles.map(role => {
+      const sorted = candidates
+        .filter(c => c.role === role)
+        .sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
+      return { role, leader: sorted[0], assistant: sorted[1] };
+    }).filter(b => b.leader);
+  })();
   
   // Dynamic State for Editor
   const [formData, setFormData] = useState({
@@ -492,8 +510,26 @@ export default function BrandAssets() {
 
                         {/* Grid of Leaders Adjoints */}
                         <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
-                           {[
-                             { name: "MAHAMAT MOUNIR", label: "LEADER ADJOINT", img: "/images/leaders/leader_1.png" },
+                           {bureauNational ? bureauNational.map((b, i) => (
+                             <div key={i} className="flex flex-col items-center">
+                               <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
+                                  <img
+                                    src={b.leader?.photoUrl || b.leader?.photo_url || "/images/leaders/leader_1.png"}
+                                    alt={`${b.leader?.firstName || b.leader?.first_name} ${b.leader?.lastName || b.leader?.last_name}`}
+                                    className="w-full h-full object-cover object-top"
+                                    crossOrigin="anonymous"
+                                  />
+                                  <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent" />
+                                  <div className="absolute bottom-3 inset-x-0 text-center px-2">
+                                     <p className="text-sayc-teal font-black text-[10px] uppercase tracking-widest mb-1 leading-tight">{b.role.toUpperCase()}</p>
+                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-tight">
+                                       {b.leader?.firstName || b.leader?.first_name}<br/>{b.leader?.lastName || b.leader?.last_name}
+                                     </h4>
+                                  </div>
+                               </div>
+                             </div>
+                           )) : [
+                             { name: "MOUNIR MAHAMAT", label: "LEADER ADJOINT", img: "/images/leaders/leader_1.png" },
                              { name: "ALLAMINE TIDJANI", label: "SECTEUR PRIVÉ", img: "/images/leaders/leader_2.png" },
                              { name: "JÉRÉMIE IGNEBE", label: "ACADÉMIQUE", img: "/images/leaders/leader_3.png" },
                              { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/leaders/leader_4.png" }
@@ -504,7 +540,7 @@ export default function BrandAssets() {
                                   <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/70 to-transparent" />
                                   <div className="absolute bottom-3 inset-x-0 text-center px-2">
                                      <p className="text-sayc-teal font-black text-[10px] uppercase tracking-widest mb-1 leading-tight">{c.label}</p>
-                                     <h4 className="text-[1.4rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
+                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
                                   </div>
                                </div>
                              </div>
