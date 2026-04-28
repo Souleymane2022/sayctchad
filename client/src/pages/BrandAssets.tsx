@@ -493,10 +493,10 @@ export default function BrandAssets() {
                         {/* Grid of Leaders Adjoints */}
                         <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-6 items-start">
                            {[
-                             { name: "MOUNIR", label: "LEADER ADJOINT", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&h=500&fit=crop" },
-                             { name: "ALLAMINE", label: "SECTEUR PRIVÉ", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&h=500&fit=crop" },
-                             { name: "JÉRÉMIE", label: "ACADÉMIQUE", img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&h=500&fit=crop" },
-                             { name: "ADELINE", label: "INCLUSION", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&h=500&fit=crop" }
+                             { name: "MAHAMAT MOUNIR", label: "LEADER ADJOINT", img: "/images/leaders/leader_1.png" },
+                             { name: "ALLAMINE TIDJANI", label: "SECTEUR PRIVÉ", img: "/images/leaders/leader_2.png" },
+                             { name: "JÉRÉMIE IGNEBE", label: "ACADÉMIQUE", img: "/images/leaders/leader_3.png" },
+                             { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/leaders/leader_4.png" }
                            ].map((c, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[200px] h-[250px] rounded-[1.5rem] border-[4px] border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden bg-slate-800 relative">
