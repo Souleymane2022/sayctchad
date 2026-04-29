@@ -117,25 +117,41 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National (Priorité à Souleymane)
+  // Identifie le Leader National (Priorité absolue à Souleymane)
   const nationalLeader = (() => {
     if (!candidates) return null;
     const souleymane = candidates.find(c => 
-      (c.firstName?.toLowerCase().includes("souleymane") || c.first_name?.toLowerCase().includes("souleymane"))
+      (c.firstName?.toLowerCase().includes("souleymane") || c.nomSpecifiqueUnique?.toLowerCase().includes("saleh"))
     );
     if (souleymane) return souleymane;
     return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
   })();
 
-  // Build Bureau National: top vote-getter per role (excluding national leader)
+  // Build Bureau National: top vote-getter per role
   const bureauNational = (() => {
     if (!candidates) return null;
     const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
+    
     return roles.map(role => {
-      const sorted = candidates
-        .filter(c => c.role === role && c.id !== nationalLeader?.id)
-        .sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
-      return { role, leader: sorted[0], assistant: sorted[1] };
+      let leaderCandidates = candidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
+      
+      // Force Mounir en Leader Adjoint s'il est trouvé
+      if (role === "Leader Adjoint") {
+        const mounir = leaderCandidates.find(c => c.firstName?.toLowerCase().includes("mounir"));
+        if (mounir) {
+          return { role, leader: mounir };
+        }
+      }
+
+      const sorted = leaderCandidates.sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
+      
+      // Override photo pour Adeline si trouvée
+      const leader = sorted[0];
+      if (leader && (leader.firstName?.toLowerCase().includes("adeline") || leader.nomSpecifiqueUnique?.toLowerCase().includes("goldé"))) {
+        leader.photoUrl = "/images/adeline.jpg";
+      }
+
+      return { role, leader: leader };
     }).filter(b => b.leader);
   })();
   
@@ -516,7 +532,7 @@ export default function BrandAssets() {
                             </div>
                         </div>
 
-                        <div className="absolute top-[710px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
+                        <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
                            {bureauNational && bureauNational.length > 0 ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
@@ -528,13 +544,13 @@ export default function BrandAssets() {
                                   />
                                   <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
                                   <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
-                                     <div className="bg-orange-600 px-3 py-1 rounded-md mb-2 shadow-lg">
-                                        <p className="text-white font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
+                                     <div className="bg-gradient-to-r from-amber-400 to-yellow-600 px-3 py-1 rounded-md mb-2 shadow-lg">
+                                        <p className="text-black font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
                                      </div>
                                      <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md">
                                        {b.leader?.firstName || b.leader?.first_name}
                                      </h4>
-                                     <h4 className="text-[1.2rem] font-black text-orange-400 uppercase tracking-tight leading-none">
+                                     <h4 className="text-[1.2rem] font-black text-yellow-300 uppercase tracking-tight leading-none">
                                        {b.leader?.lastName || b.leader?.last_name}
                                      </h4>
                                   </div>
@@ -551,10 +567,11 @@ export default function BrandAssets() {
                                   <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
                                   <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
                                   <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
-                                     <div className="bg-orange-600 px-3 py-1 rounded-md mb-2 shadow-lg">
-                                        <p className="text-white font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{c.label}</p>
+                                     <div className="bg-gradient-to-r from-amber-400 to-yellow-600 px-3 py-1 rounded-md mb-2 shadow-lg">
+                                        <p className="text-black font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{c.label}</p>
                                      </div>
-                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none">{c.name}</h4>
+                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none">{c.name.split(' ')[0]}</h4>
+                                     <h4 className="text-[1.2rem] font-black text-yellow-300 uppercase tracking-tight leading-none">{c.name.split(' ').slice(1).join(' ')}</h4>
                                   </div>
                                </div>
                              </div>
