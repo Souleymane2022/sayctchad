@@ -117,12 +117,14 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National (Priorité absolue à Souleymane)
+  // Identifie le Leader National (Strict Souleymane Mahamat Saleh)
   const nationalLeader = (() => {
     if (!candidates) return null;
-    const souleymane = candidates.find(c => 
-      (c.firstName?.toLowerCase().includes("souleymane") || c.nomSpecifiqueUnique?.toLowerCase().includes("saleh"))
-    );
+    const souleymane = candidates.find(c => {
+      const fn = (c.firstName || c.first_name || "").toLowerCase();
+      const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
+      return fn.includes("souleymane") && (ln.includes("saleh") || ln.includes("mahamat"));
+    });
     if (souleymane) return souleymane;
     return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
   })();
@@ -135,9 +137,13 @@ export default function BrandAssets() {
     return roles.map(role => {
       let leaderCandidates = candidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
       
-      // Force Mounir en Leader Adjoint s'il est trouvé
+      // Force Mounir en Leader Adjoint (Strict Mounir Mahamat Saleh, mais différent du National Leader)
       if (role === "Leader Adjoint") {
-        const mounir = leaderCandidates.find(c => c.firstName?.toLowerCase().includes("mounir"));
+        const mounir = candidates.find(c => {
+          const fn = (c.firstName || c.first_name || "").toLowerCase();
+          const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
+          return fn.includes("mounir") && (ln.includes("saleh") || ln.includes("mahamat")) && c.id !== nationalLeader?.id;
+        });
         if (mounir) {
           return { role, leader: mounir };
         }
@@ -147,8 +153,12 @@ export default function BrandAssets() {
       
       // Override photo pour Adeline si trouvée
       const leader = sorted[0];
-      if (leader && (leader.firstName?.toLowerCase().includes("adeline") || leader.nomSpecifiqueUnique?.toLowerCase().includes("goldé"))) {
-        leader.photoUrl = "/images/adeline.jpg";
+      if (leader) {
+        const fn = (leader.firstName || leader.first_name || "").toLowerCase();
+        const ln = (leader.nomSpecifiqueUnique || leader.last_name || "").toLowerCase();
+        if (fn.includes("adeline") || ln.includes("goldé")) {
+          leader.photoUrl = "/images/adeline.jpg";
+        }
       }
 
       return { role, leader: leader };
@@ -526,7 +536,7 @@ export default function BrandAssets() {
                                   <p className="text-orange-400 font-bold text-sm uppercase tracking-widest mb-1">LEADER NATIONAL</p>
                                   <h4 className="text-[1.8rem] font-black text-white uppercase tracking-tight leading-none">
                                     {nationalLeader?.firstName || nationalLeader?.first_name || "SOULEYMANE"}<br/>
-                                    {nationalLeader?.lastName || nationalLeader?.last_name || "M. SALEH"}
+                                    {nationalLeader?.nomSpecifiqueUnique || nationalLeader?.last_name || "MAHAMAT SALEH"}
                                   </h4>
                                </div>
                             </div>
@@ -551,7 +561,7 @@ export default function BrandAssets() {
                                        {b.leader?.firstName || b.leader?.first_name}
                                      </h4>
                                      <h4 className="text-[1.2rem] font-black text-yellow-300 uppercase tracking-tight leading-none">
-                                       {b.leader?.lastName || b.leader?.last_name}
+                                       {b.leader?.nomSpecifiqueUnique || b.leader?.last_name}
                                      </h4>
                                   </div>
                                </div>
