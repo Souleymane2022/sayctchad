@@ -10,7 +10,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Download, Loader2, Image as ImageIcon, Sparkles, Megaphone, 
   Smartphone, Facebook, Instagram, MessageSquare, Calendar, 
-  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock, Lock, Shield, Vote, Users
+  Award, Briefcase, GraduationCap, MapPin, Zap, Upload, Quote, Clock, Lock, Shield, Vote, Users, Check
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -117,63 +117,68 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National (Priorité absolue à Souleymane)
-  const nationalLeader = (() => {
-    if (!candidates) return null;
-    const souleymane = candidates.find(c => {
-      const fn = (c.firstName || c.first_name || "").toLowerCase();
-      const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
-      return fn.includes("souleymane") || fn.includes("mahmat") || ln.includes("saleh");
-    });
-    // Ensure we don't pick Mounir as Souleymane if Mounir is found first
-    const realSouleymane = candidates.find(c => (c.firstName || "").toLowerCase().includes("souleymane"));
-    if (realSouleymane) return realSouleymane;
-    
-    if (souleymane) return souleymane;
-    return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
-  })();
+  // Identifie le Bureau National (Top 4 par rôle)
+  const bureauNational = React.useMemo(() => {
+    if (!candidates) return [];
 
-  // Liste officielle des finalistes
-  const finalistsList = ["souleymane", "mounir", "allamine", "jérémie", "adeline", "jeremie"];
-
-  // Build Bureau National: top vote-getter per role among actual finalists
-  const bureauNational = (() => {
-    if (!candidates) return null;
-    const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
-    
-    // Filtrer les candidats pour ne garder que les finalistes officiels
-    const filteredCandidates = candidates.filter(c => {
-      const fn = (c.firstName || c.first_name || "").toLowerCase();
-      const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
-      return finalistsList.some(name => fn.includes(name) || ln.includes(name));
-    });
-
-    return roles.map(role => {
-      let leaderCandidates = filteredCandidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
-      
-      // Force Mounir en Leader Adjoint s'il est présent et pas déjà National Leader
-      if (role === "Leader Adjoint") {
-        const mounir = filteredCandidates.find(c => {
-          const fn = (c.firstName || c.first_name || "").toLowerCase();
-          return fn.includes("mounir") && c.id !== nationalLeader?.id;
+    const getWinnerByRole = (role: string, nameQueries: string[] = []) => {
+      // Priorité à la recherche par nom si des requêtes sont fournies (pour assurer la correspondance spécifique demandée)
+      if (nameQueries.length > 0) {
+        const specific = candidates.find(c => {
+          const fullName = `${c.firstName || c.first_name || ''} ${c.lastName || c.last_name || ''} ${c.nomSpecifiqueUnique || ''}`.toUpperCase();
+          return nameQueries.every(q => fullName.includes(q.toUpperCase()));
         });
-        if (mounir) return { role, leader: mounir };
+        if (specific) return specific;
       }
 
-      const sorted = leaderCandidates.sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
-      const leader = sorted[0];
+      // Sinon, on prend le gagnant par votes (approuvé)
+      return candidates
+        .filter(c => c.role === role && c.status === 'approved')
+        .sort((a, b) => (b.votesCount || 0) - (a.votesCount || 0))[0];
+    };
 
-      // Override photo pour Adeline
-      if (leader) {
-        const fn = (leader.firstName || leader.first_name || "").toLowerCase();
-        if (fn.includes("adeline")) {
-          leader.photoUrl = "/images/adeline.jpg";
+    const results = [
+      { role: "Leader Adjoint", leader: getWinnerByRole("Leader Adjoint", ["MOUNIR", "ISSA"]) },
+      { role: "Secteur Privé", leader: getWinnerByRole("Secteur Privé", ["ALLAMINE", "TIDJANI"]) },
+      { role: "Académique", leader: getWinnerByRole("Académique", ["JÉRÉMIE", "IGNEBE"]) },
+      { role: "Inclusion", leader: getWinnerByRole("Inclusion", ["ADELINE", "GOLDÉ"]) || getWinnerByRole("Inclusion", ["ADELINE", "AMOUGOU"]) }
+    ];
+
+    // Corrections d'images et données
+    return results.map(r => {
+        if (!r.leader) return r;
+        const leader = { ...r.leader };
+        
+        // Overrides d'images spécifiques
+        if (leader.firstName?.toLowerCase().includes("adeline")) {
+            leader.photoUrl = "/images/adeline.jpg";
         }
-      }
+        if (leader.firstName?.toLowerCase().includes("mounir")) {
+            leader.photoUrl = "/images/mounir.jpg"; // Path attendu pour sa tenue traditionnelle
+        }
+        
+        return { ...r, leader };
+    }).filter(r => r.leader);
+  }, [candidates]);
 
-      return { role, leader: leader };
-    }).filter(b => b.leader);
-  })();
+  const nationalLeader = React.useMemo(() => {
+    if (!candidates) return null;
+    
+    // Recherche spécifique de Souleymane (Leader National Mandaté)
+    const souleymane = candidates.find(c => {
+      const fullName = `${c.firstName || c.first_name || ''} ${c.lastName || c.last_name || ''} ${c.nomSpecifiqueUnique || ''}`.toUpperCase();
+      return fullName.includes("SOULEYMANE") && (fullName.includes("MAHAMAT SALEH") || fullName.includes("SALEH"));
+    });
+
+    if (souleymane) {
+      return {
+        ...souleymane,
+        photoUrl: "/national-leader.jpg" // Image officielle
+      };
+    }
+
+    return null;
+  }, [candidates]);
   
   // Dynamic State for Editor
   const [formData, setFormData] = useState({
@@ -505,46 +510,46 @@ export default function BrandAssets() {
                           <div className="bg-white/5 border border-white/10 backdrop-blur-3xl p-16 rounded-[4rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
                              <Quote className="w-20 h-20 text-sayc-teal opacity-20 absolute top-[-30px] right-8" />
                              <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">{formData.mainText}</p>
-                          </div>
-                        </div>
-                    </div>
-                  )}
-
-                  {activeCategory === "testimony" && (
-                    <div className="w-full h-full bg-[#050b1a] text-white relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0f2557] to-black z-0" />
-                        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[150px] z-0" />
-                        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-sayc-teal/10 rounded-full blur-[120px] z-0" />
+                          </div                  {activeCategory === "testimony" && (
+                     <div id="poster-render" className="w-[1080px] h-[1080px] bg-[#0A1A2F] text-white relative overflow-hidden font-sans">
+                        {/* High-End Background System */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A2F] via-[#1E2A44] to-black z-0" />
+                        <div className="absolute top-0 inset-x-0 h-[300px] bg-gradient-to-b from-orange-500/5 to-transparent z-0" />
                         
-                        <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[6px] border-orange-500">
-                           <div className="flex items-center gap-24">
-                              <img src={logoSayc} alt="SAYC" className="h-[55px] object-contain" />
+                        {/* Top Logo Bar - Premium White Section */}
+                        <div className="absolute top-0 left-0 w-full h-[150px] bg-white z-10 flex items-center justify-center shadow-xl border-b-[6px] border-orange-500">
+                           <div className="flex items-center gap-20">
+                              <img src={logoSayc} alt="SAYC" className="h-[60px] object-contain" />
                               <div className="w-[1.5px] h-10 bg-slate-200" />
-                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px] object-contain" />
+                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px] object-contain" />
                               <div className="w-[1.5px] h-10 bg-slate-200" />
-                              <img src={sadaLogo} alt="SADA" className="h-[50px] object-contain" />
+                              <img src={sadaLogo} alt="SADA" className="h-[55px] object-contain" />
                            </div>
                         </div>
 
-                        <div className="absolute top-[160px] left-0 w-full text-center z-20 space-y-2">
-                           <div className="inline-block px-10 py-2.5 bg-orange-500/10 border border-orange-500/20 rounded-full mb-2">
-                              <span className="text-orange-500 font-black text-lg uppercase tracking-[0.6em]">SAYC TCHAD — MANDAT 2026-2028</span>
+                        {/* Title Header Section */}
+                        <div className="absolute top-[180px] left-0 w-full text-center z-20">
+                           <div className="inline-block px-8 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full mb-4">
+                              <span className="text-orange-500 font-black text-xl uppercase tracking-[0.5em]">SAYC TCHAD — MANDAT 2026-2028</span>
                            </div>
-                           <h1 className="text-[70px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">BUREAU NATIONAL</h1>
+                           <h1 className="text-[90px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+                              BUREAU NATIONAL
+                           </h1>
                         </div>
- 
-                        <div className="absolute top-[310px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
-                            <div className="w-[300px] h-[360px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
+  
+                        {/* Main National Leader - Central Focus */}
+                        <div className="absolute top-[350px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+                            <div className="w-[340px] h-[400px] rounded-[2.5rem] border-[8px] border-orange-500 shadow-[0_0_50px_rgba(234,88,12,0.4)] overflow-hidden bg-slate-800 relative group">
                                <img 
                                  src={nationalLeader?.photoUrl || nationalLeader?.photo_url || "/images/souleymane-1.jpg"} 
                                  alt="National Leader" 
-                                 className="w-full h-full object-cover object-top" 
+                                 className="w-full h-full object-cover object-top scale-105" 
                                  crossOrigin="anonymous" 
                                />
                                <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/80 to-transparent" />
-                               <div className="absolute bottom-4 inset-x-0 text-center px-4">
-                                  <p className="text-orange-400 font-bold text-sm uppercase tracking-widest mb-1">LEADER NATIONAL</p>
-                                  <h4 className="text-[1.8rem] font-black text-white uppercase tracking-tight leading-none">
+                               <div className="absolute bottom-6 inset-x-0 text-center px-4">
+                                  <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] mb-2 drop-shadow-md">LEADER NATIONAL</p>
+                                  <h4 className="text-[2.2rem] font-black text-white uppercase tracking-tight leading-tight drop-shadow-2xl">
                                     {nationalLeader?.firstName || nationalLeader?.first_name || "SOULEYMANE"}<br/>
                                     {nationalLeader?.nomSpecifiqueUnique || nationalLeader?.last_name || "MAHAMAT SALEH"}
                                   </h4>
@@ -552,52 +557,67 @@ export default function BrandAssets() {
                             </div>
                         </div>
 
-                        <div className="absolute top-[720px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
-                           {bureauNational && bureauNational.length > 0 ? bureauNational.map((b, i) => (
+                        {/* Board Grid - Horizontal Alignment */}
+                        <div className="absolute top-[780px] inset-x-10 z-30 flex justify-center gap-6 items-start">
+                           {(bureauNational && bureauNational.length > 0 ? bureauNational : [
+                             { role: "Leader Adjoint", leader: { firstName: "MOUNIR", nomSpecifiqueUnique: "MAHAMAT ISSA", photoUrl: "/images/mounir.jpg" } },
+                             { role: "Secteur Privé", leader: { firstName: "ALLAMINE", nomSpecifiqueUnique: "TIDJANI", photoUrl: "/images/leaders/leader_2.png" } },
+                             { role: "Académique", leader: { firstName: "JÉRÉMIE", nomSpecifiqueUnique: "IGNEBE", photoUrl: "/images/leaders/leader_3.png" } },
+                             { role: "Inclusion", leader: { firstName: "ADELINE", nomSpecifiqueUnique: "GOLDÉ", photoUrl: "/images/adeline.jpg" } }
+                           ]).map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
-                               <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
+                               <div className="w-[220px] h-[260px] rounded-[2rem] border-[4px] border-white/20 shadow-2xl overflow-hidden bg-slate-900 relative">
                                   <img
                                     src={b.leader?.photoUrl || b.leader?.photo_url || "/images/leaders/leader_1.png"}
-                                    alt={`${b.leader?.firstName || b.leader?.first_name} ${b.leader?.lastName || b.leader?.last_name}`}
+                                    alt="Leader"
                                     className="w-full h-full object-cover object-top"
                                     crossOrigin="anonymous"
                                   />
-                                  <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
+                                  <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black via-black/80 to-transparent" />
                                   <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
                                      <div className="bg-gradient-to-r from-amber-400 to-yellow-600 px-3 py-1 rounded-md mb-2 shadow-lg">
                                         <p className="text-black font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
                                      </div>
-                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md">
+                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md truncate w-full px-2">
                                        {b.leader?.firstName || b.leader?.first_name}
                                      </h4>
-                                     <h4 className="text-[1.2rem] font-black text-yellow-300 uppercase tracking-tight leading-none">
+                                     <h4 className="text-[1.1rem] font-black text-yellow-500 uppercase tracking-tight leading-none drop-shadow-md truncate w-full px-2">
                                        {b.leader?.nomSpecifiqueUnique || b.leader?.last_name}
                                      </h4>
                                   </div>
                                </div>
                              </div>
-                           )) : [
-                             { name: "MOUNIR MAHAMAT", label: "LEADER ADJOINT", img: "/images/leaders/leader_1.png" },
-                             { name: "ALLAMINE TIDJANI", label: "SECTEUR PRIVÉ", img: "/images/leaders/leader_2.png" },
-                             { name: "JÉRÉMIE IGNEBE", label: "ACADÉMIQUE", img: "/images/leaders/leader_3.png" },
-                             { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/adeline.jpg" }
-                           ].map((c, i) => (
-                             <div key={i} className="flex flex-col items-center">
-                               <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
-                                  <img src={c.img} alt={c.name} className="w-full h-full object-cover object-top" crossOrigin="anonymous" />
-                                  <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/80 to-transparent" />
-                                  <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
-                                     <div className="bg-gradient-to-r from-amber-400 to-yellow-600 px-3 py-1 rounded-md mb-2 shadow-lg">
-                                        <p className="text-black font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{c.label}</p>
-                                     </div>
-                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none">{c.name.split(' ')[0]}</h4>
-                                     <h4 className="text-[1.2rem] font-black text-yellow-300 uppercase tracking-tight leading-none">{c.name.split(' ').slice(1).join(' ')}</h4>
-                                  </div>
-                               </div>
-                             </div>
                            ))}
                         </div>
-                    </div>
+
+                        {/* Footer - 3 Strategic Zones */}
+                        <div className="absolute bottom-0 left-0 w-full h-[110px] bg-black z-30 flex items-center justify-between px-16 border-t border-white/10">
+                           {/* Left Zone */}
+                           <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(234,88,12,0.4)]">
+                                 <Zap className="w-6 h-6 text-white fill-white" />
+                              </div>
+                              <div className="flex flex-col">
+                                 <span className="text-white font-black text-lg tracking-widest uppercase leading-none">Profil Vérifié</span>
+                                 <span className="text-slate-500 font-bold text-xs uppercase mt-1">Liste Officielle 2026</span>
+                              </div>
+                           </div>
+
+                           {/* Center Zone */}
+                           <div className="flex flex-col items-center">
+                              <div className="text-white font-black text-3xl tracking-[0.4em] uppercase flex items-center">
+                                 SAYC<span className="text-orange-500">TCHAD</span>.ORG
+                              </div>
+                           </div>
+
+                           {/* Right Zone */}
+                           <div className="flex items-center gap-3">
+                              <div className="px-6 py-2 border border-white/20 rounded-xl">
+                                 <span className="text-white font-black text-sm uppercase tracking-widest">Délibération Officielle</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
                   )}
 
                   {activeCategory === "event" && (
