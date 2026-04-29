@@ -117,7 +117,7 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National (Strict Souleymane Mahamat Saleh)
+  // Identifie le Leader National (Souleymane Mahamat Saleh)
   const nationalLeader = (() => {
     if (!candidates) return null;
     const souleymane = candidates.find(c => {
@@ -129,34 +129,39 @@ export default function BrandAssets() {
     return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
   })();
 
-  // Build Bureau National: top vote-getter per role
+  // Liste officielle des finalistes pour éviter les erreurs (Stéphane, etc.)
+  const finalistsList = ["souleymane", "mounir", "allamine", "jérémie", "adeline", "jeremie"];
+
+  // Build Bureau National: top vote-getter per role among actual finalists
   const bureauNational = (() => {
     if (!candidates) return null;
     const roles = ["Leader Adjoint", "Secteur Privé", "Académique", "Inclusion"];
     
+    // Filtrer les candidats pour ne garder que les finalistes officiels
+    const filteredCandidates = candidates.filter(c => {
+      const fn = (c.firstName || c.first_name || "").toLowerCase();
+      return finalistsList.some(name => fn.includes(name));
+    });
+
     return roles.map(role => {
-      let leaderCandidates = candidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
+      let leaderCandidates = filteredCandidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
       
-      // Force Mounir en Leader Adjoint (Strict Mounir Mahamat Saleh, mais différent du National Leader)
+      // Force Mounir en Leader Adjoint s'il est présent
       if (role === "Leader Adjoint") {
-        const mounir = candidates.find(c => {
+        const mounir = filteredCandidates.find(c => {
           const fn = (c.firstName || c.first_name || "").toLowerCase();
-          const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
-          return fn.includes("mounir") && (ln.includes("saleh") || ln.includes("mahamat")) && c.id !== nationalLeader?.id;
+          return fn.includes("mounir") && c.id !== nationalLeader?.id;
         });
-        if (mounir) {
-          return { role, leader: mounir };
-        }
+        if (mounir) return { role, leader: mounir };
       }
 
       const sorted = leaderCandidates.sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0));
-      
-      // Override photo pour Adeline si trouvée
       const leader = sorted[0];
+
+      // Override photo pour Adeline
       if (leader) {
         const fn = (leader.firstName || leader.first_name || "").toLowerCase();
-        const ln = (leader.nomSpecifiqueUnique || leader.last_name || "").toLowerCase();
-        if (fn.includes("adeline") || ln.includes("goldé")) {
+        if (fn.includes("adeline")) {
           leader.photoUrl = "/images/adeline.jpg";
         }
       }
