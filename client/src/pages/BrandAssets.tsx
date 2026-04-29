@@ -117,10 +117,13 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National dynamiquement
+  // Identifie le Leader National (Priorité à Souleymane)
   const nationalLeader = (() => {
     if (!candidates) return null;
-    // On cherche celui qui a le plus de votes parmi tous (ou un rôle spécifique si défini)
+    const souleymane = candidates.find(c => 
+      (c.firstName?.toLowerCase().includes("souleymane") || c.first_name?.toLowerCase().includes("souleymane"))
+    );
+    if (souleymane) return souleymane;
     return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
   })();
 
@@ -513,7 +516,7 @@ export default function BrandAssets() {
                             </div>
                         </div>
 
-                        <div className="absolute top-[680px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
+                        <div className="absolute top-[710px] inset-x-8 z-30 grid grid-cols-4 gap-4 items-center">
                            {bureauNational && bureauNational.length > 0 ? bureauNational.map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
@@ -541,7 +544,7 @@ export default function BrandAssets() {
                              { name: "MOUNIR MAHAMAT", label: "LEADER ADJOINT", img: "/images/leaders/leader_1.png" },
                              { name: "ALLAMINE TIDJANI", label: "SECTEUR PRIVÉ", img: "/images/leaders/leader_2.png" },
                              { name: "JÉRÉMIE IGNEBE", label: "ACADÉMIQUE", img: "/images/leaders/leader_3.png" },
-                             { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/leaders/leader_4.png" }
+                             { name: "ADELINE GOLDÉ", label: "INCLUSION", img: "/images/adeline.jpg" }
                            ].map((c, i) => (
                              <div key={i} className="flex flex-col items-center">
                                <div className="w-[220px] h-[270px] rounded-[2rem] border-[4px] border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.6)] overflow-hidden bg-slate-900 relative">
