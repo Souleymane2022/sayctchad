@@ -117,19 +117,23 @@ export default function BrandAssets() {
     enabled: isAuthenticated,
   });
 
-  // Identifie le Leader National (Souleymane Mahamat Saleh)
+  // Identifie le Leader National (Priorité absolue à Souleymane)
   const nationalLeader = (() => {
     if (!candidates) return null;
     const souleymane = candidates.find(c => {
       const fn = (c.firstName || c.first_name || "").toLowerCase();
       const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
-      return fn.includes("souleymane") && (ln.includes("saleh") || ln.includes("mahamat"));
+      return fn.includes("souleymane") || fn.includes("mahmat") || ln.includes("saleh");
     });
+    // Ensure we don't pick Mounir as Souleymane if Mounir is found first
+    const realSouleymane = candidates.find(c => (c.firstName || "").toLowerCase().includes("souleymane"));
+    if (realSouleymane) return realSouleymane;
+    
     if (souleymane) return souleymane;
     return [...candidates].sort((a, b) => (b.votesCount ?? b.votes_count ?? 0) - (a.votesCount ?? a.votes_count ?? 0))[0];
   })();
 
-  // Liste officielle des finalistes pour éviter les erreurs (Stéphane, etc.)
+  // Liste officielle des finalistes
   const finalistsList = ["souleymane", "mounir", "allamine", "jérémie", "adeline", "jeremie"];
 
   // Build Bureau National: top vote-getter per role among actual finalists
@@ -140,13 +144,14 @@ export default function BrandAssets() {
     // Filtrer les candidats pour ne garder que les finalistes officiels
     const filteredCandidates = candidates.filter(c => {
       const fn = (c.firstName || c.first_name || "").toLowerCase();
-      return finalistsList.some(name => fn.includes(name));
+      const ln = (c.nomSpecifiqueUnique || c.last_name || "").toLowerCase();
+      return finalistsList.some(name => fn.includes(name) || ln.includes(name));
     });
 
     return roles.map(role => {
       let leaderCandidates = filteredCandidates.filter(c => c.role === role && c.id !== nationalLeader?.id);
       
-      // Force Mounir en Leader Adjoint s'il est présent
+      // Force Mounir en Leader Adjoint s'il est présent et pas déjà National Leader
       if (role === "Leader Adjoint") {
         const mounir = filteredCandidates.find(c => {
           const fn = (c.firstName || c.first_name || "").toLowerCase();
@@ -521,17 +526,17 @@ export default function BrandAssets() {
                            </div>
                         </div>
 
-                        <div className="absolute top-[180px] left-0 w-full text-center z-20 space-y-2">
+                        <div className="absolute top-[160px] left-0 w-full text-center z-20 space-y-2">
                            <div className="inline-block px-10 py-2.5 bg-orange-500/10 border border-orange-500/20 rounded-full mb-2">
                               <span className="text-orange-500 font-black text-lg uppercase tracking-[0.6em]">SAYC TCHAD — MANDAT 2026-2028</span>
                            </div>
                            <h1 className="text-[70px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)]">BUREAU NATIONAL</h1>
                         </div>
-
-                        <div className="absolute top-[280px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
-                            <div className="w-[320px] h-[380px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
+ 
+                        <div className="absolute top-[310px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
+                            <div className="w-[300px] h-[360px] rounded-[2rem] border-[6px] border-orange-500 shadow-[0_20px_50px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
                                <img 
-                                 src={nationalLeader?.photoUrl || nationalLeader?.photo_url || "/national-leader.jpg"} 
+                                 src={nationalLeader?.photoUrl || nationalLeader?.photo_url || "/images/souleymane-1.jpg"} 
                                  alt="National Leader" 
                                  className="w-full h-full object-cover object-top" 
                                  crossOrigin="anonymous" 
