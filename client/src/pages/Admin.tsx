@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -751,7 +751,7 @@ function MembersTab() {
       toast({ 
         title: "Envoi terminé", 
         description: statusMessage,
-        variant: data.sent < (data.total || 0) ? "warning" : "default"
+        variant: data.sent < (data.total || 0) ? "destructive" : "default"
       });
     },
     onError: (error: any) => {
@@ -1791,6 +1791,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 }
 
 function ElectionVotesHistory() {
+  const { toast } = useToast();
   const { data: votes = [], isLoading } = useQuery<any[]>({
     queryKey: ["/api/admin/elections/votes"],
     queryFn: async () => {

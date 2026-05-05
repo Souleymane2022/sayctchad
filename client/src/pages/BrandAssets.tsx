@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { toPng, toBlob } from "html-to-image";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -510,8 +510,13 @@ export default function BrandAssets() {
                           <div className="bg-white/5 border border-white/10 backdrop-blur-3xl p-16 rounded-[4rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
                              <Quote className="w-20 h-20 text-sayc-teal opacity-20 absolute top-[-30px] right-8" />
                              <p className="text-white font-bold text-[2.6rem] leading-[1.3] text-left">{formData.mainText}</p>
-                          </div                  {activeCategory === "testimony" && (
-                     <div id="poster-render" className="w-[1080px] h-[1080px] bg-[#0A1A2F] text-white relative overflow-hidden font-sans">
+                          </div>
+                       </div>
+                    </div>
+                  )}
+
+                  {activeCategory === "testimony" && (
+                     <div className="w-[1080px] h-[1080px] bg-[#0A1A2F] text-white relative overflow-hidden font-sans">
                         {/* High-End Background System */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A2F] via-[#1E2A44] to-black z-0" />
                         <div className="absolute top-0 inset-x-0 h-[300px] bg-gradient-to-b from-orange-500/5 to-transparent z-0" />

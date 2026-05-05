@@ -58,7 +58,9 @@ function Router() {
       <Route path="/devenir-membre-sayc" component={MembershipRegistration} />
       <Route path="/verify/:membershipId" component={VerifyMember} />
       <Route path="/sayc-membres-galerie" component={MembersGallery} />
-      <Route path="/elections/transparence" component={VotersAudit} />
+      <Route path="/elections/transparence">
+        <VotersAudit />
+      </Route>
       <Route path="/elections/audit-interne">
         <VotersAudit preview={true} />
       </Route>

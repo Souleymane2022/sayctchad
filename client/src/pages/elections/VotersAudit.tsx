@@ -128,7 +128,7 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
         format(new Date(v.createdAt), "dd/MM/yyyy HH:mm")
       ]),
       styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillStyle: "F", fillColor: [30, 58, 138], textColor: 255 },
+      headStyles: { fillColor: [30, 58, 138], textColor: 255 },
       alternateRowStyles: { fillColor: [245, 247, 250] },
       margin: { top: 45 }
     });
@@ -210,7 +210,7 @@ export default function VotersAudit({ preview = false }: { preview?: boolean }) 
                               {candidate.votesCount} voix ({percentage.toFixed(1)}%)
                             </span>
                           </div>
-                          <Progress value={percentage} className="h-2.5 bg-slate-100" indicatorClassName="bg-gradient-to-r from-[#1e3a8a] to-sayc-teal" />
+                          <Progress value={percentage} className="h-2.5 bg-slate-100" />
                         </div>
                       );
                     })}
