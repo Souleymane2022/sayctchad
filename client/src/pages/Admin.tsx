@@ -740,7 +740,7 @@ function MembersTab() {
 
   const sendVotingInfoMutation = useMutation({
     mutationFn: async () => {
-      const CHUNK_SIZE = 50;
+      const CHUNK_SIZE = 25; // Reduced from 50 to avoid 504 timeouts
       let totalSent = 0;
       const allMembers = members;
       
@@ -2164,10 +2164,10 @@ function MassEmailTab() {
       const resInitial = await apiRequest("POST", "/api/admin/mass-email", data);
       const initialData = await resInitial.json();
       
-      const recipients = initialData.recipients || []; // We need to update the backend to return the list if requested
+      const recipients = initialData.recipients || [];
       if (recipients.length === 0) return initialData;
 
-      const CHUNK_SIZE = 50;
+      const CHUNK_SIZE = 25; // Reduced from 50 to avoid 504 timeouts
       let totalSent = 0;
       
       for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {

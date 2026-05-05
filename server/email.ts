@@ -172,7 +172,16 @@ export async function sendMassEmail(recipients: string[], subject: string, messa
             </div>
         `;
 
-        // Send in batches using BCC to be much faster and avoid timeouts
+        // Filter out obviously incorrect emails before processing
+        const validRecipients = recipients.filter(email => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return email && emailRegex.test(email.trim());
+        });
+
+        if (validRecipients.length === 0) {
+            return { success: true, sent: 0, total: recipients.length };
+        }
+
         // Send individually with pooling for maximum reliability
         let sentCount = 0;
         const CONCURRENCY = 2;
@@ -235,19 +244,27 @@ export async function sendPersonalizedMemberEmails(membersList: any[], subject: 
     try {
         if (!process.env.SMTP_PASS || membersList.length === 0) return { success: false, sent: 0 };
 
+        // Filter valid members
+        const validMembers = membersList.filter(m => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return m.email && emailRegex.test(m.email.trim());
+        });
+
+        if (validMembers.length === 0) return { success: true, sent: 0, total: membersList.length };
+
         let sentCount = 0;
         const CONCURRENCY = 2; // Reduced concurrency to avoid Gmail blocking
         const startTime = Date.now();
         const MAX_EXECUTION_TIME = 50000; // 50 seconds safety limit for Vercel 60s timeout
 
-        for (let i = 0; i < membersList.length; i += CONCURRENCY) {
+        for (let i = 0; i < validMembers.length; i += CONCURRENCY) {
             // Check for timeout to avoid 504 error
             if (Date.now() - startTime > MAX_EXECUTION_TIME) {
                 console.warn("Approaching Vercel timeout, stopping email sending early. Sent:", sentCount);
                 break;
             }
 
-            const batch = membersList.slice(i, i + CONCURRENCY);
+            const batch = validMembers.slice(i, i + CONCURRENCY);
             const promises = batch.map(async (member) => {
                 try {
                     const personalizedMessage = messageTemplate
