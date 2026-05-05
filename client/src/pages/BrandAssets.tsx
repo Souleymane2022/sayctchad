@@ -515,6 +515,8 @@ export default function BrandAssets() {
                        </div>
                     </div>
                   )}
+
+                  {activeCategory === "testimony" && (
                     <div className="w-[1080px] h-[1080px] bg-[#0A0D14] text-white relative overflow-hidden font-sans">
                        {/* Background */}
                        <div className="absolute inset-0 bg-gradient-to-br from-[#0A0D14] via-[#141824] to-black z-0" />
