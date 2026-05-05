@@ -862,7 +862,7 @@ function MembersTab({ emailProgress, setEmailProgress }: {
                 }
               }} 
               disabled={sendVotingInfoMutation.isPending}
-              className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600 h-9 px-3"
+              className="text-xs bg-orange-600 hover:bg-orange-700 text-white font-bold h-9 px-3 animate-bounce shadow-lg"
             >
               {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
               {localStorage.getItem('sayc_sent_voting_info_ids') ? "Continuer Envoi" : "Infos Vote"}
@@ -1779,6 +1779,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
         <div className="container mx-auto flex items-center justify-between flex-wrap gap-4 py-4 px-4">
           <div className="flex-1 min-w-[200px]">
             <h1 className="text-xl font-bold line-clamp-1" data-testid="text-dashboard-title">Administration SAYC</h1>
+            <p className="text-[10px] font-bold text-orange-600 animate-pulse uppercase tracking-tighter">Mise à jour v2.1 : Système d'envoi par lots actif</p>
             <p className="text-xs text-muted-foreground">Gestion du portail</p>
           </div>
           <div className="flex items-center gap-2">
@@ -2361,7 +2362,7 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
           <div className="flex flex-col gap-4">
             <div className="flex gap-2">
               <Button 
-                className="flex-1 h-12 bg-sayc-teal hover:bg-sayc-teal/90"
+                className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-bold animate-pulse shadow-xl"
                 onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
                 disabled={massEmailMutation.isPending || !subject || !message}
               >
