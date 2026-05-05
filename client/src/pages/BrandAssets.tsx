@@ -19,7 +19,7 @@ import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
 import smartAfricaAllianceLogo from "@assets/SMART_AFRICA_LOGO_1770443171460.png";
 import sadaLogo from "@assets/SADA_1770443171461.jpg";
 
-type Category = "formation" | "news" | "testimony" | "event" | "announcement";
+type Category = "formation" | "news" | "testimony" | "event" | "announcement" | "bureau";
 
 function BrandLogin({ onLogin }: { onLogin: () => void }) {
   const [password, setPassword] = useState("");
@@ -310,7 +310,8 @@ export default function BrandAssets() {
                   { id: "formation", icon: GraduationCap, label: "Formation" },
                   { id: "news", icon: Megaphone, label: "Actualité" },
                   { id: "event", icon: Calendar, label: "Événement" },
-                  { id: "testimony", icon: Users, label: "Bureau National" },
+                  { id: "bureau", icon: Award, label: "Bureau National" },
+                  { id: "testimony", icon: Quote, label: "Témoignage" },
                   { id: "announcement", icon: Megaphone, label: "Annonce" }
                 ].map((cat) => (
                   <Button
@@ -514,8 +515,51 @@ export default function BrandAssets() {
                        </div>
                     </div>
                   )}
+                    <div className="w-[1080px] h-[1080px] bg-[#0A0D14] text-white relative overflow-hidden font-sans">
+                       {/* Background */}
+                       <div className="absolute inset-0 bg-gradient-to-br from-[#0A0D14] via-[#141824] to-black z-0" />
+                       <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-sayc-teal/10 rounded-full blur-[150px] z-0" />
+                       
+                       {/* Top Bar */}
+                       <div className="absolute top-0 left-0 w-full h-[140px] bg-white z-10 flex items-center justify-center shadow-xl border-b-[8px] border-sayc-teal">
+                          <div className="flex items-center gap-16">
+                             <img src={logoSayc} alt="SAYC" className="h-[60px] object-contain" />
+                             <div className="w-[1px] h-10 bg-slate-200" />
+                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px] object-contain" />
+                             <div className="w-[1px] h-10 bg-slate-200" />
+                             <img src={sadaLogo} alt="SADA" className="h-[55px] object-contain" />
+                          </div>
+                       </div>
 
-                  {activeCategory === "testimony" && (
+                       {/* Testimony Content */}
+                       <div className="absolute top-[220px] left-20 right-20 z-20">
+                          <Quote className="w-32 h-32 text-sayc-teal/20 absolute -top-10 -left-10" />
+                          <div className="relative pt-12 pb-20">
+                             <p className="text-[2.8rem] font-bold leading-[1.4] italic text-white/90 tracking-tight">
+                                "{formData.mainText || formData.quote}"
+                             </p>
+                          </div>
+                       </div>
+
+                       {/* Speaker Profile Card */}
+                       <div className="absolute bottom-[180px] left-20 right-20 z-30">
+                          <div className="bg-white/5 border border-white/10 backdrop-blur-3xl p-8 rounded-[2.5rem] flex items-center gap-10 shadow-2xl">
+                             <div className="w-32 h-32 rounded-3xl border-4 border-sayc-teal overflow-hidden shrink-0">
+                                <img src={formData.imageUrl} alt={formData.personName} className="w-full h-full object-cover" crossOrigin="anonymous" />
+                             </div>
+                             <div>
+                                <h4 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">{formData.personName}</h4>
+                                <div className="flex items-center gap-3">
+                                   <div className="h-1 w-12 bg-sayc-teal rounded-full" />
+                                   <span className="text-sayc-teal font-black text-xl uppercase tracking-widest">{formData.personRole}</span>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                  )}
+
+                  {activeCategory === "bureau" && (
                      <div className="w-[1080px] h-[1080px] bg-[#0A1A2F] text-white relative overflow-hidden font-sans">
                         {/* High-End Background System */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A2F] via-[#1E2A44] to-black z-0" />

@@ -2376,17 +2376,18 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
 
               <Button 
                 variant="outline" 
-                className="h-12 border-slate-200 text-slate-500"
+                className="h-12 border-slate-200 text-slate-500 flex gap-2"
                 onClick={() => {
                   const safeSubject = (subject || "").replace(/[^a-zA-Z0-9]/g, '_').substring(0, 32);
                   if(confirm("Voulez-vous réinitialiser l'historique pour cet objet d'email ?")) {
                     localStorage.removeItem(`sayc_sent_mass_${safeSubject}`);
-                    window.location.reload();
+                    toast({ title: "Réinitialisé", description: "L'historique d'envoi pour cet objet a été effacé." });
                   }
                 }}
-                title="Réinitialiser l'historique pour ce sujet"
+                disabled={!subject}
               >
-                <RotateCcw className="w-5 h-5" />
+                <RotateCcw className="h-4 w-4" />
+                Réinitialiser
               </Button>
             </div>
 
