@@ -744,9 +744,14 @@ function MembersTab() {
       return res.json();
     },
     onSuccess: (data) => {
+      const statusMessage = data.sent < (data.total || 0) 
+        ? `${data.sent} emails envoyés sur ${data.total}. Le processus a été interrompu pour éviter un timeout serveur. Veuillez renvoyer pour le reste si nécessaire.`
+        : `${data.sent} emails personnalisés ont été envoyés avec succès.`;
+        
       toast({ 
         title: "Envoi terminé", 
-        description: `${data.sent} emails personnalisés ont été envoyés.` 
+        description: statusMessage,
+        variant: data.sent < (data.total || 0) ? "warning" : "default"
       });
     },
     onError: (error: any) => {
@@ -2147,7 +2152,10 @@ function MassEmailTab() {
       return res.json();
     },
     onSuccess: (data) => {
-      toast({ title: "Emails envoyés", description: `${data.sent} emails ont été envoyés avec succès.` });
+      toast({ 
+        title: "Emails envoyés", 
+        description: `${data.sent} emails ont été envoyés avec succès via le mode optimisé (BCC).` 
+      });
       setSubject("");
       setMessage("");
     },

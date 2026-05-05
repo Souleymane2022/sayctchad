@@ -169,22 +169,30 @@ export async function sendMassEmail(recipients: string[], subject: string, messa
             </div>
         `;
 
-        // Send in batches or one by one to avoid SMTP limits/blocks
+        // Send in batches using BCC to be much faster and avoid timeouts
         let sentCount = 0;
-        for (const recipient of recipients) {
+        const BATCH_SIZE = 90; // Gmail limit is 100 per message
+        
+        for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
+            const batch = recipients.slice(i, i + BATCH_SIZE);
             try {
                 await transporter.sendMail({
                     from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
-                    to: recipient,
+                    to: process.env.SMTP_USER || "sayctchad@gmail.com", // Send to self
+                    bcc: batch, // All recipients in BCC
                     subject,
                     text: messageBody,
                     html: htmlTemplate,
                 });
-                sentCount++;
-                // Small delay between emails
-                await new Promise(resolve => setTimeout(resolve, 100));
+                sentCount += batch.length;
+                
+                // Small delay between batches to be safe
+                if (i + BATCH_SIZE < recipients.length) {
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
             } catch (err) {
-                console.error(`Failed to send email to ${recipient}:`, err);
+                console.error(`Failed to send email batch starting at ${i}:`, err);
+                // If a batch fails, we could try sending them one by one or just continue
             }
         }
 
@@ -221,56 +229,73 @@ export async function sendPersonalizedMemberEmails(membersList: any[], subject: 
         if (!process.env.SMTP_PASS || membersList.length === 0) return { success: false, sent: 0 };
 
         let sentCount = 0;
-        for (const member of membersList) {
-            try {
-                // Personalize the message
-                const personalizedMessage = messageTemplate
-                    .replace(/{{firstName}}/g, member.firstName || "")
-                    .replace(/{{lastName}}/g, member.lastName || "")
-                    .replace(/{{membershipId}}/g, member.membershipId || "")
-                    .replace(/{{email}}/g, member.email || "");
+        const CONCURRENCY = 5; // Send 5 emails at once
+        const startTime = Date.now();
+        const MAX_EXECUTION_TIME = 50000; // 50 seconds safety limit for Vercel 60s timeout
 
-                const htmlTemplate = `
-                    <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                        <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
-                            <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
-                            <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Information Officielle de Vote</p>
-                        </div>
-                        
-                        <div style="padding: 30px; background-color: #ffffff;">
-                            <div style="font-size: 16px; line-height: 1.6; color: #444;">
-                                ${personalizedMessage.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
-                            </div>
-                        </div>
-                        
-                        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
-                            <p style="margin: 0; font-size: 13px; color: #666;">
-                                <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
-                            </p>
-                            <div style="margin-top: 15px; font-size: 12px;">
-                                <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">💬 Rejoindre la communauté WhatsApp</a>
-                                <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">📝 Devenir membre officiel</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                await transporter.sendMail({
-                    from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
-                    to: member.email,
-                    subject,
-                    text: personalizedMessage,
-                    html: htmlTemplate,
-                });
-                sentCount++;
-                // Delay to avoid spam filters
-                await new Promise(resolve => setTimeout(resolve, 150));
-            } catch (err) {
-                console.error(`Failed to send personalized email to ${member.email}:`, err);
+        for (let i = 0; i < membersList.length; i += CONCURRENCY) {
+            // Check for timeout to avoid 504 error
+            if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+                console.warn("Approaching Vercel timeout, stopping email sending early. Sent:", sentCount);
+                break;
             }
+
+            const batch = membersList.slice(i, i + CONCURRENCY);
+            const promises = batch.map(async (member) => {
+                try {
+                    const personalizedMessage = messageTemplate
+                        .replace(/{{firstName}}/g, member.firstName || "")
+                        .replace(/{{lastName}}/g, member.lastName || "")
+                        .replace(/{{membershipId}}/g, member.membershipId || "")
+                        .replace(/{{email}}/g, member.email || "");
+
+                    const htmlTemplate = `
+                        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
+                                <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
+                                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Information Officielle de Vote</p>
+                            </div>
+                            
+                            <div style="padding: 30px; background-color: #ffffff;">
+                                <div style="font-size: 16px; line-height: 1.6; color: #444;">
+                                    ${personalizedMessage.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+                                <p style="margin: 0; font-size: 13px; color: #666;">
+                                    <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
+                                </p>
+                                <div style="margin-top: 15px; font-size: 12px;">
+                                    <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">💬 Rejoindre la communauté WhatsApp</a>
+                                    <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">📝 Devenir membre officiel</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    await transporter.sendMail({
+                        from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+                        to: member.email,
+                        subject,
+                        text: personalizedMessage,
+                        html: htmlTemplate,
+                    });
+                    return true;
+                } catch (err) {
+                    console.error(`Failed to send personalized email to ${member.email}:`, err);
+                    return false;
+                }
+            });
+
+            const results = await Promise.all(promises);
+            sentCount += results.filter(Boolean).length;
+            
+            // Minimal delay between batches
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
 
-        return { success: true, sent: sentCount };
+        return { success: true, sent: sentCount, total: membersList.length };
     } catch (error) {
         console.error("Error in sendPersonalizedMemberEmails:", error);
         return { success: false, sent: 0 };
