@@ -18,6 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Progress } from "@/components/ui/progress";
 import { LogOut, Plus, Pencil, Trash2, RotateCcw, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database, Sparkles, FileDown } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import { processAndWatermark } from "@/lib/imageUtils";
@@ -683,7 +684,10 @@ function ResourceTab({ config }: { config: ResourceConfig }) {
   );
 }
 
-function MembersTab() {
+function MembersTab({ emailProgress, setEmailProgress }: { 
+  emailProgress: { current: number, total: number, active: boolean },
+  setEmailProgress: React.Dispatch<React.SetStateAction<{ current: number, total: number, active: boolean }>>
+}) {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [cityFilter, setCityFilter] = useState("all");
@@ -744,16 +748,16 @@ function MembersTab() {
       let totalSent = 0;
       const allMembers = members;
       
-      // Load already sent IDs from localStorage to avoid duplicates
       const sentHistoryRaw = localStorage.getItem('sayc_sent_voting_info_ids');
       const sentIds = new Set(sentHistoryRaw ? JSON.parse(sentHistoryRaw) : []);
-      
       const membersToSend = allMembers.filter(m => !sentIds.has(m.id));
       
       if (membersToSend.length === 0) {
         toast({ title: "Déjà à jour", description: "Tous les membres ont déjà reçu leurs informations." });
         return { sent: 0, total: allMembers.length };
       }
+
+      setEmailProgress({ current: 0, total: membersToSend.length, active: true });
 
       for (let i = 0; i < membersToSend.length; i += CHUNK_SIZE) {
         const chunk = membersToSend.slice(i, i + CHUNK_SIZE);
@@ -764,18 +768,20 @@ function MembersTab() {
           const data = await res.json();
           totalSent += data.sent;
           
-          // Update history after each successful chunk
           memberIds.forEach(id => sentIds.add(id));
           localStorage.setItem('sayc_sent_voting_info_ids', JSON.stringify(Array.from(sentIds)));
           
+          setEmailProgress(prev => ({ ...prev, current: Math.min(prev.current + CHUNK_SIZE, allMembers.length) }));
+
           if (i + CHUNK_SIZE < membersToSend.length) {
             await new Promise(r => setTimeout(r, 1000));
           }
         } catch (err) {
-          console.error("Chunk failed, but history is saved:", err);
+          setEmailProgress(prev => ({ ...prev, active: false }));
           throw err;
         }
       }
+      setEmailProgress(prev => ({ ...prev, active: false }));
       return { sent: totalSent, total: allMembers.length };
     },
     onSuccess: (data) => {
@@ -839,45 +845,42 @@ function MembersTab() {
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold" data-testid="text-title-members">Membres ({filteredMembers.length} / {members.length})</h2>
         <div className="flex items-center gap-1 sm:gap-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => {
-              const sentIdsRaw = localStorage.getItem('sayc_sent_voting_info_ids');
-              const sentIds = sentIdsRaw ? JSON.parse(sentIdsRaw) : [];
-              const count = members.length - sentIds.length;
-              const msg = sentIds.length > 0 
-                ? `Continuer l'envoi ? ${sentIds.length} membres ont déjà reçu l'email. Il reste environ ${count} membres à traiter.`
-                : "Envoyer les infos de vote personnalisées à TOUS les membres ?";
-              
-              if (confirm(msg)) {
-                sendVotingInfoMutation.mutate();
-              }
-            }} 
-            disabled={sendVotingInfoMutation.isPending}
-            className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600 h-8 px-2 sm:h-9 sm:px-3"
-            title="Envoyer Infos Vote"
-          >
-            {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-0 sm:mr-2" /> : <Mail className="h-4 w-4 mr-0 sm:mr-2" />}
-            <span className="hidden sm:inline">{localStorage.getItem('sayc_sent_voting_info_ids') ? "Continuer" : "Infos Vote"}</span>
-          </Button>
-
-          {localStorage.getItem('sayc_sent_voting_info_ids') && (
+          <div className="flex flex-col gap-1">
             <Button 
-              variant="ghost" 
-              size="sm" 
+              variant="outline" 
+              size="sm"
               onClick={() => {
-                if(confirm("Réinitialiser l'historique d'envoi ? Cela vous permettra de renvoyer à tout le monde depuis le début.")) {
-                  localStorage.removeItem('sayc_sent_voting_info_ids');
-                  window.location.reload();
+                const sentIdsRaw = localStorage.getItem('sayc_sent_voting_info_ids');
+                const sentIds = sentIdsRaw ? JSON.parse(sentIdsRaw) : [];
+                const count = members.length - sentIds.length;
+                const msg = sentIds.length > 0 
+                  ? `Continuer l'envoi ? ${sentIds.length} membres ont déjà reçu l'email. Il reste environ ${count} membres à traiter.`
+                  : "Envoyer les infos de vote personnalisées à TOUS les membres ?";
+                
+                if (confirm(msg)) {
+                  sendVotingInfoMutation.mutate();
                 }
-              }}
-              className="text-slate-400 hover:text-red-500 h-8 w-8 p-0"
-              title="Réinitialiser l'historique"
+              }} 
+              disabled={sendVotingInfoMutation.isPending}
+              className="text-xs border-blue-500/50 hover:bg-blue-500/10 text-blue-600 h-9 px-3"
             >
-              <RotateCcw className="h-4 w-4" />
+              {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Mail className="h-4 w-4 mr-2" />}
+              {localStorage.getItem('sayc_sent_voting_info_ids') ? "Continuer Envoi" : "Infos Vote"}
             </Button>
-          )}
+            {localStorage.getItem('sayc_sent_voting_info_ids') && (
+              <button 
+                onClick={() => {
+                  if(confirm("Réinitialiser l'historique d'envoi ?")) {
+                    localStorage.removeItem('sayc_sent_voting_info_ids');
+                    window.location.reload();
+                  }
+                }}
+                className="text-[10px] text-red-500 hover:underline text-center uppercase font-bold"
+              >
+                Réinitialiser l'historique
+              </button>
+            )}
+          </div>
           <Button 
             variant="outline" 
             size="sm"
@@ -1758,6 +1761,7 @@ function ThunderbirdApplicationsTab() {
 
 function AdminDashboard({ onLogout }: { onLogout: () => void }) {
   const { toast } = useToast();
+  const [emailProgress, setEmailProgress] = useState({ current: 0, total: 0, active: false });
   const logoutMutation = useMutation({
     mutationFn: async () => {
       await apiRequest("POST", "/api/admin/logout");
@@ -1827,7 +1831,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <ElectionCandidatesTab />
           </TabsContent>
           <TabsContent value="members">
-            <MembersTab />
+            <MembersTab emailProgress={emailProgress} setEmailProgress={setEmailProgress} />
           </TabsContent>
           <TabsContent value="messages">
             <MessagesTab />
@@ -1836,7 +1840,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
             <NewsletterTab />
           </TabsContent>
           <TabsContent value="mass-email">
-            <MassEmailTab />
+            <MassEmailTab emailProgress={emailProgress} setEmailProgress={setEmailProgress} />
           </TabsContent>
         </Tabs>
       </div>
@@ -2194,7 +2198,10 @@ function ElectionCandidatesTab() {
   );
 }
 
-function MassEmailTab() {
+function MassEmailTab({ emailProgress, setEmailProgress }: { 
+  emailProgress: { current: number, total: number, active: boolean },
+  setEmailProgress: React.Dispatch<React.SetStateAction<{ current: number, total: number, active: boolean }>>
+}) {
   const { toast } = useToast();
   const [target, setTarget] = useState("members");
   const [subject, setSubject] = useState("");
@@ -2351,32 +2358,46 @@ function MassEmailTab() {
             <Label htmlFor="include-sada">Inclure la bannière SADA (Promotion des formations)</Label>
           </div>
 
-          <div className="flex gap-2">
-            <Button 
-              className="flex-1 h-12 bg-sayc-teal hover:bg-sayc-teal/90"
-              onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
-              disabled={massEmailMutation.isPending || !subject || !message}
-            >
-              {massEmailMutation.isPending ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
-              ) : (
-                localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) ? "Continuer la campagne" : "Envoyer les emails"
-              )}
-            </Button>
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-2">
+              <Button 
+                className="flex-1 h-12 bg-sayc-teal hover:bg-sayc-teal/90"
+                onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
+                disabled={massEmailMutation.isPending || !subject || !message}
+              >
+                {massEmailMutation.isPending ? (
+                  <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
+                ) : (
+                  localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) ? "Continuer la campagne" : "Envoyer les emails"
+                )}
+              </Button>
 
-            {localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) && (
               <Button 
                 variant="outline" 
-                className="h-12 border-red-200 text-red-600 hover:bg-red-50"
+                className="h-12 border-slate-200 text-slate-500"
                 onClick={() => {
                   if(confirm("Voulez-vous réinitialiser l'historique pour cet objet d'email ?")) {
                     localStorage.removeItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`);
                     window.location.reload();
                   }
                 }}
+                title="Réinitialiser l'historique pour ce sujet"
               >
                 <RotateCcw className="w-5 h-5" />
               </Button>
+            </div>
+
+            {emailProgress.active && (
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-4">
+                <div className="flex justify-between text-xs font-bold">
+                  <span>PROGRESSION DE L'ENVOI</span>
+                  <span>{Math.round((emailProgress.current / emailProgress.total) * 100)}%</span>
+                </div>
+                <Progress value={(emailProgress.current / emailProgress.total) * 100} className="h-2" />
+                <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest">
+                  {emailProgress.current} / {emailProgress.total} emails traités
+                </p>
+              </div>
             )}
           </div>
         </CardContent>
