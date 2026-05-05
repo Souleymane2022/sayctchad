@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
-import { LogOut, Plus, Pencil, Trash2, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database, Sparkles, FileDown } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, RotateCcw, Lock, Shield, Download, Loader2, AlertCircle, Search, XCircle, Mail, Award, Users, Database, Sparkles, FileDown } from "lucide-react";
 import { MemberCard } from "@/components/MemberCard";
 import { processAndWatermark } from "@/lib/imageUtils";
 import type { Opportunity, Partner, Training, NewsArticle, Event, Achievement, Member, ContactMessage, NewsletterSubscriber, ThunderbirdApplication, ElectionCandidate, AwsRestartApplication } from "@shared/schema";
@@ -740,21 +740,40 @@ function MembersTab() {
 
   const sendVotingInfoMutation = useMutation({
     mutationFn: async () => {
-      const CHUNK_SIZE = 25; // Reduced from 50 to avoid 504 timeouts
+      const CHUNK_SIZE = 25;
       let totalSent = 0;
       const allMembers = members;
       
-      for (let i = 0; i < allMembers.length; i += CHUNK_SIZE) {
-        const chunk = allMembers.slice(i, i + CHUNK_SIZE);
+      // Load already sent IDs from localStorage to avoid duplicates
+      const sentHistoryRaw = localStorage.getItem('sayc_sent_voting_info_ids');
+      const sentIds = new Set(sentHistoryRaw ? JSON.parse(sentHistoryRaw) : []);
+      
+      const membersToSend = allMembers.filter(m => !sentIds.has(m.id));
+      
+      if (membersToSend.length === 0) {
+        toast({ title: "Déjà à jour", description: "Tous les membres ont déjà reçu leurs informations." });
+        return { sent: 0, total: allMembers.length };
+      }
+
+      for (let i = 0; i < membersToSend.length; i += CHUNK_SIZE) {
+        const chunk = membersToSend.slice(i, i + CHUNK_SIZE);
         const memberIds = chunk.map(m => m.id);
         
-        const res = await apiRequest("POST", "/api/admin/members/send-voting-info", { memberIds });
-        const data = await res.json();
-        totalSent += data.sent;
-        
-        if (i + CHUNK_SIZE < allMembers.length) {
-          // Pause between chunks
-          await new Promise(r => setTimeout(r, 1000));
+        try {
+          const res = await apiRequest("POST", "/api/admin/members/send-voting-info", { memberIds });
+          const data = await res.json();
+          totalSent += data.sent;
+          
+          // Update history after each successful chunk
+          memberIds.forEach(id => sentIds.add(id));
+          localStorage.setItem('sayc_sent_voting_info_ids', JSON.stringify(Array.from(sentIds)));
+          
+          if (i + CHUNK_SIZE < membersToSend.length) {
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        } catch (err) {
+          console.error("Chunk failed, but history is saved:", err);
+          throw err;
         }
       }
       return { sent: totalSent, total: allMembers.length };
@@ -824,7 +843,14 @@ function MembersTab() {
             variant="outline" 
             size="sm"
             onClick={() => {
-              if (confirm("Voulez-vous envoyer les infos de vote personnalisées à TOUS les membres ? Cela enverra un email individuel avec leur ID membre.")) {
+              const sentIdsRaw = localStorage.getItem('sayc_sent_voting_info_ids');
+              const sentIds = sentIdsRaw ? JSON.parse(sentIdsRaw) : [];
+              const count = members.length - sentIds.length;
+              const msg = sentIds.length > 0 
+                ? `Continuer l'envoi ? ${sentIds.length} membres ont déjà reçu l'email. Il reste environ ${count} membres à traiter.`
+                : "Envoyer les infos de vote personnalisées à TOUS les membres ?";
+              
+              if (confirm(msg)) {
                 sendVotingInfoMutation.mutate();
               }
             }} 
@@ -833,8 +859,25 @@ function MembersTab() {
             title="Envoyer Infos Vote"
           >
             {sendVotingInfoMutation.isPending ? <Loader2 className="h-4 w-4 animate-spin mr-0 sm:mr-2" /> : <Mail className="h-4 w-4 mr-0 sm:mr-2" />}
-            <span className="hidden sm:inline">Envoyer Infos Vote</span>
+            <span className="hidden sm:inline">{localStorage.getItem('sayc_sent_voting_info_ids') ? "Continuer" : "Infos Vote"}</span>
           </Button>
+
+          {localStorage.getItem('sayc_sent_voting_info_ids') && (
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => {
+                if(confirm("Réinitialiser l'historique d'envoi ? Cela vous permettra de renvoyer à tout le monde depuis le début.")) {
+                  localStorage.removeItem('sayc_sent_voting_info_ids');
+                  window.location.reload();
+                }
+              }}
+              className="text-slate-400 hover:text-red-500 h-8 w-8 p-0"
+              title="Réinitialiser l'historique"
+            >
+              <RotateCcw className="h-4 w-4" />
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm"
@@ -2160,27 +2203,47 @@ function MassEmailTab() {
 
   const massEmailMutation = useMutation({
     mutationFn: async (data: { target: string; subject: string; message: string; includeSada: boolean }) => {
-      // For mass email, we first get all recipients from the backend then chunk them
       const resInitial = await apiRequest("POST", "/api/admin/mass-email", data);
       const initialData = await resInitial.json();
       
       const recipients = initialData.recipients || [];
       if (recipients.length === 0) return initialData;
 
-      const CHUNK_SIZE = 25; // Reduced from 50 to avoid 504 timeouts
+      // Track sent emails for this campaign (using subject as key)
+      const campaignKey = `sayc_sent_mass_${btoa(subject).substring(0, 16)}`;
+      const sentHistoryRaw = localStorage.getItem(campaignKey);
+      const sentEmails = new Set(sentHistoryRaw ? JSON.parse(sentHistoryRaw) : []);
+      
+      const remainingRecipients = recipients.filter((email: string) => !sentEmails.has(email));
+
+      if (remainingRecipients.length === 0) {
+        toast({ title: "Déjà envoyé", description: "Tous les destinataires de cette liste ont déjà reçu ce message." });
+        return { sent: 0, total: recipients.length };
+      }
+
+      const CHUNK_SIZE = 25;
       let totalSent = 0;
       
-      for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
-        const chunk = recipients.slice(i, i + CHUNK_SIZE);
-        const res = await apiRequest("POST", "/api/admin/mass-email", { 
-          ...data, 
-          memberIds: chunk 
-        });
-        const chunkData = await res.json();
-        totalSent += chunkData.sent;
-        
-        if (i + CHUNK_SIZE < recipients.length) {
-          await new Promise(r => setTimeout(r, 1000));
+      for (let i = 0; i < remainingRecipients.length; i += CHUNK_SIZE) {
+        const chunk = remainingRecipients.slice(i, i + CHUNK_SIZE);
+        try {
+          const res = await apiRequest("POST", "/api/admin/mass-email", { 
+            ...data, 
+            memberIds: chunk 
+          });
+          const chunkData = await res.json();
+          totalSent += chunkData.sent;
+          
+          // Update history
+          chunk.forEach((email: string) => sentEmails.add(email));
+          localStorage.setItem(campaignKey, JSON.stringify(Array.from(sentEmails)));
+
+          if (i + CHUNK_SIZE < remainingRecipients.length) {
+            await new Promise(r => setTimeout(r, 1000));
+          }
+        } catch (err) {
+          console.error("Mass email chunk failed:", err);
+          throw err;
         }
       }
       
@@ -2288,17 +2351,34 @@ function MassEmailTab() {
             <Label htmlFor="include-sada">Inclure la bannière SADA (Promotion des formations)</Label>
           </div>
 
-          <Button 
-            className="w-full h-12 bg-sayc-teal hover:bg-sayc-teal/90"
-            onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
-            disabled={massEmailMutation.isPending || !subject || !message}
-          >
-            {massEmailMutation.isPending ? (
-              <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
-            ) : (
-              "Envoyer les emails"
+          <div className="flex gap-2">
+            <Button 
+              className="flex-1 h-12 bg-sayc-teal hover:bg-sayc-teal/90"
+              onClick={() => massEmailMutation.mutate({ target, subject, message, includeSada })}
+              disabled={massEmailMutation.isPending || !subject || !message}
+            >
+              {massEmailMutation.isPending ? (
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
+              ) : (
+                localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) ? "Continuer la campagne" : "Envoyer les emails"
+              )}
+            </Button>
+
+            {localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) && (
+              <Button 
+                variant="outline" 
+                className="h-12 border-red-200 text-red-600 hover:bg-red-50"
+                onClick={() => {
+                  if(confirm("Voulez-vous réinitialiser l'historique pour cet objet d'email ?")) {
+                    localStorage.removeItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`);
+                    window.location.reload();
+                  }
+                }}
+              >
+                <RotateCcw className="w-5 h-5" />
+              </Button>
             )}
-          </Button>
+          </div>
         </CardContent>
       </Card>
       
