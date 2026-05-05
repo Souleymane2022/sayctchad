@@ -740,18 +740,29 @@ function MembersTab() {
 
   const sendVotingInfoMutation = useMutation({
     mutationFn: async () => {
-      const res = await apiRequest("POST", "/api/admin/members/send-voting-info");
-      return res.json();
+      const CHUNK_SIZE = 50;
+      let totalSent = 0;
+      const allMembers = members;
+      
+      for (let i = 0; i < allMembers.length; i += CHUNK_SIZE) {
+        const chunk = allMembers.slice(i, i + CHUNK_SIZE);
+        const memberIds = chunk.map(m => m.id);
+        
+        const res = await apiRequest("POST", "/api/admin/members/send-voting-info", { memberIds });
+        const data = await res.json();
+        totalSent += data.sent;
+        
+        if (i + CHUNK_SIZE < allMembers.length) {
+          // Pause between chunks
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      return { sent: totalSent, total: allMembers.length };
     },
     onSuccess: (data) => {
-      const statusMessage = data.sent < (data.total || 0) 
-        ? `${data.sent} emails envoyés sur ${data.total}. Le processus a été interrompu pour éviter un timeout serveur. Veuillez renvoyer pour le reste si nécessaire.`
-        : `${data.sent} emails personnalisés ont été envoyés avec succès.`;
-        
       toast({ 
         title: "Envoi terminé", 
-        description: statusMessage,
-        variant: data.sent < (data.total || 0) ? "destructive" : "default"
+        description: `${data.sent} emails personnalisés ont été envoyés avec succès en plusieurs lots.`,
       });
     },
     onError: (error: any) => {
@@ -2149,13 +2160,36 @@ function MassEmailTab() {
 
   const massEmailMutation = useMutation({
     mutationFn: async (data: { target: string; subject: string; message: string; includeSada: boolean }) => {
-      const res = await apiRequest("POST", "/api/admin/mass-email", data);
-      return res.json();
+      // For mass email, we first get all recipients from the backend then chunk them
+      const resInitial = await apiRequest("POST", "/api/admin/mass-email", data);
+      const initialData = await resInitial.json();
+      
+      const recipients = initialData.recipients || []; // We need to update the backend to return the list if requested
+      if (recipients.length === 0) return initialData;
+
+      const CHUNK_SIZE = 50;
+      let totalSent = 0;
+      
+      for (let i = 0; i < recipients.length; i += CHUNK_SIZE) {
+        const chunk = recipients.slice(i, i + CHUNK_SIZE);
+        const res = await apiRequest("POST", "/api/admin/mass-email", { 
+          ...data, 
+          memberIds: chunk 
+        });
+        const chunkData = await res.json();
+        totalSent += chunkData.sent;
+        
+        if (i + CHUNK_SIZE < recipients.length) {
+          await new Promise(r => setTimeout(r, 1000));
+        }
+      }
+      
+      return { sent: totalSent, total: recipients.length };
     },
     onSuccess: (data) => {
       toast({ 
         title: "Emails envoyés", 
-        description: `${data.sent} emails ont été envoyés avec succès via le mode optimisé (BCC).` 
+        description: `${data.sent} emails ont été envoyés avec succès en plusieurs lots sécurisés.` 
       });
       setSubject("");
       setMessage("");

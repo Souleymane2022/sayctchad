@@ -988,7 +988,15 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   app.post("/api/admin/members/send-voting-info", requireAdmin, async (req, res) => {
     try {
-      const members = await storage.getAllMembers();
+      const { memberIds } = req.body;
+      let members;
+      if (memberIds && Array.isArray(memberIds)) {
+        members = await Promise.all(memberIds.map(id => storage.getMember(id)));
+        members = members.filter(Boolean);
+      } else {
+        members = await storage.getAllMembers();
+      }
+      
       const subject = "Information Importante : Processus de Vote - SAYC Tchad";
       
       const messageTemplate = `Bonjour {{firstName}},
@@ -1027,14 +1035,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   app.post("/api/admin/mass-email", requireAdmin, async (req, res) => {
     try {
-      const { target, subject, message, includeSada } = req.body;
+      const { target, subject, message, includeSada, memberIds } = req.body;
       if (!subject || !message) {
         return res.status(400).json({ error: "Sujet et message requis" });
       }
 
       let recipients: string[] = [];
 
-      if (target === "members") {
+      if (memberIds && Array.isArray(memberIds)) {
+        // Direct list of emails or IDs
+        recipients = memberIds;
+      } else if (target === "members") {
         const members = await storage.getAllMembers();
         recipients = members.map(m => m.email);
       } else if (target === "thunderbird") {
@@ -1053,6 +1064,11 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
       if (recipients.length === 0) {
         return res.status(400).json({ error: "Aucun destinataire trouvé pour ce groupe" });
+      }
+
+      // If memberIds was not provided, we just return the list of recipients to the frontend for chunking
+      if (!memberIds || !Array.isArray(memberIds)) {
+        return res.json({ success: true, recipients });
       }
 
       const result = await sendMassEmail(recipients, subject, message, includeSada);

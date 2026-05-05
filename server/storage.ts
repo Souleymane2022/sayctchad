@@ -29,6 +29,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
 
   createMember(member: InsertMember): Promise<Member>;
+  getMember(id: string): Promise<Member | undefined>;
   getMemberByEmail(email: string): Promise<Member | undefined>;
   getMemberByEmailCaseInsensitive(email: string): Promise<Member | undefined>;
   getMemberByMembershipId(membershipId: string): Promise<Member | undefined>;
@@ -130,6 +131,11 @@ export class DatabaseStorage implements IStorage {
     const membershipId = `SAYC-2026-${Math.floor(Math.random() * 9000 + 1000)}`;
     const [newMember] = await db.insert(members).values({ ...member, membershipId }).returning();
     return newMember;
+  }
+
+  async getMember(id: string): Promise<Member | undefined> {
+    const [member] = await db.select().from(members).where(eq(members.id, id));
+    return member;
   }
 
   async getMemberByEmail(email: string): Promise<Member | undefined> {

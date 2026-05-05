@@ -7,6 +7,9 @@ const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true, // true for 465, false for 587
+    pool: true, // Use connection pooling for bulk sending
+    maxConnections: 3,
+    maxMessages: 100,
     tls: {
         rejectUnauthorized: false
     },
@@ -170,29 +173,33 @@ export async function sendMassEmail(recipients: string[], subject: string, messa
         `;
 
         // Send in batches using BCC to be much faster and avoid timeouts
+        // Send individually with pooling for maximum reliability
         let sentCount = 0;
-        const BATCH_SIZE = 90; // Gmail limit is 100 per message
-        
-        for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
-            const batch = recipients.slice(i, i + BATCH_SIZE);
-            try {
-                await transporter.sendMail({
-                    from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
-                    to: process.env.SMTP_USER || "sayctchad@gmail.com", // Send to self
-                    bcc: batch, // All recipients in BCC
-                    subject,
-                    text: messageBody,
-                    html: htmlTemplate,
-                });
-                sentCount += batch.length;
-                
-                // Small delay between batches to be safe
-                if (i + BATCH_SIZE < recipients.length) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
+        const CONCURRENCY = 2;
+        for (let i = 0; i < recipients.length; i += CONCURRENCY) {
+            const batch = recipients.slice(i, i + CONCURRENCY);
+            const promises = batch.map(async (email) => {
+                try {
+                    await transporter.sendMail({
+                        from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+                        to: email,
+                        subject,
+                        text: messageBody,
+                        html: htmlTemplate,
+                    });
+                    return true;
+                } catch (err) {
+                    console.error(`Failed to send email to ${email}:`, err);
+                    return false;
                 }
-            } catch (err) {
-                console.error(`Failed to send email batch starting at ${i}:`, err);
-                // If a batch fails, we could try sending them one by one or just continue
+            });
+
+            const results = await Promise.all(promises);
+            sentCount += results.filter(Boolean).length;
+            
+            // Brief pause between batches
+            if (i + CONCURRENCY < recipients.length) {
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
         }
 
@@ -229,7 +236,7 @@ export async function sendPersonalizedMemberEmails(membersList: any[], subject: 
         if (!process.env.SMTP_PASS || membersList.length === 0) return { success: false, sent: 0 };
 
         let sentCount = 0;
-        const CONCURRENCY = 5; // Send 5 emails at once
+        const CONCURRENCY = 2; // Reduced concurrency to avoid Gmail blocking
         const startTime = Date.now();
         const MAX_EXECUTION_TIME = 50000; // 50 seconds safety limit for Vercel 60s timeout
 
