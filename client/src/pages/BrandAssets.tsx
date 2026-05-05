@@ -441,201 +441,224 @@ export default function BrandAssets() {
                   id="poster-render"
                   className="w-[1080px] h-[1080px] relative overflow-hidden text-white font-sans"
                 >
+                  {/* 1. CATEGORY: FORMATION (AWS SADA STYLE) */}
                   {activeCategory === "formation" && (
-                    <div className="w-full h-full bg-[#020202]">
-                       <div className="absolute inset-0 bg-gradient-to-br from-[#0c0c0c] to-black z-0" />
-                       <div className="absolute top-[-100px] left-[-100px] w-[600px] h-[600px] bg-orange-600/5 rounded-full blur-[180px] z-0 animate-pulse" />
-                       <div className="absolute top-[20%] right-[-200px] scale-[4] opacity-[0.03] grayscale invert select-none pointer-events-none z-0">
-                          <img src={logoSayc} alt="" className="w-[500px]" />
-                       </div>
-                       <div className="absolute left-0 top-0 bottom-0 w-8 bg-orange-600 z-50" />
-                       <div className="absolute left-8 top-0 bottom-0 w-8 bg-orange-600/20 z-40" />
-
-                       <div className="absolute top-12 left-28 right-20 flex justify-between items-center z-30">
-                          <div className="bg-white flex items-center gap-10 px-12 py-5 rounded-[2rem] shadow-2xl">
-                             <img src={logoSayc} alt="SAYC" className="h-[55px]" />
-                             <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[40px]" />
-                             <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={sadaLogo} alt="SADA" className="h-[50px]" />
-                          </div>
-                          <div className="bg-orange-600 px-10 py-5 rounded-[2rem] shadow-2xl">
-                             <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
-                          </div>
-                       </div>
-
-                       <div className="absolute top-[210px] left-28 z-20">
-                          <p className="text-orange-500 font-black text-[2.2rem] uppercase tracking-[0.5em] mb-4 drop-shadow-md">{formData.subtitle}</p>
-                          <h1 className="text-[120px] font-black text-white leading-[0.85] tracking-tighter m-0 uppercase drop-shadow-[0_20px_20px_rgba(0,0,0,0.8)]">
-                             {formData.titleLine1} <br/>
-                             <span className="text-orange-600">{formData.titleLine2}</span> <br/>
-                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ff9900] to-[#ffcc00] leading-none tracking-[-0.05em]">{formData.titleLine3}</span>
-                          </h1>
-                       </div>
-
-                       <div className="absolute top-[710px] left-28 right-20 grid grid-cols-2 gap-12 z-20">
-                          <div className="bg-white/5 border-l-8 border-orange-600 p-10 shadow-2xl backdrop-blur-3xl rounded-[2.5rem]">
-                             <h4 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-4">PROGRAMME</h4>
-                             <p className="text-slate-300 font-bold text-[1.4rem] leading-[1.3]">{formData.mainText}</p>
-                          </div>
-                          <div className="flex flex-col gap-4 justify-center">
-                             {[formData.skill1, formData.skill2, formData.skill3].map((s, i) => (
-                                <div key={i} className="flex items-center gap-6 bg-white/10 px-8 py-4 rounded-2xl border border-white/5">
-                                   <div className="w-4 h-4 bg-orange-600 rounded-full shadow-[0_0_20px_#ea580c]" />
-                                   <span className="text-white font-black text-xl uppercase tracking-tight">{s}</span>
-                                </div>
-                             ))}
-                          </div>
-                       </div>
-                       {/* FOOTER INSIDE */}
-                       <div className="absolute bottom-0 inset-x-0 h-[120px] z-50 px-28 flex items-center bg-black/40 backdrop-blur-md border-t border-white/5">
-                          <div className="flex items-center justify-between w-full">
-                             <div className="flex items-center gap-6">
-                                <Zap className="w-8 h-8 text-orange-500" />
-                                <span className="text-white font-black text-2xl uppercase tracking-widest">SAYCTCHAD.ORG</span>
+                    <div className="w-[1080px] h-[1080px] bg-[#02040A] text-white relative overflow-hidden font-sans">
+                       {/* Background Layer */}
+                       <div className="absolute inset-0 bg-gradient-to-br from-[#02040A] via-[#0B0F1A] to-black z-0" />
+                       <div className="absolute top-[-200px] right-[-200px] w-[700px] h-[700px] bg-orange-600/10 rounded-full blur-[200px] z-0 animate-pulse" />
+                       <div className="absolute bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-sayc-teal/5 rounded-full blur-[150px] z-0" />
+                       
+                       {/* Premium Header */}
+                       <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-20 flex items-center px-24 justify-between shadow-2xl border-b-[10px] border-orange-500">
+                          <div className="flex items-center gap-12">
+                             <img src={logoSayc} alt="SAYC" className="h-[70px] object-contain" />
+                             <div className="w-[2px] h-12 bg-slate-200" />
+                             <div className="flex items-center gap-8">
+                                <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px] object-contain" />
+                                <img src={sadaLogo} alt="SADA" className="h-[60px] object-contain" />
                              </div>
-                             <div className="text-orange-500 font-bold text-lg uppercase tracking-widest italic">Innovation & Excellence</div>
                           </div>
+                          <div className="bg-orange-600 px-12 py-5 rounded-[2rem] shadow-xl">
+                             <span className="text-white font-black text-2xl uppercase tracking-[0.2em]">{formData.badge || "FORMATION"}</span>
+                          </div>
+                       </div>
+
+                       {/* Content Area */}
+                       <div className="absolute top-[220px] left-24 right-24 z-10">
+                          <p className="text-orange-500 font-black text-3xl uppercase tracking-[0.6em] mb-6 drop-shadow-lg">{formData.subtitle}</p>
+                          <h1 className="text-[130px] font-black text-white leading-[0.8] tracking-tighter m-0 uppercase mb-12">
+                             {formData.titleLine1} <br/>
+                             <span className="text-orange-600 drop-shadow-[0_0_30px_rgba(234,88,12,0.4)]">{formData.titleLine2}</span> <br/>
+                             <span className="text-white opacity-90">{formData.titleLine3}</span>
+                          </h1>
+
+                          <div className="grid grid-cols-12 gap-12 items-start">
+                             <div className="col-span-7 bg-white/5 border-l-[12px] border-orange-600 p-12 backdrop-blur-2xl rounded-r-[3rem] shadow-2xl">
+                                <h4 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-6">À PROPOS DU PROGRAMME</h4>
+                                <p className="text-slate-100 font-bold text-[1.6rem] leading-[1.5] text-left">
+                                   {formData.mainText}
+                                </p>
+                             </div>
+                             <div className="col-span-5 flex flex-col gap-5 pt-4">
+                                {[formData.skill1, formData.skill2, formData.skill3].map((s, i) => (
+                                   <div key={i} className="flex items-center gap-6 bg-white/10 px-10 py-6 rounded-3xl border border-white/5 backdrop-blur-md transform transition-all hover:translate-x-2">
+                                      <div className="w-5 h-5 bg-orange-600 rounded-full shadow-[0_0_25px_#ea580c]" />
+                                      <span className="text-white font-black text-2xl uppercase tracking-tight">{s}</span>
+                                   </div>
+                                ))}
+                             </div>
+                          </div>
+                       </div>
+
+                       {/* Elegant Footer */}
+                       <div className="absolute bottom-0 left-0 w-full h-[130px] bg-black/40 backdrop-blur-3xl border-t border-white/10 z-20 flex items-center px-24 justify-between">
+                          <div className="flex items-center gap-6">
+                             <Zap className="w-10 h-10 text-orange-500 animate-pulse" />
+                             <div className="flex flex-col">
+                                <span className="text-white font-black text-3xl tracking-widest uppercase leading-none">SAYCTCHAD.ORG</span>
+                                <span className="text-slate-500 font-bold text-sm uppercase tracking-widest mt-1">Plateforme Technologique Nationale</span>
+                             </div>
+                          </div>
+                          <div className="text-orange-500 font-black text-2xl uppercase tracking-[0.5em] italic">REJOIGNEZ L'ÉLITE</div>
                        </div>
                     </div>
                   )}
 
+                  {/* 2. CATEGORY: NEWS (MODERN HUB STYLE) */}
                   {activeCategory === "news" && (
-                    <div className="w-full h-full bg-[#050510]">
-                       <div className="absolute inset-0 bg-gradient-to-tr from-[#1e40af] via-black to-[#1e1e1e] opacity-80 z-0" />
-                       <div className="absolute inset-0 bg-[url('https://transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] grayscale z-0" />
+                    <div className="w-[1080px] h-[1080px] bg-[#05050A] text-white relative overflow-hidden font-sans">
+                       <div className="absolute inset-0 bg-gradient-to-tr from-[#1E3A8A] via-[#05050A] to-[#1E1E1E] opacity-90 z-0" />
+                       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-sayc-teal/10 rounded-full blur-[200px] z-0" />
                        
                        {/* Header */}
-                       <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                          <div className="flex items-center gap-6">
-                             <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl shadow-xl" />
-                             <div className="w-[2px] h-10 bg-white/20" />
-                             <span className="text-white font-black text-2xl tracking-widest uppercase">Communication Officielle</span>
-                          </div>
-                          <div className="px-10 py-4 bg-orange-600 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.3)]">
-                             <span className="text-white font-black text-2xl uppercase tracking-[0.3em]">FLASH INFO</span>
-                          </div>
-                       </div>
-
-                       {/* Main Content Area - Better Handling of Long Text */}
-                       <div className="absolute top-[220px] left-16 right-16 z-20">
-                          <p className="text-sayc-teal font-black text-4xl uppercase tracking-[0.5em] mb-10">{formData.subtitle}</p>
-                          <h1 className="text-[110px] font-black text-white leading-[0.9] tracking-tighter uppercase italic mb-12">
-                             {formData.titleLine1} <br/>
-                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400 drop-shadow-2xl">{formData.titleLine2}</span>
-                          </h1>
-                          
-                          <div className="bg-white/5 border-l-4 border-sayc-teal backdrop-blur-3xl p-12 rounded-r-[3rem] shadow-2xl max-w-5xl">
-                             <Quote className="w-16 h-16 text-sayc-teal opacity-20 mb-4" />
-                             <p className="text-white font-bold text-[2.2rem] leading-[1.4] text-left">
-                                {formData.mainText}
-                             </p>
-                          </div>
-                       </div>
-
-                       {/* Footer Specific to News */}
-                       <div className="absolute bottom-0 inset-x-0 h-[140px] z-50 px-16 flex items-center bg-black/60 backdrop-blur-3xl border-t border-sayc-teal/30">
-                          <div className="flex items-center justify-between w-full">
-                             <div className="flex items-center gap-10">
-                                <div className="flex flex-col">
-                                   <span className="text-white font-black text-3xl uppercase tracking-tighter">SAYC TCHAD</span>
-                                   <span className="text-sayc-teal font-bold text-sm uppercase tracking-widest">Portail Digital National</span>
-                                </div>
+                       <div className="absolute top-0 left-0 w-full h-[180px] bg-white z-20 flex items-center px-20 justify-between shadow-2xl">
+                          <div className="flex items-center gap-10">
+                             <img src={logoSayc} alt="SAYC" className="h-[80px] object-contain p-2 bg-slate-50 rounded-2xl" />
+                             <div className="w-[3px] h-16 bg-sayc-teal" />
+                             <div className="flex flex-col">
+                                <span className="text-[#05050A] font-black text-4xl uppercase tracking-tighter">SAYC TCHAD</span>
+                                <span className="text-sayc-teal font-black text-lg uppercase tracking-[0.3em]">ACTUALITÉS OFFICIELLES</span>
                              </div>
-                             <div className="text-white/40 font-black text-2xl tracking-[0.4em]">WWW.SAYCTCHAD.ORG</div>
+                          </div>
+                          <div className="bg-orange-600 px-12 py-6 rounded-full shadow-[0_0_50px_rgba(234,88,12,0.4)] border-4 border-white">
+                             <span className="text-white font-black text-3xl uppercase tracking-[0.4em] animate-pulse">BREAKING</span>
+                          </div>
+                       </div>
+
+                       {/* News Content Area */}
+                       <div className="absolute top-[260px] left-20 right-20 z-10">
+                          <div className="inline-block px-8 py-3 bg-sayc-teal/20 border border-sayc-teal/30 rounded-2xl mb-10">
+                             <span className="text-sayc-teal font-black text-3xl uppercase tracking-[0.4em]">{formData.subtitle || "DERNIÈRE MINUTE"}</span>
+                          </div>
+                          
+                          <h1 className="text-[120px] font-black text-white leading-[0.85] tracking-tighter uppercase italic drop-shadow-2xl mb-16">
+                             {formData.titleLine1} <br/>
+                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal via-blue-400 to-white">{formData.titleLine2}</span>
+                          </h1>
+
+                          <div className="relative">
+                             <div className="absolute -left-10 top-0 bottom-0 w-3 bg-sayc-teal rounded-full shadow-[0_0_30px_#2dd4bf]" />
+                             <div className="bg-white/5 backdrop-blur-3xl p-16 rounded-[4rem] border border-white/10 shadow-3xl">
+                                <Quote className="w-24 h-24 text-sayc-teal opacity-20 absolute top-[-40px] right-12" />
+                                <p className="text-white font-bold text-[2.8rem] leading-[1.4] text-left italic">
+                                   {formData.mainText}
+                                </p>
+                             </div>
+                          </div>
+                       </div>
+
+                       {/* News Footer */}
+                       <div className="absolute bottom-0 left-0 w-full h-[150px] bg-[#05050A]/80 backdrop-blur-3xl border-t-8 border-sayc-teal z-20 flex items-center px-20 justify-between">
+                          <div className="flex items-center gap-8">
+                             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center">
+                                <Zap className="w-10 h-10 text-[#05050A]" />
+                             </div>
+                             <div className="flex flex-col">
+                                <span className="text-white font-black text-3xl tracking-widest uppercase leading-none">WWW.SAYCTCHAD.ORG</span>
+                                <span className="text-sayc-teal font-bold text-sm uppercase tracking-[0.5em] mt-1">Le Hub Digital de la Jeunesse</span>
+                             </div>
+                          </div>
+                          <div className="text-right">
+                             <span className="text-white/40 font-black text-xl uppercase tracking-widest">SAYC MEDIA DIVISION</span>
                           </div>
                        </div>
                     </div>
                   )}
 
+                  {/* 3. CATEGORY: TESTIMONY (PREMIUM QUOTE STYLE) */}
                   {activeCategory === "testimony" && (
                     <div className="w-[1080px] h-[1080px] bg-[#0A0D14] text-white relative overflow-hidden font-sans">
-                       {/* Background */}
-                       <div className="absolute inset-0 bg-gradient-to-br from-[#0A0D14] via-[#141824] to-black z-0" />
-                       <div className="absolute top-[-100px] right-[-100px] w-[500px] h-[500px] bg-sayc-teal/10 rounded-full blur-[150px] z-0" />
+                       {/* High-End Artistic Background */}
+                       <div className="absolute inset-0 bg-[#0A0D14] z-0" />
+                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(45,212,191,0.05)_0%,transparent_70%)] z-0" />
+                       <div className="absolute top-[-150px] left-[-150px] w-[600px] h-[600px] bg-sayc-teal/10 rounded-full blur-[150px] z-0" />
                        
-                       {/* Top Bar */}
-                       <div className="absolute top-0 left-0 w-full h-[140px] bg-white z-10 flex items-center justify-center shadow-xl border-b-[8px] border-sayc-teal">
-                          <div className="flex items-center gap-16">
-                             <img src={logoSayc} alt="SAYC" className="h-[60px] object-contain" />
-                             <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px] object-contain" />
-                             <div className="w-[1px] h-10 bg-slate-200" />
-                             <img src={sadaLogo} alt="SADA" className="h-[55px] object-contain" />
+                       {/* Minimalist Top Branding */}
+                       <div className="absolute top-0 left-0 w-full h-[180px] bg-white z-20 flex items-center justify-center shadow-xl border-b-[8px] border-sayc-teal">
+                          <div className="flex items-center gap-20">
+                             <img src={logoSayc} alt="SAYC" className="h-[75px] object-contain" />
+                             <div className="w-[2px] h-12 bg-slate-200" />
+                             <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[50px] object-contain" />
+                             <div className="w-[2px] h-12 bg-slate-200" />
+                             <img src={sadaLogo} alt="SADA" className="h-[65px] object-contain" />
                           </div>
                        </div>
 
-                       {/* Testimony Content - Increased spacing and better font handling */}
-                       <div className="absolute top-[240px] left-24 right-24 z-20">
-                          <Quote className="w-32 h-32 text-sayc-teal/20 absolute -top-10 -left-10" />
-                          <div className="relative pt-12 pb-20">
-                             <p className="text-[3rem] font-bold leading-[1.3] italic text-white/90 tracking-tight">
+                       {/* Centered Large Quote Area */}
+                       <div className="absolute top-[260px] left-24 right-24 z-10 flex flex-col items-center text-center">
+                          <Quote className="w-40 h-40 text-sayc-teal opacity-10 mb-8" />
+                          <div className="relative">
+                             <p className="text-[3.2rem] font-black leading-[1.3] italic text-white tracking-tighter drop-shadow-2xl">
                                 "{formData.mainText || formData.quote}"
                              </p>
                           </div>
                        </div>
 
-                       {/* Speaker Profile Card - Adjusted for better visual balance */}
-                       <div className="absolute bottom-[100px] left-24 right-24 z-30">
-                          <div className="bg-white/5 border border-white/10 backdrop-blur-3xl p-10 rounded-[3rem] flex items-center gap-12 shadow-2xl">
-                             <div className="w-40 h-40 rounded-[2rem] border-4 border-sayc-teal overflow-hidden shrink-0 shadow-2xl">
-                                <img src={formData.imageUrl} alt={formData.personName} className="w-full h-full object-cover" crossOrigin="anonymous" />
-                             </div>
-                             <div className="flex-1">
-                                <h4 className="text-5xl font-black text-white uppercase tracking-tighter mb-3">{formData.personName}</h4>
-                                <div className="flex items-center gap-4">
-                                   <div className="h-1.5 w-16 bg-sayc-teal rounded-full" />
-                                   <span className="text-sayc-teal font-black text-2xl uppercase tracking-widest">{formData.personRole}</span>
+                       {/* Premium Speaker Profile - Centered Balance */}
+                       <div className="absolute bottom-[100px] left-1/2 -translate-x-1/2 w-[900px] z-30">
+                          <div className="bg-white/5 border border-white/10 backdrop-blur-[50px] p-12 rounded-[4rem] flex items-center gap-16 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)]">
+                             <div className="relative">
+                                <div className="absolute inset-0 bg-sayc-teal rounded-[2.5rem] blur-2xl opacity-20 animate-pulse" />
+                                <div className="w-48 h-48 rounded-[2.5rem] border-4 border-sayc-teal overflow-hidden shrink-0 relative z-10 shadow-2xl">
+                                   <img src={formData.imageUrl} alt={formData.personName} className="w-full h-full object-cover" crossOrigin="anonymous" />
                                 </div>
                              </div>
-                             <div className="hidden md:block">
-                                <img src={logoSayc} alt="" className="h-12 opacity-40 grayscale brightness-200" />
+                             <div className="flex-1 text-left">
+                                <h4 className="text-6xl font-black text-white uppercase tracking-tighter mb-4">{formData.personName}</h4>
+                                <div className="flex items-center gap-6">
+                                   <div className="h-2 w-20 bg-sayc-teal rounded-full" />
+                                   <span className="text-sayc-teal font-black text-3xl uppercase tracking-[0.2em]">{formData.personRole}</span>
+                                </div>
+                             </div>
+                             <div className="opacity-40">
+                                <div className="text-white font-black text-4xl italic tracking-tighter">SAYC<span className="text-sayc-teal">TCHAD</span></div>
                              </div>
                           </div>
                        </div>
                     </div>
                   )}
 
+                  {/* 4. CATEGORY: BUREAU NATIONAL (INSTITUTIONAL EXCELLENCE) */}
                   {activeCategory === "bureau" && (
                      <div className="w-[1080px] h-[1080px] bg-[#0A1A2F] text-white relative overflow-hidden font-sans">
-                        {/* High-End Background System */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#0A1A2F] via-[#1E2A44] to-black z-0" />
-                        <div className="absolute top-0 inset-x-0 h-[300px] bg-gradient-to-b from-orange-500/5 to-transparent z-0" />
+                        <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-orange-500/10 to-transparent z-0" />
                         
-                        {/* Top Logo Bar - Premium White Section */}
-                        <div className="absolute top-0 left-0 w-full h-[150px] bg-white z-10 flex items-center justify-center shadow-xl border-b-[6px] border-orange-500">
+                        {/* Header Section */}
+                        <div className="absolute top-0 left-0 w-full h-[160px] bg-white z-20 flex items-center justify-center shadow-2xl border-b-[8px] border-orange-500">
                            <div className="flex items-center gap-20">
-                              <img src={logoSayc} alt="SAYC" className="h-[60px] object-contain" />
-                              <div className="w-[1.5px] h-10 bg-slate-200" />
-                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[45px] object-contain" />
-                              <div className="w-[1.5px] h-10 bg-slate-200" />
-                              <img src={sadaLogo} alt="SADA" className="h-[55px] object-contain" />
+                              <img src={logoSayc} alt="SAYC" className="h-[70px] object-contain" />
+                              <div className="w-[2px] h-12 bg-slate-200" />
+                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[50px] object-contain" />
+                              <div className="w-[2px] h-12 bg-slate-200" />
+                              <img src={sadaLogo} alt="SADA" className="h-[65px] object-contain" />
                            </div>
                         </div>
 
-                        {/* Title Header Section */}
-                        <div className="absolute top-[180px] left-0 w-full text-center z-20">
-                           <div className="inline-block px-8 py-2 bg-orange-500/10 border border-orange-500/20 rounded-full mb-4">
-                              <span className="text-orange-500 font-black text-xl uppercase tracking-[0.5em]">SAYC TCHAD — MANDAT 2026-2028</span>
+                        {/* Title Section */}
+                        <div className="absolute top-[200px] left-0 w-full text-center z-10 px-20">
+                           <div className="inline-block px-10 py-3 bg-orange-600/20 border border-orange-600/30 rounded-full mb-8">
+                              <span className="text-orange-500 font-black text-2xl uppercase tracking-[0.5em]">MANDAT NATIONAL 2026-2028</span>
                            </div>
-                           <h1 className="text-[90px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
-                              BUREAU NATIONAL
+                           <h1 className="text-[100px] font-black text-white leading-[0.9] tracking-tighter uppercase drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)]">
+                              BUREAU <span className="text-orange-500">NATIONAL</span>
                            </h1>
                         </div>
   
-                        {/* Main National Leader - Central Focus */}
-                        <div className="absolute top-[350px] left-1/2 -translate-x-1/2 z-30 flex flex-col items-center">
-                            <div className="w-[340px] h-[400px] rounded-[2.5rem] border-[8px] border-orange-500 shadow-[0_0_50px_rgba(234,88,12,0.4)] overflow-hidden bg-slate-800 relative group">
+                        {/* National Leader Focus */}
+                        <div className="absolute top-[420px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+                            <div className="w-[360px] h-[420px] rounded-[3rem] border-[10px] border-orange-500 shadow-[0_0_60px_rgba(234,88,12,0.5)] overflow-hidden bg-slate-800 relative group">
                                <img 
                                  src={nationalLeader?.photoUrl || nationalLeader?.photo_url || "/images/souleymane-1.jpg"} 
                                  alt="National Leader" 
                                  className="w-full h-full object-cover object-top scale-105" 
                                  crossOrigin="anonymous" 
                                />
-                               <div className="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-black via-black/80 to-transparent" />
-                               <div className="absolute bottom-6 inset-x-0 text-center px-4">
-                                  <p className="text-orange-500 font-black text-sm uppercase tracking-[0.4em] mb-2 drop-shadow-md">LEADER NATIONAL</p>
-                                  <h4 className="text-[2.2rem] font-black text-white uppercase tracking-tight leading-tight drop-shadow-2xl">
+                               <div className="absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-black via-black/90 to-transparent" />
+                               <div className="absolute bottom-8 inset-x-0 text-center px-6">
+                                  <p className="text-orange-500 font-black text-base uppercase tracking-[0.4em] mb-3 drop-shadow-md">LEADER NATIONAL</p>
+                                  <h4 className="text-[2.5rem] font-black text-white uppercase tracking-tight leading-[1.1] drop-shadow-2xl">
                                     {nationalLeader?.firstName || nationalLeader?.first_name || "SOULEYMANE"}<br/>
                                     {nationalLeader?.nomSpecifiqueUnique || nationalLeader?.last_name || "MAHAMAT SALEH"}
                                   </h4>
@@ -643,31 +666,31 @@ export default function BrandAssets() {
                             </div>
                         </div>
 
-                        {/* Board Grid - Horizontal Alignment */}
-                        <div className="absolute top-[780px] inset-x-10 z-30 flex justify-center gap-6 items-start">
+                        {/* Board Grid - Correctly Spaced */}
+                        <div className="absolute top-[850px] inset-x-12 z-20 flex justify-center gap-8 items-start">
                            {(bureauNational && bureauNational.length > 0 ? bureauNational : [
-                             { role: "Leader Adjoint", leader: { firstName: "MOUNIR", nomSpecifiqueUnique: "MAHAMAT ISSA", photoUrl: "/images/mounir.jpg" } },
+                             { role: "Leader Adjoint", leader: { firstName: "MOUNIR", nomSpecifiqueUnique: "ISSA", photoUrl: "/images/mounir.jpg" } },
                              { role: "Secteur Privé", leader: { firstName: "ALLAMINE", nomSpecifiqueUnique: "TIDJANI", photoUrl: "/images/leaders/leader_2.png" } },
                              { role: "Académique", leader: { firstName: "JÉRÉMIE", nomSpecifiqueUnique: "IGNEBE", photoUrl: "/images/leaders/leader_3.png" } },
                              { role: "Inclusion", leader: { firstName: "ADELINE", nomSpecifiqueUnique: "GOLDÉ", photoUrl: "/images/adeline.jpg" } }
                            ]).map((b, i) => (
                              <div key={i} className="flex flex-col items-center">
-                               <div className="w-[220px] h-[260px] rounded-[2rem] border-[4px] border-white/20 shadow-2xl overflow-hidden bg-slate-900 relative">
+                               <div className="w-[210px] h-[260px] rounded-[2rem] border-[4px] border-white/20 shadow-2xl overflow-hidden bg-slate-900 relative">
                                   <img
                                     src={b.leader?.photoUrl || b.leader?.photo_url || "/images/leaders/leader_1.png"}
                                     alt="Leader"
                                     className="w-full h-full object-cover object-top"
                                     crossOrigin="anonymous"
                                   />
-                                  <div className="absolute inset-x-0 bottom-0 h-[70%] bg-gradient-to-t from-black via-black/80 to-transparent" />
-                                  <div className="absolute bottom-4 inset-x-0 text-center px-2 flex flex-col items-center">
-                                     <div className="bg-gradient-to-r from-amber-400 to-yellow-600 px-3 py-1 rounded-md mb-2 shadow-lg">
-                                        <p className="text-black font-black text-[9px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
+                                  <div className="absolute inset-x-0 bottom-0 h-[75%] bg-gradient-to-t from-black via-black/90 to-transparent" />
+                                  <div className="absolute bottom-4 inset-x-0 text-center px-3 flex flex-col items-center">
+                                     <div className="bg-gradient-to-r from-orange-400 to-amber-600 px-4 py-1.5 rounded-lg mb-3 shadow-lg">
+                                        <p className="text-black font-black text-[10px] uppercase tracking-widest leading-tight whitespace-nowrap">{b.role.toUpperCase()}</p>
                                      </div>
-                                     <h4 className="text-[1.1rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md truncate w-full px-2">
+                                     <h4 className="text-[1.2rem] font-black text-white uppercase tracking-tight leading-none drop-shadow-md truncate w-full mb-1">
                                        {b.leader?.firstName || b.leader?.first_name}
                                      </h4>
-                                     <h4 className="text-[1.1rem] font-black text-yellow-500 uppercase tracking-tight leading-none drop-shadow-md truncate w-full px-2">
+                                     <h4 className="text-[1.2rem] font-black text-orange-500 uppercase tracking-tight leading-none drop-shadow-md truncate w-full">
                                        {b.leader?.nomSpecifiqueUnique || b.leader?.last_name}
                                      </h4>
                                   </div>
@@ -676,111 +699,135 @@ export default function BrandAssets() {
                            ))}
                         </div>
 
-                        {/* Footer - 3 Strategic Zones - Specific to Bureau */}
-                        <div className="absolute bottom-0 left-0 w-full h-[110px] bg-black z-30 flex items-center justify-between px-16 border-t border-white/10">
-                           <div className="flex items-center gap-4">
-                              <div className="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center">
-                                 <Zap className="w-6 h-6 text-white" />
+                        {/* Official Footer */}
+                        <div className="absolute bottom-0 left-0 w-full h-[120px] bg-black z-30 flex items-center justify-between px-24 border-t border-white/10 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
+                           <div className="flex items-center gap-6">
+                              <div className="w-14 h-14 bg-orange-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                 <Zap className="w-8 h-8 text-white" />
                               </div>
                               <div className="flex flex-col">
-                                 <span className="text-white font-black text-lg tracking-widest uppercase leading-none">Profil Vérifié</span>
-                                 <span className="text-slate-500 font-bold text-xs uppercase mt-1">Liste Officielle 2026</span>
+                                 <span className="text-white font-black text-2xl tracking-widest uppercase leading-none">PROFIL VÉRIFIÉ</span>
+                                 <span className="text-slate-500 font-bold text-xs uppercase mt-1 tracking-widest">Liste Officielle des Membres Élus</span>
                               </div>
                            </div>
-                           <div className="text-white font-black text-3xl tracking-[0.4em] uppercase">SAYCTCHAD.ORG</div>
-                           <div className="px-6 py-2 border border-white/20 rounded-xl">
-                              <span className="text-white font-black text-sm uppercase tracking-widest">OFFICIEL</span>
+                           <div className="text-white font-black text-4xl tracking-[0.5em] uppercase">SAYCTCHAD.ORG</div>
+                           <div className="flex flex-col items-end">
+                              <span className="text-slate-400 font-black text-xs uppercase tracking-widest mb-1">AUTHENTICITÉ</span>
+                              <span className="text-orange-500 font-black text-3xl italic">DÉLÉGATION</span>
                            </div>
                         </div>
                      </div>
                   )}
 
+                  {/* 5. CATEGORY: EVENT (VIP INVITATION STYLE) */}
                   {activeCategory === "event" && (
-                    <div className="w-full h-full bg-[#050510] overflow-hidden">
-                       <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-sm opacity-40" alt="" crossOrigin="anonymous" />
+                    <div className="w-[1080px] h-[1080px] bg-[#050510] text-white relative overflow-hidden font-sans">
+                       <img src={formData.imageUrl} className="absolute inset-0 w-full h-full object-cover scale-110 blur-md opacity-30" alt="" crossOrigin="anonymous" />
                        <div className="absolute inset-0 bg-gradient-to-t from-[#050510] via-[#050510]/80 to-transparent z-0" />
                        
+                       {/* Top Branding Header */}
                        <div className="absolute top-12 left-16 right-16 flex justify-between items-center z-30">
-                          <img src={logoSayc} alt="SAYC" className="h-[55px] bg-white p-3 rounded-2xl" />
-                          <div className="bg-orange-600 px-8 py-3 rounded-full">
-                             <span className="text-white font-black text-2xl uppercase tracking-widest">{formData.badge}</span>
+                          <div className="flex items-center gap-6 bg-white/5 backdrop-blur-xl p-4 rounded-3xl border border-white/10">
+                             <img src={logoSayc} alt="SAYC" className="h-[60px] bg-white p-3 rounded-2xl" />
+                             <div className="w-[1px] h-10 bg-white/20" />
+                             <span className="text-white font-black text-2xl tracking-widest uppercase">ÉVÉNEMENT SPÉCIAL</span>
+                          </div>
+                          <div className="bg-orange-600 px-10 py-5 rounded-full shadow-2xl border-4 border-white/20">
+                             <span className="text-white font-black text-3xl uppercase tracking-widest">{formData.badge || "INVITATION"}</span>
                           </div>
                        </div>
 
-                       <div className="absolute top-[280px] left-16 right-16 z-20 space-y-10 group">
-                          <div className="inline-block px-6 py-2 bg-sayc-teal/20 border border-sayc-teal/30 rounded-xl">
-                             <span className="text-sayc-teal font-black text-[2.2rem] uppercase italic tracking-[0.4em]">{formData.subtitle}</span>
+                       {/* Main Invite Content */}
+                       <div className="absolute top-[280px] left-20 right-20 z-20 space-y-12">
+                          <div className="inline-block px-10 py-4 bg-sayc-teal/20 border border-sayc-teal/30 rounded-[2rem]">
+                             <span className="text-sayc-teal font-black text-4xl uppercase italic tracking-[0.5em]">{formData.subtitle}</span>
                           </div>
-                          <h1 className="text-[130px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
+                          <h1 className="text-[140px] font-black text-white leading-[0.8] tracking-tighter uppercase drop-shadow-[0_30px_60px_rgba(0,0,0,0.8)]">
                              {formData.titleLine1} <br/>
-                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal to-blue-400">{formData.titleLine2}</span>
+                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal via-blue-400 to-white">{formData.titleLine2}</span>
                           </h1>
-                       </div>
-
-                       <div className="absolute top-[700px] left-16 right-16 z-20 grid grid-cols-2 gap-12">
-                          <div className="flex items-center gap-8 bg-white/5 border border-white/10 p-8 rounded-[3rem] shadow-2xl backdrop-blur-xl">
-                             <div className="p-5 bg-sayc-teal/20 rounded-[1.5rem]"><Clock className="w-10 h-10 text-sayc-teal" /></div>
-                             <div>
-                                <p className="text-slate-400 font-bold uppercase text-sm tracking-widest mb-1">DATE / HEURE</p>
-                                <p className="text-white font-black text-[2rem] leading-none">{formData.date}</p>
-                             </div>
-                          </div>
-                          <div className="flex items-center gap-8 bg-white/5 border border-white/10 p-8 rounded-[3rem] shadow-2xl backdrop-blur-xl">
-                             <div className="p-5 bg-orange-600/20 rounded-[1.5rem]"><MapPin className="w-10 h-10 text-orange-600" /></div>
-                             <div>
-                                <p className="text-slate-400 font-bold uppercase text-sm tracking-widest mb-1">LIEU</p>
-                                <p className="text-white font-black text-[2rem] leading-none">{formData.location}</p>
-                             </div>
+                          <div className="max-w-4xl">
+                             <p className="text-white/80 font-bold text-3xl leading-relaxed italic border-l-8 border-orange-600 pl-10">
+                                "{formData.mainText}"
+                             </p>
                           </div>
                        </div>
 
-                       {/* Event Footer */}
-                       <div className="absolute bottom-0 inset-x-0 h-[100px] bg-white/5 backdrop-blur-xl border-t border-white/10 flex items-center justify-center px-16">
-                          <p className="text-white/40 font-black text-2xl tracking-[1em] uppercase">SAYCTCHAD.ORG</p>
+                       {/* Event Details Grid */}
+                       <div className="absolute bottom-[160px] left-20 right-20 z-20 grid grid-cols-2 gap-12">
+                          <div className="flex items-center gap-10 bg-white/5 border border-white/10 p-10 rounded-[3.5rem] shadow-3xl backdrop-blur-2xl">
+                             <div className="p-6 bg-sayc-teal rounded-[2rem] shadow-[0_0_40px_#2dd4bf55]"><Clock className="w-12 h-12 text-white" /></div>
+                             <div>
+                                <p className="text-slate-400 font-bold uppercase text-base tracking-[0.3em] mb-2">DATE & HEURE</p>
+                                <p className="text-white font-black text-[2.6rem] leading-none">{formData.date}</p>
+                             </div>
+                          </div>
+                          <div className="flex items-center gap-10 bg-white/5 border border-white/10 p-10 rounded-[3.5rem] shadow-3xl backdrop-blur-2xl">
+                             <div className="p-6 bg-orange-600 rounded-[2rem] shadow-[0_0_40px_#ea580c55]"><MapPin className="w-12 h-12 text-white" /></div>
+                             <div>
+                                <p className="text-slate-400 font-bold uppercase text-base tracking-[0.3em] mb-2">LOCALISATION</p>
+                                <p className="text-white font-black text-[2.6rem] leading-none">{formData.location}</p>
+                             </div>
+                          </div>
+                       </div>
+
+                       {/* Event Signature Footer */}
+                       <div className="absolute bottom-0 left-0 w-full h-[110px] bg-black/40 backdrop-blur-2xl border-t border-white/10 flex items-center justify-center px-20">
+                          <div className="text-white/30 font-black text-3xl tracking-[1.5em] uppercase">WWW.SAYCTCHAD.ORG</div>
                        </div>
                     </div>
                   )}
 
+                  {/* 6. CATEGORY: ANNOUNCEMENT (FORMAL COMMUNIQUÉ STYLE) */}
                   {activeCategory === "announcement" && (
-                    <div className="w-full h-full bg-[#050b1a] overflow-hidden relative">
-                       <div className="absolute inset-0 bg-gradient-to-br from-[#050b1a] via-[#0a1a3a] to-[#050b1a]" />
-                       <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
-                       
-                       <div className="absolute top-0 left-0 w-full h-[220px] bg-white z-10 flex items-center justify-center shadow-2xl border-b-[8px] border-orange-500">
-                          <div className="flex items-center gap-20">
+                    <div className="w-[1080px] h-[1080px] bg-white text-[#0A0D14] relative overflow-hidden font-sans border-[30px] border-[#0A0D14]">
+                       {/* Formal Header Layer */}
+                       <div className="absolute top-0 left-0 w-full h-[240px] bg-white border-b-8 border-orange-600 flex flex-col items-center justify-center gap-6 px-20">
+                          <div className="flex items-center gap-16">
                              <img src={logoSayc} alt="SAYC" className="h-[70px] object-contain" />
-                             <div className="w-[1px] h-14 bg-slate-200" />
+                             <div className="w-[1px] h-12 bg-slate-200" />
                              <img src={smartAfricaAllianceLogo} alt="Smart Africa" className="h-[50px] object-contain" />
-                             <div className="w-[1px] h-14 bg-slate-200" />
+                             <div className="w-[1px] h-12 bg-slate-200" />
                              <img src={sadaLogo} alt="SADA" className="h-[65px] object-contain" />
                           </div>
+                          <div className="w-[400px] h-1.5 bg-gradient-to-r from-transparent via-orange-600 to-transparent" />
+                          <span className="text-[#0A0D14] font-black text-2xl uppercase tracking-[0.8em] text-center">COMMUNIQUÉ OFFICIEL</span>
                        </div>
 
-                       <div className="absolute top-[280px] inset-x-0 flex flex-col items-center text-center z-20 space-y-12">
-                          <div className="bg-orange-600 px-10 py-3 rounded-full shadow-[0_0_40px_rgba(234,88,12,0.4)] border border-orange-400/30">
-                             <span className="text-white font-black text-2xl uppercase tracking-[0.6em] animate-pulse">FLASH INFO</span>
-                          </div>
-
+                       {/* Formal Body Area */}
+                       <div className="absolute top-[320px] left-24 right-24 flex flex-col items-center text-center space-y-16">
                           <div className="space-y-6">
-                             <p className="text-sayc-teal font-black text-3xl uppercase tracking-[0.4em]">COMMUNIQUÉ OFFICIEL</p>
-                             <h1 className="text-[120px] font-black text-white leading-none tracking-tighter uppercase drop-shadow-2xl">
+                             <h4 className="text-sayc-teal font-black text-3xl uppercase tracking-[0.5em]">{formData.subtitle || "SAYC TCHAD — SECRÉTARIAT GÉNÉRAL"}</h4>
+                             <h1 className="text-[110px] font-black text-[#0A0D14] leading-none tracking-tighter uppercase">
                                 {formData.titleLine1 || "DÉCISION"}<br/>
-                                <span className="text-orange-500">{formData.titleLine2 || "SAYC TCHAD"}</span>
+                                <span className="text-orange-600">{formData.titleLine2 || "SAYC TCHAD"}</span>
                              </h1>
                           </div>
 
-                           <div className="w-[800px] h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                          <div className="w-full h-[3px] bg-slate-100" />
 
-                           <div className="max-w-4xl px-16">
-                              <p className="text-white/80 font-bold text-3xl leading-relaxed italic">
-                                 "{formData.mainText}"
-                              </p>
-                           </div>
+                          <div className="max-w-5xl">
+                             <p className="text-[#0A0D14]/90 font-bold text-[3rem] leading-[1.6] italic text-justify px-10 border-l-[15px] border-sayc-teal/20">
+                                "{formData.mainText}"
+                             </p>
+                          </div>
                        </div>
 
-                       <div className="absolute bottom-0 inset-x-0 h-[120px] bg-orange-600 flex items-center justify-between px-20">
-                          <span className="text-white font-black text-3xl uppercase tracking-widest italic">SAYC TCHAD 2026</span>
-                          <span className="text-white font-bold text-xl uppercase tracking-[0.5em]">WWW.SAYCTCHAD.ORG</span>
+                       {/* Formal Footer & Signature */}
+                       <div className="absolute bottom-[60px] left-24 right-24 flex items-end justify-between">
+                          <div className="flex flex-col">
+                             <span className="text-slate-400 font-bold text-lg uppercase tracking-widest mb-1">FAIT À N'DJAMENA, LE</span>
+                             <span className="text-[#0A0D14] font-black text-3xl uppercase">{new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                          </div>
+                          <div className="flex flex-col items-end gap-3">
+                             <div className="text-right">
+                                <span className="text-slate-400 font-bold text-xs uppercase tracking-widest">SCEAU D'AUTHENTICITÉ</span>
+                             </div>
+                             <div className="p-6 bg-[#0A0D14] rounded-3xl shadow-xl">
+                                <Zap className="w-12 h-12 text-orange-600" />
+                             </div>
+                             <span className="text-[#0A0D14] font-black text-2xl tracking-[0.3em] uppercase">SAYCTCHAD.ORG</span>
+                          </div>
                        </div>
                     </div>
                   )}
