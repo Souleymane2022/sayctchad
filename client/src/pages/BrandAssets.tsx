@@ -467,7 +467,7 @@ export default function BrandAssets() {
                        {/* Content Area */}
                        <div className="absolute top-[220px] left-24 right-24 z-10">
                           <p className="text-orange-500 font-black text-3xl uppercase tracking-[0.6em] mb-6 drop-shadow-lg">{formData.subtitle}</p>
-                          <h1 className="text-[130px] font-black text-white leading-[0.8] tracking-tighter m-0 uppercase mb-12">
+                          <h1 className="text-[100px] font-black text-white leading-[0.9] tracking-tighter m-0 uppercase mb-12">
                              {formData.titleLine1} <br/>
                              <span className="text-orange-600 drop-shadow-[0_0_30px_rgba(234,88,12,0.4)]">{formData.titleLine2}</span> <br/>
                              <span className="text-white opacity-90">{formData.titleLine3}</span>
@@ -476,7 +476,7 @@ export default function BrandAssets() {
                           <div className="grid grid-cols-12 gap-12 items-start">
                              <div className="col-span-7 bg-white/5 border-l-[12px] border-orange-600 p-12 backdrop-blur-2xl rounded-r-[3rem] shadow-2xl">
                                 <h4 className="text-orange-500 font-black text-2xl uppercase tracking-widest mb-6">À PROPOS DU PROGRAMME</h4>
-                                <p className="text-slate-100 font-bold text-[1.6rem] leading-[1.5] text-left">
+                                <p className="text-slate-100 font-bold text-[1.6rem] leading-[1.5] text-left text-justify">
                                    {formData.mainText}
                                 </p>
                              </div>
@@ -532,7 +532,7 @@ export default function BrandAssets() {
                              <span className="text-sayc-teal font-black text-3xl uppercase tracking-[0.4em]">{formData.subtitle || "DERNIÈRE MINUTE"}</span>
                           </div>
                           
-                          <h1 className="text-[120px] font-black text-white leading-[0.85] tracking-tighter uppercase italic drop-shadow-2xl mb-16">
+                          <h1 className="text-[100px] font-black text-white leading-[0.9] tracking-tighter uppercase italic drop-shadow-2xl mb-16">
                              {formData.titleLine1} <br/>
                              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sayc-teal via-blue-400 to-white">{formData.titleLine2}</span>
                           </h1>
@@ -540,8 +540,7 @@ export default function BrandAssets() {
                           <div className="relative">
                              <div className="absolute -left-10 top-0 bottom-0 w-3 bg-sayc-teal rounded-full shadow-[0_0_30px_#2dd4bf]" />
                              <div className="bg-white/5 backdrop-blur-3xl p-16 rounded-[4rem] border border-white/10 shadow-3xl">
-                                <Quote className="w-24 h-24 text-sayc-teal opacity-20 absolute top-[-40px] right-12" />
-                                <p className="text-white font-bold text-[2.8rem] leading-[1.4] text-left italic">
+                                <p className="text-white font-bold text-[2.6rem] leading-[1.5] text-left italic text-justify">
                                    {formData.mainText}
                                 </p>
                              </div>
@@ -589,7 +588,7 @@ export default function BrandAssets() {
                        <div className="absolute top-[260px] left-24 right-24 z-10 flex flex-col items-center text-center">
                           <Quote className="w-40 h-40 text-sayc-teal opacity-10 mb-8" />
                           <div className="relative">
-                             <p className="text-[3.2rem] font-black leading-[1.3] italic text-white tracking-tighter drop-shadow-2xl">
+                             <p className="text-[3rem] font-black leading-[1.3] italic text-white tracking-tighter drop-shadow-2xl">
                                 "{formData.mainText || formData.quote}"
                              </p>
                           </div>
@@ -798,7 +797,7 @@ export default function BrandAssets() {
                        <div className="absolute top-[320px] left-24 right-24 flex flex-col items-center text-center space-y-16">
                           <div className="space-y-6">
                              <h4 className="text-sayc-teal font-black text-3xl uppercase tracking-[0.5em]">{formData.subtitle || "SAYC TCHAD — SECRÉTARIAT GÉNÉRAL"}</h4>
-                             <h1 className="text-[110px] font-black text-[#0A0D14] leading-none tracking-tighter uppercase">
+                             <h1 className="text-[100px] font-black text-[#0A0D14] leading-[0.9] tracking-tighter uppercase">
                                 {formData.titleLine1 || "DÉCISION"}<br/>
                                 <span className="text-orange-600">{formData.titleLine2 || "SAYC TCHAD"}</span>
                              </h1>
@@ -807,7 +806,7 @@ export default function BrandAssets() {
                           <div className="w-full h-[3px] bg-slate-100" />
 
                           <div className="max-w-5xl">
-                             <p className="text-[#0A0D14]/90 font-bold text-[3rem] leading-[1.6] italic text-justify px-10 border-l-[15px] border-sayc-teal/20">
+                             <p className="text-[#0A0D14]/90 font-bold text-[2.8rem] leading-[1.5] italic text-justify px-10 border-l-[15px] border-sayc-teal/20">
                                 "{formData.mainText}"
                              </p>
                           </div>
