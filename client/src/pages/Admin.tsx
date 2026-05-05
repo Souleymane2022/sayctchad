@@ -2217,8 +2217,9 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
       const recipients = initialData.recipients || [];
       if (recipients.length === 0) return initialData;
 
-      // Track sent emails for this campaign (using subject as key)
-      const campaignKey = `sayc_sent_mass_${btoa(subject).substring(0, 16)}`;
+      // Track sent emails for this campaign (using sanitized subject as key)
+      const safeSubject = (subject || "").replace(/[^a-zA-Z0-9]/g, '_').substring(0, 32);
+      const campaignKey = `sayc_sent_mass_${safeSubject}`;
       const sentHistoryRaw = localStorage.getItem(campaignKey);
       const sentEmails = new Set(sentHistoryRaw ? JSON.parse(sentHistoryRaw) : []);
       
@@ -2369,7 +2370,7 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
                 {massEmailMutation.isPending ? (
                   <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi en cours...</>
                 ) : (
-                  localStorage.getItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`) ? "Continuer la campagne" : "Envoyer les emails"
+                  localStorage.getItem(`sayc_sent_mass_${(subject || "").replace(/[^a-zA-Z0-9]/g, '_').substring(0, 32)}`) ? "Continuer la campagne" : "Envoyer les emails"
                 )}
               </Button>
 
@@ -2377,8 +2378,9 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
                 variant="outline" 
                 className="h-12 border-slate-200 text-slate-500"
                 onClick={() => {
+                  const safeSubject = (subject || "").replace(/[^a-zA-Z0-9]/g, '_').substring(0, 32);
                   if(confirm("Voulez-vous réinitialiser l'historique pour cet objet d'email ?")) {
-                    localStorage.removeItem(`sayc_sent_mass_${btoa(subject || "").substring(0, 16)}`);
+                    localStorage.removeItem(`sayc_sent_mass_${safeSubject}`);
                     window.location.reload();
                   }
                 }}
