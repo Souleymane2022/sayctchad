@@ -72,6 +72,13 @@ function setupServe(app: Express, distPath: string) {
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
+      } else if (reqPath.includes("/actualites/")) {
+        const item = await storage.getNewsArticleById(id);
+        if (item) {
+          title = `${item.title} | Actualités SAYC Tchad`;
+          description = item.description.substring(0, 160);
+          if (item.imageUrl) imageUrl = item.imageUrl;
+        }
       } else if (reqPath.includes("/resultats")) {
         title = "Liste Officielle des 50 Lauréats | Bourse Thunderbird SAYC Tchad";
         description = "Découvrez les 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners.";
@@ -82,15 +89,15 @@ function setupServe(app: Express, distPath: string) {
         imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
       }
 
-      // Meta Tag Replacement Logic
+      // Meta Tag Replacement Logic (More robust regex)
       html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
-      html = html.replace(/<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i, `<meta name="description" content="${description}" \/>`);
-      html = html.replace(/<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${title}" \/>`);
-      html = html.replace(/<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${description}" \/>`);
-      html = html.replace(/<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${imageUrl}" \/>`);
-      html = html.replace(/<meta\s+name="twitter:title"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${title}" \/>`);
-      html = html.replace(/<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${description}" \/>`);
-      html = html.replace(/<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${imageUrl}" \/>`);
+      html = html.replace(/<meta\s+(?:name|property)="description"\s+content="[^"]*"\s*\/?>/i, `<meta name="description" content="${description}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="og:title"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${title}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="og:description"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${description}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="og:image"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${imageUrl}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="twitter:title"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${title}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="twitter:description"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${description}" />`);
+      html = html.replace(/<meta\s+(?:name|property)="twitter:image"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${imageUrl}" />`);
 
     } catch (error) {
       console.error("SEO Injection Error:", error);
@@ -104,6 +111,7 @@ function setupServe(app: Express, distPath: string) {
   app.get("/opportunites/:id", serveIndexWithSEO);
   app.get("/formations/:id", serveIndexWithSEO);
   app.get("/evenements/:id", serveIndexWithSEO);
+  app.get("/actualites/:id", serveIndexWithSEO);
 
   // Serve other static files
   app.use(express.static(distPath, { index: false }));
