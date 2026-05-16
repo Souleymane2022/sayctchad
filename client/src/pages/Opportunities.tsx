@@ -107,7 +107,7 @@ export default function Opportunities() {
       <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
         <SEOHead title="Chargement... | SAYC Tchad" description="Veuillez patienter pendant le chargement de l'opportunité." />
         <section className="pt-24 md:pt-32 pb-12 md:pb-20">
-          <div className="container mx-auto px-4 md:px-6">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <Skeleton className="h-8 w-48 mb-8" />
             <div className="grid md:grid-cols-3 gap-8 md:gap-12">
               <div className="md:col-span-2 space-y-8">
@@ -163,7 +163,7 @@ export default function Opportunities() {
           jsonLd={webPageJsonLd}
         />
         <section className="pt-24 md:pt-32 pb-12 md:pb-20 bg-muted/30">
-          <div className="container mx-auto px-4 md:px-6">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <Link href="/opportunites">
               <Button variant="ghost" className="mb-6 md:mb-8 hover:bg-transparent p-0 flex items-center gap-2">
                 <X className="w-4 h-4" />
@@ -275,7 +275,7 @@ export default function Opportunities() {
           <div className="absolute top-20 right-20 w-24 h-24 border-2 border-sayc-teal/30 rounded-full" />
           <div className="absolute bottom-16 left-1/4 w-16 h-16 bg-accent/20 rounded-full" />
         </div>
-        <div className="container mx-auto px-4 md:px-6 relative">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6 relative">
           <div className="max-w-3xl">
             <Badge variant="secondary" className="mb-6 bg-accent/20 text-accent border-accent/30" data-testid="badge-opportunities-tag">
               <Briefcase className="w-3 h-3 mr-1" />
@@ -297,7 +297,7 @@ export default function Opportunities() {
 
       {!isLoading && opportunities.length > 0 && (
         <section className="py-8 bg-muted/30 border-b" data-testid="section-opportunities-stats">
-          <div className="container mx-auto px-4 md:px-6">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-8">
               {stats.map((stat) => {
                 const StatIcon = stat.icon;
@@ -319,7 +319,7 @@ export default function Opportunities() {
       )}
 
       <section className="py-6 border-b sticky top-16 z-40 backdrop-blur-sm bg-background/95">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6">
           <div className="flex flex-wrap items-center gap-2">
             <Filter className="w-4 h-4 text-muted-foreground mr-1" />
             <span className="text-sm text-muted-foreground mr-2">Filtrer :</span>
@@ -345,7 +345,7 @@ export default function Opportunities() {
       </section>
 
       <section className="py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6">
           {isLoading ? (
             <div className="grid md:grid-cols-2 gap-6">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -399,14 +399,14 @@ export default function Opportunities() {
                   {selectedCategory !== "Tous" && ` dans "${selectedCategory}"`}
                 </p>
               </div>
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                 {filtered.map((opportunity) => {
                   const config = categoryConfig[opportunity.category] || { icon: Briefcase, colorClass: "bg-muted text-muted-foreground" };
                   const IconComponent = config.icon;
                   return (
                     <Card
                       key={opportunity.id}
-                      className="group hover-elevate transition-all duration-300"
+                      className="group hover-elevate transition-all duration-300 w-full overflow-hidden"
                       data-testid={`card-opportunity-${opportunity.id}`}
                     >
                       <CardHeader className="p-0 overflow-hidden">
@@ -433,13 +433,13 @@ export default function Opportunities() {
                               <span className="truncate max-w-[120px]">{opportunity.organization}</span>
                             </div>
                           </div>
-                          <CardTitle className="font-heading text-lg leading-snug group-hover:text-primary transition-colors">
+                          <CardTitle className="font-heading text-lg leading-snug group-hover:text-primary transition-colors break-words">
                             {opportunity.title}
                           </CardTitle>
                         </div>
                       </CardHeader>
                       <CardContent className="p-6 pt-2">
-                        <CardDescription className="text-sm leading-relaxed mb-4 line-clamp-3">
+                        <CardDescription className="text-sm leading-relaxed mb-4 line-clamp-3 break-words">
                           {opportunity.description}
                         </CardDescription>
                         <div className="space-y-2 mb-4">
@@ -483,7 +483,7 @@ export default function Opportunities() {
       </section>
 
       <section className="py-16 md:py-24 bg-muted/30 border-t" data-testid="section-how-it-works">
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-3 sm:px-4 md:px-6">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4">
               <Rocket className="w-3 h-3 mr-1" />

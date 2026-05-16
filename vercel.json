@@ -7,15 +7,15 @@
             "destination": "/api"
         },
         {
-            "source": "/opportunites/(.*)",
+            "source": "/opportunites/:id",
             "destination": "/api"
         },
         {
-            "source": "/formations/(.*)",
+            "source": "/formations/:id",
             "destination": "/api"
         },
         {
-            "source": "/evenements/(.*)",
+            "source": "/evenements/:id",
             "destination": "/api"
         },
         {
