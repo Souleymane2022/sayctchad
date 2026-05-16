@@ -101,6 +101,54 @@ export default function Opportunities() {
     isPartOf: { "@type": "WebSite", name: "SAYC Tchad", url: "https://sayctchad.org" },
   }), [seoData]);
 
+  // Handle direct navigation to detail page while loading
+  if (detailId && isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
+        <SEOHead title="Chargement... | SAYC Tchad" description="Veuillez patienter pendant le chargement de l'opportunité." />
+        <section className="pt-24 md:pt-32 pb-12 md:pb-20">
+          <div className="container mx-auto px-4 md:px-6">
+            <Skeleton className="h-8 w-48 mb-8" />
+            <div className="grid md:grid-cols-3 gap-8 md:gap-12">
+              <div className="md:col-span-2 space-y-8">
+                <div className="space-y-4">
+                  <Skeleton className="h-6 w-24" />
+                  <Skeleton className="h-12 w-full md:w-3/4" />
+                  <div className="flex gap-4">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                </div>
+                <Skeleton className="aspect-video w-full rounded-2xl" />
+                <div className="space-y-4">
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Handle opportunity not found (but finished loading)
+  if (detailId && !opportunity && !isLoading) {
+    return (
+      <div className="flex flex-col min-h-screen w-full items-center justify-center p-4">
+        <Briefcase className="w-16 h-16 text-muted-foreground/40 mb-4" />
+        <h2 className="text-2xl font-bold mb-2">Opportunité introuvable</h2>
+        <p className="text-muted-foreground mb-6 text-center max-w-md">
+          L'opportunité que vous recherchez n'existe plus ou a été désactivée.
+        </p>
+        <Link href="/opportunites">
+          <Button>Retour aux opportunités</Button>
+        </Link>
+      </div>
+    );
+  }
+
   if (opportunity) {
     const config = categoryConfig[opportunity.category] || { icon: Briefcase, colorClass: "bg-muted text-muted-foreground" };
     const IconComponent = config.icon;
@@ -117,20 +165,20 @@ export default function Opportunities() {
         <section className="pt-24 md:pt-32 pb-12 md:pb-20 bg-muted/30">
           <div className="container mx-auto px-4 md:px-6">
             <Link href="/opportunites">
-              <Button variant="ghost" className="mb-8 hover:bg-transparent p-0 flex items-center gap-2">
+              <Button variant="ghost" className="mb-6 md:mb-8 hover:bg-transparent p-0 flex items-center gap-2">
                 <X className="w-4 h-4" />
                 Retour aux opportunit&eacute;s
               </Button>
             </Link>
 
-            <div className="grid md:grid-cols-3 gap-12">
+            <div className="grid md:grid-cols-3 gap-8 md:gap-12">
               <div className="md:col-span-2 space-y-8">
                 <div className="space-y-4">
                   <Badge variant="outline" className={categoryBadgeVariant(opportunity.category)}>
                     {opportunity.category}
                   </Badge>
-                  <h1 className="text-3xl md:text-5xl font-heading font-bold">{opportunity.title}</h1>
-                  <div className="flex flex-wrap gap-6 text-muted-foreground">
+                  <h1 className="text-3xl md:text-5xl font-heading font-bold break-words leading-tight">{opportunity.title}</h1>
+                  <div className="flex flex-wrap gap-x-6 gap-y-3 text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-primary" />
                       <span>{opportunity.organization}</span>
@@ -250,18 +298,18 @@ export default function Opportunities() {
       {!isLoading && opportunities.length > 0 && (
         <section className="py-8 bg-muted/30 border-b" data-testid="section-opportunities-stats">
           <div className="container mx-auto px-4 md:px-6">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-8">
               {stats.map((stat) => {
                 const StatIcon = stat.icon;
                 return (
-                  <div key={stat.label} className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-1">
+                  <div key={stat.label} className="bg-background/50 p-4 rounded-xl border border-border/50 text-center sm:bg-transparent sm:p-0 sm:border-0 sm:rounded-none">
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 mb-1">
                       <StatIcon className="w-4 h-4 text-accent" />
-                      <span className="text-2xl md:text-3xl font-bold font-heading" data-testid={`text-stat-${stat.label.toLowerCase().replace(/\s+/g, "-").normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}>
+                      <span className="text-xl md:text-3xl font-bold font-heading" data-testid={`text-stat-${stat.label.toLowerCase().replace(/\s+/g, "-").normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}>
                         {stat.value}
                       </span>
                     </div>
-                    <p className="text-xs md:text-sm text-muted-foreground">{stat.label}</p>
+                    <p className="text-[10px] md:text-sm text-muted-foreground uppercase tracking-wider">{stat.label}</p>
                   </div>
                 );
               })}

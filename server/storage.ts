@@ -262,12 +262,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getOpportunityById(id: string): Promise<Opportunity | undefined> {
-    const [opportunity] = await db.select().from(opportunities).where(sql`${opportunities.id} = ${Number(id)}`);
+    const [opportunity] = await db.select().from(opportunities).where(eq(opportunities.id, id));
     return opportunity;
   }
 
   async updateOpportunity(id: string, data: Partial<InsertOpportunity>): Promise<Opportunity | undefined> {
-    const [updated] = await db.update(opportunities).set(data).where(sql`${opportunities.id} = ${Number(id)}`).returning();
+    const [updated] = await db.update(opportunities).set(data).where(eq(opportunities.id, id)).returning();
     return updated;
   }
 
@@ -311,7 +311,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getTrainingById(id: string): Promise<Training | undefined> {
-    const [training] = await db.select().from(trainings).where(sql`${trainings.id} = ${Number(id)}`);
+    const [training] = await db.select().from(trainings).where(eq(trainings.id, id));
     return training;
   }
 
@@ -338,7 +338,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getNewsArticleById(id: string): Promise<NewsArticle | undefined> {
-    const [article] = await db.select().from(newsArticles).where(sql`${newsArticles.id} = ${Number(id)}`);
+    const [article] = await db.select().from(newsArticles).where(eq(newsArticles.id, id));
     return article;
   }
 
@@ -365,7 +365,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEventById(id: string): Promise<Event | undefined> {
-    const [event] = await db.select().from(events).where(sql`${events.id} = ${Number(id)}`);
+    const [event] = await db.select().from(events).where(eq(events.id, id));
     return event;
   }
 
