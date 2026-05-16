@@ -4,31 +4,27 @@ import path from "path";
 import { storage } from "./storage";
 
 export function serveStatic(app: Express) {
-  // Try to find dist/public (standard build location)
-  let distPath = path.resolve(process.cwd(), "dist", "public");
-  
-  if (!fs.existsSync(distPath)) {
-    // Fallback for Replit/local structure where dist/public might be elsewhere
-    distPath = path.resolve(__dirname, "public");
-  }
+  // Common locations for build artifacts
+  const possiblePaths = [
+    path.resolve(process.cwd(), "dist", "public"), // Replit/Standard
+    path.resolve(process.cwd(), "dist"),          // Vercel
+    path.resolve(process.cwd(), "public"),        // Dev fallback
+    path.resolve(__dirname, "public"),            // Bundle fallback
+    path.resolve(__dirname, "..", "public"),      // Parent fallback
+    path.resolve(__dirname, "..", "client", "dist") // Dev fallback 2
+  ];
 
-  if (!fs.existsSync(distPath)) {
-    // If still not found, search in common locations
-    const possiblePaths = [
-      path.resolve(process.cwd(), "public"),
-      path.resolve(__dirname, "..", "public"),
-      path.resolve(__dirname, "..", "client", "dist")
-    ];
-    for (const p of possiblePaths) {
-      if (fs.existsSync(p) && fs.existsSync(path.join(p, "index.html"))) {
-        distPath = p;
-        break;
-      }
+  let distPath = "";
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p) && fs.existsSync(path.join(p, "index.html"))) {
+      distPath = p;
+      break;
     }
   }
 
-  if (!fs.existsSync(distPath)) {
-    console.error(`[Static] WARNING: Could not find build directory. Static serving will be disabled.`);
+  if (!distPath) {
+    console.error(`[Static] WARNING: Could not find build directory with index.html. Static serving will be disabled.`);
+    console.error(`Checked paths: ${possiblePaths.join(", ")}`);
     return;
   }
 
