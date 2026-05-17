@@ -310,6 +310,83 @@ ${pages.map(p => `  <url>
     res.json(result);
   });
 
+  // ─── Dynamic Image Rendering Endpoints (Decodes base64 for social media crawler support) ───
+  app.get("/api/images/opportunities/:id", async (req, res) => {
+    try {
+      const item = await storage.getOpportunityById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png"); // Fallback to default logo
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000"); // Cache for 30 days
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+
+  app.get("/api/images/trainings/:id", async (req, res) => {
+    try {
+      const item = await storage.getTrainingById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+
+  app.get("/api/images/events/:id", async (req, res) => {
+    try {
+      const item = await storage.getEventById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+
+  app.get("/api/images/news/:id", async (req, res) => {
+    try {
+      const item = await storage.getNewsArticleById(req.params.id);
+      let imgData = "";
+      if (item && item.imageUrls && Array.isArray(item.imageUrls) && item.imageUrls[0]) {
+        imgData = item.imageUrls[0];
+      }
+      if (!imgData || !imgData.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = imgData.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+
   app.get("/api/contact", async (_req, res) => {
     try {
       const messages = await storage.getAllContactMessages();

@@ -84,9 +84,26 @@ function setupServe(app: Express, distPath: string) {
         description = "Découvrez les 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners.";
       }
 
-      // Ensure imageUrl is absolute
-      if (imageUrl && !imageUrl.startsWith("http")) {
-        imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+      // Convert base64 imageUrl to dynamic render endpoint for crawler compatibility
+      if (imageUrl && imageUrl.startsWith("data:image")) {
+        if (reqPath.includes("/opportunites/")) {
+          imageUrl = `https://sayctchad.org/api/images/opportunities/${id}`;
+        } else if (reqPath.includes("/formations/")) {
+          imageUrl = `https://sayctchad.org/api/images/trainings/${id}`;
+        } else if (reqPath.includes("/evenements/")) {
+          imageUrl = `https://sayctchad.org/api/images/events/${id}`;
+        } else if (reqPath.includes("/actualites/")) {
+          imageUrl = `https://sayctchad.org/api/images/news/${id}`;
+        }
+      }
+
+      // Ensure imageUrl is absolute and fallback to a default image if none exists
+      if (imageUrl) {
+        if (!imageUrl.startsWith("http")) {
+          imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+        }
+      } else {
+        imageUrl = "https://sayctchad.org/images/logo.png";
       }
 
       const fullUrl = `https://sayctchad.org${reqPath}`;
