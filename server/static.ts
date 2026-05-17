@@ -89,15 +89,18 @@ function setupServe(app: Express, distPath: string) {
         imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
       }
 
-      // Meta Tag Replacement Logic (More robust regex)
+      const fullUrl = `https://sayctchad.org${reqPath}`;
+
+      // Meta Tag Replacement Logic (Ultra-robust regex, matches regardless of attribute order or newlines)
       html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
-      html = html.replace(/<meta\s+(?:name|property)="description"\s+content="[^"]*"\s*\/?>/i, `<meta name="description" content="${description}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="og:title"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${title}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="og:description"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${description}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="og:image"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${imageUrl}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="twitter:title"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${title}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="twitter:description"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${description}" />`);
-      html = html.replace(/<meta\s+(?:name|property)="twitter:image"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${imageUrl}" />`);
+      html = html.replace(/<meta[^>]*?name="description"[^>]*?>/i, `<meta name="description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?property="og:title"[^>]*?>/i, `<meta property="og:title" content="${title}" />`);
+      html = html.replace(/<meta[^>]*?property="og:description"[^>]*?>/i, `<meta property="og:description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?property="og:image"[^>]*?>/i, `<meta property="og:image" content="${imageUrl}" />`);
+      html = html.replace(/<meta[^>]*?property="og:url"[^>]*?>/i, `<meta property="og:url" content="${fullUrl}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:title"[^>]*?>/i, `<meta name="twitter:title" content="${title}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:description"[^>]*?>/i, `<meta name="twitter:description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:image"[^>]*?>/i, `<meta name="twitter:image" content="${imageUrl}" />`);
 
     } catch (error) {
       console.error("SEO Injection Error:", error);
