@@ -16,6 +16,7 @@ const ITEMS_PER_PAGE = 50;
 export default function ThunderbirdResults() {
   const [searchTerm, setSearchTerm] = useState("");
   const [genderFilter, setGenderFilter] = useState<string>("all");
+  const [cohortFilter, setCohortFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: results, isLoading } = useQuery<ThunderbirdApplication[]>({
@@ -40,13 +41,25 @@ export default function ThunderbirdResults() {
     }
   };
 
-  const statsData = useMemo(() => {
+  const cohortFilteredResults = useMemo(() => {
     if (!results) return [];
-    const male = results.filter(r => {
+    return results.filter(r => {
+      if (cohortFilter === "cohort1") {
+        return r.cohort === "Tchad 2024" || !r.cohort.includes("Cohorte 2");
+      }
+      if (cohortFilter === "cohort2") {
+        return r.cohort.includes("Cohorte 2");
+      }
+      return true; // "all"
+    });
+  }, [results, cohortFilter]);
+
+  const statsData = useMemo(() => {
+    const male = cohortFilteredResults.filter(r => {
       const g = r.gender?.toLowerCase() || "";
       return g === "masculin" || g === "male" || g === "m" || g === "homme";
     }).length;
-    const female = results.filter(r => {
+    const female = cohortFilteredResults.filter(r => {
       const g = r.gender?.toLowerCase() || "";
       return g === "féminin" || g === "female" || g === "f" || g === "femme";
     }).length;
@@ -54,15 +67,10 @@ export default function ThunderbirdResults() {
       { name: "Hommes", value: male, color: "#1E3A5F" },
       { name: "Femmes", value: female, color: "#D4AF37" },
     ];
-  }, [results]);
+  }, [cohortFilteredResults]);
 
   const filteredResults = useMemo(() => {
-    if (!results) return [];
-    // Filtrage pour ne montrer que la Cohorte 1 (Tchad 2024 / Anciens enregistrés)
-    // Les nouveaux sont en "Cohorte 2 (En attente)"
-    const cohort1 = results.filter(r => r.cohort === "Tchad 2024" || !r.cohort.includes("Cohorte 2"));
-
-    return cohort1.filter(app => {
+    return cohortFilteredResults.filter(app => {
       const matchesSearch = app.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           app.city?.toLowerCase().includes(searchTerm.toLowerCase());
       
@@ -76,7 +84,7 @@ export default function ThunderbirdResults() {
       
       return matchesSearch && matchesGender;
     });
-  }, [results, searchTerm, genderFilter]);
+  }, [cohortFilteredResults, searchTerm, genderFilter]);
 
   const totalPages = Math.ceil(filteredResults.length / ITEMS_PER_PAGE);
   const displayedResults = filteredResults.slice(
@@ -96,7 +104,7 @@ export default function ThunderbirdResults() {
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <SEOHead 
         title="Résultats Bourse Thunderbird | 100 Million Learners" 
-        description="Liste officielle des 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners."
+        description="Liste officielle des candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners."
         path="/programmes/thunderbird/resultats"
       />
 
@@ -112,6 +120,35 @@ export default function ThunderbirdResults() {
                 onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               />
             </div>
+            
+            {/* Cohort Selector Filter */}
+            <div className="flex bg-white rounded-lg border border-slate-200 p-1">
+              <Button 
+                variant={cohortFilter === "all" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => { setCohortFilter("all"); setCurrentPage(1); }}
+                className={cohortFilter === "all" ? "bg-[#8C1D40] text-white hover:bg-[#701733]" : "text-slate-600 hover:text-slate-900"}
+              >
+                Toutes les Cohortes
+              </Button>
+              <Button 
+                variant={cohortFilter === "cohort1" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => { setCohortFilter("cohort1"); setCurrentPage(1); }}
+                className={cohortFilter === "cohort1" ? "bg-[#8C1D40] text-white hover:bg-[#701733]" : "text-slate-600 hover:text-slate-900"}
+              >
+                Cohorte 1
+              </Button>
+              <Button 
+                variant={cohortFilter === "cohort2" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => { setCohortFilter("cohort2"); setCurrentPage(1); }}
+                className={cohortFilter === "cohort2" ? "bg-[#8C1D40] text-white hover:bg-[#701733]" : "text-slate-600 hover:text-slate-900"}
+              >
+                Cohorte 2
+              </Button>
+            </div>
+
             <div className="flex bg-white rounded-lg border border-slate-200 p-1">
               <Button 
                 variant={genderFilter === "all" ? "default" : "ghost"}
@@ -119,7 +156,7 @@ export default function ThunderbirdResults() {
                 onClick={() => { setGenderFilter("all"); setCurrentPage(1); }}
                 className={genderFilter === "all" ? "bg-[#1E3A5F]" : ""}
               >
-                Tous
+                Tous Genres
               </Button>
               <Button 
                 variant={genderFilter === "male" ? "default" : "ghost"}
@@ -176,6 +213,11 @@ export default function ThunderbirdResults() {
               <p className="text-slate-500 font-medium uppercase tracking-[0.2em] text-sm">
                 Initiative Najafi 100 Million Learners
               </p>
+              {cohortFilter !== "all" && (
+                <div className="mt-4 inline-block bg-[#8C1D40]/10 text-[#8C1D40] font-black px-4 py-1.5 rounded-full text-xs uppercase tracking-wider">
+                  {cohortFilter === "cohort1" ? "Première Cohorte (Tchad 2024)" : "Deuxième Cohorte (2026)"}
+                </div>
+              )}
             </motion.div>
           </div>
 
@@ -189,6 +231,7 @@ export default function ThunderbirdResults() {
                     <th className="py-5 px-6 font-bold text-[#1E3A5F]">Nom et Prénoms</th>
                     <th className="py-5 px-6 font-bold text-[#1E3A5F] w-32">Genre</th>
                     <th className="py-5 px-6 font-bold text-[#1E3A5F] w-40">Ville</th>
+                    <th className="py-5 px-6 font-bold text-[#1E3A5F] w-40">Cohorte</th>
                     <th className="py-5 px-6 font-bold text-[#1E3A5F] text-right w-32">Mention</th>
                   </tr>
                 </thead>
@@ -215,6 +258,15 @@ export default function ThunderbirdResults() {
                            </span>
                         </td>
                         <td className="py-5 px-6 text-slate-500 font-medium">{app.city}</td>
+                        <td className="py-5 px-6">
+                          <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-tight ${
+                            app.cohort.includes("Cohorte 2")
+                            ? 'bg-[#8C1D40]/10 text-[#8C1D40] border border-[#8C1D40]/20'
+                            : 'bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}>
+                            {app.cohort.includes("Cohorte 2") ? "Cohorte 2" : "Cohorte 1"}
+                          </span>
+                        </td>
                         <td className="py-5 px-6 text-right">
                           <span className="inline-flex items-center px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tighter bg-green-500 text-white shadow-sm">
                             <ShieldCheck className="w-3 h-3 mr-1.5" />
@@ -239,8 +291,15 @@ export default function ThunderbirdResults() {
                     exit={{ opacity: 0 }}
                     className="bg-slate-50 border border-slate-200 rounded-xl p-5 relative overflow-hidden"
                   >
-                    <div className="absolute top-0 right-0 p-2">
-                       <span className="bg-green-500 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg uppercase">
+                    <div className="absolute top-0 right-0 p-2 flex gap-1 items-center">
+                       <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-tighter ${
+                         app.cohort.includes("Cohorte 2")
+                         ? 'bg-[#8C1D40] text-white'
+                         : 'bg-slate-300 text-slate-700'
+                       }`}>
+                         {app.cohort.includes("Cohorte 2") ? "C2" : "C1"}
+                       </span>
+                       <span className="bg-green-500 text-white text-[10px] font-black px-2 py-1 rounded uppercase">
                          Retenu
                        </span>
                     </div>
@@ -317,13 +376,13 @@ export default function ThunderbirdResults() {
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-bold text-slate-700 uppercase text-sm tracking-wide">{stat.name}</span>
                       <span className="font-black text-xl" style={{ color: stat.color }}>
-                        {((stat.value / (results?.length || 1)) * 100).toFixed(1)}%
+                        {((stat.value / Math.max(1, cohortFilteredResults.length)) * 100).toFixed(1)}%
                       </span>
                     </div>
                     <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
                       <motion.div 
                         initial={{ width: 0 }}
-                        animate={{ width: `${(stat.value / (results?.length || 1)) * 100}%` }}
+                        animate={{ width: `${(stat.value / Math.max(1, cohortFilteredResults.length)) * 100}%` }}
                         className="h-full rounded-full"
                         style={{ backgroundColor: stat.color }}
                       />

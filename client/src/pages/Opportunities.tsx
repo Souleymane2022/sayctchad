@@ -105,7 +105,7 @@ export default function Opportunities() {
   if (detailId && isLoading) {
     return (
       <div className="flex flex-col min-h-screen w-full overflow-x-hidden">
-        <SEOHead title="Chargement... | SAYC Tchad" description="Veuillez patienter pendant le chargement de l'opportunité." />
+        <SEOHead title="Chargement... | SAYC Tchad" description="Veuillez patienter pendant le chargement de l'opportunité." path={`/opportunites/${detailId}`} />
         <section className="pt-24 md:pt-32 pb-12 md:pb-20">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <Skeleton className="h-8 w-48 mb-8" />

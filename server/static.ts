@@ -76,7 +76,7 @@ function setupServe(app: Express, distPath: string) {
         const item = await storage.getNewsArticleById(id);
         if (item) {
           title = `${item.title} | Actualités SAYC Tchad`;
-          description = item.description.substring(0, 160);
+          description = (item.excerpt || item.content || "").substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
       } else if (reqPath.includes("/resultats")) {
