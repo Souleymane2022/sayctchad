@@ -1511,6 +1511,7 @@ function AwsRestartApplicationsTab() {
 
 function ThunderbirdApplicationsTab() {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [cityFilter, setCityFilter] = useState("all");
   const [pathwayFilter, setPathwayFilter] = useState("all");
@@ -1521,6 +1522,23 @@ function ThunderbirdApplicationsTab() {
       const res = await fetch("/api/admin/thunderbird-applications", { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch");
       return res.json();
+    },
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      await apiRequest("PATCH", `/api/thunderbird/applications/${id}/status`, { status });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin", "thunderbird-applications"] });
+      toast({ title: "Statut mis à jour avec succès" });
+    },
+    onError: (error: any) => {
+      toast({ 
+        title: "Erreur", 
+        description: error.message || "Impossible de mettre à jour le statut", 
+        variant: "destructive" 
+      });
     },
   });
 
@@ -1748,6 +1766,40 @@ function ThunderbirdApplicationsTab() {
                         </div>
                       </DialogContent>
                     </Dialog>
+                    <div className="inline-flex gap-1 ml-2">
+                      {app.status === "pending" ? (
+                        <>
+                          <Button 
+                            variant="default" 
+                            size="sm" 
+                            className="bg-green-600 hover:bg-green-700 text-white h-8 text-xs px-2.5"
+                            onClick={() => updateStatusMutation.mutate({ id: app.id, status: "approved" })}
+                            disabled={updateStatusMutation.isPending}
+                          >
+                            Accepter
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="h-8 text-xs px-2.5"
+                            onClick={() => updateStatusMutation.mutate({ id: app.id, status: "rejected" })}
+                            disabled={updateStatusMutation.isPending}
+                          >
+                            Refuser
+                          </Button>
+                        </>
+                      ) : (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-8 text-xs text-muted-foreground hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200"
+                          onClick={() => updateStatusMutation.mutate({ id: app.id, status: "pending" })}
+                          disabled={updateStatusMutation.isPending}
+                        >
+                          Rétablir
+                        </Button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
