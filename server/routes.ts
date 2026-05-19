@@ -1128,6 +1128,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       } else if (target === "thunderbird") {
         const apps = await storage.getThunderbirdApplications();
         recipients = apps.map(a => a.email);
+      } else if (target === "thunderbird_cohort2") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        const approvedCohort2 = apps.filter(a => a.cohort && a.cohort.includes("Cohorte 2"));
+        recipients = approvedCohort2.map(a => a.email);
+      } else if (target === "thunderbird_cohort1") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        const approvedCohort1 = apps.filter(a => !a.cohort || a.cohort === "Tchad 2024" || !a.cohort.includes("Cohorte 2"));
+        recipients = approvedCohort1.map(a => a.email);
+      } else if (target === "thunderbird_approved") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        recipients = apps.map(a => a.email);
       } else if (target === "elections_candidates") {
         const candidates = await storage.getAllCandidates();
         recipients = candidates.map(c => c.email);

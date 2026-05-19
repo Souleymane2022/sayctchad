@@ -2378,7 +2378,10 @@ function MassEmailTab({ emailProgress, setEmailProgress }: {
               onChange={(e) => setTarget(e.target.value)}
             >
               <option value="members">Tous les Membres</option>
-              <option value="thunderbird">Candidats Thunderbird</option>
+              <option value="thunderbird">Candidats Thunderbird (Tous)</option>
+              <option value="thunderbird_cohort2">Lauréats Thunderbird - Cohorte 2</option>
+              <option value="thunderbird_cohort1">Lauréats Thunderbird - Cohorte 1</option>
+              <option value="thunderbird_approved">Tous les Lauréats Thunderbird (C1 + C2)</option>
               <option value="elections_candidates">Candidats Élections</option>
               <option value="newsletter">Abonnés Newsletter</option>
             </select>
