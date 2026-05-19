@@ -56,7 +56,7 @@ export default function ThunderbirdProgram() {
             projectIdea: "",
             discoverySource: "",
             consent: false,
-            cohort: "Cohorte 2 (En attente)",
+            cohort: "Cohorte 3 (En attente)",
             status: "pending",
         },
     });
@@ -107,7 +107,7 @@ export default function ThunderbirdProgram() {
                     </h1>
                     <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
                         Une initiative mondiale de la Thunderbird School of Global Management (ASU). 
-                        Félicitations aux <strong>277 lauréats</strong> de la première cohorte !
+                        Félicitations aux <strong>277 lauréats</strong> de la première cohorte et aux <strong>plus de 1 000 apprenants</strong> de la deuxième cohorte !
                     </p>
                     <div className="flex flex-wrap justify-center gap-6 mb-12">
                         <Link href="/programmes/thunderbird/resultats">
@@ -210,11 +210,11 @@ export default function ThunderbirdProgram() {
                             <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2 animate-pulse">
                                 <GraduationCap className="w-10 h-10 text-accent" />
                             </div>
-                            <CardTitle className="text-4xl font-heading">Rejoindre la Cohorte 2</CardTitle>
+                            <CardTitle className="text-4xl font-heading">Rejoindre la Cohorte 3</CardTitle>
                             <CardDescription className="text-lg">
-                                Les inscriptions pour la première cohorte sont closes (277 sélectionnés). 
+                                Les inscriptions pour la première et deuxième cohortes sont closes (277 sélectionnés pour la Cohorte 1 et plus de 1 000 pour la Cohorte 2). 
                                 <strong> Inscrivez-vous dès maintenant sur la liste d'attente </strong> 
-                                pour être prioritaire lors du lancement de la deuxième cohorte.
+                                pour être prioritaire lors du lancement de la troisième cohorte.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -551,7 +551,7 @@ export default function ThunderbirdProgram() {
                                             </>
                                         ) : (
                                             <>
-                                                S'inscrire sur la Liste d'Attente (Cohorte 2)
+                                                S'inscrire sur la Liste d'Attente (Cohorte 3)
                                                 <Send className="ml-3 h-6 w-6" />
                                             </>
                                         )}
