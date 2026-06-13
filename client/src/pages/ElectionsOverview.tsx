@@ -83,7 +83,7 @@ const committeeRoles = [
 
 export default function ElectionsOverview() {
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-background">
             <SEOHead 
                 title="Résultats Proclamés - Élections SAYC Tchad"
                 description="Le Bureau National 2026-2028 du SAYC Tchad a été officiellement proclamé. Consultez les résultats."
@@ -91,7 +91,8 @@ export default function ElectionsOverview() {
             />
 
             {/* Hero Section - Proclamation Edition */}
-            <div className="bg-primary text-white py-16 md:py-28 px-4 relative overflow-hidden">
+            <div className="relative bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground py-16 md:py-28 px-4 overflow-hidden">
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-sidebar/5 to-transparent" />
                 <div className="absolute top-0 right-0 p-8 opacity-10">
                    <Award className="w-96 h-96 rotate-12" />
                 </div>
@@ -106,10 +107,10 @@ export default function ElectionsOverview() {
                     <div className="space-y-6">
                         <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
                             Une Nouvelle Ère <br /> 
-                            <span className="text-sayc-teal">pour le SAYC Tchad</span>
+                            <span className="text-accent">pour le SAYC Tchad</span>
                         </h1>
-                        <p className="text-xl text-blue-100 max-w-3xl mx-auto font-medium">
-                            Le scrutin du 20 au 27 avril 2026 a rendu son verdict. Nous sommes fiers d'annoncer la mise en place officielle du **Bureau National** pour un mandat de 2 ans.
+                        <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto font-medium">
+                            Le scrutin du 20 au 27 avril 2026 a rendu son verdict. Nous sommes fiers d'annoncer la mise en place officielle du Bureau National pour un mandat de 2 ans.
                         </p>
                     </div>
 
@@ -120,8 +121,8 @@ export default function ElectionsOverview() {
                             </Button>
                         </Link>
                         <Link href="/elections/transparence">
-                            <Button size="lg" className="bg-sayc-teal/10 hover:bg-sayc-teal/20 text-white px-10 h-16 rounded-[1.5rem] text-xl font-black transition-all border-2 border-sayc-teal/30">
-                                <ShieldCheck className="w-6 h-6 mr-3 text-sayc-teal" /> AUDIT & TRANSPARENCE
+                            <Button size="lg" className="bg-accent/20 hover:bg-accent/30 text-sidebar-foreground px-10 h-16 rounded-[1.5rem] text-xl font-black transition-all border-2 border-accent/30">
+                                <ShieldCheck className="w-6 h-6 mr-3 text-accent" /> AUDIT & TRANSPARENCE
                             </Button>
                         </Link>
                     </div>

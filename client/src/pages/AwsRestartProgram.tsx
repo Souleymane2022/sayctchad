@@ -83,8 +83,9 @@ export default function AwsRestartProgram() {
                 path="/programmes/aws-restart"
             />
 
-            {/* Hero Section with Theme Colors */}
-            <section className="py-20 bg-gradient-to-br from-[#0c1b33] to-[#1a3a5f] text-white">
+            {/* Hero Section */}
+            <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <Cloud className="w-5 h-5" />
@@ -94,22 +95,22 @@ export default function AwsRestartProgram() {
                         Devenez Spécialiste <br/>
                         <span className="text-accent underline decoration-2 underline-offset-8">Cloud Junior</span>
                     </h1>
-                    <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+                    <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-8">
                         Transformez votre vie grâce au Cloud ! Une formation en ligne gratuite et intensive de 12 semaines pour vous propulser vers de nouvelles opportunités de carrière technologique.
                     </p>
                     
                     <div className="flex flex-wrap justify-center gap-4">
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
                             <h4 className="font-bold text-accent text-3xl mb-1">12</h4>
-                            <p className="text-xs uppercase tracking-wider text-slate-300">Semaines Intensives</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Semaines Intensives</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
                             <h4 className="font-bold text-accent text-3xl mb-1">100%</h4>
-                            <p className="text-xs uppercase tracking-wider text-slate-300">Gratuit et En Ligne</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Gratuit et En Ligne</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
                             <h4 className="font-bold text-accent text-3xl mb-1">0</h4>
-                            <p className="text-xs uppercase tracking-wider text-slate-300">Expérience Requise</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Expérience Requise</p>
                         </div>
                     </div>
                 </div>

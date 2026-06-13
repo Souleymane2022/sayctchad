@@ -96,7 +96,8 @@ export default function ThunderbirdProgram() {
             />
 
             {/* Hero Section */}
-            <section className="py-20 bg-gradient-to-br from-[#0c1b33] to-[#1a3a5f] text-white">
+            <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
+                <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <GraduationCap className="w-4 h-4" />
@@ -105,9 +106,9 @@ export default function ThunderbirdProgram() {
                     <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6">
                         Najafi <span className="text-accent underline decoration-2 underline-offset-8">100 Million Learners</span>
                     </h1>
-                    <p className="text-xl text-white/80 max-w-3xl mx-auto leading-relaxed mb-8">
+                    <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-8">
                         Une initiative mondiale de la Thunderbird School of Global Management (ASU). 
-                        Félicitations aux <strong>277 lauréats</strong> de la première cohorte et aux <strong>plus de 1 000 apprenants</strong> de la deuxième cohorte !
+                        Félicitations aux <strong>277 lauréats</strong> de la première cohorte et aux <strong>plus de 1 000 apprenants</strong> de la deuxième cohorte !
                     </p>
                     <div className="flex flex-wrap justify-center gap-6 mb-12">
                         <Link href="/programmes/thunderbird/resultats">
@@ -121,15 +122,15 @@ export default function ThunderbirdProgram() {
                     <div className="flex flex-wrap justify-center gap-4">
                         <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
                             <h4 className="font-bold text-accent text-2xl">100M</h4>
-                            <p className="text-xs uppercase tracking-wider">Apprenants Mondiaux</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Apprenants Mondiaux</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
                             <h4 className="font-bold text-accent text-2xl">40</h4>
-                            <p className="text-xs uppercase tracking-wider">Langues Disponibles</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Langues Disponibles</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-xl border border-white/20">
                             <h4 className="font-bold text-accent text-2xl">TOP 1</h4>
-                            <p className="text-xs uppercase tracking-wider">Management Global</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Management Global</p>
                         </div>
                     </div>
                 </div>
