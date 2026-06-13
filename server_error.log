@@ -1,0 +1,35 @@
+﻿node.exe : 
+C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\db.ts:6
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifi 
+   ed: (C:\Users\Hp\Des...\server\db.ts  
+  :6:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComm 
+   andError
+ 
+  throw new Error("DATABASE_URL must be 
+set. Did you forget to provision a 
+database?");
+        ^
+
+
+Error: DATABASE_URL must be set. Did you 
+forget to provision a database?
+    at <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\db.ts:6:9)
+    at ModuleJob.run (node:internal/modul
+es/esm/module_job:345:25)
+    at async 
+onImport.tracePromise.__proto__ 
+(node:internal/modules/esm/loader:651:26)
+    at async 
+asyncRunEntryPointWithESMLoader 
+(node:internal/modules/run_main:117:5)
+
+Node.js v22.19.0

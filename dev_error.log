@@ -1,0 +1,156 @@
+﻿
+> rest-express@1.0.0 dev
+> cross-env NODE_ENV=development tsx --env-file=.env server/index.ts
+
+node.exe : Failed to seed tables: 
+DrizzleQueryError: Failed query: select 
+"id", "name", "logo_url", "website_url", 
+"description", "sort_order", 
+"is_active", "created_at" from "partners"
+Au caractère Ligne:1 : 1
++ & "C:\Program Files\nodejs/node.exe" 
+"C:\Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecifi 
+   ed: (Failed to seed ...from "partner  
+  s":String) [], RemoteException
+    + FullyQualifiedErrorId : NativeComm 
+   andError
+ 
+params: 
+    at 
+NeonHttpPreparedQuery.queryWithCache 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\pg-core\session.ts
+:73:11)
+    at process.processTicksAndRejections 
+(node:internal/process/task_queues:105:5)
+    at async 
+NeonHttpPreparedQuery.execute 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\neon-http\session.
+ts:83:18)
+    ... 3 lines matching cause stack 
+trace ...
+    at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:94:5) {
+  query: 'select "id", "name", 
+"logo_url", "website_url", 
+"description", "sort_order", 
+"is_active", "created_at" from 
+"partners"',
+  params: [],
+  cause: NeonDbError: Error connecting 
+to database: TypeError: fetch failed
+      at dr.execute (file:///C:/Users/Hp/
+Desktop/Sayc-Tchad%20(1)/Sayc-Tchad/node_
+modules/@neondatabase/serverless/index.mj
+s:1292:95)
+      at 
+process.processTicksAndRejections 
+(node:internal/process/task_queues:105:5)
+      at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\neon-http\session.
+ts:84:11)
+      at async 
+NeonHttpPreparedQuery.queryWithCache 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\pg-core\session.ts
+:71:12)
+      at async 
+NeonHttpPreparedQuery.execute 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\neon-http\session.
+ts:83:18)
+      at async seedTable 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\seed.ts:159:20)
+      at async seedDatabase 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\seed.ts:170:7)
+      at async initializeApp 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:67:3)
+      at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:94:5) {
+    severity: undefined,
+    code: undefined,
+    detail: undefined,
+    hint: undefined,
+    position: undefined,
+    internalPosition: undefined,
+    internalQuery: undefined,
+    where: undefined,
+    schema: undefined,
+    table: undefined,
+    column: undefined,
+    dataType: undefined,
+    constraint: undefined,
+    file: undefined,
+    line: undefined,
+    routine: undefined,
+    sourceError: TypeError: fetch failed
+        at 
+node:internal/deps/undici/undici:13510:13
+        at 
+process.processTicksAndRejections 
+(node:internal/process/task_queues:105:5)
+        at async dr.execute (file:///C:/U
+sers/Hp/Desktop/Sayc-Tchad%20(1)/Sayc-Tch
+ad/node_modules/@neondatabase/serverless/
+index.mjs:1292:4)
+        at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\neon-http\session.
+ts:84:11)
+        at async 
+NeonHttpPreparedQuery.queryWithCache 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\pg-core\session.ts
+:71:12)
+        at async 
+NeonHttpPreparedQuery.execute 
+(C:\Users\Hp\Desktop\Sayc-Tchad (1)\Sayc-
+Tchad\node_modules\src\neon-http\session.
+ts:83:18)
+        at async seedTable 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\seed.ts:159:20)
+        at async seedDatabase 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\seed.ts:170:7)
+        at async initializeApp 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:67:3)
+        at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:94:5) {
+      [cause]: [ConnectTimeoutError]
+    }
+  }
+}
+C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\routes.ts:37
+    const MemoryStore = 
+require("memorystore")(session);
+                        ^
+
+
+ReferenceError: require is not defined
+    at registerRoutes 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\routes.ts:37:25)
+    at initializeApp 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:68:9)
+    at process.processTicksAndRejections 
+(node:internal/process/task_queues:105:5)
+    at async <anonymous> 
+(C:\Users\Hp\Desktop\Sayc-Tchad 
+(1)\Sayc-Tchad\server\index.ts:94:5)
+
+Node.js v22.19.0

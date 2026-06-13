@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "programs": "Programs",
+    "training": "Trainings",
+    "opportunities": "Opportunities",
+    "contact": "Contact",
+    "join": "Join SAYC",
+    "login": "Login"
+  },
+  "hero": {
+    "title": "Smart Africa Youth Chapter",
+    "tchad": "Chad",
+    "description": "Inspiring a new generation of young Africans to use technology and innovation to transform Africa.",
+    "cta_join": "Join SAYC",
+    "cta_opp": "See Opportunities"
+  },
+  "common": {
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "send": "Send",
+    "back_home": "Back to Home",
+    "learn_more": "Learn More",
+    "view_details": "View Details"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "members": "Members",
+    "messages": "Messages",
+    "candidates": "Applications",
+    "logout": "Logout"
+  },
+  "vote": {
+    "success_title": "Thank you for your vote!",
+    "success_desc": "Your choices have been successfully recorded."
+  },
+  "about": {
+    "hero_tag": "About Us",
+    "hero_title": "The Smart Africa Youth Chapter in Chad",
+    "hero_desc": "The Smart Africa Youth Chapter - Chad (SAYC Chad) is the youth branch of Smart Africa Alliance in Chad. It is a platform dedicated to young people aged 15 to 35, focused on education, collaboration, mentoring, and digital innovation.",
+    "vision_tag": "Our Vision",
+    "vision_title": "Transforming Africa through youth and innovation",
+    "vision_desc": "Inspiring a new generation of young Africans to use technology and innovation to transform Africa, create opportunities, strengthen regional solidarity, and build a sustainable future.",
+    "pillars_title": "The 3 Pillars of SAYC",
+    "values_title": "What guides us"
+  }
+}

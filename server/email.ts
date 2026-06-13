@@ -1,0 +1,327 @@
+import nodemailer from "nodemailer";
+
+// Create a transporter using SMTP
+// For Gmail, you should use an App Password instead of your regular password
+// in the SMTP_PASS environment variable.
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true, // true for 465, false for 587
+    pool: true, // Use connection pooling for bulk sending
+    maxConnections: 3,
+    maxMessages: 100,
+    tls: {
+        rejectUnauthorized: false
+    },
+
+    auth: {
+        user: process.env.SMTP_USER || "sayctchad@gmail.com",
+        pass: process.env.SMTP_PASS,
+    },
+});
+
+/**
+ * Sends an email notification to the SAYC team (sayctchad@gmail.com)
+ */
+export async function sendNotificationEmail(subject: string, text: string, html?: string) {
+    try {
+        if (!process.env.SMTP_PASS) {
+            console.warn("SMTP_PASS is not configured. Email notification skipped.");
+            return false;
+        }
+
+        const defaultHtml = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="background-color: #0d47a1; color: #fff; padding: 20px; text-align: center; border-bottom: 4px solid #f9a825;">
+                    <h2 style="margin: 0; font-size: 22px;">Nouvelle Notification SAYC Tchad</h2>
+                </div>
+                <div style="padding: 25px; background-color: #fcfcfc;">
+                    <p style="font-size: 16px; line-height: 1.6; white-space: pre-wrap;">${text}</p>
+                </div>
+                <div style="background-color: #f1f1f1; padding: 15px; text-align: center; font-size: 12px; color: #666;">
+                    <p style="margin: 0;">Cet email est généré automatiquement depuis le site web sayctchad.org</p>
+                </div>
+            </div>
+        `;
+
+        const info = await transporter.sendMail({
+            from: `"Site SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+            to: process.env.SMTP_USER || "sayctchad@gmail.com",
+            subject,
+            text,
+            html: html || defaultHtml,
+        });
+
+        console.log("Email sent: %s", info.messageId);
+        return true;
+    } catch (error) {
+        console.error("Error sending email:", error);
+        return false;
+    }
+}
+
+/**
+ * Sends an auto-reply HTML confirmation email to the user
+ */
+export async function sendAutoReplyEmail(to: string, subject: string, messageBody: string, includeSada: boolean = true) {
+    try {
+        if (!process.env.SMTP_PASS) return false;
+
+        const sadaBanner = includeSada ? `
+        <div style="margin-top: 30px; padding: 20px; background-color: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 4px;">
+            <h3 style="margin-top: 0; color: #0d47a1; font-size: 18px;">💡 Formez-vous avec SADA !</h3>
+            <p style="font-size: 14px; line-height: 1.5; color: #333;">
+                Connaissez-vous la <strong>Smart Africa Digital Academy (SADA)</strong> ?<br>
+                C'est une plateforme panafricaine dédiée au développement des compétences numériques pour tous (entrepreneurs, jeunes, décideurs).
+            </p>
+            <p style="margin-bottom: 0;">
+                <a href="https://sada.smart.africa" target="_blank" style="display: inline-block; padding: 10px 18px; background-color: #1976d2; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 14px;">Découvrir les formations gratuites SADA</a>
+            </p>
+        </div>
+        ` : '';
+
+        const htmlTemplate = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Smart Africa Youth Chapter - Tchad</p>
+                </div>
+                
+                <div style="padding: 30px; background-color: #ffffff;">
+                    <div style="font-size: 16px; line-height: 1.6; color: #444;">
+                        ${messageBody.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                    </div>
+                    
+                    ${sadaBanner}
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+                        <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
+                    </p>
+                    <div style="margin-top: 15px; font-size: 12px;">
+                        <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">💬 Rejoindre la communauté WhatsApp</a>
+                        <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">📝 Devenir membre officiel</a>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        const info = await transporter.sendMail({
+            from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+            to,
+            subject,
+            text: messageBody, // Fallback text version
+            html: htmlTemplate,
+        });
+
+        console.log("Auto-reply sent to %s: %s", to, info.messageId);
+        return true;
+    } catch (error) {
+        console.error("Error sending auto-reply email:", error);
+        return false;
+    }
+}
+
+/**
+ * Sends a mass email to multiple recipients
+ */
+export async function sendMassEmail(recipients: string[], subject: string, messageBody: string, includeSada: boolean = true) {
+    try {
+        if (!process.env.SMTP_PASS || recipients.length === 0) return { success: false, sent: 0 };
+
+        const sadaBanner = includeSada ? `
+        <div style="margin-top: 30px; padding: 20px; background-color: #e3f2fd; border-left: 4px solid #1976d2; border-radius: 4px;">
+            <h3 style="margin-top: 0; color: #0d47a1; font-size: 18px;">💡 Formez-vous avec SADA !</h3>
+            <p style="font-size: 14px; line-height: 1.5; color: #333;">
+                Connaissez-vous la <strong>Smart Africa Digital Academy (SADA)</strong> ?<br>
+                C'est une plateforme panafricaine dédiée au développement des compétences numériques pour tous.
+            </p>
+            <p style="margin-bottom: 0;">
+                <a href="https://sada.smart.africa" target="_blank" style="display: inline-block; padding: 10px 18px; background-color: #1976d2; color: #ffffff; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 14px;">Découvrir les formations gratuites SADA</a>
+            </p>
+        </div>
+        ` : '';
+
+        const htmlTemplate = `
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Newsletter & Information Officielle</p>
+                </div>
+                
+                <div style="padding: 30px; background-color: #ffffff;">
+                    <div style="font-size: 16px; line-height: 1.6; color: #444;">
+                        ${messageBody.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                    </div>
+                    
+                    ${sadaBanner}
+                </div>
+                
+                <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+                    <p style="margin: 0; font-size: 13px; color: #666;">
+                        <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
+                    </p>
+                    <div style="margin-top: 15px; font-size: 12px;">
+                        <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">💬 Rejoindre la communauté WhatsApp</a>
+                        <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">📝 Devenir membre officiel</a>
+                    </div>
+                    <p style="font-size: 11px; color: #999; margin-top: 10px;">
+                        Vous recevez cet email car vous êtes membre ou partenaire du SAYC Tchad.
+                    </p>
+                </div>
+            </div>
+        `;
+
+        // Filter out obviously incorrect emails before processing
+        const validRecipients = recipients.filter(email => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return email && emailRegex.test(email.trim());
+        });
+
+        if (validRecipients.length === 0) {
+            return { success: true, sent: 0, total: recipients.length };
+        }
+
+        // Send individually with pooling for maximum reliability
+        let sentCount = 0;
+        const CONCURRENCY = 2;
+        for (let i = 0; i < recipients.length; i += CONCURRENCY) {
+            const batch = recipients.slice(i, i + CONCURRENCY);
+            const promises = batch.map(async (email) => {
+                try {
+                    await transporter.sendMail({
+                        from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+                        to: email,
+                        subject,
+                        text: messageBody,
+                        html: htmlTemplate,
+                    });
+                    return true;
+                } catch (err) {
+                    console.error(`Failed to send email to ${email}:`, err);
+                    return false;
+                }
+            });
+
+            const results = await Promise.all(promises);
+            sentCount += results.filter(Boolean).length;
+            
+            // Brief pause between batches
+            if (i + CONCURRENCY < recipients.length) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        return { success: true, sent: sentCount };
+    } catch (error) {
+        console.error("Error in sendMassEmail:", error);
+        return { success: false, sent: 0 };
+    }
+}
+
+export async function debugSmtpConnection() {
+    try {
+        if (!process.env.SMTP_PASS) {
+            return { success: false, error: "SMTP_PASS is missing in Vercel Environment Variables" };
+        }
+
+        const info = await transporter.sendMail({
+            from: process.env.SMTP_USER || "sayctchad@gmail.com",
+            to: process.env.SMTP_USER || "sayctchad@gmail.com",
+            subject: "Vercel Diagnostic Test",
+            text: "Testing Vercel Serverless Outbound SMTP"
+        });
+        return { success: true, messageId: info.messageId };
+    } catch (error: any) {
+        return { success: false, error: error.message || String(error), stack: error.stack, code: error.code };
+    }
+}
+
+/**
+ * Sends personalized emails to multiple members
+ */
+export async function sendPersonalizedMemberEmails(membersList: any[], subject: string, messageTemplate: string) {
+    try {
+        if (!process.env.SMTP_PASS || membersList.length === 0) return { success: false, sent: 0 };
+
+        // Filter valid members
+        const validMembers = membersList.filter(m => {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return m.email && emailRegex.test(m.email.trim());
+        });
+
+        if (validMembers.length === 0) return { success: true, sent: 0, total: membersList.length };
+
+        let sentCount = 0;
+        const CONCURRENCY = 2; // Reduced concurrency to avoid Gmail blocking
+        const startTime = Date.now();
+        const MAX_EXECUTION_TIME = 50000; // 50 seconds safety limit for Vercel 60s timeout
+
+        for (let i = 0; i < validMembers.length; i += CONCURRENCY) {
+            // Check for timeout to avoid 504 error
+            if (Date.now() - startTime > MAX_EXECUTION_TIME) {
+                console.warn("Approaching Vercel timeout, stopping email sending early. Sent:", sentCount);
+                break;
+            }
+
+            const batch = validMembers.slice(i, i + CONCURRENCY);
+            const promises = batch.map(async (member) => {
+                try {
+                    const personalizedMessage = messageTemplate
+                        .replace(/{{firstName}}/g, member.firstName || "")
+                        .replace(/{{lastName}}/g, member.lastName || "")
+                        .replace(/{{membershipId}}/g, member.membershipId || "")
+                        .replace(/{{email}}/g, member.email || "");
+
+                    const htmlTemplate = `
+                        <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                            <div style="background-color: #1a365d; color: #ffffff; padding: 25px; text-align: center;">
+                                <h1 style="margin: 0; font-size: 24px; font-weight: 600;">SAYC Tchad</h1>
+                                <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;">Information Officielle de Vote</p>
+                            </div>
+                            
+                            <div style="padding: 30px; background-color: #ffffff;">
+                                <div style="font-size: 16px; line-height: 1.6; color: #444;">
+                                    ${personalizedMessage.split('\n').map(p => p.trim() ? `<p>${p}</p>` : '').join('')}
+                                </div>
+                            </div>
+                            
+                            <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #eaeaea;">
+                                <p style="margin: 0; font-size: 13px; color: #666;">
+                                    <a href="https://sayctchad.org" style="color: #1a365d; text-decoration: none; font-weight: bold;">sayctchad.org</a>
+                                </p>
+                                <div style="margin-top: 15px; font-size: 12px;">
+                                    <a href="https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj" style="color: #25D366; text-decoration: none; margin-right: 15px;">💬 Rejoindre la communauté WhatsApp</a>
+                                    <a href="https://sayctchad.org/rejoindre" style="color: #1a365d; text-decoration: none;">📝 Devenir membre officiel</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    await transporter.sendMail({
+                        from: `"SAYC Tchad" <${process.env.SMTP_USER || "sayctchad@gmail.com"}>`,
+                        to: member.email,
+                        subject,
+                        text: personalizedMessage,
+                        html: htmlTemplate,
+                    });
+                    return true;
+                } catch (err) {
+                    console.error(`Failed to send personalized email to ${member.email}:`, err);
+                    return false;
+                }
+            });
+
+            const results = await Promise.all(promises);
+            sentCount += results.filter(Boolean).length;
+            
+            // Minimal delay between batches
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        return { success: true, sent: sentCount, total: membersList.length };
+    } catch (error) {
+        console.error("Error in sendPersonalizedMemberEmails:", error);
+        return { success: false, sent: 0 };
+    }
+}

@@ -1,0 +1,189 @@
+import { useTranslation } from "react-i18next";
+import { Link } from "wouter";
+import { 
+  SiFacebook, 
+  SiLinkedin, 
+  SiYoutube,
+  SiWhatsapp
+} from "react-icons/si";
+import { 
+  ExternalLink, 
+  MapPin, 
+  Phone, 
+  Mail 
+} from "lucide-react";
+import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
+
+const footerLinks = {
+  navigation: [
+    { href: "/", label: "Accueil" },
+    { href: "/a-propos", label: "À propos" },
+    { href: "/programmes", label: "Programmes" },
+    { href: "/formations", label: "Formations" },
+    { href: "/opportunites", label: "Opportunités" },
+  ],
+  resources: [
+    { href: "/evenements", label: "Événements" },
+    { href: "/actualites", label: "Actualités" },
+    { href: "/contact", label: "Contact" },
+  ],
+};
+
+const socialLinks = [
+  { icon: SiFacebook, href: "https://www.facebook.com/profile.php?id=61585729201040", label: "Facebook" },
+  { icon: SiLinkedin, href: "https://www.linkedin.com/company/110439974/", label: "LinkedIn" },
+  { icon: SiWhatsapp, href: "https://chat.whatsapp.com/CB0pBpYzYyBIw2zZB3A8Kj", label: "WhatsApp" },
+  { icon: SiYoutube, href: "https://www.youtube.com/@RealSmartAfrica", label: "YouTube" },
+];
+
+export function Footer() {
+  const { t } = useTranslation();
+
+  const footerLinks = {
+    navigation: [
+      { href: "/", label: t("nav.home") },
+      { href: "/a-propos", label: t("nav.about") },
+      { href: "/programmes", label: t("nav.programs") },
+      { href: "/formations", label: t("nav.training") },
+      { href: "/opportunites", label: t("nav.opportunities") },
+    ],
+    resources: [
+      { href: "/evenements", label: t("common.all_events", { defaultValue: "Événements" }) },
+      { href: "/actualites", label: t("common.all_news") },
+      { href: "/contact", label: t("nav.contact") },
+    ],
+  };
+
+  return (
+    <footer className="bg-sidebar text-sidebar-foreground">
+      <div className="container mx-auto px-4 md:px-6 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          <div className="lg:col-span-1">
+            <div className="mb-4">
+              <img src={logoSayc} alt="SAYC Tchad" className="h-16 w-auto object-contain bg-white rounded-md p-1" data-testid="img-footer-logo" />
+            </div>
+            <p className="text-sm text-sidebar-foreground/80 leading-relaxed mb-4" data-testid="text-footer-description">
+              {t("hero.description")}
+            </p>
+            <p className="text-xs text-sidebar-foreground/60 mb-4" data-testid="text-focal-point">
+              {t("about.focal_point_title")}: Souleymane Mahamat Saleh
+            </p>
+            <div className="flex items-center gap-3">
+              {socialLinks.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-md bg-sidebar-accent flex items-center justify-center hover-elevate transition-colors"
+                  aria-label={social.label}
+                  data-testid={`link-social-${social.label.toLowerCase().replace(/\s+/g, "-")}`}
+                >
+                  <social.icon className="w-4 h-4" />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-nav-title">{t("footer.navigation")}</h4>
+            <ul className="space-y-2">
+              {footerLinks.navigation.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
+                    data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-resources-title">{t("footer.resources")}</h4>
+            <ul className="space-y-2">
+              {footerLinks.resources.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
+                    data-testid={`link-footer-${link.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li className="pt-2 border-t border-sidebar-border mt-2">
+                <h5 className="text-xs text-sidebar-foreground/50 mb-2">{t("home.initiatives_tag")}</h5>
+              </li>
+              <li>
+                <a href="https://smartafrica.org/fr/page-daccueil/" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-smart-africa">
+                  {t("home.initiatives.alliance.title")} <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://sada.smart.africa" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-sada">
+                  {t("home.initiatives.sada.title")} <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+              <li>
+                <a href="https://transformafricasummit.org" target="_blank" rel="noopener noreferrer" className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors flex items-center gap-1" data-testid="link-footer-tas">
+                  {t("home.initiatives.tas.title")} <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-heading font-semibold text-base mb-4" data-testid="text-footer-contact-title">{t("footer.contact")}</h4>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3">
+                <MapPin className="w-4 h-4 mt-0.5 text-accent shrink-0" />
+                <span className="text-sm text-sidebar-foreground/70" data-testid="text-footer-address">
+                  {t("footer.address")}
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-accent shrink-0" />
+                <a
+                  href="tel:+23566161753"
+                  className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
+                  data-testid="link-footer-phone"
+                >
+                  +235 66 16 17 53
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-accent shrink-0" />
+                <Link
+                  href="/contact"
+                  className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors"
+                  data-testid="link-footer-contact-form"
+                >
+                  {t("common.contact_us")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="border-t border-sidebar-border mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-sidebar-foreground/60" data-testid="text-footer-copyright">
+            © {new Date().getFullYear()} SAYC Tchad. {t("footer.rights")}
+          </p>
+          <div className="flex items-center gap-6">
+            <Link href="/a-propos" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+              {t("nav.about")}
+            </Link>
+            <Link href="/contact" className="text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+              {t("nav.contact")}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

@@ -1,0 +1,35 @@
+{
+    "version": 2,
+    "outputDirectory": "dist",
+    "rewrites": [
+        {
+            "source": "/api/(.*)",
+            "destination": "/api"
+        },
+        {
+            "source": "/opportunites/:id",
+            "destination": "/api"
+        },
+        {
+            "source": "/formations/:id",
+            "destination": "/api"
+        },
+        {
+            "source": "/evenements/:id",
+            "destination": "/api"
+        },
+        {
+            "source": "/actualites/:id",
+            "destination": "/api"
+        },
+        {
+            "source": "/((?!api/|locales/).*)",
+            "destination": "/index.html"
+        }
+    ],
+    "functions": {
+        "api/index.js": {
+            "maxDuration": 60
+        }
+    }
+}

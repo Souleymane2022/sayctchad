@@ -1,0 +1,25 @@
+a0d63d6 fix: destructure i18n in Header to fix ReferenceError
+fb562e0 fix: restore api handler and fix esbuild config for vercel
+8baaf63 feat: complete localization and stabilization
+f528007 feat: add contact message reply feature in admin dashboard
+3ea7f02 feat: add social links and filters for Thunderbird apps in admin dashboard
+3c1944f fix: election candidates mapping in admin dashboard (snake_case to camelCase)
+8a86c2a feat: fix i18n keys display (home.common) + security enhancements + election fixes
+27610e6 feat: add contact help button on election pages + security headers, rate limiting, secure sessions
+997a3bb fix: replace ALL Drizzle election ORM calls with neonSql raw queries for Vercel compatibility
+f146b62 fix: add missing home.alliance_name i18n key in all locales + neon sql fix
+09bc7d4 fix: use neonSql tagged template from db.ts for election queries
+25c9a35 fix: use db.execute(sql) for election candidates - same method as working diagnose
+0be8566 fix: use raw SQL for getAllCandidates to bypass Drizzle ORM issue on Vercel
+5a5e5a5 diag: make diagnose endpoint public for debugging
+074ea75 diag: add /api/admin/elections/diagnose endpoint to debug 500 error
+c2681aa fix: remove t() calls in error block to prevent ReferenceError crash
+831c46a fix: resolve ReferenceError t and stabilize i18n detection
+09a33ff feat: complete election dashboard fix and 100 percent i18n coverage
+bb5b45e fix: resolve build errors, missing imports, and ghost files for i18n stability
+48f6b8d fix: move locales to public for reliable static serving on Vercel
+6a844cf fix: correct syntax error in i18n.ts and stabilize build
+4745d80 fix: resolve blank screen by switching to http-backend for i18n and adding suspense
+4241705 feat: complete professional i18n system with native RTL support
+fe1c1f4 style: hide google translate banner and tooltips
+b08d430 feat: multilingual support (google translate) and admin improvements
