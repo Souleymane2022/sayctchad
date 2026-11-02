@@ -66569,8 +66569,13 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
   const LEGACY_DB_HOST = "ep-lively-sky-air3s27a";
-  app2.get("/api/admin/migrate-legacy", requireAdmin, async (req, res) => {
+  app2.get("/api/admin/migrate-legacy", async (req, res) => {
     try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const authorized = req.session.isAdmin || adminPassword && req.query.key === adminPassword;
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autoris\xE9. Ajoutez &key=VOTRE_MOT_DE_PASSE_ADMIN \xE0 l'adresse." });
+      }
       if (req.query.confirm !== "oui") {
         return res.json({
           message: "Pr\xEAt \xE0 migrer. Ajoutez ?confirm=oui \xE0 la fin de l'adresse pour lancer la copie des donn\xE9es de l'ancienne base vers la nouvelle."

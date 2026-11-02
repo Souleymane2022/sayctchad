@@ -801,8 +801,15 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   // Outil temporaire, protégé par la session admin. À SUPPRIMER après migration.
   const LEGACY_DB_HOST = "ep-lively-sky-air3s27a";
 
-  app.get("/api/admin/migrate-legacy", requireAdmin, async (req, res) => {
+  app.get("/api/admin/migrate-legacy", async (req, res) => {
     try {
+      // Les sessions MemoryStore ne survivent pas entre les instances serverless :
+      // on accepte aussi le mot de passe admin passé en paramètre `key`.
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const authorized = req.session.isAdmin || (adminPassword && req.query.key === adminPassword);
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autorisé. Ajoutez &key=VOTRE_MOT_DE_PASSE_ADMIN à l'adresse." });
+      }
       if (req.query.confirm !== "oui") {
         return res.json({
           message: "Prêt à migrer. Ajoutez ?confirm=oui à la fin de l'adresse pour lancer la copie des données de l'ancienne base vers la nouvelle.",
