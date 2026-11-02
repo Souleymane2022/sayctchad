@@ -66567,6 +66567,40 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       });
     }
   });
+  app2.get("/api/aws-tracking", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      if (!accessCode) {
+        return res.status(503).json({ error: "Suivi non configur\xE9 : d\xE9finissez EMBASSY_ACCESS_CODE dans les variables d'environnement." });
+      }
+      const provided = req.query.code || "";
+      const isAdmin = !!req.session.isAdmin;
+      if (!isAdmin && provided !== accessCode) {
+        return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
+      }
+      const applications = await storage.getAllAwsRestartApplications();
+      const rows = applications.map((a2) => ({
+        fullName: a2.fullName,
+        gender: a2.gender,
+        city: a2.city,
+        professionalStatus: a2.professionalStatus,
+        status: a2.status,
+        hasVideo: !!a2.videoUrl,
+        hasPhoto: !!a2.photoUrl,
+        createdAt: a2.createdAt
+      }));
+      const stats = {
+        total: rows.length,
+        femmes: rows.filter((r) => r.gender === "F").length,
+        hommes: rows.filter((r) => r.gender === "M").length,
+        avecVideo: rows.filter((r) => r.hasVideo).length
+      };
+      res.json({ stats, applications: rows });
+    } catch (error) {
+      console.error("Error in aws-tracking:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
   app2.get("/api/admin/clear-aws-applications", async (req, res) => {
     try {
       const adminPassword = process.env.ADMIN_PASSWORD;
