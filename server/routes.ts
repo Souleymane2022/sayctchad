@@ -79,6 +79,9 @@ export async function registerRoutes(
   });
 
   // ─── Rate Limiters ─────────────────────────────────────────────────────────
+  // S'assure dès le démarrage que les colonnes vidéo/photo des candidatures AWS existent.
+  ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au démarrage:", e));
+
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 5,
@@ -718,6 +721,7 @@ Motivation: ${application.motivation}`
 
   app.get("/api/admin/aws-restart-applications", requireAdmin, async (_req, res) => {
     try {
+      await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
       res.json(applications);
     } catch (error) {
@@ -810,6 +814,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       if (!isAdmin && provided !== accessCode) {
         return res.status(401).json({ error: "Code d'accès invalide" });
       }
+      await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
       // Lecture seule et données minimales : pas d'email, téléphone, motivation ni photo.
       const rows = applications.map((a) => ({
