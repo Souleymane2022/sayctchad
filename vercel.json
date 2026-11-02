@@ -1,6 +1,23 @@
 {
     "version": 2,
     "outputDirectory": "dist",
+    "redirects": [
+        {
+            "source": "/aws",
+            "destination": "/programmes/aws-restart",
+            "permanent": false
+        },
+        {
+            "source": "/restart",
+            "destination": "/programmes/aws-restart",
+            "permanent": false
+        },
+        {
+            "source": "/postuler",
+            "destination": "/programmes/aws-restart",
+            "permanent": false
+        }
+    ],
     "rewrites": [
         {
             "source": "/api/(.*)",
