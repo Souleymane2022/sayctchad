@@ -7,7 +7,12 @@ if (!process.env.DATABASE_URL) {
   console.error("CRITICAL ERROR: DATABASE_URL is missing in this environment!");
 }
 
-const safeDbUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+// Ancienne base provisionnée via Replit. Ses identifiants sont compromis (dépôt public) :
+// elle ne sert plus que de secours temporaire et de source pour la migration unique,
+// et sera retirée du code dès que la migration vers la nouvelle base sera confirmée.
+export const legacyDbUrl = "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+
+const safeDbUrl = process.env.DATABASE_URL || legacyDbUrl;
 
 // Low-level client for raw SQL or simple usage if needed
 export const sql = neon(safeDbUrl);
