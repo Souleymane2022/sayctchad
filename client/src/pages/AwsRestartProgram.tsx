@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { insertAwsRestartApplicationSchema, type InsertAwsRestartApplication } from "@shared/schema";
+import { insertAwsRestartApplicationSchema, AWS_RESTART_APPLICATION_DEADLINE, type InsertAwsRestartApplication } from "@shared/schema";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import SEOHead from "@/components/SEOHead";
@@ -88,6 +88,7 @@ const timeline = [
 
 export default function AwsRestartProgram() {
     const { toast } = useToast();
+    const applicationsClosed = new Date() >= AWS_RESTART_APPLICATION_DEADLINE;
     const form = useForm<InsertAwsRestartApplication>({
         resolver: zodResolver(insertAwsRestartApplicationSchema),
         defaultValues: {
@@ -160,7 +161,9 @@ export default function AwsRestartProgram() {
                     </p>
                     <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-foreground font-bold mb-8 shadow-lg">
                         <Calendar className="w-5 h-5" />
-                        Candidatures du 3 au {APPLICATION_DEADLINE}
+                        {applicationsClosed
+                            ? "Candidatures clôturées — résultats le 20 novembre 2026"
+                            : `Candidatures du 3 au ${APPLICATION_DEADLINE}`}
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4 mb-10">
@@ -179,12 +182,14 @@ export default function AwsRestartProgram() {
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4">
-                        <a href="#postuler">
-                            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-full px-8 shadow-xl" data-testid="button-hero-apply">
-                                Postuler maintenant
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                            </Button>
-                        </a>
+                        {!applicationsClosed && (
+                            <a href="#postuler">
+                                <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-full px-8 shadow-xl" data-testid="button-hero-apply">
+                                    Postuler maintenant
+                                    <ArrowRight className="ml-2 h-5 w-5" />
+                                </Button>
+                            </a>
+                        )}
                         <a href="#programme">
                             <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 border-white/30 text-sidebar-foreground hover:bg-white/20" data-testid="button-hero-learn-more">
                                 Découvrir le programme
@@ -198,9 +203,15 @@ export default function AwsRestartProgram() {
             <section className="py-16 bg-background" id="session">
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-10">
-                        <Badge className="mb-4 bg-green-500/10 text-green-700 border border-green-500/30 hover:bg-green-500/10">
-                            <CheckCircle2 className="w-4 h-4 mr-1" /> Candidatures ouvertes jusqu'au {APPLICATION_DEADLINE}
-                        </Badge>
+                        {applicationsClosed ? (
+                            <Badge className="mb-4 bg-orange-500/10 text-orange-700 border border-orange-500/30 hover:bg-orange-500/10">
+                                <Clock className="w-4 h-4 mr-1" /> Candidatures clôturées — résultats le 20 novembre 2026
+                            </Badge>
+                        ) : (
+                            <Badge className="mb-4 bg-green-500/10 text-green-700 border border-green-500/30 hover:bg-green-500/10">
+                                <CheckCircle2 className="w-4 h-4 mr-1" /> Candidatures ouvertes jusqu'au {APPLICATION_DEADLINE}
+                            </Badge>
+                        )}
                         <h2 className="text-3xl font-heading font-bold text-foreground">La session en bref</h2>
                     </div>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
@@ -377,6 +388,36 @@ export default function AwsRestartProgram() {
                 <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-accent/5 blur-3xl -z-10"></div>
 
                 <div className="container mx-auto px-4 max-w-4xl">
+                    {applicationsClosed ? (
+                    <Card className="border-t-8 border-t-accent shadow-2xl rounded-2xl text-center">
+                        <CardHeader className="space-y-4 pb-6">
+                            <div className="mx-auto w-20 h-20 rounded-full bg-orange-500/15 flex items-center justify-center mb-2">
+                                <Clock className="w-10 h-10 text-orange-600" />
+                            </div>
+                            <CardTitle className="text-4xl font-heading text-primary">Candidatures Clôturées</CardTitle>
+                            <CardDescription className="text-lg max-w-2xl mx-auto">
+                                Les candidatures pour la première promotion AWS re/Start N'Djamena sont fermées
+                                depuis le 13 novembre 2026 à minuit. Merci à toutes celles et tous ceux qui ont postulé !
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="pb-10">
+                            <div className="max-w-xl mx-auto space-y-4 text-left">
+                                <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg text-sm">
+                                    <PhoneCall className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                                    <p><strong className="text-foreground">14 – 18 novembre :</strong> les candidats présélectionnés sont contactés pour le test et l'entretien. Surveillez votre téléphone (WhatsApp) et votre email.</p>
+                                </div>
+                                <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg text-sm">
+                                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                    <p><strong className="text-foreground">20 novembre 2026 :</strong> annonce des résultats de la sélection.</p>
+                                </div>
+                                <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg text-sm">
+                                    <Rocket className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                                    <p><strong className="text-foreground">23 novembre 2026 :</strong> début du bootcamp à N'Djamena pour les 25 retenus.</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+                    ) : (
                     <Card className="border-t-8 border-t-accent shadow-2xl rounded-2xl">
                         <CardHeader className="space-y-4 pb-10 text-center relative">
                             <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2">
@@ -665,6 +706,7 @@ export default function AwsRestartProgram() {
                             </Form>
                         </CardContent>
                     </Card>
+                    )}
 
                     <div className="mt-16 grid md:grid-cols-2 gap-8 text-center md:text-left">
                         <div className="p-8 rounded-2xl bg-primary/5 border border-border">

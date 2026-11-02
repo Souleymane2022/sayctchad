@@ -38263,6 +38263,7 @@ var init_drizzle_zod = __esm({
 // shared/schema.ts
 var schema_exports = {};
 __export(schema_exports, {
+  AWS_RESTART_APPLICATION_DEADLINE: () => AWS_RESTART_APPLICATION_DEADLINE,
   achievements: () => achievements,
   activityReports: () => activityReports,
   awsRestartApplications: () => awsRestartApplications,
@@ -38296,7 +38297,7 @@ __export(schema_exports, {
   trainings: () => trainings,
   users: () => users
 });
-var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, YOUTUBE_URL_REGEX, insertAwsRestartApplicationSchema, planActivities, insertPlanActivitySchema, activityReports, insertActivityReportSchema;
+var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, AWS_RESTART_APPLICATION_DEADLINE, YOUTUBE_URL_REGEX, insertAwsRestartApplicationSchema, planActivities, insertPlanActivitySchema, activityReports, insertActivityReportSchema;
 var init_schema2 = __esm({
   "shared/schema.ts"() {
     "use strict";
@@ -38580,6 +38581,7 @@ var init_schema2 = __esm({
       cohort: text("cohort").notNull().default("N'Djamena 2026"),
       createdAt: timestamp("created_at").defaultNow()
     });
+    AWS_RESTART_APPLICATION_DEADLINE = /* @__PURE__ */ new Date("2026-11-13T23:00:00Z");
     YOUTUBE_URL_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i;
     insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {
       fullName: z.string().min(1, "Nom complet requis"),
@@ -66431,6 +66433,11 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
     try {
+      if (/* @__PURE__ */ new Date() >= AWS_RESTART_APPLICATION_DEADLINE) {
+        return res.status(403).json({
+          error: "Les candidatures sont cl\xF4tur\xE9es depuis le 13 novembre 2026 \xE0 minuit. Les r\xE9sultats seront annonc\xE9s le 20 novembre 2026."
+        });
+      }
       await ensureAwsVideoColumn();
       const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
       const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);

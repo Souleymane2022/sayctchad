@@ -342,6 +342,9 @@ export const awsRestartApplications = pgTable("aws_restart_applications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Clôture des candidatures AWS re/Start : 13 novembre 2026 à minuit, heure de N'Djamena (UTC+1)
+export const AWS_RESTART_APPLICATION_DEADLINE = new Date("2026-11-13T23:00:00Z");
+
 const YOUTUBE_URL_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i;
 
 export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {

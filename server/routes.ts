@@ -6,7 +6,8 @@ import {
   insertOpportunitySchema, insertPartnerSchema, insertTrainingSchema,
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema,
   insertThunderbirdApplicationSchema, insertCandidateSchema, insertVoteSchema,
-  insertAwsRestartApplicationSchema, insertPlanActivitySchema, insertActivityReportSchema
+  insertAwsRestartApplicationSchema, insertPlanActivitySchema, insertActivityReportSchema,
+  AWS_RESTART_APPLICATION_DEADLINE
 } from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
@@ -654,6 +655,11 @@ Motivation: ${application.motivation}`
   // AWS re/Start Applications
   app.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
     try {
+      if (new Date() >= AWS_RESTART_APPLICATION_DEADLINE) {
+        return res.status(403).json({
+          error: "Les candidatures sont clôturées depuis le 13 novembre 2026 à minuit. Les résultats seront annoncés le 20 novembre 2026.",
+        });
+      }
       await ensureAwsVideoColumn();
       const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
       const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);
