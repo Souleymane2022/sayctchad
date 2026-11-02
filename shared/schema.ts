@@ -338,7 +338,7 @@ export const awsRestartApplications = pgTable("aws_restart_applications", {
   videoUrl: text("video_url"),
   fullTimeCommitment: boolean("full_time_commitment").notNull(),
   status: text("status").notNull().default("pending"),
-  cohort: text("cohort").notNull().default("Tchad 2026"),
+  cohort: text("cohort").notNull().default("N'Djamena 2026"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

@@ -38577,7 +38577,7 @@ var init_schema2 = __esm({
       videoUrl: text("video_url"),
       fullTimeCommitment: boolean("full_time_commitment").notNull(),
       status: text("status").notNull().default("pending"),
-      cohort: text("cohort").notNull().default("Tchad 2026"),
+      cohort: text("cohort").notNull().default("N'Djamena 2026"),
       createdAt: timestamp("created_at").defaultNow()
     });
     YOUTUBE_URL_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i;

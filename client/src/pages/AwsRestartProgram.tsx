@@ -33,22 +33,22 @@ import {
     FileText, Users, PhoneCall, Rocket, ArrowRight, Terminal, Database, Network, Lock,
 } from "lucide-react";
 
-const CURRENT_COHORT = "Tchad 2026";
+const CURRENT_COHORT = "N'Djamena 2026";
 
 const sessionFacts = [
-    { icon: Calendar, label: "Cohorte", value: CURRENT_COHORT, note: "Candidatures ouvertes" },
-    { icon: Clock, label: "Durée", value: "12 semaines", note: "Temps plein, rythme intensif" },
-    { icon: Globe, label: "Format", value: "100% en ligne", note: "Accompagnement par des formateurs" },
+    { icon: Users, label: "Places", value: "25", note: "Jeunes de 18 à 35 ans, sélection sur mérite" },
+    { icon: Clock, label: "Durée", value: "12 semaines", note: "420 heures, 5 jours / semaine" },
+    { icon: Globe, label: "Format", value: "Présentiel", note: "À N'Djamena, avec labs AWS en ligne" },
     { icon: Award, label: "Coût", value: "Gratuit", note: "Examen de certification pris en charge" },
 ];
 
 const curriculum = [
-    { icon: Cloud, label: "Fondamentaux du Cloud AWS" },
     { icon: Terminal, label: "Linux & Scripting (Python, Bash)" },
     { icon: Network, label: "Réseaux & Infrastructure" },
     { icon: Lock, label: "Sécurité du Cloud" },
     { icon: Database, label: "Bases de données" },
-    { icon: Briefcase, label: "Soft skills & préparation à l'emploi" },
+    { icon: Cloud, label: "Fondamentaux AWS, architecture & automatisation" },
+    { icon: Briefcase, label: "Employabilité : CV, entretiens, portfolio" },
 ];
 
 const selectionSteps = [
@@ -60,18 +60,27 @@ const selectionSteps = [
     {
         icon: Users,
         title: "2. Présélection",
-        description: "Un comité examine les dossiers : motivation, conformité au public cible et vidéo de présentation.",
+        description: "Un comité examine les dossiers selon une grille publiée : motivation, conformité au public cible et vidéo de présentation.",
     },
     {
         icon: PhoneCall,
-        title: "3. Entretien de confirmation",
-        description: "Les candidats présélectionnés sont contactés pour un entretien de validation.",
+        title: "3. Validation finale",
+        description: "Les candidats présélectionnés sont contactés pour confirmation, et la liste finale est validée avec l'Ambassade des États-Unis.",
     },
     {
         icon: Rocket,
         title: "4. Intégration à la cohorte",
-        description: "Les candidats retenus reçoivent leurs accès à la plateforme d'apprentissage et démarrent la formation.",
+        description: "Les 25 candidats retenus rejoignent le bootcamp à N'Djamena et reçoivent leurs accès aux labs AWS.",
     },
+];
+
+const timeline = [
+    { period: "Octobre 2026", event: "Sélection des 25 apprenants et lancement officiel du programme" },
+    { period: "Novembre 2026 – Janvier 2027", event: "Bootcamp AWS re/Start de 12 semaines (420 h) + ateliers d'employabilité" },
+    { period: "Janvier 2027", event: "Examen de certification AWS Certified Cloud Practitioner" },
+    { period: "Février – Juillet 2027", event: "Parcours AWS Associate (6 mois) + mentorat par des alumni des programmes d'échange américains" },
+    { period: "Août 2027", event: "Demo Day devant les employeurs (télécoms, banques, fintechs, organisations internationales)" },
+    { period: "Septembre 2027", event: "Cérémonie de certification avec l'Ambassade des États-Unis" },
 ];
 
 export default function AwsRestartProgram() {
@@ -124,8 +133,8 @@ export default function AwsRestartProgram() {
     return (
         <div className="flex flex-col min-h-screen font-sans">
             <SEOHead
-                title="Devenez Spécialiste Cloud Junior | AWS re/Start Tchad"
-                description="Rejoignez le programme AWS re/Start au Tchad : formation intensive et gratuite de 12 semaines pour lancer votre carrière dans le Cloud Computing. Candidatures ouvertes."
+                title="Chad Cloud Talent — AWS re/Start N'Djamena | SAYC Tchad"
+                description="Première cohorte AWS re/Start au Tchad : bootcamp gratuit de 12 semaines (420 h) à N'Djamena pour 25 jeunes, avec certification AWS Cloud Practitioner. Financé par l'Ambassade des États-Unis. Candidatures ouvertes."
                 path="/programmes/aws-restart"
             />
 
@@ -135,29 +144,30 @@ export default function AwsRestartProgram() {
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <Cloud className="w-5 h-5" />
-                        <span className="text-sm font-bold uppercase tracking-wider">AWS re/Start — Cohorte {CURRENT_COHORT}</span>
+                        <span className="text-sm font-bold uppercase tracking-wider">Chad Cloud Talent — AWS re/Start {CURRENT_COHORT}</span>
                     </div>
                     <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Devenez Spécialiste <br/>
                         <span className="text-accent underline decoration-2 underline-offset-8">Cloud Junior</span>
                     </h1>
                     <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-8">
-                        Une formation gratuite et intensive de 12 semaines, 100% en ligne, pour lancer votre carrière
-                        dans le Cloud Computing — aucune expérience technique préalable n'est exigée.
+                        La première cohorte AWS re/Start du Tchad : un bootcamp gratuit et intensif de 12 semaines (420 heures)
+                        à N'Djamena, menant à la certification AWS Certified Cloud Practitioner — aucune expérience
+                        technique préalable n'est exigée.
                     </p>
 
                     <div className="flex flex-wrap justify-center gap-4 mb-10">
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
-                            <h4 className="font-bold text-accent text-3xl mb-1">12</h4>
-                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Semaines Intensives</p>
+                            <h4 className="font-bold text-accent text-3xl mb-1">25</h4>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Places Disponibles</p>
+                        </div>
+                        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
+                            <h4 className="font-bold text-accent text-3xl mb-1">420h</h4>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Sur 12 Semaines</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
                             <h4 className="font-bold text-accent text-3xl mb-1">100%</h4>
-                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Gratuit et En Ligne</p>
-                        </div>
-                        <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
-                            <h4 className="font-bold text-accent text-3xl mb-1">0</h4>
-                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Expérience Requise</p>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Gratuit + Certification</p>
                         </div>
                     </div>
 
@@ -205,14 +215,41 @@ export default function AwsRestartProgram() {
                                 <Landmark className="w-6 h-6 text-accent" />
                             </div>
                             <div>
-                                <h3 className="font-bold text-foreground mb-1">Un programme porté par des partenaires solides</h3>
+                                <h3 className="font-bold text-foreground mb-1">Chad Cloud Talent : un programme financé par l'Ambassade des États-Unis</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
-                                    La session est organisée par <strong className="text-foreground">Smart Africa Youth Chapter Tchad</strong> dans
-                                    le cadre du programme mondial <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services),
-                                    en lien avec la <strong className="text-foreground">Smart Africa Digital Academy (SADA)</strong> et
-                                    avec l'appui de <strong className="text-foreground">l'Ambassade des États-Unis au Tchad</strong>.
+                                    Cette première cohorte tchadienne est <strong className="text-foreground">financée par l'Ambassade des
+                                    États-Unis à N'Djamena</strong> (Section de la Diplomatie Publique) dans le cadre du projet
+                                    « Chad Cloud Talent ». Elle est mise en œuvre par <strong className="text-foreground">Smart Africa
+                                    Youth Chapter Tchad</strong> et <strong className="text-foreground">Code for Chad</strong>, avec le
+                                    programme <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services) fourni via
+                                    la <strong className="text-foreground">Smart Africa Digital Academy (SADA)</strong>, et le soutien
+                                    institutionnel du <strong className="text-foreground">Ministère des Télécommunications et de l'Économie
+                                    Numérique (MTENDA)</strong>.
+                                </p>
+                                <p className="text-sm text-muted-foreground leading-relaxed mt-3">
+                                    Au-delà de la formation, les apprenants bénéficient d'un <strong className="text-foreground">mentorat par des
+                                    alumni des programmes d'échange du gouvernement américain</strong>, de la série de rencontres
+                                    <strong className="text-foreground"> « America in Tech »</strong> avec des professionnels américains du Cloud,
+                                    d'un <strong className="text-foreground">Demo Day</strong> devant les employeurs et d'une
+                                    <strong className="text-foreground"> cérémonie de certification</strong> organisée avec l'Ambassade.
                                 </p>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Calendrier du programme */}
+                    <div className="max-w-5xl mx-auto mt-8">
+                        <h3 className="font-bold text-foreground mb-4 flex items-center gap-2 text-lg">
+                            <Calendar className="w-5 h-5 text-accent" />
+                            Calendrier du programme
+                        </h3>
+                        <div className="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
+                            {timeline.map((item) => (
+                                <div key={item.period} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 px-6 py-4">
+                                    <span className="font-semibold text-accent text-sm sm:w-56 shrink-0">{item.period}</span>
+                                    <span className="text-sm text-muted-foreground">{item.event}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -235,7 +272,7 @@ export default function AwsRestartProgram() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Compétences Techniques Pratiques</h4>
-                                        <p className="text-sm text-muted-foreground">Bases du Cloud AWS, Linux, Scripting Python/Bash, Réseaux et Sécurité : des travaux pratiques sur de vrais scénarios.</p>
+                                        <p className="text-sm text-muted-foreground">Bases du Cloud AWS, Linux, Scripting Python/Bash, Réseaux et Sécurité : des cours en présentiel chaque jour et des labs AWS en ligne sur de vrais scénarios.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
@@ -243,8 +280,8 @@ export default function AwsRestartProgram() {
                                         <Briefcase className="w-6 h-6 text-accent" />
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-foreground">Soft Skills & Emploi</h4>
-                                        <p className="text-sm text-muted-foreground">Coaching pour les entretiens, rédaction de CV, et un accès facilité à un réseau d'employeurs.</p>
+                                        <h4 className="font-bold text-foreground">Soft Skills, Mentorat & Emploi</h4>
+                                        <p className="text-sm text-muted-foreground">Coaching pour les entretiens, rédaction de CV, mentorat par des alumni des programmes d'échange américains, et un Demo Day devant les employeurs (télécoms, banques, fintechs, organisations internationales).</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
@@ -253,7 +290,7 @@ export default function AwsRestartProgram() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Certification Officielle</h4>
-                                        <p className="text-sm text-muted-foreground">Préparez et passez la certification AWS Certified Cloud Practitioner, reconnue mondialement par les recruteurs.</p>
+                                        <p className="text-sm text-muted-foreground">Préparez et passez la certification AWS Certified Cloud Practitioner (examen pris en charge), puis poursuivez avec le parcours AWS Associate de 6 mois (SysOps, Developer, Solutions Architect).</p>
                                     </div>
                                 </div>
                             </div>
@@ -279,20 +316,22 @@ export default function AwsRestartProgram() {
                                 Public Cible Privilégié
                             </h3>
                             <p className="text-muted-foreground mb-6">
-                                Cette initiative vise particulièrement à encourager le développement technologique pour :
+                                25 places pour des jeunes tchadiens de <strong className="text-foreground">18 à 35 ans</strong>, sélectionnés
+                                sur mérite via un appel public transparent. Aucune expérience technologique préalable n'est requise —
+                                seulement une aptitude logique de base et une forte motivation.
                             </p>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Jeunes chômeurs et sous-employés (NEETs) :</strong> À la recherche d'une opportunité d'entrer dans l'un des secteurs les plus porteurs.</p>
+                                    <p><strong className="text-foreground">Jeunes chômeurs et sous-employés :</strong> À la recherche d'une opportunité d'entrer dans l'un des secteurs les plus porteurs au monde.</p>
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Reconversion professionnelle :</strong> Que vous veniez de la vente, du secrétariat ou autre, une nouvelle carrière vous attend.</p>
+                                    <p><strong className="text-foreground">Au-delà des cercles tech habituels :</strong> Les candidatures des femmes et des jeunes des quartiers périphériques de N'Djamena sont particulièrement encouragées.</p>
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Populations sous-représentées :</strong> Focus prioritaire pour les femmes dans la tech et les personnes en situation de handicap (dispositif en ligne adapté).</p>
+                                    <p><strong className="text-foreground">Disponibilité à N'Djamena :</strong> Le bootcamp étant en présentiel 5 jours par semaine pendant 12 semaines, il faut être disponible à temps plein à N'Djamena.</p>
                                 </div>
                             </div>
                         </div>
@@ -583,10 +622,10 @@ export default function AwsRestartProgram() {
                                                         </FormControl>
                                                         <div className="space-y-1">
                                                             <FormLabel className="text-base font-medium text-foreground cursor-pointer">
-                                                                Je m'engage à suivre assidûment cette formation en ligne pendant 12 semaines et à participer aux évaluations de certification.
+                                                                Je m'engage à suivre assidûment le bootcamp en présentiel à N'Djamena, à temps plein (5 jours/semaine) pendant 12 semaines, et à passer l'examen de certification.
                                                             </FormLabel>
                                                             <p className="text-sm text-muted-foreground mt-2">
-                                                                Ce programme exige un rythme intense. En cochant cette case, vous confirmez comprendre l'effort nécessaire.
+                                                                Ce programme exige un rythme intense (420 heures). En cochant cette case, vous confirmez comprendre l'effort nécessaire.
                                                             </p>
                                                         </div>
                                                     </FormItem>
@@ -622,8 +661,9 @@ export default function AwsRestartProgram() {
                         <div className="p-8 rounded-2xl bg-primary/5 border border-border">
                             <h4 className="font-bold text-xl mb-3 text-primary">Modalités Pratiques</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Les sessions se dérouleront <strong className="text-foreground">entièrement en ligne</strong>. Les candidats retenus
-                                recevront par email les accès à la plateforme d'apprentissage AWS.
+                                Le bootcamp se déroule <strong className="text-foreground">en présentiel à N'Djamena</strong>, dans la salle de
+                                formation SAYC Tchad équipée d'une connexion internet dédiée et d'une alimentation de secours.
+                                Les candidats retenus recevront par email et WhatsApp leurs accès aux labs AWS en ligne.
                             </p>
                         </div>
                         <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">
