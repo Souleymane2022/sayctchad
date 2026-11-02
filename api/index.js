@@ -65848,6 +65848,16 @@ async function sendPersonalizedMemberEmails(membersList, subject, messageTemplat
 }
 
 // server/routes.ts
+var awsVideoColumnEnsured = null;
+function ensureAwsVideoColumn() {
+  if (!awsVideoColumnEnsured) {
+    awsVideoColumnEnsured = sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`.then(() => void 0).catch((err) => {
+      awsVideoColumnEnsured = null;
+      throw err;
+    });
+  }
+  return awsVideoColumnEnsured;
+}
 function requireAdmin(req, res, next) {
   if (!req.session.isAdmin) {
     return res.status(401).json({ error: "Non autoris\xE9" });
@@ -66421,6 +66431,7 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
     try {
+      await ensureAwsVideoColumn();
       const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
       const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);
       if (existingApp) {

@@ -12,8 +12,22 @@ import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
-import { pool } from "./db";
+import { pool, sql } from "./db";
 import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection, sendPersonalizedMemberEmails } from "./email";
+
+// Migration auto-appliquée (idempotente) : colonne vidéo des candidatures AWS re/Start.
+let awsVideoColumnEnsured: Promise<void> | null = null;
+function ensureAwsVideoColumn(): Promise<void> {
+  if (!awsVideoColumnEnsured) {
+    awsVideoColumnEnsured = sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`
+      .then(() => undefined)
+      .catch((err) => {
+        awsVideoColumnEnsured = null; // réessaiera à la prochaine candidature
+        throw err;
+      });
+  }
+  return awsVideoColumnEnsured;
+}
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -640,6 +654,7 @@ Motivation: ${application.motivation}`
   // AWS re/Start Applications
   app.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
     try {
+      await ensureAwsVideoColumn();
       const validatedData = insertAwsRestartApplicationSchema.parse(req.body);
       const existingApp = await storage.getAwsRestartApplicationByEmail(validatedData.email);
 
