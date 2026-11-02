@@ -798,6 +798,43 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // ─── Suivi AWS re/Start pour l'Ambassade (lecture seule, code d'accès dédié) ─
+  app.get("/api/aws-tracking", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      if (!accessCode) {
+        return res.status(503).json({ error: "Suivi non configuré : définissez EMBASSY_ACCESS_CODE dans les variables d'environnement." });
+      }
+      const provided = (req.query.code as string) || "";
+      const isAdmin = !!req.session.isAdmin;
+      if (!isAdmin && provided !== accessCode) {
+        return res.status(401).json({ error: "Code d'accès invalide" });
+      }
+      const applications = await storage.getAllAwsRestartApplications();
+      // Lecture seule et données minimales : pas d'email, téléphone, motivation ni photo.
+      const rows = applications.map((a) => ({
+        fullName: a.fullName,
+        gender: a.gender,
+        city: a.city,
+        professionalStatus: a.professionalStatus,
+        status: a.status,
+        hasVideo: !!a.videoUrl,
+        hasPhoto: !!a.photoUrl,
+        createdAt: a.createdAt,
+      }));
+      const stats = {
+        total: rows.length,
+        femmes: rows.filter((r) => r.gender === "F").length,
+        hommes: rows.filter((r) => r.gender === "M").length,
+        avecVideo: rows.filter((r) => r.hasVideo).length,
+      };
+      res.json({ stats, applications: rows });
+    } catch (error) {
+      console.error("Error in aws-tracking:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   // ─── Outil temporaire : vider les anciennes candidatures AWS re/Start ────────
   // Protégé par le mot de passe admin. À SUPPRIMER après usage.
   app.get("/api/admin/clear-aws-applications", async (req, res) => {
