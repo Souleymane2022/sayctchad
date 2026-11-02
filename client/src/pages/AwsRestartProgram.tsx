@@ -220,7 +220,7 @@ export default function AwsRestartProgram() {
                                 <img src="/images/partners/smart-africa-logo.png" alt="Smart Africa" className="h-8 md:h-9 w-auto object-contain" />
                             </div>
                             <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
-                                <img src="/images/partners/sada-logo.jpg" alt="Smart Africa Digital Academy (SADA)" className="h-8 md:h-9 w-auto object-contain" />
+                                <img src="/images/partners/sada-logo-wide.png" alt="Smart Africa Digital Academy (SADA)" className="h-10 md:h-12 w-auto object-contain" />
                             </div>
                             <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
                                 <img src="/images/partners/aws-restart-logo.png" alt="AWS re/Start" className="h-8 md:h-9 w-auto object-contain" />
