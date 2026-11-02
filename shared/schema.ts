@@ -336,6 +336,7 @@ export const awsRestartApplications = pgTable("aws_restart_applications", {
   hasDisability: text("has_disability").notNull(),
   motivation: text("motivation").notNull(),
   videoUrl: text("video_url"),
+  photoUrl: text("photo_url"),
   fullTimeCommitment: boolean("full_time_commitment").notNull(),
   status: text("status").notNull().default("pending"),
   cohort: text("cohort").notNull().default("N'Djamena 2026"),
@@ -361,6 +362,10 @@ export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartAp
     .string()
     .min(1, "Le lien de votre vidéo YouTube est requis")
     .regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)"),
+  photoUrl: z
+    .string()
+    .min(1, "Votre photo d'identité est requise")
+    .regex(/^data:image\//, "Format de photo invalide"),
 }).omit({
   id: true,
   createdAt: true,
