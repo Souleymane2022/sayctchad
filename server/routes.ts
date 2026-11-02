@@ -14,7 +14,8 @@ import { z } from "zod";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
-import { pool, sql } from "./db";
+import { pool, sql, legacyDbUrl } from "./db";
+import { neon } from "@neondatabase/serverless";
 import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection, sendPersonalizedMemberEmails } from "./email";
 
 // Migration auto-appliquée (idempotente) : colonne vidéo des candidatures AWS re/Start.
@@ -793,6 +794,111 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         error: `Mot de passe incorrect. ${remaining} tentative${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}.`,
         remainingAttempts: remaining,
       });
+    }
+  });
+
+  // ─── Migration unique : ancienne base (Replit) → nouvelle base Vercel ────────
+  // Outil temporaire, protégé par la session admin. À SUPPRIMER après migration.
+  const LEGACY_DB_HOST = "ep-lively-sky-air3s27a";
+
+  app.get("/api/admin/migrate-legacy", requireAdmin, async (req, res) => {
+    try {
+      if (req.query.confirm !== "oui") {
+        return res.json({
+          message: "Prêt à migrer. Ajoutez ?confirm=oui à la fin de l'adresse pour lancer la copie des données de l'ancienne base vers la nouvelle.",
+        });
+      }
+      const targetUrl = process.env.DATABASE_URL;
+      if (!targetUrl) {
+        return res.status(500).json({ error: "DATABASE_URL est absente de l'environnement Vercel. Connectez la nouvelle base au projet d'abord." });
+      }
+      if (targetUrl.includes(LEGACY_DB_HOST)) {
+        return res.status(400).json({ error: "DATABASE_URL pointe encore vers l'ancienne base. Connectez la NOUVELLE base au projet Vercel, puis redéployez." });
+      }
+
+      const src = neon(legacyDbUrl);
+      const dst = neon(targetUrl);
+
+      const tables = (await src.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' ORDER BY table_name",
+        []
+      )) as any[];
+
+      const report: any[] = [];
+      for (const { table_name: table } of tables) {
+        const cols = (await src.query(
+          `SELECT column_name, data_type, udt_name, is_nullable, column_default
+           FROM information_schema.columns
+           WHERE table_schema='public' AND table_name=$1
+           ORDER BY ordinal_position`,
+          [table]
+        )) as any[];
+
+        const colDefs = cols.map((c: any) => {
+          let type: string;
+          if (c.data_type === "ARRAY") type = `${String(c.udt_name).replace(/^_/, "")}[]`;
+          else if (c.data_type === "USER-DEFINED") type = c.udt_name;
+          else type = c.data_type;
+          let def = `"${c.column_name}" ${type}`;
+          if (c.column_default) def += ` DEFAULT ${c.column_default}`;
+          if (c.is_nullable === "NO") def += " NOT NULL";
+          return def;
+        });
+        await dst.query(`CREATE TABLE IF NOT EXISTS "${table}" (${colDefs.join(", ")})`, []);
+
+        const constraints = (await src.query(
+          `SELECT con.conname, pg_get_constraintdef(con.oid) AS def
+           FROM pg_constraint con
+           JOIN pg_class rel ON rel.oid = con.conrelid
+           JOIN pg_namespace nsp ON nsp.oid = rel.relnamespace
+           WHERE nsp.nspname='public' AND rel.relname=$1 AND con.contype IN ('p','u')`,
+          [table]
+        )) as any[];
+        for (const c of constraints) {
+          try {
+            await dst.query(`ALTER TABLE "${table}" ADD CONSTRAINT "${c.conname}" ${c.def}`, []);
+          } catch {
+            // contrainte déjà présente : sans gravité
+          }
+        }
+
+        const srcCount = Number(((await src.query(`SELECT count(*)::int AS count FROM "${table}"`, [])) as any[])[0].count);
+        const dstCount = Number(((await dst.query(`SELECT count(*)::int AS count FROM "${table}"`, [])) as any[])[0].count);
+        if (dstCount > 0) {
+          report.push({ table, lignes_source: srcCount, copiees: 0, note: "la table contient déjà des données, ignorée" });
+          continue;
+        }
+        if (srcCount === 0) {
+          report.push({ table, lignes_source: 0, copiees: 0 });
+          continue;
+        }
+
+        const colNames = cols.map((c: any) => `"${c.column_name}"`).join(", ");
+        const batchSize = Math.max(1, Math.floor(500 / cols.length));
+        let copied = 0;
+        for (let offset = 0; offset < srcCount; offset += batchSize) {
+          const rows = (await src.query(`SELECT * FROM "${table}" ORDER BY 1 LIMIT $1 OFFSET $2`, [batchSize, offset])) as any[];
+          if (rows.length === 0) break;
+          const params: any[] = [];
+          const valuesSql = rows
+            .map(
+              (row: any, ri: number) =>
+                `(${cols.map((c: any, ci: number) => {
+                  params.push(row[c.column_name]);
+                  return `$${ri * cols.length + ci + 1}`;
+                }).join(", ")})`
+            )
+            .join(", ");
+          await dst.query(`INSERT INTO "${table}" (${colNames}) VALUES ${valuesSql}`, params);
+          copied += rows.length;
+        }
+        report.push({ table, lignes_source: srcCount, copiees: copied });
+      }
+
+      res.json({ success: true, message: "Migration terminée ! Vérifiez le site, puis prévenez Claude pour le nettoyage final.", tables: report });
+    } catch (error: any) {
+      console.error("Migration error:", error);
+      res.status(500).json({ error: "Erreur de migration", details: error.message });
     }
   });
 

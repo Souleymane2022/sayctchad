@@ -44197,10 +44197,11 @@ var init_neon_http = __esm({
 var db_exports = {};
 __export(db_exports, {
   db: () => db,
+  legacyDbUrl: () => legacyDbUrl,
   pool: () => pool,
   sql: () => sql2
 });
-var safeDbUrl, sql2, db, pool;
+var legacyDbUrl, safeDbUrl, sql2, db, pool;
 var init_db2 = __esm({
   "server/db.ts"() {
     "use strict";
@@ -44210,7 +44211,8 @@ var init_db2 = __esm({
     if (!process.env.DATABASE_URL) {
       console.error("CRITICAL ERROR: DATABASE_URL is missing in this environment!");
     }
-    safeDbUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+    legacyDbUrl = "postgresql://neondb_owner:npg_HVyYWQ2GbgA9@ep-lively-sky-air3s27a-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+    safeDbUrl = process.env.DATABASE_URL || legacyDbUrl;
     sql2 = cs(safeDbUrl);
     db = drizzle(sql2, { schema: schema_exports });
     pool = null;
@@ -65577,6 +65579,7 @@ var rate_limit_default = rateLimit;
 
 // server/routes.ts
 init_db2();
+init_serverless();
 
 // server/email.ts
 var import_nodemailer = __toESM(require_nodemailer(), 1);
@@ -66563,6 +66566,95 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         error: `Mot de passe incorrect. ${remaining} tentative${remaining > 1 ? "s" : ""} restante${remaining > 1 ? "s" : ""}.`,
         remainingAttempts: remaining
       });
+    }
+  });
+  const LEGACY_DB_HOST = "ep-lively-sky-air3s27a";
+  app2.get("/api/admin/migrate-legacy", requireAdmin, async (req, res) => {
+    try {
+      if (req.query.confirm !== "oui") {
+        return res.json({
+          message: "Pr\xEAt \xE0 migrer. Ajoutez ?confirm=oui \xE0 la fin de l'adresse pour lancer la copie des donn\xE9es de l'ancienne base vers la nouvelle."
+        });
+      }
+      const targetUrl = process.env.DATABASE_URL;
+      if (!targetUrl) {
+        return res.status(500).json({ error: "DATABASE_URL est absente de l'environnement Vercel. Connectez la nouvelle base au projet d'abord." });
+      }
+      if (targetUrl.includes(LEGACY_DB_HOST)) {
+        return res.status(400).json({ error: "DATABASE_URL pointe encore vers l'ancienne base. Connectez la NOUVELLE base au projet Vercel, puis red\xE9ployez." });
+      }
+      const src = cs(legacyDbUrl);
+      const dst = cs(targetUrl);
+      const tables = await src.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' ORDER BY table_name",
+        []
+      );
+      const report = [];
+      for (const { table_name: table } of tables) {
+        const cols = await src.query(
+          `SELECT column_name, data_type, udt_name, is_nullable, column_default
+           FROM information_schema.columns
+           WHERE table_schema='public' AND table_name=$1
+           ORDER BY ordinal_position`,
+          [table]
+        );
+        const colDefs = cols.map((c) => {
+          let type;
+          if (c.data_type === "ARRAY") type = `${String(c.udt_name).replace(/^_/, "")}[]`;
+          else if (c.data_type === "USER-DEFINED") type = c.udt_name;
+          else type = c.data_type;
+          let def = `"${c.column_name}" ${type}`;
+          if (c.column_default) def += ` DEFAULT ${c.column_default}`;
+          if (c.is_nullable === "NO") def += " NOT NULL";
+          return def;
+        });
+        await dst.query(`CREATE TABLE IF NOT EXISTS "${table}" (${colDefs.join(", ")})`, []);
+        const constraints = await src.query(
+          `SELECT con.conname, pg_get_constraintdef(con.oid) AS def
+           FROM pg_constraint con
+           JOIN pg_class rel ON rel.oid = con.conrelid
+           JOIN pg_namespace nsp ON nsp.oid = rel.relnamespace
+           WHERE nsp.nspname='public' AND rel.relname=$1 AND con.contype IN ('p','u')`,
+          [table]
+        );
+        for (const c of constraints) {
+          try {
+            await dst.query(`ALTER TABLE "${table}" ADD CONSTRAINT "${c.conname}" ${c.def}`, []);
+          } catch {
+          }
+        }
+        const srcCount = Number((await src.query(`SELECT count(*)::int AS count FROM "${table}"`, []))[0].count);
+        const dstCount = Number((await dst.query(`SELECT count(*)::int AS count FROM "${table}"`, []))[0].count);
+        if (dstCount > 0) {
+          report.push({ table, lignes_source: srcCount, copiees: 0, note: "la table contient d\xE9j\xE0 des donn\xE9es, ignor\xE9e" });
+          continue;
+        }
+        if (srcCount === 0) {
+          report.push({ table, lignes_source: 0, copiees: 0 });
+          continue;
+        }
+        const colNames = cols.map((c) => `"${c.column_name}"`).join(", ");
+        const batchSize = Math.max(1, Math.floor(500 / cols.length));
+        let copied = 0;
+        for (let offset = 0; offset < srcCount; offset += batchSize) {
+          const rows = await src.query(`SELECT * FROM "${table}" ORDER BY 1 LIMIT $1 OFFSET $2`, [batchSize, offset]);
+          if (rows.length === 0) break;
+          const params = [];
+          const valuesSql = rows.map(
+            (row, ri) => `(${cols.map((c, ci) => {
+              params.push(row[c.column_name]);
+              return `$${ri * cols.length + ci + 1}`;
+            }).join(", ")})`
+          ).join(", ");
+          await dst.query(`INSERT INTO "${table}" (${colNames}) VALUES ${valuesSql}`, params);
+          copied += rows.length;
+        }
+        report.push({ table, lignes_source: srcCount, copiees: copied });
+      }
+      res.json({ success: true, message: "Migration termin\xE9e ! V\xE9rifiez le site, puis pr\xE9venez Claude pour le nettoyage final.", tables: report });
+    } catch (error) {
+      console.error("Migration error:", error);
+      res.status(500).json({ error: "Erreur de migration", details: error.message });
     }
   });
   app2.post("/api/admin/logout", (req, res) => {
