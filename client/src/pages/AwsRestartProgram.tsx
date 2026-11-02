@@ -35,11 +35,13 @@ import {
 
 const CURRENT_COHORT = "N'Djamena 2026";
 
+const APPLICATION_DEADLINE = "13 novembre 2026 à minuit";
+
 const sessionFacts = [
-    { icon: Users, label: "Places", value: "25", note: "Jeunes de 18 à 35 ans, sélection sur mérite" },
-    { icon: Clock, label: "Durée", value: "12 semaines", note: "420 heures, 5 jours / semaine" },
-    { icon: Globe, label: "Format", value: "Présentiel", note: "À N'Djamena, avec labs AWS en ligne" },
-    { icon: Award, label: "Coût", value: "Gratuit", note: "Examen de certification pris en charge" },
+    { icon: Calendar, label: "Candidatures", value: "3 – 13 nov. 2026", note: "Formulaire en ligne, avant minuit" },
+    { icon: Users, label: "Places", value: "25", note: "18 à 35 ans, nationalité tchadienne" },
+    { icon: Clock, label: "Bootcamp", value: "12 semaines", note: "420 h, du 23 nov. 2026 au 19 févr. 2027" },
+    { icon: Award, label: "Coût", value: "Gratuit", note: "Examen de certification offert par AWS" },
 ];
 
 const curriculum = [
@@ -54,33 +56,34 @@ const curriculum = [
 const selectionSteps = [
     {
         icon: FileText,
-        title: "1. Candidature en ligne",
-        description: "Remplissez le formulaire ci-dessous et joignez votre vidéo de présentation d'une minute (lien YouTube).",
-    },
-    {
-        icon: Users,
-        title: "2. Présélection",
-        description: "Un comité examine les dossiers selon une grille publiée : motivation, conformité au public cible et vidéo de présentation.",
+        title: "1. Remplis le formulaire en ligne",
+        description: "Avant le 13 novembre 2026 à minuit : formulaire ci-dessous + ta vidéo de présentation d'une minute (lien YouTube).",
     },
     {
         icon: PhoneCall,
-        title: "3. Validation finale",
-        description: "Les candidats présélectionnés sont contactés pour confirmation, et la liste finale est validée avec l'Ambassade des États-Unis.",
+        title: "2. Passe le test et l'entretien",
+        description: "Les candidats présélectionnés sont contactés du 14 au 18 novembre pour un test et un entretien. Sélection au mérite.",
+    },
+    {
+        icon: Users,
+        title: "3. Résultats le 20 novembre",
+        description: "Les 25 candidats retenus sont annoncés le 20 novembre 2026.",
     },
     {
         icon: Rocket,
-        title: "4. Intégration à la cohorte",
-        description: "Les 25 candidats retenus rejoignent le bootcamp à N'Djamena et reçoivent leurs accès aux labs AWS.",
+        title: "4. Début du bootcamp le 23 novembre",
+        description: "La première promotion démarre à N'Djamena le 23 novembre 2026, avec les accès aux labs AWS.",
     },
 ];
 
 const timeline = [
-    { period: "Octobre 2026", event: "Sélection des 25 apprenants et lancement officiel du programme" },
-    { period: "Novembre 2026 – Janvier 2027", event: "Bootcamp AWS re/Start de 12 semaines (420 h) + ateliers d'employabilité" },
-    { period: "Janvier 2027", event: "Examen de certification AWS Certified Cloud Practitioner" },
-    { period: "Février – Juillet 2027", event: "Parcours AWS Associate (6 mois) + mentorat par des alumni des programmes d'échange américains" },
-    { period: "Août 2027", event: "Demo Day devant les employeurs (télécoms, banques, fintechs, organisations internationales)" },
-    { period: "Septembre 2027", event: "Cérémonie de certification avec l'Ambassade des États-Unis" },
+    { period: "3 – 13 novembre 2026", event: "Candidatures en ligne (formulaire + vidéo), jusqu'au 13 novembre à minuit" },
+    { period: "14 – 18 novembre 2026", event: "Test et entretien des candidats présélectionnés" },
+    { period: "20 novembre 2026", event: "Annonce des résultats de la sélection" },
+    { period: "23 nov. 2026 – 19 févr. 2027", event: "Bootcamp AWS re/Start : 12 semaines, 420 heures de cours et de labs à N'Djamena" },
+    { period: "Fin février 2027", event: "Certification AWS Cloud Practitioner — examen offert par AWS" },
+    { period: "Mars – Août 2027", event: "Parcours AWS Associate : six mois en ligne, labs et mentorat" },
+    { period: "Août 2027", event: "Demo Day : tes projets cloud présentés devant les employeurs" },
 ];
 
 export default function AwsRestartProgram() {
@@ -134,7 +137,7 @@ export default function AwsRestartProgram() {
         <div className="flex flex-col min-h-screen font-sans">
             <SEOHead
                 title="Chad Cloud Talent — AWS re/Start N'Djamena | SAYC Tchad"
-                description="Première cohorte AWS re/Start au Tchad : bootcamp gratuit de 12 semaines (420 h) à N'Djamena pour 25 jeunes, avec certification AWS Cloud Practitioner. Financé par l'Ambassade des États-Unis. Candidatures ouvertes."
+                description="Première promotion AWS re/Start au Tchad : bootcamp gratuit de 12 semaines (420 h) à N'Djamena pour 25 jeunes, avec certification AWS Cloud Practitioner. Financé par l'Ambassade des États-Unis. Candidatures du 3 au 13 novembre 2026."
                 path="/programmes/aws-restart"
             />
 
@@ -150,11 +153,15 @@ export default function AwsRestartProgram() {
                         Devenez Spécialiste <br/>
                         <span className="text-accent underline decoration-2 underline-offset-8">Cloud Junior</span>
                     </h1>
-                    <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-8">
-                        La première cohorte AWS re/Start du Tchad : un bootcamp gratuit et intensif de 12 semaines (420 heures)
-                        à N'Djamena, menant à la certification AWS Certified Cloud Practitioner — aucune expérience
-                        technique préalable n'est exigée.
+                    <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-6">
+                        Grande première : AWS re/Start arrive au Tchad ! Un bootcamp gratuit et intensif de 12 semaines (420 heures)
+                        à N'Djamena, menant à la certification AWS Certified Cloud Practitioner — aucune formation
+                        en informatique n'est exigée.
                     </p>
+                    <div className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-accent text-accent-foreground font-bold mb-8 shadow-lg">
+                        <Calendar className="w-5 h-5" />
+                        Candidatures du 3 au {APPLICATION_DEADLINE}
+                    </div>
 
                     <div className="flex flex-wrap justify-center gap-4 mb-10">
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
@@ -192,7 +199,7 @@ export default function AwsRestartProgram() {
                 <div className="container mx-auto px-4">
                     <div className="text-center mb-10">
                         <Badge className="mb-4 bg-green-500/10 text-green-700 border border-green-500/30 hover:bg-green-500/10">
-                            <CheckCircle2 className="w-4 h-4 mr-1" /> Candidatures ouvertes
+                            <CheckCircle2 className="w-4 h-4 mr-1" /> Candidatures ouvertes jusqu'au {APPLICATION_DEADLINE}
                         </Badge>
                         <h2 className="text-3xl font-heading font-bold text-foreground">La session en bref</h2>
                     </div>
@@ -217,14 +224,11 @@ export default function AwsRestartProgram() {
                             <div>
                                 <h3 className="font-bold text-foreground mb-1">Chad Cloud Talent : un programme financé par l'Ambassade des États-Unis</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
-                                    Cette première cohorte tchadienne est <strong className="text-foreground">financée par l'Ambassade des
-                                    États-Unis à N'Djamena</strong> (Section de la Diplomatie Publique) dans le cadre du projet
-                                    « Chad Cloud Talent ». Elle est mise en œuvre par <strong className="text-foreground">Smart Africa
-                                    Youth Chapter Tchad</strong> et <strong className="text-foreground">Code for Chad</strong>, avec le
-                                    programme <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services) fourni via
-                                    la <strong className="text-foreground">Smart Africa Digital Academy (SADA)</strong>, et le soutien
-                                    institutionnel du <strong className="text-foreground">Ministère des Télécommunications et de l'Économie
-                                    Numérique (MTENDA)</strong>.
+                                    Cette première promotion tchadienne est <strong className="text-foreground">financée par l'Ambassade des
+                                    États-Unis à N'Djamena</strong> dans le cadre du projet « Chad Cloud Talent ». Elle est mise en œuvre
+                                    par <strong className="text-foreground">Smart Africa Youth Chapter Tchad</strong>, en partenariat
+                                    avec <strong className="text-foreground">Smart Africa</strong>, la <strong className="text-foreground">Smart
+                                    Africa Digital Academy (SADA)</strong> et <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services).
                                 </p>
                                 <p className="text-sm text-muted-foreground leading-relaxed mt-3">
                                     Au-delà de la formation, les apprenants bénéficient d'un <strong className="text-foreground">mentorat par des
@@ -316,23 +320,28 @@ export default function AwsRestartProgram() {
                                 Public Cible Privilégié
                             </h3>
                             <p className="text-muted-foreground mb-6">
-                                25 places pour des jeunes tchadiens de <strong className="text-foreground">18 à 35 ans</strong>, sélectionnés
-                                sur mérite via un appel public transparent. Aucune expérience technologique préalable n'est requise —
-                                seulement une aptitude logique de base et une forte motivation.
+                                C'est pour toi si…
                             </p>
                             <div className="space-y-4 text-sm">
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Jeunes chômeurs et sous-employés :</strong> À la recherche d'une opportunité d'entrer dans l'un des secteurs les plus porteurs au monde.</p>
+                                    <p><strong className="text-foreground">Tu as entre 18 et 35 ans</strong>, de nationalité tchadienne.</p>
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Au-delà des cercles tech habituels :</strong> Les candidatures des femmes et des jeunes des quartiers périphériques de N'Djamena sont particulièrement encouragées.</p>
+                                    <p><strong className="text-foreground">Tu as le goût de la logique</strong> et des bases en mathématiques — aucune formation en informatique n'est exigée.</p>
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Disponibilité à N'Djamena :</strong> Le bootcamp étant en présentiel 5 jours par semaine pendant 12 semaines, il faut être disponible à temps plein à N'Djamena.</p>
+                                    <p><strong className="text-foreground">Tu es disponible à plein temps</strong>, à N'Djamena, du 23 novembre 2026 au 19 février 2027.</p>
                                 </div>
+                                <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
+                                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                    <p><strong className="text-foreground">Tu es motivé(e) :</strong> la sélection se fait au mérite, sur test et entretien.</p>
+                                </div>
+                            </div>
+                            <div className="mt-6 bg-accent/10 border border-accent/30 rounded-lg p-4 text-sm font-medium text-foreground">
+                                Jeunes femmes : vous êtes vivement encouragées à postuler.
                             </div>
                         </div>
                     </div>
@@ -622,7 +631,7 @@ export default function AwsRestartProgram() {
                                                         </FormControl>
                                                         <div className="space-y-1">
                                                             <FormLabel className="text-base font-medium text-foreground cursor-pointer">
-                                                                Je m'engage à suivre assidûment le bootcamp en présentiel à N'Djamena, à temps plein (5 jours/semaine) pendant 12 semaines, et à passer l'examen de certification.
+                                                                Je m'engage à suivre assidûment le bootcamp en présentiel à N'Djamena, à temps plein, du 23 novembre 2026 au 19 février 2027, et à passer l'examen de certification.
                                                             </FormLabel>
                                                             <p className="text-sm text-muted-foreground mt-2">
                                                                 Ce programme exige un rythme intense (420 heures). En cochant cette case, vous confirmez comprendre l'effort nécessaire.
@@ -669,8 +678,10 @@ export default function AwsRestartProgram() {
                         <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">
                             <h4 className="font-bold text-xl mb-3 text-green-700">Avis de Sélection</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Un comité évaluera la motivation, la vidéo de présentation et la conformité au public cible.
-                                Seules les personnes présélectionnées seront contactées pour un entretien de confirmation.
+                                Candidatures jusqu'au <strong className="text-foreground">13 novembre 2026 à minuit</strong>. Les candidats
+                                présélectionnés seront contactés du <strong className="text-foreground">14 au 18 novembre</strong> pour un test
+                                et un entretien. Résultats le <strong className="text-foreground">20 novembre</strong>, début du bootcamp
+                                le <strong className="text-foreground">23 novembre 2026</strong>.
                             </p>
                         </div>
                     </div>
