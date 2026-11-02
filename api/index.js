@@ -65895,6 +65895,7 @@ async function registerRoutes(httpServer2, app2) {
     );
     next();
   });
+  ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au d\xE9marrage:", e));
   const apiLimiter = rate_limit_default({
     windowMs: 15 * 60 * 1e3,
     // 15 minutes
@@ -66499,6 +66500,7 @@ L'\xE9quipe SAYC Tchad`
   });
   app2.get("/api/admin/aws-restart-applications", requireAdmin, async (_req, res) => {
     try {
+      await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
       res.json(applications);
     } catch (error) {
@@ -66578,6 +66580,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       if (!isAdmin && provided !== accessCode) {
         return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
       }
+      await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
       const rows = applications.map((a2) => ({
         fullName: a2.fullName,
