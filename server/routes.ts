@@ -1,5 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
+import { randomBytes } from "crypto";
 import { storage } from "./storage";
 import {
   insertMemberSchema, insertContactMessageSchema, insertNewsletterSubscriberSchema,
@@ -108,7 +109,7 @@ export async function registerRoutes(
   app.use(
     session({
       store: sessionStore,
-      secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
+      secret: process.env.SESSION_SECRET || randomBytes(32).toString("hex"),
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -247,7 +248,7 @@ ${pages.map(p => `  <url>
     }
   });
 
-  app.get("/api/members", async (_req, res) => {
+  app.get("/api/members", requireAdmin, async (_req, res) => {
     try {
       const members = await storage.getAllMembers();
       res.json(members);
@@ -264,7 +265,19 @@ ${pages.map(p => `  <url>
       const search = req.query.search as string || "";
 
       const result = await storage.getGalleryMembers({ page, limit, search });
-      res.json(result);
+      // Galerie publique : ne jamais exposer email, téléphone ou autres données personnelles.
+      res.json({
+        ...result,
+        members: result.members.map((m) => ({
+          id: m.id,
+          firstName: m.firstName,
+          nomSpecifiqueUnique: m.nomSpecifiqueUnique,
+          membershipId: m.membershipId,
+          photoUrl: m.photoUrl,
+          city: m.city,
+          createdAt: m.createdAt,
+        })),
+      });
     } catch (error) {
       console.error("Error fetching gallery members:", error);
       res.status(500).json({ error: "Erreur lors de la récupération de la galerie" });
@@ -320,7 +333,7 @@ ${pages.map(p => `  <url>
     }
   });
 
-  app.get("/api/debug-email", async (req, res) => {
+  app.get("/api/debug-email", requireAdmin, async (req, res) => {
     const result = await debugSmtpConnection();
     res.json(result);
   });
@@ -402,7 +415,7 @@ ${pages.map(p => `  <url>
     }
   });
 
-  app.get("/api/contact", async (_req, res) => {
+  app.get("/api/contact", requireAdmin, async (_req, res) => {
     try {
       const messages = await storage.getAllContactMessages();
       res.json(messages);
@@ -746,9 +759,13 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       record = undefined;
     }
 
-    const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || "SaycTchad@2026!Secure";
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      // Jamais de mot de passe par défaut dans le code : le dépôt est public.
+      return res.status(503).json({ error: "Administration non configurée. Définissez ADMIN_PASSWORD dans les variables d'environnement." });
+    }
 
+    const { password } = req.body;
     if (password === adminPassword) {
       loginAttempts.delete(ip);
       req.session.isAdmin = true;
@@ -879,8 +896,14 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   app.get("/api/elections/audit-votes", async (_req, res) => {
     try {
       const votes = await storage.getAllVotesWithDetails();
-      // Remove sensitive info if necessary (already pretty limited in the query)
-      res.json(votes);
+      // Masquer les emails des votants : seul le début reste visible publiquement.
+      const masked = votes.map((v: any) => ({
+        ...v,
+        voterId: typeof v.voterId === "string" && v.voterId.includes("@")
+          ? `${v.voterId.slice(0, 3)}***@***${v.voterId.slice(v.voterId.lastIndexOf("."))}`
+          : v.voterId,
+      }));
+      res.json(masked);
     } catch (error: any) {
       console.error("Error fetching audit votes:", error);
       res.status(500).json({ error: "Erreur serveur" });
@@ -903,11 +926,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Données invalides", details: error.errors });
       }
-      res.status(500).json({ 
-        error: "Erreur lors du dépôt de candidature",
-        message: error.message,
-        details: error.details || (error.code ? `DB Error Code: ${error.code}` : undefined)
-      });
+      res.status(500).json({ error: "Erreur lors du dépôt de candidature" });
     }
   });
 
@@ -974,7 +993,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   // Admin Election Management
   // TEMPORARY DIAGNOSTIC ENDPOINT - remove after debugging
-  app.get("/api/admin/elections/diagnose", async (_req, res) => {
+  app.get("/api/admin/elections/diagnose", requireAdmin, async (_req, res) => {
     const result: any = { status: "running", steps: [] };
     try {
       result.steps.push("1. Testing DB connection...");
@@ -1378,7 +1397,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
-  app.get("/api/debug/thunderbird-stats", async (_req, res) => {
+  app.get("/api/debug/thunderbird-stats", requireAdmin, async (_req, res) => {
     try {
       const all = await storage.getThunderbirdApplications();
       const approved = all.filter(a => a.status === "approved");

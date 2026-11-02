@@ -44990,9 +44990,9 @@ var require_random_bytes = __commonJS({
     "use strict";
     var crypto2 = __require("crypto");
     var generateAttempts = crypto2.randomBytes === crypto2.pseudoRandomBytes ? 1 : 3;
-    module.exports = randomBytes;
+    module.exports = randomBytes2;
     module.exports.sync = randomBytesSync;
-    function randomBytes(size, callback) {
+    function randomBytes2(size, callback) {
       if (callback !== void 0 && typeof callback !== "function") {
         throw new TypeError("argument callback must be a function");
       }
@@ -45034,7 +45034,7 @@ var require_random_bytes = __commonJS({
 var require_uid_safe = __commonJS({
   "node_modules/uid-safe/index.js"(exports, module) {
     "use strict";
-    var randomBytes = require_random_bytes();
+    var randomBytes2 = require_random_bytes();
     var EQUAL_END_REGEXP = /=+$/;
     var PLUS_GLOBAL_REGEXP = /\+/g;
     var SLASH_GLOBAL_REGEXP = /\//g;
@@ -45058,10 +45058,10 @@ var require_uid_safe = __commonJS({
       });
     }
     function uidSync(length) {
-      return toString(randomBytes.sync(length));
+      return toString(randomBytes2.sync(length));
     }
     function generateUid(length, callback) {
-      randomBytes(length, function(err, buf) {
+      randomBytes2(length, function(err, buf) {
         if (err) return callback(err);
         callback(null, toString(buf));
       });
@@ -46968,7 +46968,7 @@ var require_utils_webcrypto = __commonJS({
     var nodeCrypto = __require("crypto");
     module.exports = {
       postgresMd5PasswordHash,
-      randomBytes,
+      randomBytes: randomBytes2,
       deriveKey,
       sha256,
       hashByName,
@@ -46978,7 +46978,7 @@ var require_utils_webcrypto = __commonJS({
     var webCrypto = nodeCrypto.webcrypto || globalThis.crypto;
     var subtleCrypto = webCrypto.subtle;
     var textEncoder = new TextEncoder();
-    function randomBytes(length) {
+    function randomBytes2(length) {
       return webCrypto.getRandomValues(Buffer.alloc(length));
     }
     async function md5(string) {
@@ -64274,6 +64274,9 @@ var require_nodemailer = __commonJS({
 // server/index.ts
 var import_express2 = __toESM(require_express2(), 1);
 
+// server/routes.ts
+import { randomBytes } from "crypto";
+
 // server/storage.ts
 init_schema2();
 init_db2();
@@ -65918,7 +65921,7 @@ async function registerRoutes(httpServer2, app2) {
   app2.use(
     (0, import_express_session.default)({
       store: sessionStore,
-      secret: process.env.SESSION_SECRET || "sayc-tchad-secret-key",
+      secret: process.env.SESSION_SECRET || randomBytes(32).toString("hex"),
       resave: false,
       saveUninitialized: false,
       cookie: {
@@ -66056,7 +66059,7 @@ L'\xE9quipe SAYC Tchad`
       res.status(500).json({ error: "Erreur lors de la v\xE9rification" });
     }
   });
-  app2.get("/api/members", async (_req, res) => {
+  app2.get("/api/members", requireAdmin, async (_req, res) => {
     try {
       const members2 = await storage.getAllMembers();
       res.json(members2);
@@ -66071,7 +66074,18 @@ L'\xE9quipe SAYC Tchad`
       const limit = parseInt(req.query.limit) || 24;
       const search = req.query.search || "";
       const result = await storage.getGalleryMembers({ page, limit, search });
-      res.json(result);
+      res.json({
+        ...result,
+        members: result.members.map((m2) => ({
+          id: m2.id,
+          firstName: m2.firstName,
+          nomSpecifiqueUnique: m2.nomSpecifiqueUnique,
+          membershipId: m2.membershipId,
+          photoUrl: m2.photoUrl,
+          city: m2.city,
+          createdAt: m2.createdAt
+        }))
+      });
     } catch (error) {
       console.error("Error fetching gallery members:", error);
       res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration de la galerie" });
@@ -66127,7 +66141,7 @@ L'\xE9quipe SAYC Tchad`
       });
     }
   });
-  app2.get("/api/debug-email", async (req, res) => {
+  app2.get("/api/debug-email", requireAdmin, async (req, res) => {
     const result = await debugSmtpConnection();
     res.json(result);
   });
@@ -66203,7 +66217,7 @@ L'\xE9quipe SAYC Tchad`
       res.redirect("/images/logo.png");
     }
   });
-  app2.get("/api/contact", async (_req, res) => {
+  app2.get("/api/contact", requireAdmin, async (_req, res) => {
     try {
       const messages = await storage.getAllContactMessages();
       res.json(messages);
@@ -66519,8 +66533,11 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       loginAttempts.delete(ip);
       record = void 0;
     }
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      return res.status(503).json({ error: "Administration non configur\xE9e. D\xE9finissez ADMIN_PASSWORD dans les variables d'environnement." });
+    }
     const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || "SaycTchad@2026!Secure";
     if (password === adminPassword) {
       loginAttempts.delete(ip);
       req.session.isAdmin = true;
@@ -66686,7 +66703,11 @@ Sitemap: ${baseUrl}/sitemap.xml`;
   app2.get("/api/elections/audit-votes", async (_req, res) => {
     try {
       const votes = await storage.getAllVotesWithDetails();
-      res.json(votes);
+      const masked = votes.map((v2) => ({
+        ...v2,
+        voterId: typeof v2.voterId === "string" && v2.voterId.includes("@") ? `${v2.voterId.slice(0, 3)}***@***${v2.voterId.slice(v2.voterId.lastIndexOf("."))}` : v2.voterId
+      }));
+      res.json(masked);
     } catch (error) {
       console.error("Error fetching audit votes:", error);
       res.status(500).json({ error: "Erreur serveur" });
@@ -66707,11 +66728,7 @@ Email: ${candidate.email}`
       if (error instanceof z.ZodError) {
         return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
       }
-      res.status(500).json({
-        error: "Erreur lors du d\xE9p\xF4t de candidature",
-        message: error.message,
-        details: error.details || (error.code ? `DB Error Code: ${error.code}` : void 0)
-      });
+      res.status(500).json({ error: "Erreur lors du d\xE9p\xF4t de candidature" });
     }
   });
   app2.post("/api/elections/check-votes", async (req, res) => {
@@ -66761,7 +66778,7 @@ Email: ${candidate.email}`
       res.status(500).json({ error: "Erreur lors du vote." });
     }
   });
-  app2.get("/api/admin/elections/diagnose", async (_req, res) => {
+  app2.get("/api/admin/elections/diagnose", requireAdmin, async (_req, res) => {
     const result = { status: "running", steps: [] };
     try {
       result.steps.push("1. Testing DB connection...");
@@ -67137,7 +67154,7 @@ Fichier : ${report.fileName || "Aucun"}`
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
-  app2.get("/api/debug/thunderbird-stats", async (_req, res) => {
+  app2.get("/api/debug/thunderbird-stats", requireAdmin, async (_req, res) => {
     try {
       const all = await storage.getThunderbirdApplications();
       const approved = all.filter((a2) => a2.status === "approved");
