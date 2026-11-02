@@ -816,26 +816,57 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
       await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
-      // Lecture seule et données minimales : pas d'email, téléphone, motivation ni photo.
+      // Lecture seule. Les photos (lourdes) sont servies individuellement via /api/aws-tracking/:id.
       const rows = applications.map((a) => ({
+        id: a.id,
         fullName: a.fullName,
         gender: a.gender,
         city: a.city,
+        dateOfBirth: a.dateOfBirth,
+        email: a.email,
+        phone: a.phone,
         professionalStatus: a.professionalStatus,
         status: a.status,
-        hasVideo: !!a.videoUrl,
+        videoUrl: a.videoUrl,
         hasPhoto: !!a.photoUrl,
+        motivation: a.motivation,
         createdAt: a.createdAt,
       }));
       const stats = {
         total: rows.length,
         femmes: rows.filter((r) => r.gender === "F").length,
         hommes: rows.filter((r) => r.gender === "M").length,
-        avecVideo: rows.filter((r) => r.hasVideo).length,
+        avecVideo: rows.filter((r) => !!r.videoUrl).length,
       };
       res.json({ stats, applications: rows });
     } catch (error) {
       console.error("Error in aws-tracking:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Photo d'un candidat (servie à la demande pour garder la liste légère)
+  app.get("/api/aws-tracking/:id/photo", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = (req.query.code as string) || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'accès invalide" });
+      }
+      await ensureAwsVideoColumn();
+      const applications = await storage.getAllAwsRestartApplications();
+      const app2 = applications.find((a) => a.id === req.params.id);
+      if (!app2 || !app2.photoUrl || !app2.photoUrl.startsWith("data:image")) {
+        return res.status(404).json({ error: "Photo introuvable" });
+      }
+      const parts = app2.photoUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "private, max-age=300");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error serving tracking photo:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });

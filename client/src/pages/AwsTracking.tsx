@@ -4,18 +4,24 @@ import SEOHead from "@/components/SEOHead";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Cloud, Lock, Users, Video, RefreshCw } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Cloud, Lock, Users, Video, RefreshCw, Youtube, Camera } from "lucide-react";
 
 interface TrackingRow {
+    id: string;
     fullName: string;
     gender: string;
     city: string;
+    dateOfBirth: string;
+    email: string;
+    phone: string;
     professionalStatus: string;
     status: string;
-    hasVideo: boolean;
+    videoUrl: string | null;
     hasPhoto: boolean;
+    motivation: string;
     createdAt: string | null;
 }
 
@@ -45,6 +51,8 @@ export default function AwsTracking() {
         },
     });
 
+    const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
+
     return (
         <div className="min-h-screen bg-muted/20 py-12">
             <SEOHead
@@ -52,7 +60,7 @@ export default function AwsTracking() {
                 description="Tableau de suivi en lecture seule des candidatures AWS re/Start N'Djamena."
                 path="/aws-suivi"
             />
-            <div className="container mx-auto px-4 max-w-5xl">
+            <div className="container mx-auto px-4 max-w-6xl">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 text-accent border border-accent/30 mb-4">
                         <Cloud className="w-5 h-5" />
@@ -97,11 +105,11 @@ export default function AwsTracking() {
                                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Candidatures</p>
                             </CardContent></Card>
                             <Card><CardContent className="pt-6 text-center">
-                                <p className="text-3xl font-bold text-foreground mt-8 md:mt-0">{data.stats.femmes}</p>
+                                <p className="text-3xl font-bold text-foreground">{data.stats.femmes}</p>
                                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Femmes</p>
                             </CardContent></Card>
                             <Card><CardContent className="pt-6 text-center">
-                                <p className="text-3xl font-bold text-foreground mt-8 md:mt-0">{data.stats.hommes}</p>
+                                <p className="text-3xl font-bold text-foreground">{data.stats.hommes}</p>
                                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Hommes</p>
                             </CardContent></Card>
                             <Card><CardContent className="pt-6 text-center">
@@ -127,13 +135,13 @@ export default function AwsTracking() {
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
+                                                <TableHead>Photo</TableHead>
                                                 <TableHead>Nom complet</TableHead>
                                                 <TableHead>Sexe</TableHead>
                                                 <TableHead>Ville</TableHead>
-                                                <TableHead>Statut professionnel</TableHead>
                                                 <TableHead>Vidéo</TableHead>
-                                                <TableHead>Photo</TableHead>
                                                 <TableHead>Date</TableHead>
+                                                <TableHead>Dossier</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
@@ -144,15 +152,61 @@ export default function AwsTracking() {
                                                     </TableCell>
                                                 </TableRow>
                                             ) : (
-                                                data.applications.map((a, i) => (
-                                                    <TableRow key={i}>
+                                                data.applications.map((a) => (
+                                                    <TableRow key={a.id}>
+                                                        <TableCell>
+                                                            {a.hasPhoto ? (
+                                                                <img src={photoSrc(a.id)} alt={a.fullName} loading="lazy" className="w-10 h-10 rounded-lg object-cover border" />
+                                                            ) : (
+                                                                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground"><Camera className="w-4 h-4" /></div>
+                                                            )}
+                                                        </TableCell>
                                                         <TableCell className="font-medium">{a.fullName}</TableCell>
                                                         <TableCell>{a.gender}</TableCell>
                                                         <TableCell>{a.city}</TableCell>
-                                                        <TableCell className="text-xs">{a.professionalStatus}</TableCell>
-                                                        <TableCell>{a.hasVideo ? "✔" : "—"}</TableCell>
-                                                        <TableCell>{a.hasPhoto ? "✔" : "—"}</TableCell>
-                                                        <TableCell className="text-xs">{a.createdAt ? new Date(a.createdAt).toLocaleString("fr-FR") : ""}</TableCell>
+                                                        <TableCell>
+                                                            {a.videoUrl ? (
+                                                                <a href={a.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-red-600 hover:underline text-sm font-medium">
+                                                                    <Youtube className="w-4 h-4" /> Voir
+                                                                </a>
+                                                            ) : "—"}
+                                                        </TableCell>
+                                                        <TableCell className="text-xs">{a.createdAt ? new Date(a.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                                                        <TableCell>
+                                                            <Dialog>
+                                                                <DialogTrigger asChild>
+                                                                    <Button variant="outline" size="sm">Ouvrir</Button>
+                                                                </DialogTrigger>
+                                                                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Dossier — {a.fullName}</DialogTitle>
+                                                                    </DialogHeader>
+                                                                    {a.hasPhoto && (
+                                                                        <div className="flex justify-center py-2">
+                                                                            <img src={photoSrc(a.id)} alt={a.fullName} className="w-32 h-32 rounded-xl object-cover border shadow-sm" />
+                                                                        </div>
+                                                                    )}
+                                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+                                                                        <div><Label className="text-xs text-muted-foreground">Sexe</Label><p className="text-sm font-medium">{a.gender === "F" ? "Féminin" : "Masculin"}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Date de naissance</Label><p className="text-sm font-medium">{a.dateOfBirth}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Ville</Label><p className="text-sm font-medium">{a.city}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Statut professionnel</Label><p className="text-sm font-medium">{a.professionalStatus}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Email</Label><p className="text-sm font-medium break-all">{a.email}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Téléphone (WhatsApp)</Label><p className="text-sm font-medium">{a.phone}</p></div>
+                                                                        {a.videoUrl && (
+                                                                            <div className="md:col-span-2">
+                                                                                <Label className="text-xs text-muted-foreground">Vidéo de présentation (1 min)</Label>
+                                                                                <p><a href={a.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-red-600 hover:underline text-sm font-medium"><Youtube className="w-4 h-4" /> Regarder sur YouTube</a></p>
+                                                                            </div>
+                                                                        )}
+                                                                        <div className="md:col-span-2">
+                                                                            <Label className="text-xs text-muted-foreground font-bold">Motivation</Label>
+                                                                            <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed mt-1">{a.motivation}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                </DialogContent>
+                                                            </Dialog>
+                                                        </TableCell>
                                                     </TableRow>
                                                 ))
                                             )}
@@ -160,8 +214,8 @@ export default function AwsTracking() {
                                     </Table>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-4">
-                                    Consultation en lecture seule. Les coordonnées complètes et les dossiers détaillés sont gérés par SAYC Tchad
-                                    et partagés avec les partenaires lors de la présélection.
+                                    Consultation en lecture seule, réservée aux partenaires du programme Chad Cloud Talent.
+                                    Merci de traiter ces données personnelles de façon confidentielle.
                                 </p>
                             </CardContent>
                         </Card>
