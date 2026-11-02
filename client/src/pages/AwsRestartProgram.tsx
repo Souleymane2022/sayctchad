@@ -227,6 +227,9 @@ export default function AwsRestartProgram() {
                             </div>
                         </div>
                     </div>
+                    <p className="text-center text-xs text-muted-foreground mt-4">
+                        Programme mis en œuvre par <strong className="text-foreground">Smart Africa Youth Chapter Tchad</strong>
+                    </p>
                 </div>
             </section>
 
@@ -266,11 +269,13 @@ export default function AwsRestartProgram() {
                             <div>
                                 <h3 className="font-bold text-foreground mb-1">Chad Cloud Talent : un programme financé par l'Ambassade des États-Unis</h3>
                                 <p className="text-sm text-muted-foreground leading-relaxed">
-                                    Cette première promotion tchadienne est <strong className="text-foreground">financée par l'Ambassade des
-                                    États-Unis à N'Djamena</strong> dans le cadre du projet « Chad Cloud Talent ». Elle est mise en œuvre
-                                    par <strong className="text-foreground">Smart Africa Youth Chapter Tchad</strong>, en partenariat
-                                    avec <strong className="text-foreground">Smart Africa</strong>, la <strong className="text-foreground">Smart
-                                    Africa Digital Academy (SADA)</strong> et <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services).
+                                    <strong className="text-foreground">AWS re/Start</strong> est le programme mondial de formation au cloud
+                                    d'<strong className="text-foreground">Amazon Web Services (AWS)</strong>, rendu disponible en Afrique par
+                                    le partenariat entre <strong className="text-foreground">Smart Africa</strong> et AWS, via la
+                                    <strong className="text-foreground"> Smart Africa Digital Academy (SADA)</strong>. Au Tchad, cette première
+                                    promotion est <strong className="text-foreground">financée par l'Ambassade des États-Unis à
+                                    N'Djamena</strong> dans le cadre du projet « Chad Cloud Talent », et <strong className="text-foreground">mise
+                                    en œuvre par Smart Africa Youth Chapter Tchad</strong>.
                                 </p>
                                 <p className="text-sm text-muted-foreground leading-relaxed mt-3">
                                     Au-delà de la formation, les apprenants bénéficient d'un <strong className="text-foreground">mentorat par des
