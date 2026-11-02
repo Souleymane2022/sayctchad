@@ -26,8 +26,53 @@ import {
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Cloud, Send, CheckCircle2, Info, Laptop, Target, Zap, ShieldCheck, Briefcase } from "lucide-react";
-import { Link } from "wouter";
+import { Badge } from "@/components/ui/badge";
+import {
+    Cloud, Send, CheckCircle2, Laptop, Target, Zap, ShieldCheck, Briefcase,
+    Video, Youtube, Calendar, Clock, Globe, Award, Landmark, GraduationCap,
+    FileText, Users, PhoneCall, Rocket, ArrowRight, Terminal, Database, Network, Lock,
+} from "lucide-react";
+
+const CURRENT_COHORT = "Tchad 2026";
+
+const sessionFacts = [
+    { icon: Calendar, label: "Cohorte", value: CURRENT_COHORT, note: "Candidatures ouvertes" },
+    { icon: Clock, label: "Durée", value: "12 semaines", note: "Temps plein, rythme intensif" },
+    { icon: Globe, label: "Format", value: "100% en ligne", note: "Accompagnement par des formateurs" },
+    { icon: Award, label: "Coût", value: "Gratuit", note: "Examen de certification pris en charge" },
+];
+
+const curriculum = [
+    { icon: Cloud, label: "Fondamentaux du Cloud AWS" },
+    { icon: Terminal, label: "Linux & Scripting (Python, Bash)" },
+    { icon: Network, label: "Réseaux & Infrastructure" },
+    { icon: Lock, label: "Sécurité du Cloud" },
+    { icon: Database, label: "Bases de données" },
+    { icon: Briefcase, label: "Soft skills & préparation à l'emploi" },
+];
+
+const selectionSteps = [
+    {
+        icon: FileText,
+        title: "1. Candidature en ligne",
+        description: "Remplissez le formulaire ci-dessous et joignez votre vidéo de présentation d'une minute (lien YouTube).",
+    },
+    {
+        icon: Users,
+        title: "2. Présélection",
+        description: "Un comité examine les dossiers : motivation, conformité au public cible et vidéo de présentation.",
+    },
+    {
+        icon: PhoneCall,
+        title: "3. Entretien de confirmation",
+        description: "Les candidats présélectionnés sont contactés pour un entretien de validation.",
+    },
+    {
+        icon: Rocket,
+        title: "4. Intégration à la cohorte",
+        description: "Les candidats retenus reçoivent leurs accès à la plateforme d'apprentissage et démarrent la formation.",
+    },
+];
 
 export default function AwsRestartProgram() {
     const { toast } = useToast();
@@ -43,9 +88,10 @@ export default function AwsRestartProgram() {
             professionalStatus: "",
             hasDisability: "",
             motivation: "",
+            videoUrl: "",
             fullTimeCommitment: false,
             status: "pending",
-            cohort: "Tchad 2024",
+            cohort: CURRENT_COHORT,
         },
     });
 
@@ -79,7 +125,7 @@ export default function AwsRestartProgram() {
         <div className="flex flex-col min-h-screen font-sans">
             <SEOHead
                 title="Devenez Spécialiste Cloud Junior | AWS re/Start Tchad"
-                description="Rejoignez le programme AWS re/Start au Tchad : formation intensive et gratuite de 12 semaines pour lancer votre carrière dans le CloudComputing."
+                description="Rejoignez le programme AWS re/Start au Tchad : formation intensive et gratuite de 12 semaines pour lancer votre carrière dans le Cloud Computing. Candidatures ouvertes."
                 path="/programmes/aws-restart"
             />
 
@@ -89,17 +135,18 @@ export default function AwsRestartProgram() {
                 <div className="container mx-auto px-4 text-center">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
                         <Cloud className="w-5 h-5" />
-                        <span className="text-sm font-bold uppercase tracking-wider">AWS re/Start Tchad</span>
+                        <span className="text-sm font-bold uppercase tracking-wider">AWS re/Start — Cohorte {CURRENT_COHORT}</span>
                     </div>
                     <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Devenez Spécialiste <br/>
                         <span className="text-accent underline decoration-2 underline-offset-8">Cloud Junior</span>
                     </h1>
                     <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-8">
-                        Transformez votre vie grâce au Cloud ! Une formation en ligne gratuite et intensive de 12 semaines pour vous propulser vers de nouvelles opportunités de carrière technologique.
+                        Une formation gratuite et intensive de 12 semaines, 100% en ligne, pour lancer votre carrière
+                        dans le Cloud Computing — aucune expérience technique préalable n'est exigée.
                     </p>
-                    
-                    <div className="flex flex-wrap justify-center gap-4">
+
+                    <div className="flex flex-wrap justify-center gap-4 mb-10">
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg">
                             <h4 className="font-bold text-accent text-3xl mb-1">12</h4>
                             <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Semaines Intensives</p>
@@ -113,18 +160,73 @@ export default function AwsRestartProgram() {
                             <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Expérience Requise</p>
                         </div>
                     </div>
+
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <a href="#postuler">
+                            <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold rounded-full px-8 shadow-xl" data-testid="button-hero-apply">
+                                Postuler maintenant
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                            </Button>
+                        </a>
+                        <a href="#programme">
+                            <Button size="lg" variant="outline" className="rounded-full px-8 bg-white/10 border-white/30 text-sidebar-foreground hover:bg-white/20" data-testid="button-hero-learn-more">
+                                Découvrir le programme
+                            </Button>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            {/* Session en bref */}
+            <section className="py-16 bg-background" id="session">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <Badge className="mb-4 bg-green-500/10 text-green-700 border border-green-500/30 hover:bg-green-500/10">
+                            <CheckCircle2 className="w-4 h-4 mr-1" /> Candidatures ouvertes
+                        </Badge>
+                        <h2 className="text-3xl font-heading font-bold text-foreground">La session en bref</h2>
+                    </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+                        {sessionFacts.map((fact) => (
+                            <div key={fact.label} className="bg-card border border-border rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
+                                <div className="mx-auto w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-3">
+                                    <fact.icon className="w-6 h-6 text-accent" />
+                                </div>
+                                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">{fact.label}</p>
+                                <p className="font-bold text-lg text-foreground">{fact.value}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{fact.note}</p>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="max-w-5xl mx-auto mt-8 bg-muted/40 border border-border rounded-2xl p-6 md:p-8">
+                        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                            <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                                <Landmark className="w-6 h-6 text-accent" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold text-foreground mb-1">Un programme porté par des partenaires solides</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                    La session est organisée par <strong className="text-foreground">Smart Africa Youth Chapter Tchad</strong> dans
+                                    le cadre du programme mondial <strong className="text-foreground">AWS re/Start</strong> (Amazon Web Services),
+                                    en lien avec la <strong className="text-foreground">Smart Africa Digital Academy (SADA)</strong> et
+                                    avec l'appui de <strong className="text-foreground">l'Ambassade des États-Unis au Tchad</strong>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             {/* Information Section */}
-            <section className="py-16 bg-muted/30">
+            <section className="py-16 bg-muted/30" id="programme">
                 <div className="container mx-auto px-4">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         <div className="space-y-6">
                             <h2 className="text-3xl font-heading font-bold text-foreground">Pourquoi rejoindre le programme AWS re/Start ?</h2>
                             <p className="text-muted-foreground leading-relaxed text-lg">
-                                Présenté par Smart Africa Youth Chapter Tchad, ce programme complet vous prépare 
-                                pour un poste de niveau débutant dans les opérations Cloud.
+                                Ce programme complet vous prépare à un poste de niveau débutant dans
+                                les opérations Cloud, avec un accompagnement de bout en bout.
                             </p>
                             <div className="space-y-4">
                                 <div className="flex gap-4">
@@ -133,7 +235,7 @@ export default function AwsRestartProgram() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Compétences Techniques Pratiques</h4>
-                                        <p className="text-sm text-muted-foreground">Bases du Cloud AWS, Linux, Scripting Python/Bash, Réseaux et Sécurité, Déploiement CI/CD.</p>
+                                        <p className="text-sm text-muted-foreground">Bases du Cloud AWS, Linux, Scripting Python/Bash, Réseaux et Sécurité : des travaux pratiques sur de vrais scénarios.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
@@ -151,8 +253,23 @@ export default function AwsRestartProgram() {
                                     </div>
                                     <div>
                                         <h4 className="font-bold text-foreground">Certification Officielle</h4>
-                                        <p className="text-sm text-muted-foreground">Passez et obtenez le badge AWS re/Start valide mondialement, démontrant vos acquis face aux recruteurs.</p>
+                                        <p className="text-sm text-muted-foreground">Préparez et passez la certification AWS Certified Cloud Practitioner, reconnue mondialement par les recruteurs.</p>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-4">
+                                <h4 className="font-bold text-foreground mb-3 flex items-center gap-2">
+                                    <GraduationCap className="w-5 h-5 text-accent" />
+                                    Ce que vous apprendrez
+                                </h4>
+                                <div className="flex flex-wrap gap-2">
+                                    {curriculum.map((item) => (
+                                        <span key={item.label} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-card border border-border text-sm text-foreground">
+                                            <item.icon className="w-4 h-4 text-accent" />
+                                            {item.label}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -175,7 +292,7 @@ export default function AwsRestartProgram() {
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Populations sous-représentées :</strong> Focus prioritaire pour les femmes dans la tech et les personnes en situation de handicap (infrastructures adaptées virtuellement).</p>
+                                    <p><strong className="text-foreground">Populations sous-représentées :</strong> Focus prioritaire pour les femmes dans la tech et les personnes en situation de handicap (dispositif en ligne adapté).</p>
                                 </div>
                             </div>
                         </div>
@@ -183,21 +300,44 @@ export default function AwsRestartProgram() {
                 </div>
             </section>
 
+            {/* Processus de sélection */}
+            <section className="py-16 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-heading font-bold text-foreground mb-3">Comment se déroule la sélection ?</h2>
+                        <p className="text-muted-foreground max-w-2xl mx-auto">
+                            Quatre étapes simples, de votre candidature jusqu'au premier jour de formation.
+                        </p>
+                    </div>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                        {selectionSteps.map((step) => (
+                            <div key={step.title} className="relative bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center mb-4">
+                                    <step.icon className="w-6 h-6 text-accent" />
+                                </div>
+                                <h4 className="font-bold text-foreground mb-2">{step.title}</h4>
+                                <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Form Section */}
-            <section className="py-20 bg-background relative overflow-hidden">
+            <section className="py-20 bg-muted/20 relative overflow-hidden" id="postuler">
                 {/* Decorative background shapes */}
                 <div className="absolute top-0 right-0 -mr-32 -mt-32 w-96 h-96 rounded-full bg-accent/5 blur-3xl -z-10"></div>
-                
+
                 <div className="container mx-auto px-4 max-w-4xl">
                     <Card className="border-t-8 border-t-accent shadow-2xl rounded-2xl">
                         <CardHeader className="space-y-4 pb-10 text-center relative">
-                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2 animate-pulse">
+                            <div className="mx-auto w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mb-2">
                                 <Zap className="w-10 h-10 text-accent" />
                             </div>
                             <CardTitle className="text-4xl font-heading text-primary">Postuler Maintenant</CardTitle>
                             <CardDescription className="text-lg max-w-2xl mx-auto">
-                                Saisissez cette opportunité unique de lancer votre parcours dans le Cloud. 
-                                Les places sont limitées, seules les candidatures les plus motivées seront retenues.
+                                Saisissez cette opportunité de lancer votre parcours dans le Cloud.
+                                Les places sont limitées : seules les candidatures complètes et motivées seront retenues.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -367,10 +507,65 @@ export default function AwsRestartProgram() {
                                         />
                                     </div>
 
-                                    {/* Section 4: Engagement */}
+                                    {/* Section 4: Vidéo de présentation */}
                                     <div className="space-y-8">
                                         <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
                                             <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">4</span>
+                                            Vidéo de Présentation (1 minute)
+                                        </h3>
+                                        <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-6 space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+                                                    <Youtube className="w-6 h-6 text-red-600" />
+                                                </div>
+                                                <p className="text-sm text-foreground font-medium">
+                                                    Une vidéo d'une minute est <strong>obligatoire</strong> pour valider votre candidature. Voici comment faire :
+                                                </p>
+                                            </div>
+                                            <ol className="space-y-3 text-sm text-muted-foreground list-none">
+                                                <li className="flex gap-3">
+                                                    <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">1</span>
+                                                    <span><strong className="text-foreground">Enregistrez une vidéo d'environ 1 minute</strong> avec votre téléphone : présentez-vous (nom, parcours) et expliquez pourquoi vous voulez travailler dans le Cloud. En français ou en anglais.</span>
+                                                </li>
+                                                <li className="flex gap-3">
+                                                    <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">2</span>
+                                                    <span><strong className="text-foreground">Publiez-la sur YouTube</strong> depuis l'application ou youtube.com, en choisissant la visibilité <strong className="text-foreground">« Non répertoriée »</strong> (seules les personnes ayant le lien pourront la voir).</span>
+                                                </li>
+                                                <li className="flex gap-3">
+                                                    <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">3</span>
+                                                    <span><strong className="text-foreground">Copiez le lien de la vidéo</strong> (bouton « Partager ») et collez-le dans le champ ci-dessous.</span>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                        <FormField
+                                            control={form.control}
+                                            name="videoUrl"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold flex items-center gap-2">
+                                                        <Video className="w-4 h-4 text-accent" />
+                                                        Lien YouTube de votre vidéo <span className="text-destructive">*</span>
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="url"
+                                                            placeholder="https://youtu.be/votre-video"
+                                                            className="h-12 bg-muted/50 border-border/50 focus:border-accent"
+                                                            {...field}
+                                                            value={field.value ?? ""}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>Formats acceptés : youtube.com/watch?v=..., youtu.be/..., youtube.com/shorts/...</FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+
+                                    {/* Section 5: Engagement */}
+                                    <div className="space-y-8">
+                                        <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                            <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">5</span>
                                             Engagement
                                         </h3>
                                         <div className="bg-accent/5 border border-accent/20 rounded-xl p-6">
@@ -380,9 +575,9 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem className="flex flex-row items-start space-x-4 space-y-0">
                                                         <FormControl>
-                                                            <Checkbox 
-                                                                checked={field.value} 
-                                                                onCheckedChange={field.onChange} 
+                                                            <Checkbox
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
                                                                 className="data-[state=checked]:bg-accent data-[state=checked]:border-accent w-6 h-6 rounded-md mt-1"
                                                             />
                                                         </FormControl>
@@ -427,14 +622,14 @@ export default function AwsRestartProgram() {
                         <div className="p-8 rounded-2xl bg-primary/5 border border-border">
                             <h4 className="font-bold text-xl mb-3 text-primary">Modalités Pratiques</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Les sessions se dérouleront **entièrement en ligne**. Les candidats retenus 
-                                recevront par email les accès à la plateforme d'apprentissage AWS Educate.
+                                Les sessions se dérouleront <strong className="text-foreground">entièrement en ligne</strong>. Les candidats retenus
+                                recevront par email les accès à la plateforme d'apprentissage AWS.
                             </p>
                         </div>
                         <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">
                             <h4 className="font-bold text-xl mb-3 text-green-700">Avis de Sélection</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
-                                Un comité évaluera la motivation et la conformité au public cible.
+                                Un comité évaluera la motivation, la vidéo de présentation et la conformité au public cible.
                                 Seules les personnes présélectionnées seront contactées pour un entretien de confirmation.
                             </p>
                         </div>

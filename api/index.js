@@ -38264,12 +38264,14 @@ var init_drizzle_zod = __esm({
 var schema_exports = {};
 __export(schema_exports, {
   achievements: () => achievements,
+  activityReports: () => activityReports,
   awsRestartApplications: () => awsRestartApplications,
   contactMessages: () => contactMessages,
   electionCandidates: () => electionCandidates,
   electionVotes: () => electionVotes,
   events: () => events,
   insertAchievementSchema: () => insertAchievementSchema,
+  insertActivityReportSchema: () => insertActivityReportSchema,
   insertAwsRestartApplicationSchema: () => insertAwsRestartApplicationSchema,
   insertCandidateSchema: () => insertCandidateSchema,
   insertContactMessageSchema: () => insertContactMessageSchema,
@@ -38279,6 +38281,7 @@ __export(schema_exports, {
   insertNewsletterSubscriberSchema: () => insertNewsletterSubscriberSchema,
   insertOpportunitySchema: () => insertOpportunitySchema,
   insertPartnerSchema: () => insertPartnerSchema,
+  insertPlanActivitySchema: () => insertPlanActivitySchema,
   insertThunderbirdApplicationSchema: () => insertThunderbirdApplicationSchema,
   insertTrainingSchema: () => insertTrainingSchema,
   insertUserSchema: () => insertUserSchema,
@@ -38288,11 +38291,12 @@ __export(schema_exports, {
   newsletterSubscribers: () => newsletterSubscribers,
   opportunities: () => opportunities,
   partners: () => partners,
+  planActivities: () => planActivities,
   thunderbirdApplications: () => thunderbirdApplications,
   trainings: () => trainings,
   users: () => users
 });
-var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, insertAwsRestartApplicationSchema;
+var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, YOUTUBE_URL_REGEX, insertAwsRestartApplicationSchema, planActivities, insertPlanActivitySchema, activityReports, insertActivityReportSchema;
 var init_schema2 = __esm({
   "shared/schema.ts"() {
     "use strict";
@@ -38570,11 +38574,13 @@ var init_schema2 = __esm({
       professionalStatus: text("professional_status").notNull(),
       hasDisability: text("has_disability").notNull(),
       motivation: text("motivation").notNull(),
+      videoUrl: text("video_url"),
       fullTimeCommitment: boolean("full_time_commitment").notNull(),
       status: text("status").notNull().default("pending"),
-      cohort: text("cohort").notNull().default("Tchad 2024"),
+      cohort: text("cohort").notNull().default("Tchad 2026"),
       createdAt: timestamp("created_at").defaultNow()
     });
+    YOUTUBE_URL_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i;
     insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {
       fullName: z.string().min(1, "Nom complet requis"),
       gender: z.string().min(1, "Sexe requis"),
@@ -38584,9 +38590,67 @@ var init_schema2 = __esm({
       email: z.string().email("Email invalide").min(1, "Email requis"),
       professionalStatus: z.string().min(1, "Statut professionnel requis"),
       hasDisability: z.string().min(1, "Veuillez r\xE9pondre \xE0 cette question"),
-      motivation: z.string().min(1, "Motivation requise")
+      motivation: z.string().min(1, "Motivation requise"),
+      videoUrl: z.string().min(1, "Le lien de votre vid\xE9o YouTube est requis").regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)")
     }).omit({
       id: true,
+      createdAt: true
+    });
+    planActivities = pgTable("plan_activities", {
+      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      month: text("month").notNull(),
+      // ex: "Juillet 2025"
+      title: text("title").notNull(),
+      type: text("type").notNull(),
+      // Forum | Hackathon | Bootcamp | Projet
+      description: text("description").notNull(),
+      date: text("date").notNull(),
+      // ex: "10-12 Juillet 2025"
+      target: text("target").notNull(),
+      // Audience cible
+      documentUrl: text("document_url"),
+      // Lien PDF / Google Drive
+      sortOrder: integer("sort_order").notNull().default(99),
+      isActive: boolean("is_active").notNull().default(true),
+      createdAt: timestamp("created_at").defaultNow()
+    });
+    insertPlanActivitySchema = createInsertSchema(planActivities, {
+      month: z.string().min(1, "Mois requis"),
+      title: z.string().min(1, "Titre requis"),
+      type: z.string().min(1, "Type requis"),
+      description: z.string().min(1, "Description requise"),
+      date: z.string().min(1, "Date requise"),
+      target: z.string().min(1, "Cible requise"),
+      documentUrl: z.string().optional().or(z.literal(""))
+    }).omit({
+      id: true,
+      createdAt: true
+    });
+    activityReports = pgTable("activity_reports", {
+      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      title: text("title").notNull(),
+      type: text("type").notNull(),
+      // activity | project | event | governance
+      description: text("description").notNull(),
+      fileName: text("file_name"),
+      // Nom du fichier uploadé
+      fileData: text("file_data"),
+      // Contenu base64 du fichier
+      fileSize: integer("file_size"),
+      // Taille en octets
+      submittedBy: text("submitted_by"),
+      // Email de la personne (optionnel)
+      status: text("status").notNull().default("pending"),
+      // pending | reviewed
+      createdAt: timestamp("created_at").defaultNow()
+    });
+    insertActivityReportSchema = createInsertSchema(activityReports, {
+      title: z.string().min(1, "Titre requis"),
+      type: z.string().min(1, "Type requis"),
+      description: z.string().min(1, "Description requise")
+    }).omit({
+      id: true,
+      status: true,
       createdAt: true
     });
   }
@@ -64318,11 +64382,11 @@ var DatabaseStorage = class {
     return db.select().from(opportunities).where(eq(opportunities.isActive, true)).orderBy(desc(opportunities.createdAt));
   }
   async getOpportunityById(id) {
-    const [opportunity] = await db.select().from(opportunities).where(sql`${opportunities.id} = ${Number(id)}`);
+    const [opportunity] = await db.select().from(opportunities).where(eq(opportunities.id, id));
     return opportunity;
   }
   async updateOpportunity(id, data) {
-    const [updated] = await db.update(opportunities).set(data).where(sql`${opportunities.id} = ${Number(id)}`).returning();
+    const [updated] = await db.update(opportunities).set(data).where(eq(opportunities.id, id)).returning();
     return updated;
   }
   async deleteOpportunity(id) {
@@ -64356,7 +64420,7 @@ var DatabaseStorage = class {
     return db.select().from(trainings).orderBy(desc(trainings.createdAt));
   }
   async getTrainingById(id) {
-    const [training] = await db.select().from(trainings).where(sql`${trainings.id} = ${Number(id)}`);
+    const [training] = await db.select().from(trainings).where(eq(trainings.id, id));
     return training;
   }
   async updateTraining(id, data) {
@@ -64377,7 +64441,7 @@ var DatabaseStorage = class {
     return db.select().from(newsArticles).orderBy(desc(newsArticles.createdAt));
   }
   async getNewsArticleById(id) {
-    const [article] = await db.select().from(newsArticles).where(sql`${newsArticles.id} = ${Number(id)}`);
+    const [article] = await db.select().from(newsArticles).where(eq(newsArticles.id, id));
     return article;
   }
   async updateNewsArticle(id, data) {
@@ -64398,7 +64462,7 @@ var DatabaseStorage = class {
     return db.select().from(events).orderBy(desc(events.createdAt));
   }
   async getEventById(id) {
-    const [event] = await db.select().from(events).where(sql`${events.id} = ${Number(id)}`);
+    const [event] = await db.select().from(events).where(eq(events.id, id));
     return event;
   }
   async updateEvent(id, data) {
@@ -64565,6 +64629,39 @@ var DatabaseStorage = class {
     }
     console.log(`Generation finished. Total updated: ${count2}`);
     return count2;
+  }
+  // ─── Plan Activities ────────────────────────────────────────────────────────
+  async createPlanActivity(activity) {
+    const [newActivity] = await db.insert(planActivities).values(activity).returning();
+    return newActivity;
+  }
+  async getAllPlanActivities() {
+    return db.select().from(planActivities).orderBy(asc(planActivities.sortOrder), asc(planActivities.createdAt));
+  }
+  async getActivePlanActivities() {
+    return db.select().from(planActivities).where(eq(planActivities.isActive, true)).orderBy(asc(planActivities.sortOrder), asc(planActivities.createdAt));
+  }
+  async updatePlanActivity(id, data) {
+    const [updated] = await db.update(planActivities).set(data).where(eq(planActivities.id, id)).returning();
+    return updated;
+  }
+  async deletePlanActivity(id) {
+    await db.delete(planActivities).where(eq(planActivities.id, id));
+  }
+  // ─── Activity Reports ───────────────────────────────────────────────────────
+  async createActivityReport(report) {
+    const [newReport] = await db.insert(activityReports).values(report).returning();
+    return newReport;
+  }
+  async getAllActivityReports() {
+    return db.select().from(activityReports).orderBy(desc(activityReports.createdAt));
+  }
+  async updateActivityReportStatus(id, status) {
+    const [updated] = await db.update(activityReports).set({ status }).where(eq(activityReports.id, id)).returning();
+    return updated;
+  }
+  async deleteActivityReport(id) {
+    await db.delete(activityReports).where(eq(activityReports.id, id));
   }
 };
 var storage = new DatabaseStorage();
@@ -65778,7 +65875,7 @@ async function registerRoutes(httpServer2, app2) {
     );
     res.setHeader(
       "Content-Security-Policy",
-      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;"
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://www.gstatic.com https://www.google.com https://translate.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com https://www.google.com https://translate.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://www.gstatic.com; img-src 'self' data: https: https://www.google.com https://translate.google.com; connect-src 'self' https:;"
     );
     next();
   });
@@ -66021,6 +66118,78 @@ L'\xE9quipe SAYC Tchad`
   app2.get("/api/debug-email", async (req, res) => {
     const result = await debugSmtpConnection();
     res.json(result);
+  });
+  app2.get("/api/images/opportunities/:id", async (req, res) => {
+    try {
+      const item = await storage.getOpportunityById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+  app2.get("/api/images/trainings/:id", async (req, res) => {
+    try {
+      const item = await storage.getTrainingById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+  app2.get("/api/images/events/:id", async (req, res) => {
+    try {
+      const item = await storage.getEventById(req.params.id);
+      if (!item || !item.imageUrl || !item.imageUrl.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = item.imageUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
+  });
+  app2.get("/api/images/news/:id", async (req, res) => {
+    try {
+      const item = await storage.getNewsArticleById(req.params.id);
+      let imgData = "";
+      if (item && item.imageUrls && Array.isArray(item.imageUrls) && item.imageUrls[0]) {
+        imgData = item.imageUrls[0];
+      }
+      if (!imgData || !imgData.startsWith("data:image")) {
+        return res.redirect("/images/logo.png");
+      }
+      const parts = imgData.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Image render error:", error);
+      res.redirect("/images/logo.png");
+    }
   });
   app2.get("/api/contact", async (_req, res) => {
     try {
@@ -66268,6 +66437,7 @@ Sexe: ${application.gender}
 Statut professionnel: ${application.professionalStatus}
 Handicap: ${application.hasDisability}
 Engagement temps plein: ${application.fullTimeCommitment ? "Oui" : "Non"}
+Vid\xE9o de pr\xE9sentation: ${application.videoUrl || "Non fournie"}
 
 Motivation: ${application.motivation}`
       );
@@ -66750,6 +66920,17 @@ Email: ${candidate.email}`
       } else if (target === "thunderbird") {
         const apps = await storage.getThunderbirdApplications();
         recipients = apps.map((a2) => a2.email);
+      } else if (target === "thunderbird_cohort2") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        const approvedCohort2 = apps.filter((a2) => a2.cohort && a2.cohort.includes("Cohorte 2"));
+        recipients = approvedCohort2.map((a2) => a2.email);
+      } else if (target === "thunderbird_cohort1") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        const approvedCohort1 = apps.filter((a2) => !a2.cohort || a2.cohort === "Tchad 2024" || !a2.cohort.includes("Cohorte 2"));
+        recipients = approvedCohort1.map((a2) => a2.email);
+      } else if (target === "thunderbird_approved") {
+        const apps = await storage.getApprovedThunderbirdApplications();
+        recipients = apps.map((a2) => a2.email);
       } else if (target === "elections_candidates") {
         const candidates = await storage.getAllCandidates();
         recipients = candidates.map((c) => c.email);
@@ -66815,6 +66996,129 @@ Email: ${candidate.email}`
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
+  app2.get("/api/plan-activities", async (_req, res) => {
+    try {
+      const activities = await storage.getActivePlanActivities();
+      res.json(activities);
+    } catch (error) {
+      console.error("Error fetching plan activities:", error);
+      res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des activit\xE9s" });
+    }
+  });
+  app2.get("/api/admin/plan-activities", requireAdmin, async (_req, res) => {
+    try {
+      const activities = await storage.getAllPlanActivities();
+      res.json(activities);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.post("/api/plan-activities", requireAdmin, async (req, res) => {
+    try {
+      const validatedData = insertPlanActivitySchema.parse(req.body);
+      const activity = await storage.createPlanActivity(validatedData);
+      res.status(201).json(activity);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
+      }
+      res.status(500).json({ error: "Erreur lors de la cr\xE9ation" });
+    }
+  });
+  app2.put("/api/admin/plan-activities/:id", requireAdmin, async (req, res) => {
+    try {
+      const updated = await storage.updatePlanActivity(req.params.id, req.body);
+      if (!updated) return res.status(404).json({ error: "Activit\xE9 non trouv\xE9e" });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.delete("/api/admin/plan-activities/:id", requireAdmin, async (req, res) => {
+    try {
+      await storage.deletePlanActivity(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.post("/api/activity-reports", apiLimiter, async (req, res) => {
+    try {
+      const validatedData = insertActivityReportSchema.parse(req.body);
+      const report = await storage.createActivityReport(validatedData);
+      sendNotificationEmail(
+        "Nouveau Rapport Soumis - SAYC Tchad",
+        `Un nouveau rapport a \xE9t\xE9 soumis.
+Titre : ${report.title}
+Type : ${report.type}
+Description : ${report.description}
+Fichier : ${report.fileName || "Aucun"}`
+      );
+      res.status(201).json({ success: true, id: report.id });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
+      }
+      console.error("Error creating activity report:", error);
+      res.status(500).json({ error: "Erreur lors de la soumission du rapport" });
+    }
+  });
+  app2.get("/api/admin/activity-reports", requireAdmin, async (_req, res) => {
+    try {
+      const reports = await storage.getAllActivityReports();
+      const safeReports = reports.map((r) => ({
+        id: r.id,
+        title: r.title,
+        type: r.type,
+        description: r.description,
+        fileName: r.fileName,
+        fileSize: r.fileSize,
+        submittedBy: r.submittedBy,
+        status: r.status,
+        createdAt: r.createdAt,
+        hasFile: !!r.fileData
+      }));
+      res.json(safeReports);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.get("/api/admin/activity-reports/:id/file", requireAdmin, async (req, res) => {
+    try {
+      const reports = await storage.getAllActivityReports();
+      const report = reports.find((r) => r.id === req.params.id);
+      if (!report || !report.fileData) {
+        return res.status(404).json({ error: "Fichier non trouv\xE9" });
+      }
+      const parts = report.fileData.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "application/octet-stream";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Content-Disposition", `attachment; filename="${report.fileName || "rapport.pdf"}"`);
+      res.send(buffer);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.patch("/api/admin/activity-reports/:id/status", requireAdmin, async (req, res) => {
+    try {
+      const { status } = req.body;
+      if (!status) return res.status(400).json({ error: "Statut requis" });
+      const updated = await storage.updateActivityReportStatus(req.params.id, status);
+      if (!updated) return res.status(404).json({ error: "Rapport non trouv\xE9" });
+      res.json(updated);
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.delete("/api/admin/activity-reports/:id", requireAdmin, async (req, res) => {
+    try {
+      await storage.deleteActivityReport(req.params.id);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
   app2.get("/api/debug/thunderbird-stats", async (_req, res) => {
     try {
       const all = await storage.getThunderbirdApplications();
@@ -66832,25 +67136,30 @@ var import_express = __toESM(require_express2(), 1);
 import fs from "fs";
 import path from "path";
 function serveStatic(app2) {
-  let distPath = path.resolve(process.cwd(), "dist", "public");
-  if (!fs.existsSync(distPath)) {
-    distPath = path.resolve(__dirname, "public");
-  }
-  if (!fs.existsSync(distPath)) {
-    const possiblePaths = [
-      path.resolve(process.cwd(), "public"),
-      path.resolve(__dirname, "..", "public"),
-      path.resolve(__dirname, "..", "client", "dist")
-    ];
-    for (const p2 of possiblePaths) {
-      if (fs.existsSync(p2) && fs.existsSync(path.join(p2, "index.html"))) {
-        distPath = p2;
-        break;
-      }
+  const possiblePaths = [
+    path.resolve(process.cwd(), "dist", "public"),
+    // Replit/Standard
+    path.resolve(process.cwd(), "dist"),
+    // Vercel
+    path.resolve(process.cwd(), "public"),
+    // Dev fallback
+    path.resolve(__dirname, "public"),
+    // Bundle fallback
+    path.resolve(__dirname, "..", "public"),
+    // Parent fallback
+    path.resolve(__dirname, "..", "client", "dist")
+    // Dev fallback 2
+  ];
+  let distPath = "";
+  for (const p2 of possiblePaths) {
+    if (fs.existsSync(p2) && fs.existsSync(path.join(p2, "index.html"))) {
+      distPath = p2;
+      break;
     }
   }
-  if (!fs.existsSync(distPath)) {
-    console.error(`[Static] WARNING: Could not find build directory. Static serving will be disabled.`);
+  if (!distPath) {
+    console.error(`[Static] WARNING: Could not find build directory with index.html. Static serving will be disabled.`);
+    console.error(`Checked paths: ${possiblePaths.join(", ")}`);
     return;
   }
   console.log(`[Static] Serving from: ${distPath}`);
@@ -66890,21 +67199,45 @@ function setupServe(app2, distPath) {
           description = item.description.substring(0, 160);
           if (item.imageUrl) imageUrl = item.imageUrl;
         }
+      } else if (reqPath.includes("/actualites/")) {
+        const item = await storage.getNewsArticleById(id);
+        if (item) {
+          title = `${item.title} | Actualit\xE9s SAYC Tchad`;
+          description = (item.excerpt || item.content || "").substring(0, 160);
+          if (item.imageUrl) imageUrl = item.imageUrl;
+        }
       } else if (reqPath.includes("/resultats")) {
         title = "Liste Officielle des 50 Laur\xE9ats | Bourse Thunderbird SAYC Tchad";
         description = "D\xE9couvrez les 50 candidats retenus pour la bourse Thunderbird School of Global Management - Initiative Najafi 100 Million Learners.";
       }
-      if (imageUrl && !imageUrl.startsWith("http")) {
-        imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+      if (imageUrl && imageUrl.startsWith("data:image")) {
+        if (reqPath.includes("/opportunites/")) {
+          imageUrl = `https://sayctchad.org/api/images/opportunities/${id}`;
+        } else if (reqPath.includes("/formations/")) {
+          imageUrl = `https://sayctchad.org/api/images/trainings/${id}`;
+        } else if (reqPath.includes("/evenements/")) {
+          imageUrl = `https://sayctchad.org/api/images/events/${id}`;
+        } else if (reqPath.includes("/actualites/")) {
+          imageUrl = `https://sayctchad.org/api/images/news/${id}`;
+        }
       }
+      if (imageUrl) {
+        if (!imageUrl.startsWith("http")) {
+          imageUrl = `https://sayctchad.org${imageUrl.startsWith("/") ? "" : "/"}${imageUrl}`;
+        }
+      } else {
+        imageUrl = "https://sayctchad.org/images/logo.png";
+      }
+      const fullUrl = `https://sayctchad.org${reqPath}`;
       html = html.replace(/<title>.*?<\/title>/i, `<title>${title}</title>`);
-      html = html.replace(/<meta\s+name="description"\s+content="[^"]*"\s*\/?>/i, `<meta name="description" content="${description}" />`);
-      html = html.replace(/<meta\s+property="og:title"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:title" content="${title}" />`);
-      html = html.replace(/<meta\s+property="og:description"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:description" content="${description}" />`);
-      html = html.replace(/<meta\s+property="og:image"\s+content="[^"]*"\s*\/?>/i, `<meta property="og:image" content="${imageUrl}" />`);
-      html = html.replace(/<meta\s+name="twitter:title"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:title" content="${title}" />`);
-      html = html.replace(/<meta\s+name="twitter:description"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:description" content="${description}" />`);
-      html = html.replace(/<meta\s+name="twitter:image"\s+content="[^"]*"\s*\/?>/i, `<meta name="twitter:image" content="${imageUrl}" />`);
+      html = html.replace(/<meta[^>]*?name="description"[^>]*?>/i, `<meta name="description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?property="og:title"[^>]*?>/i, `<meta property="og:title" content="${title}" />`);
+      html = html.replace(/<meta[^>]*?property="og:description"[^>]*?>/i, `<meta property="og:description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?property="og:image"[^>]*?>/i, `<meta property="og:image" content="${imageUrl}" />`);
+      html = html.replace(/<meta[^>]*?property="og:url"[^>]*?>/i, `<meta property="og:url" content="${fullUrl}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:title"[^>]*?>/i, `<meta name="twitter:title" content="${title}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:description"[^>]*?>/i, `<meta name="twitter:description" content="${description}" />`);
+      html = html.replace(/<meta[^>]*?name="twitter:image"[^>]*?>/i, `<meta name="twitter:image" content="${imageUrl}" />`);
     } catch (error) {
       console.error("SEO Injection Error:", error);
     }
@@ -66914,6 +67247,7 @@ function setupServe(app2, distPath) {
   app2.get("/opportunites/:id", serveIndexWithSEO);
   app2.get("/formations/:id", serveIndexWithSEO);
   app2.get("/evenements/:id", serveIndexWithSEO);
+  app2.get("/actualites/:id", serveIndexWithSEO);
   app2.use(import_express.default.static(distPath, { index: false }));
   app2.get("*", (req, res) => {
     if (req.path.startsWith("/api")) return;

@@ -335,11 +335,14 @@ export const awsRestartApplications = pgTable("aws_restart_applications", {
   professionalStatus: text("professional_status").notNull(),
   hasDisability: text("has_disability").notNull(),
   motivation: text("motivation").notNull(),
+  videoUrl: text("video_url"),
   fullTimeCommitment: boolean("full_time_commitment").notNull(),
   status: text("status").notNull().default("pending"),
-  cohort: text("cohort").notNull().default("Tchad 2024"),
+  cohort: text("cohort").notNull().default("Tchad 2026"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+const YOUTUBE_URL_REGEX = /^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i;
 
 export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartApplications, {
   fullName: z.string().min(1, "Nom complet requis"),
@@ -351,6 +354,10 @@ export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartAp
   professionalStatus: z.string().min(1, "Statut professionnel requis"),
   hasDisability: z.string().min(1, "Veuillez répondre à cette question"),
   motivation: z.string().min(1, "Motivation requise"),
+  videoUrl: z
+    .string()
+    .min(1, "Le lien de votre vidéo YouTube est requis")
+    .regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)"),
 }).omit({
   id: true,
   createdAt: true,

@@ -1327,13 +1327,13 @@ function AwsRestartApplicationsTab() {
     const headers = [
       "Nom Complet", "Email", "Téléphone", "Sexe", "Date de Naissance",
       "Ville", "Statut Professionnel", "Handicap", "Engagement Temps Plein",
-      "Motivation", "Cohorte", "Statut Admin", "Date Inscription"
+      "Vidéo (YouTube)", "Motivation", "Cohorte", "Statut Admin", "Date Inscription"
     ];
 
     const rows = applications.map(app => [
       app.fullName, app.email, app.phone, app.gender, app.dateOfBirth,
       app.city, app.professionalStatus, app.hasDisability, app.fullTimeCommitment ? "Oui" : "Non",
-      app.motivation, app.cohort, app.status, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
+      app.videoUrl || "", app.motivation, app.cohort, app.status, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
     ]);
 
     const csvContent = [
@@ -1488,6 +1488,21 @@ function AwsRestartApplicationsTab() {
                           <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Cohorte</Label>
                             <p className="text-sm font-medium">{app.cohort}</p>
+                          </div>
+                          <div className="col-span-1 md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground">Vidéo de présentation (1 min)</Label>
+                            {app.videoUrl ? (
+                              <a
+                                href={app.videoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm font-medium text-blue-600 hover:underline break-all"
+                              >
+                                {app.videoUrl}
+                              </a>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">Non fournie</p>
+                            )}
                           </div>
                           <div className="col-span-1 md:col-span-2 space-y-1 pt-2">
                              <Label className="text-xs text-muted-foreground font-bold">Motivation pour le Cloud & AWS</Label>

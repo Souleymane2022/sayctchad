@@ -659,6 +659,7 @@ Sexe: ${application.gender}
 Statut professionnel: ${application.professionalStatus}
 Handicap: ${application.hasDisability}
 Engagement temps plein: ${application.fullTimeCommitment ? 'Oui' : 'Non'}
+Vidéo de présentation: ${application.videoUrl || 'Non fournie'}
 
 Motivation: ${application.motivation}`
       );
