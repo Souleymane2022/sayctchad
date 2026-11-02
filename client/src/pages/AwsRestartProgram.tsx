@@ -199,6 +199,37 @@ export default function AwsRestartProgram() {
                 </div>
             </section>
 
+            {/* Bandeau partenaires */}
+            <section className="bg-card border-b border-border py-6">
+                <div className="container mx-auto px-4">
+                    <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-10">
+                        <div className="flex flex-col items-center lg:items-start gap-2">
+                            <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
+                                <img src="/images/partners/us-embassy-ndjamena.png" alt="U.S. Embassy N'Djamena" className="h-8 md:h-9 w-auto object-contain" />
+                            </div>
+                            <p className="text-xs text-muted-foreground text-center lg:text-left max-w-xs">
+                                Financement du programme par l'Ambassade des États-Unis à N'Djamena
+                            </p>
+                        </div>
+                        <div className="hidden lg:block w-px h-14 bg-border" />
+                        <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground w-full md:w-auto text-center">
+                                En partenariat avec
+                            </span>
+                            <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
+                                <img src="/images/partners/smart-africa-logo.png" alt="Smart Africa" className="h-8 md:h-9 w-auto object-contain" />
+                            </div>
+                            <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
+                                <img src="/images/partners/sada-logo.jpg" alt="Smart Africa Digital Academy (SADA)" className="h-8 md:h-9 w-auto object-contain" />
+                            </div>
+                            <div className="bg-white rounded-lg px-3 py-2 shadow-sm border border-border/50">
+                                <img src="/images/partners/aws-restart-logo.png" alt="AWS re/Start" className="h-8 md:h-9 w-auto object-contain" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Session en bref */}
             <section className="py-16 bg-background" id="session">
                 <div className="container mx-auto px-4">
