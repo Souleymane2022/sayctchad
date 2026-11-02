@@ -66583,24 +66583,53 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
       const rows = applications.map((a2) => ({
+        id: a2.id,
         fullName: a2.fullName,
         gender: a2.gender,
         city: a2.city,
+        dateOfBirth: a2.dateOfBirth,
+        email: a2.email,
+        phone: a2.phone,
         professionalStatus: a2.professionalStatus,
         status: a2.status,
-        hasVideo: !!a2.videoUrl,
+        videoUrl: a2.videoUrl,
         hasPhoto: !!a2.photoUrl,
+        motivation: a2.motivation,
         createdAt: a2.createdAt
       }));
       const stats = {
         total: rows.length,
         femmes: rows.filter((r) => r.gender === "F").length,
         hommes: rows.filter((r) => r.gender === "M").length,
-        avecVideo: rows.filter((r) => r.hasVideo).length
+        avecVideo: rows.filter((r) => !!r.videoUrl).length
       };
       res.json({ stats, applications: rows });
     } catch (error) {
       console.error("Error in aws-tracking:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.get("/api/aws-tracking/:id/photo", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = req.query.code || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
+      }
+      await ensureAwsVideoColumn();
+      const applications = await storage.getAllAwsRestartApplications();
+      const app22 = applications.find((a2) => a2.id === req.params.id);
+      if (!app22 || !app22.photoUrl || !app22.photoUrl.startsWith("data:image")) {
+        return res.status(404).json({ error: "Photo introuvable" });
+      }
+      const parts = app22.photoUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Cache-Control", "private, max-age=300");
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error serving tracking photo:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
