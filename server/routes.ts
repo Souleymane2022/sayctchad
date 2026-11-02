@@ -845,6 +845,28 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // Décision des partenaires sur un dossier (favorable / défavorable / en attente)
+  app.patch("/api/aws-tracking/:id/status", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = (req.query.code as string) || (req.body?.code as string) || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'accès invalide" });
+      }
+      const { status } = req.body || {};
+      if (!["pending", "approved", "rejected"].includes(status)) {
+        return res.status(400).json({ error: "Statut invalide" });
+      }
+      await ensureAwsVideoColumn();
+      const updated = await storage.updateAwsRestartApplicationStatus(req.params.id, status);
+      if (!updated) return res.status(404).json({ error: "Candidature introuvable" });
+      res.json({ success: true, id: updated.id, status: updated.status });
+    } catch (error) {
+      console.error("Error updating tracking status:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   // Photo d'un candidat (servie à la demande pour garder la liste légère)
   app.get("/api/aws-tracking/:id/photo", async (req, res) => {
     try {

@@ -7,7 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Cloud, Lock, Users, Video, RefreshCw, Youtube, Camera } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Cloud, Lock, Users, Video, RefreshCw, Youtube, Camera, Download, CheckCircle2, XCircle, RotateCcw } from "lucide-react";
+
+const decisionBadge = (status: string) => {
+    if (status === "approved") return <Badge className="bg-green-500/15 text-green-700 border border-green-500/30 hover:bg-green-500/15">Favorable</Badge>;
+    if (status === "rejected") return <Badge className="bg-red-500/10 text-red-700 border border-red-500/30 hover:bg-red-500/10">Défavorable</Badge>;
+    return <Badge variant="outline">En attente</Badge>;
+};
 
 interface TrackingRow {
     id: string;
@@ -52,6 +59,46 @@ export default function AwsTracking() {
     });
 
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
+    const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+    const setDecision = async (id: string, status: "pending" | "approved" | "rejected") => {
+        try {
+            setUpdatingId(id);
+            const res = await fetch(`/api/aws-tracking/${id}/status?code=${encodeURIComponent(code)}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status }),
+            });
+            if (!res.ok) throw new Error();
+            await refetch();
+        } catch {
+            alert("Impossible d'enregistrer la décision. Réessayez.");
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
+    const exportToExcel = () => {
+        if (!data) return;
+        const headers = ["Nom Complet", "Sexe", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "Photo", "Décision", "Motivation", "Date Candidature"];
+        const decisionLabel = (s: string) => (s === "approved" ? "Favorable" : s === "rejected" ? "Défavorable" : "En attente");
+        const rows = data.applications.map((a) => [
+            a.fullName, a.gender, a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
+            a.videoUrl || "", a.hasPhoto ? "Oui" : "Non", decisionLabel(a.status), a.motivation,
+            a.createdAt ? new Date(a.createdAt).toLocaleString("fr-FR") : "",
+        ]);
+        const csv = [headers, ...rows]
+            .map((row) => row.map((cell) => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(","))
+            .join("\n");
+        const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `Candidatures_AWS_reStart_${new Date().toISOString().split("T")[0]}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="min-h-screen bg-muted/20 py-12">
@@ -125,10 +172,16 @@ export default function AwsTracking() {
                                     <CardTitle>Liste des candidatures</CardTitle>
                                     <CardDescription>Candidatures du 3 au 13 novembre 2026 — mise à jour en temps réel</CardDescription>
                                 </div>
-                                <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
-                                    <RefreshCw className={`w-4 h-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
-                                    Actualiser
-                                </Button>
+                                <div className="flex gap-2">
+                                    <Button variant="outline" size="sm" onClick={exportToExcel} disabled={data.applications.length === 0}>
+                                        <Download className="w-4 h-4 mr-2" />
+                                        Exporter Excel (CSV)
+                                    </Button>
+                                    <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+                                        <RefreshCw className={`w-4 h-4 mr-2 ${isFetching ? "animate-spin" : ""}`} />
+                                        Actualiser
+                                    </Button>
+                                </div>
                             </CardHeader>
                             <CardContent>
                                 <div className="rounded-md border overflow-x-auto">
@@ -140,6 +193,7 @@ export default function AwsTracking() {
                                                 <TableHead>Sexe</TableHead>
                                                 <TableHead>Ville</TableHead>
                                                 <TableHead>Vidéo</TableHead>
+                                                <TableHead>Décision</TableHead>
                                                 <TableHead>Date</TableHead>
                                                 <TableHead>Dossier</TableHead>
                                             </TableRow>
@@ -147,7 +201,7 @@ export default function AwsTracking() {
                                         <TableBody>
                                             {data.applications.length === 0 ? (
                                                 <TableRow>
-                                                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                                                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
                                                         Aucune candidature pour le moment — l'appel est ouvert du 3 au 13 novembre 2026.
                                                     </TableCell>
                                                 </TableRow>
@@ -171,6 +225,7 @@ export default function AwsTracking() {
                                                                 </a>
                                                             ) : "—"}
                                                         </TableCell>
+                                                        <TableCell>{decisionBadge(a.status)}</TableCell>
                                                         <TableCell className="text-xs">{a.createdAt ? new Date(a.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
                                                         <TableCell>
                                                             <Dialog>
@@ -203,6 +258,21 @@ export default function AwsTracking() {
                                                                             <Label className="text-xs text-muted-foreground font-bold">Motivation</Label>
                                                                             <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed mt-1">{a.motivation}</div>
                                                                         </div>
+                                                                        <div className="md:col-span-2 border-t pt-4">
+                                                                            <Label className="text-xs text-muted-foreground font-bold">Décision sur ce dossier</Label>
+                                                                            <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                                                                {decisionBadge(a.status)}
+                                                                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white" disabled={updatingId === a.id} onClick={() => setDecision(a.id, "approved")}>
+                                                                                    <CheckCircle2 className="w-4 h-4 mr-1" /> Favorable
+                                                                                </Button>
+                                                                                <Button size="sm" variant="destructive" disabled={updatingId === a.id} onClick={() => setDecision(a.id, "rejected")}>
+                                                                                    <XCircle className="w-4 h-4 mr-1" /> Défavorable
+                                                                                </Button>
+                                                                                <Button size="sm" variant="outline" disabled={updatingId === a.id} onClick={() => setDecision(a.id, "pending")}>
+                                                                                    <RotateCcw className="w-4 h-4 mr-1" /> En attente
+                                                                                </Button>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </DialogContent>
                                                             </Dialog>
@@ -214,8 +284,8 @@ export default function AwsTracking() {
                                     </Table>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-4">
-                                    Consultation en lecture seule, réservée aux partenaires du programme Chad Cloud Talent.
-                                    Merci de traiter ces données personnelles de façon confidentielle.
+                                    Accès réservé aux partenaires du programme Chad Cloud Talent. Seule la décision sur
+                                    chaque dossier peut être modifiée. Merci de traiter ces données personnelles de façon confidentielle.
                                 </p>
                             </CardContent>
                         </Card>

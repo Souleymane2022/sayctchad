@@ -64527,6 +64527,10 @@ var DatabaseStorage = class {
   async getAllAwsRestartApplications() {
     return db.select().from(awsRestartApplications).orderBy(desc(awsRestartApplications.createdAt));
   }
+  async updateAwsRestartApplicationStatus(id, status) {
+    const [updated] = await db.update(awsRestartApplications).set({ status }).where(eq(awsRestartApplications.id, id)).returning();
+    return updated;
+  }
   mapCandidateRow(row) {
     return {
       id: row.id,
@@ -66606,6 +66610,26 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json({ stats, applications: rows });
     } catch (error) {
       console.error("Error in aws-tracking:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.patch("/api/aws-tracking/:id/status", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = req.query.code || req.body?.code || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
+      }
+      const { status } = req.body || {};
+      if (!["pending", "approved", "rejected"].includes(status)) {
+        return res.status(400).json({ error: "Statut invalide" });
+      }
+      await ensureAwsVideoColumn();
+      const updated = await storage.updateAwsRestartApplicationStatus(req.params.id, status);
+      if (!updated) return res.status(404).json({ error: "Candidature introuvable" });
+      res.json({ success: true, id: updated.id, status: updated.status });
+    } catch (error) {
+      console.error("Error updating tracking status:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });

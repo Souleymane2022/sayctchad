@@ -97,6 +97,7 @@ export interface IStorage {
   createAwsRestartApplication(application: InsertAwsRestartApplication): Promise<AwsRestartApplication>;
   getAwsRestartApplicationByEmail(email: string): Promise<AwsRestartApplication | undefined>;
   getAllAwsRestartApplications(): Promise<AwsRestartApplication[]>;
+  updateAwsRestartApplicationStatus(id: string, status: string): Promise<AwsRestartApplication | undefined>;
 
   createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
   getApprovedCandidates(): Promise<ElectionCandidate[]>;
@@ -457,6 +458,14 @@ export class DatabaseStorage implements IStorage {
 
   async getAllAwsRestartApplications(): Promise<AwsRestartApplication[]> {
     return db.select().from(awsRestartApplications).orderBy(desc(awsRestartApplications.createdAt));
+  }
+
+  async updateAwsRestartApplicationStatus(id: string, status: string): Promise<AwsRestartApplication | undefined> {
+    const [updated] = await db.update(awsRestartApplications)
+      .set({ status })
+      .where(eq(awsRestartApplications.id, id))
+      .returning();
+    return updated;
   }
 
   private mapCandidateRow(row: any): ElectionCandidate {
