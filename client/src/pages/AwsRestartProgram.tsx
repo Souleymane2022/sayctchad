@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -27,10 +28,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import {
     Cloud, Send, CheckCircle2, Laptop, Target, Zap, ShieldCheck, Briefcase,
     Video, Youtube, Calendar, Clock, Globe, Award, Landmark, GraduationCap,
-    FileText, Users, PhoneCall, Rocket, ArrowRight, Terminal, Database, Network, Lock,
+    FileText, Users, PhoneCall, Rocket, ArrowRight, Terminal, Database, Network, Lock, Camera,
 } from "lucide-react";
 
 const CURRENT_COHORT = "N'Djamena 2026";
@@ -89,6 +91,7 @@ const timeline = [
 export default function AwsRestartProgram() {
     const { toast } = useToast();
     const applicationsClosed = new Date() >= AWS_RESTART_APPLICATION_DEADLINE;
+    const [photoPreview, setPhotoPreview] = useState<string | null>(null);
     const form = useForm<InsertAwsRestartApplication>({
         resolver: zodResolver(insertAwsRestartApplicationSchema),
         defaultValues: {
@@ -102,6 +105,7 @@ export default function AwsRestartProgram() {
             hasDisability: "",
             motivation: "",
             videoUrl: "",
+            photoUrl: "",
             fullTimeCommitment: false,
             status: "pending",
             cohort: CURRENT_COHORT,
@@ -119,6 +123,7 @@ export default function AwsRestartProgram() {
                 description: "Merci de votre intérêt. Votre profil sera examiné prochainement.",
             });
             form.reset();
+            setPhotoPreview(null);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         onError: (error: Error) => {
@@ -129,6 +134,48 @@ export default function AwsRestartProgram() {
             });
         },
     });
+
+    const compressImage = (file: File): Promise<string> => {
+        return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    const MAX = 600;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > MAX) { height *= MAX / width; width = MAX; }
+                    } else {
+                        if (height > MAX) { width *= MAX / height; height = MAX; }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    canvas.getContext("2d")?.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL("image/jpeg", 0.5));
+                };
+            };
+        });
+    };
+
+    const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) {
+            toast({ title: "Image trop lourde", description: "Veuillez choisir une image de moins de 4 Mo.", variant: "destructive" });
+            return;
+        }
+        try {
+            const compressed = await compressImage(file);
+            setPhotoPreview(compressed);
+            form.setValue("photoUrl", compressed, { shouldValidate: true });
+        } catch {
+            toast({ title: "Erreur", description: "Impossible de traiter l'image.", variant: "destructive" });
+        }
+    };
 
     const onSubmit = (data: InsertAwsRestartApplication) => {
         mutation.mutate(data);
@@ -380,7 +427,11 @@ export default function AwsRestartProgram() {
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                                    <p><strong className="text-foreground">Tu es disponible à plein temps</strong>, à N'Djamena, du 23 novembre 2026 au 19 février 2027.</p>
+                                    <p><strong className="text-foreground">Tu es disponible à plein temps à N'Djamena</strong>, du 23 novembre 2026 au 19 février 2027 — c'est obligatoire, le bootcamp est en présentiel.</p>
+                                </div>
+                                <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
+                                    <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+                                    <p><strong className="text-foreground">Tu disposes d'un ordinateur</strong> — obligatoire pour suivre les cours et réaliser les labs AWS.</p>
                                 </div>
                                 <div className="flex items-start gap-3 bg-muted/50 p-4 rounded-lg">
                                     <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
@@ -474,6 +525,46 @@ export default function AwsRestartProgram() {
                                             <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">1</span>
                                             Informations Personnelles
                                         </h3>
+
+                                        {/* Photo d'identité (obligatoire) */}
+                                        <div className="flex flex-col items-center gap-4 p-6 bg-muted/30 rounded-2xl border-2 border-dashed border-accent/20">
+                                            <div className="relative group">
+                                                <div className="w-32 h-32 rounded-2xl border-2 border-accent/50 overflow-hidden bg-white flex items-center justify-center text-accent/30 shadow-inner">
+                                                    {photoPreview ? (
+                                                        <img src={photoPreview} alt="Aperçu de votre photo" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <Camera className="w-12 h-12" />
+                                                    )}
+                                                </div>
+                                                <Label
+                                                    htmlFor="aws-photo-upload"
+                                                    className="absolute -bottom-2 -right-2 w-10 h-10 bg-accent text-accent-foreground rounded-xl flex items-center justify-center cursor-pointer shadow-lg hover:scale-110 transition-transform"
+                                                >
+                                                    <Camera className="w-5 h-5" />
+                                                </Label>
+                                                <Input
+                                                    id="aws-photo-upload"
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={handlePhotoChange}
+                                                />
+                                            </div>
+                                            <div className="text-center">
+                                                <h4 className="font-semibold text-sm">Photo d'identité <span className="text-destructive">*</span></h4>
+                                                <p className="text-xs text-muted-foreground">Obligatoire — visage visible, format portrait, moins de 4 Mo</p>
+                                            </div>
+                                            <FormField
+                                                control={form.control}
+                                                name="photoUrl"
+                                                render={() => (
+                                                    <FormItem>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
                                         <div className="grid md:grid-cols-2 gap-8">
                                             <FormField
                                                 control={form.control}
@@ -708,7 +799,7 @@ export default function AwsRestartProgram() {
                                                         </FormControl>
                                                         <div className="space-y-1">
                                                             <FormLabel className="text-base font-medium text-foreground cursor-pointer">
-                                                                Je m'engage à suivre assidûment le bootcamp en présentiel à N'Djamena, à temps plein, du 23 novembre 2026 au 19 février 2027, et à passer l'examen de certification.
+                                                                Je confirme que je serai à N'Djamena et que je dispose d'un ordinateur, et je m'engage à suivre assidûment le bootcamp en présentiel, à temps plein, du 23 novembre 2026 au 19 février 2027, et à passer l'examen de certification.
                                                             </FormLabel>
                                                             <p className="text-sm text-muted-foreground mt-2">
                                                                 Ce programme exige un rythme intense (420 heures). En cochant cette case, vous confirmez comprendre l'effort nécessaire.
@@ -750,7 +841,8 @@ export default function AwsRestartProgram() {
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 Le bootcamp se déroule <strong className="text-foreground">en présentiel à N'Djamena</strong>, dans la salle de
                                 formation SAYC Tchad équipée d'une connexion internet dédiée et d'une alimentation de secours.
-                                Les candidats retenus recevront par email et WhatsApp leurs accès aux labs AWS en ligne.
+                                <strong className="text-foreground"> Être à N'Djamena et disposer d'un ordinateur est obligatoire.</strong> Les
+                                candidats retenus recevront par email et WhatsApp leurs accès aux labs AWS en ligne.
                             </p>
                         </div>
                         <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">

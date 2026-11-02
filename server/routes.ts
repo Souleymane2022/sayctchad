@@ -22,6 +22,7 @@ let awsVideoColumnEnsured: Promise<void> | null = null;
 function ensureAwsVideoColumn(): Promise<void> {
   if (!awsVideoColumnEnsured) {
     awsVideoColumnEnsured = sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "photo_url" text`)
       .then(() => undefined)
       .catch((err) => {
         awsVideoColumnEnsured = null; // réessaiera à la prochaine candidature
@@ -694,6 +695,7 @@ Statut professionnel: ${application.professionalStatus}
 Handicap: ${application.hasDisability}
 Engagement temps plein: ${application.fullTimeCommitment ? 'Oui' : 'Non'}
 Vidéo de présentation: ${application.videoUrl || 'Non fournie'}
+Photo d'identité: ${application.photoUrl ? 'Fournie (visible dans l\'espace admin)' : 'Non fournie'}
 
 Motivation: ${application.motivation}`
       );

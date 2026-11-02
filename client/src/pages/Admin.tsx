@@ -1327,13 +1327,13 @@ function AwsRestartApplicationsTab() {
     const headers = [
       "Nom Complet", "Email", "Téléphone", "Sexe", "Date de Naissance",
       "Ville", "Statut Professionnel", "Handicap", "Engagement Temps Plein",
-      "Vidéo (YouTube)", "Motivation", "Cohorte", "Statut Admin", "Date Inscription"
+      "Vidéo (YouTube)", "Photo", "Motivation", "Cohorte", "Statut Admin", "Date Inscription"
     ];
 
     const rows = applications.map(app => [
       app.fullName, app.email, app.phone, app.gender, app.dateOfBirth,
       app.city, app.professionalStatus, app.hasDisability, app.fullTimeCommitment ? "Oui" : "Non",
-      app.videoUrl || "", app.motivation, app.cohort, app.status, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
+      app.videoUrl || "", app.photoUrl ? "Oui" : "Non", app.motivation, app.cohort, app.status, app.createdAt ? new Date(app.createdAt).toLocaleString() : ""
     ]);
 
     const csvContent = [
@@ -1464,6 +1464,15 @@ function AwsRestartApplicationsTab() {
                         <DialogHeader>
                           <DialogTitle>Détails AWS re/Start - {app.fullName}</DialogTitle>
                         </DialogHeader>
+                        {app.photoUrl && (
+                          <div className="flex justify-center py-2">
+                            <img
+                              src={app.photoUrl}
+                              alt={`Photo de ${app.fullName}`}
+                              className="w-28 h-28 rounded-xl object-cover border shadow-sm"
+                            />
+                          </div>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
                           <div className="space-y-1">
                             <Label className="text-xs text-muted-foreground">Sexe</Label>

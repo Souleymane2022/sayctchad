@@ -38576,6 +38576,7 @@ var init_schema2 = __esm({
       hasDisability: text("has_disability").notNull(),
       motivation: text("motivation").notNull(),
       videoUrl: text("video_url"),
+      photoUrl: text("photo_url"),
       fullTimeCommitment: boolean("full_time_commitment").notNull(),
       status: text("status").notNull().default("pending"),
       cohort: text("cohort").notNull().default("N'Djamena 2026"),
@@ -38593,7 +38594,8 @@ var init_schema2 = __esm({
       professionalStatus: z.string().min(1, "Statut professionnel requis"),
       hasDisability: z.string().min(1, "Veuillez r\xE9pondre \xE0 cette question"),
       motivation: z.string().min(1, "Motivation requise"),
-      videoUrl: z.string().min(1, "Le lien de votre vid\xE9o YouTube est requis").regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)")
+      videoUrl: z.string().min(1, "Le lien de votre vid\xE9o YouTube est requis").regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)"),
+      photoUrl: z.string().min(1, "Votre photo d'identit\xE9 est requise").regex(/^data:image\//, "Format de photo invalide")
     }).omit({
       id: true,
       createdAt: true
@@ -65855,7 +65857,7 @@ async function sendPersonalizedMemberEmails(membersList, subject, messageTemplat
 var awsVideoColumnEnsured = null;
 function ensureAwsVideoColumn() {
   if (!awsVideoColumnEnsured) {
-    awsVideoColumnEnsured = sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`.then(() => void 0).catch((err) => {
+    awsVideoColumnEnsured = sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`.then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "photo_url" text`).then(() => void 0).catch((err) => {
       awsVideoColumnEnsured = null;
       throw err;
     });
@@ -66469,6 +66471,7 @@ Statut professionnel: ${application.professionalStatus}
 Handicap: ${application.hasDisability}
 Engagement temps plein: ${application.fullTimeCommitment ? "Oui" : "Non"}
 Vid\xE9o de pr\xE9sentation: ${application.videoUrl || "Non fournie"}
+Photo d'identit\xE9: ${application.photoUrl ? "Fournie (visible dans l'espace admin)" : "Non fournie"}
 
 Motivation: ${application.motivation}`
       );
