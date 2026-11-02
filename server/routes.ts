@@ -798,6 +798,34 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // ─── Outil temporaire : vider les anciennes candidatures AWS re/Start ────────
+  // Protégé par le mot de passe admin. À SUPPRIMER après usage.
+  app.get("/api/admin/clear-aws-applications", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const authorized = req.session.isAdmin || (adminPassword && req.query.key === adminPassword);
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autorisé. Ajoutez &key=VOTRE_MOT_DE_PASSE_ADMIN à l'adresse." });
+      }
+      const [{ count: before }] = (await sql`SELECT count(*)::int AS count FROM aws_restart_applications`) as any[];
+      if (req.query.confirm !== "oui") {
+        return res.json({
+          candidatures_actuelles: Number(before),
+          message: `Prêt à supprimer ${before} candidature(s) AWS re/Start. Ajoutez &confirm=oui à l'adresse pour confirmer la suppression DÉFINITIVE.`,
+        });
+      }
+      await sql`DELETE FROM aws_restart_applications`;
+      res.json({
+        success: true,
+        supprimees: Number(before),
+        message: "Anciennes candidatures AWS re/Start supprimées. Le compteur repart à zéro pour le nouvel appel.",
+      });
+    } catch (error: any) {
+      console.error("Clear AWS applications error:", error);
+      res.status(500).json({ error: "Erreur lors de la suppression" });
+    }
+  });
+
   app.post("/api/admin/logout", (req, res) => {
     req.session.destroy(() => {
       res.json({ success: true });
