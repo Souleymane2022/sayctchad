@@ -65924,8 +65924,15 @@ async function registerRoutes(httpServer2, app2) {
   const apiLimiter = rate_limit_default({
     windowMs: 15 * 60 * 1e3,
     // 15 minutes
-    max: 5,
+    max: 60,
     message: { error: "Trop de requ\xEAtes depuis cette adresse IP, veuillez r\xE9essayer plus tard." },
+    standardHeaders: true,
+    legacyHeaders: false
+  });
+  const applicationLimiter = rate_limit_default({
+    windowMs: 15 * 60 * 1e3,
+    max: 300,
+    message: { error: "Trop de requ\xEAtes, veuillez r\xE9essayer dans quelques minutes." },
     standardHeaders: true,
     legacyHeaders: false
   });
@@ -66472,7 +66479,7 @@ L'\xE9quipe SAYC Tchad`
       res.status(500).json({ error: "Erreur lors de la r\xE9cup\xE9ration des candidatures." });
     }
   });
-  app2.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
+  app2.post("/api/aws-restart-applications", applicationLimiter, async (req, res) => {
     try {
       if (/* @__PURE__ */ new Date() >= AWS_RESTART_APPLICATION_DEADLINE) {
         return res.status(403).json({
