@@ -78,6 +78,23 @@ export async function registerRoutes(
     next();
   });
 
+  // ─── Cache CDN Vercel pour les lectures publiques ────────────────────────────
+  // Réduit massivement le transfert réseau de la base Neon : les réponses publiques
+  // (listes avec images en base64, galerie) sont servies par le CDN pendant 10 min.
+  app.use(
+    [
+      "/api/trainings", "/api/news", "/api/events", "/api/achievements",
+      "/api/partners", "/api/opportunities", "/api/plan-activities",
+      "/api/members/gallery", "/api/members/stats", "/api/elections/candidates",
+    ],
+    (req: Request, res: Response, next: NextFunction) => {
+      if (req.method === "GET") {
+        res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=86400");
+      }
+      next();
+    }
+  );
+
   // ─── Rate Limiters ─────────────────────────────────────────────────────────
   // S'assure dès le démarrage que les colonnes vidéo/photo des candidatures AWS existent.
   ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au démarrage:", e));
@@ -353,7 +370,7 @@ ${pages.map(p => `  <url>
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000"); // Cache for 30 days
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000"); // Cache navigateur + CDN Vercel 30 jours
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -371,7 +388,7 @@ ${pages.map(p => `  <url>
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -389,7 +406,7 @@ ${pages.map(p => `  <url>
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -411,7 +428,7 @@ ${pages.map(p => `  <url>
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -876,16 +893,17 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(401).json({ error: "Code d'accès invalide" });
       }
       await ensureAwsVideoColumn();
-      const applications = await storage.getAllAwsRestartApplications();
-      const app2 = applications.find((a) => a.id === req.params.id);
-      if (!app2 || !app2.photoUrl || !app2.photoUrl.startsWith("data:image")) {
+      // Une seule ligne lue : surtout pas toute la table (économie de transfert réseau).
+      const rows = (await sql`SELECT photo_url FROM aws_restart_applications WHERE id = ${req.params.id} LIMIT 1`) as any[];
+      const photoUrl: string | undefined = rows[0]?.photo_url;
+      if (!photoUrl || !photoUrl.startsWith("data:image")) {
         return res.status(404).json({ error: "Photo introuvable" });
       }
-      const parts = app2.photoUrl.split(",");
+      const parts = photoUrl.split(",");
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "private, max-age=300");
+      res.setHeader("Cache-Control", "private, max-age=3600");
       res.send(buffer);
     } catch (error) {
       console.error("Error serving tracking photo:", error);
