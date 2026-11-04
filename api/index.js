@@ -65899,6 +65899,26 @@ async function registerRoutes(httpServer2, app2) {
     );
     next();
   });
+  app2.use(
+    [
+      "/api/trainings",
+      "/api/news",
+      "/api/events",
+      "/api/achievements",
+      "/api/partners",
+      "/api/opportunities",
+      "/api/plan-activities",
+      "/api/members/gallery",
+      "/api/members/stats",
+      "/api/elections/candidates"
+    ],
+    (req, res, next) => {
+      if (req.method === "GET") {
+        res.setHeader("Cache-Control", "public, s-maxage=600, stale-while-revalidate=86400");
+      }
+      next();
+    }
+  );
   ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au d\xE9marrage:", e));
   const apiLimiter = rate_limit_default({
     windowMs: 15 * 60 * 1e3,
@@ -66161,7 +66181,7 @@ L'\xE9quipe SAYC Tchad`
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -66178,7 +66198,7 @@ L'\xE9quipe SAYC Tchad`
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -66195,7 +66215,7 @@ L'\xE9quipe SAYC Tchad`
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -66216,7 +66236,7 @@ L'\xE9quipe SAYC Tchad`
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "public, max-age=2592000");
+      res.setHeader("Cache-Control", "public, max-age=2592000, s-maxage=2592000");
       res.send(buffer);
     } catch (error) {
       console.error("Image render error:", error);
@@ -66641,16 +66661,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
       }
       await ensureAwsVideoColumn();
-      const applications = await storage.getAllAwsRestartApplications();
-      const app22 = applications.find((a2) => a2.id === req.params.id);
-      if (!app22 || !app22.photoUrl || !app22.photoUrl.startsWith("data:image")) {
+      const rows = await sql2`SELECT photo_url FROM aws_restart_applications WHERE id = ${req.params.id} LIMIT 1`;
+      const photoUrl = rows[0]?.photo_url;
+      if (!photoUrl || !photoUrl.startsWith("data:image")) {
         return res.status(404).json({ error: "Photo introuvable" });
       }
-      const parts = app22.photoUrl.split(",");
+      const parts = photoUrl.split(",");
       const mime = parts[0].match(/:(.*?);/)?.[1] || "image/jpeg";
       const buffer = Buffer.from(parts[1], "base64");
       res.setHeader("Content-Type", mime);
-      res.setHeader("Cache-Control", "private, max-age=300");
+      res.setHeader("Cache-Control", "private, max-age=3600");
       res.send(buffer);
     } catch (error) {
       console.error("Error serving tracking photo:", error);
