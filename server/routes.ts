@@ -100,10 +100,22 @@ export async function registerRoutes(
   // S'assure dès le démarrage que les colonnes vidéo/photo des candidatures AWS existent.
   ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au démarrage:", e));
 
+  // Au Tchad, des centaines d'utilisateurs mobiles partagent la même adresse IP
+  // (NAT des opérateurs) : une limite trop basse bloque des candidats légitimes.
   const apiLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5,
+    max: 60,
     message: { error: "Trop de requêtes depuis cette adresse IP, veuillez réessayer plus tard." },
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+  // Limiteur dédié aux candidatures en période d'appel : très permissif par IP
+  // (la protection anti-doublon se fait par email, côté base de données).
+  const applicationLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    message: { error: "Trop de requêtes, veuillez réessayer dans quelques minutes." },
     standardHeaders: true,
     legacyHeaders: false,
   });
@@ -688,7 +700,7 @@ Motivation: ${application.motivation}`
   });
 
   // AWS re/Start Applications
-  app.post("/api/aws-restart-applications", apiLimiter, async (req, res) => {
+  app.post("/api/aws-restart-applications", applicationLimiter, async (req, res) => {
     try {
       if (new Date() >= AWS_RESTART_APPLICATION_DEADLINE) {
         return res.status(403).json({
