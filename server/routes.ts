@@ -15,6 +15,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import rateLimit from "express-rate-limit";
 import { pool, sql } from "./db";
+import { neon } from "@neondatabase/serverless";
 import { sendNotificationEmail, sendAutoReplyEmail, sendMassEmail, debugSmtpConnection, sendPersonalizedMemberEmails } from "./email";
 
 // Migration auto-appliquée (idempotente) : colonne vidéo des candidatures AWS re/Start.
@@ -913,6 +914,127 @@ Sitemap: ${baseUrl}/sitemap.xml`;
 
   // ─── Outil temporaire : vider les anciennes candidatures AWS re/Start ────────
   // Protégé par le mot de passe admin. À SUPPRIMER après usage.
+  // ─── Migration d'urgence : quota réseau Neon épuisé ──────────────────────────
+  // Copie les données de la base actuelle (ou d'une source donnée) vers une autre
+  // base Neon désignée par le nom d'une variable d'environnement (ex: NEWDB_URL).
+  // Protégé par le mot de passe admin. Outil temporaire, à SUPPRIMER après usage.
+  app.get("/api/admin/emergency-migrate", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const authorized = req.session.isAdmin || (adminPassword && req.query.key === adminPassword);
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autorisé. Ajoutez &key=VOTRE_MOT_DE_PASSE_ADMIN à l'adresse." });
+      }
+      const targetEnv = (req.query.target_env as string) || "NEWDB_URL";
+      if (!/^[A-Z0-9_]{3,64}$/.test(targetEnv)) {
+        return res.status(400).json({ error: "Nom de variable cible invalide" });
+      }
+      const targetUrl = process.env[targetEnv];
+      if (!targetUrl || !targetUrl.startsWith("postgres")) {
+        return res.status(400).json({ error: `La variable d'environnement ${targetEnv} est absente ou invalide. Connectez la base de secours au projet Vercel avec le préfixe correspondant, puis redéployez.` });
+      }
+      const sourceUrl = (req.query.source_url as string) || process.env.DATABASE_URL;
+      if (!sourceUrl || !sourceUrl.startsWith("postgres")) {
+        return res.status(400).json({ error: "Source invalide" });
+      }
+      const hostOf = (u: string) => { try { return new URL(u).host; } catch { return u; } };
+      if (hostOf(sourceUrl) === hostOf(targetUrl)) {
+        return res.status(400).json({ error: "La source et la cible sont la même base." });
+      }
+      if (req.query.confirm !== "oui") {
+        return res.json({
+          source: hostOf(sourceUrl),
+          cible: `${targetEnv} → ${hostOf(targetUrl)}`,
+          message: "Prêt à migrer. Ajoutez &confirm=oui à l'adresse pour lancer la copie.",
+        });
+      }
+
+      const src = neon(sourceUrl);
+      const dst = neon(targetUrl);
+
+      const tables = (await src.query(
+        "SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE' ORDER BY table_name",
+        []
+      )) as any[];
+
+      const report: any[] = [];
+      for (const { table_name: table } of tables) {
+        const cols = (await src.query(
+          `SELECT column_name, data_type, udt_name, is_nullable, column_default
+           FROM information_schema.columns
+           WHERE table_schema='public' AND table_name=$1
+           ORDER BY ordinal_position`,
+          [table]
+        )) as any[];
+
+        const colDefs = cols.map((c: any) => {
+          let type: string;
+          if (c.data_type === "ARRAY") type = `${String(c.udt_name).replace(/^_/, "")}[]`;
+          else if (c.data_type === "USER-DEFINED") type = c.udt_name;
+          else type = c.data_type;
+          let def = `"${c.column_name}" ${type}`;
+          if (c.column_default) def += ` DEFAULT ${c.column_default}`;
+          if (c.is_nullable === "NO") def += " NOT NULL";
+          return def;
+        });
+        await dst.query(`CREATE TABLE IF NOT EXISTS "${table}" (${colDefs.join(", ")})`, []);
+
+        const constraints = (await src.query(
+          `SELECT con.conname, pg_get_constraintdef(con.oid) AS def
+           FROM pg_constraint con
+           JOIN pg_class rel ON rel.oid = con.conrelid
+           JOIN pg_namespace nsp ON nsp.oid = rel.relnamespace
+           WHERE nsp.nspname='public' AND rel.relname=$1 AND con.contype IN ('p','u')`,
+          [table]
+        )) as any[];
+        for (const c of constraints) {
+          try {
+            await dst.query(`ALTER TABLE "${table}" ADD CONSTRAINT "${c.conname}" ${c.def}`, []);
+          } catch {
+            // contrainte déjà présente : sans gravité
+          }
+        }
+
+        const srcCount = Number(((await src.query(`SELECT count(*)::int AS count FROM "${table}"`, [])) as any[])[0].count);
+        const dstCount = Number(((await dst.query(`SELECT count(*)::int AS count FROM "${table}"`, [])) as any[])[0].count);
+        if (dstCount > 0) {
+          report.push({ table, lignes_source: srcCount, copiees: 0, note: "la table contient déjà des données, ignorée" });
+          continue;
+        }
+        if (srcCount === 0) {
+          report.push({ table, lignes_source: 0, copiees: 0 });
+          continue;
+        }
+
+        const colNames = cols.map((c: any) => `"${c.column_name}"`).join(", ");
+        const batchSize = Math.max(1, Math.floor(500 / cols.length));
+        let copied = 0;
+        for (let offset = 0; offset < srcCount; offset += batchSize) {
+          const rows = (await src.query(`SELECT * FROM "${table}" ORDER BY 1 LIMIT $1 OFFSET $2`, [batchSize, offset])) as any[];
+          if (rows.length === 0) break;
+          const params: any[] = [];
+          const valuesSql = rows
+            .map(
+              (row: any, ri: number) =>
+                `(${cols.map((c: any, ci: number) => {
+                  params.push(row[c.column_name]);
+                  return `$${ri * cols.length + ci + 1}`;
+                }).join(", ")})`
+            )
+            .join(", ");
+          await dst.query(`INSERT INTO "${table}" (${colNames}) VALUES ${valuesSql}`, params);
+          copied += rows.length;
+        }
+        report.push({ table, lignes_source: srcCount, copiees: copied });
+      }
+
+      res.json({ success: true, message: "Migration d'urgence terminée ! Basculez DATABASE_URL vers la nouvelle base puis redéployez.", tables: report });
+    } catch (error: any) {
+      console.error("Emergency migration error:", error);
+      res.status(500).json({ error: "Erreur de migration", details: error.message });
+    }
+  });
+
   app.get("/api/admin/clear-aws-applications", async (req, res) => {
     try {
       const adminPassword = process.env.ADMIN_PASSWORD;
