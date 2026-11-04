@@ -18,13 +18,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -583,17 +576,16 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Sexe (Statistique d'inclusion) <span className="text-destructive">*</span></FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
-                                                                    <SelectValue placeholder="Choisir" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="M">Masculin</SelectItem>
-                                                                <SelectItem value="F">Féminin</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
+                                                        <FormControl>
+                                                            <select
+                                                                {...field}
+                                                                className="flex h-12 w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 text-base focus:border-accent focus-visible:outline-none"
+                                                            >
+                                                                <option value="">Choisir...</option>
+                                                                <option value="M">Masculin</option>
+                                                                <option value="F">Féminin</option>
+                                                            </select>
+                                                        </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -658,20 +650,19 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Statut Professionnel Actuel <span className="text-destructive">*</span></FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
-                                                                    <SelectValue placeholder="Sélectionnez..." />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="Sans emploi">Sans emploi (NEET)</SelectItem>
-                                                                <SelectItem value="Étudiant">Étudiant en recherche d'opportunité</SelectItem>
-                                                                <SelectItem value="Reconversion">Employé(e) en reconversion</SelectItem>
-                                                                <SelectItem value="Indépendant">Indépendant(e) / Freelance</SelectItem>
-                                                                <SelectItem value="Autre">Autre</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
+                                                        <FormControl>
+                                                            <select
+                                                                {...field}
+                                                                className="flex h-12 w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 text-base focus:border-accent focus-visible:outline-none"
+                                                            >
+                                                                <option value="">Sélectionnez...</option>
+                                                                <option value="Sans emploi">Sans emploi (NEET)</option>
+                                                                <option value="Étudiant">Étudiant en recherche d'opportunité</option>
+                                                                <option value="Reconversion">Employé(e) en reconversion</option>
+                                                                <option value="Indépendant">Indépendant(e) / Freelance</option>
+                                                                <option value="Autre">Autre</option>
+                                                            </select>
+                                                        </FormControl>
                                                         <FormDescription>Pour ajuster notre programme à votre disponibilité.</FormDescription>
                                                         <FormMessage />
                                                     </FormItem>
@@ -683,18 +674,17 @@ export default function AwsRestartProgram() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel className="text-sm font-semibold">Êtes-vous en situation de handicap ? <span className="text-destructive">*</span></FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger className="h-12 bg-muted/50 border-border/50 focus:border-accent">
-                                                                    <SelectValue placeholder="Sélectionnez..." />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="Non">Non</SelectItem>
-                                                                <SelectItem value="Oui">Oui</SelectItem>
-                                                                <SelectItem value="Préfère ne pas répondre">Préfère ne pas répondre</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
+                                                        <FormControl>
+                                                            <select
+                                                                {...field}
+                                                                className="flex h-12 w-full rounded-md border border-border/50 bg-muted/50 px-3 py-2 text-base focus:border-accent focus-visible:outline-none"
+                                                            >
+                                                                <option value="">Sélectionnez...</option>
+                                                                <option value="Non">Non</option>
+                                                                <option value="Oui">Oui</option>
+                                                                <option value="Préfère ne pas répondre">Préfère ne pas répondre</option>
+                                                            </select>
+                                                        </FormControl>
                                                         <FormDescription>AWS re/Start et SAYC s'engagent pour l'inclusion.</FormDescription>
                                                         <FormMessage />
                                                     </FormItem>
