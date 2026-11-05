@@ -8,7 +8,7 @@ import {
   insertNewsArticleSchema, insertEventSchema, insertAchievementSchema,
   insertThunderbirdApplicationSchema, insertCandidateSchema, insertVoteSchema,
   insertAwsRestartApplicationSchema, insertPlanActivitySchema, insertActivityReportSchema,
-  AWS_RESTART_APPLICATION_DEADLINE
+  AWS_RESTART_APPLICATION_DEADLINE, insertInvestReadyApplicationSchema, INVEST_READY_DEADLINE
 } from "../shared/schema";
 import { z } from "zod";
 import session from "express-session";
@@ -100,6 +100,50 @@ export async function registerRoutes(
   // S'assure dès le démarrage que les colonnes vidéo/photo des candidatures AWS existent.
   ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au démarrage:", e));
 
+  // Création idempotente de la table des candidatures Invest Ready Tchad.
+  let investReadyTableEnsured: Promise<void> | null = null;
+  function ensureInvestReadyTable(): Promise<void> {
+    if (!investReadyTableEnsured) {
+      investReadyTableEnsured = sql`CREATE TABLE IF NOT EXISTS "invest_ready_applications" (
+        "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+        "startup_name" text NOT NULL,
+        "sector" text NOT NULL,
+        "founding_year" text NOT NULL,
+        "description" text NOT NULL,
+        "website" text,
+        "stage" text NOT NULL,
+        "revenue_12m" text,
+        "funding_amount" text NOT NULL,
+        "funding_timeline" text NOT NULL,
+        "founder_first_name" text NOT NULL,
+        "founder_last_name" text NOT NULL,
+        "founder_dob" text NOT NULL,
+        "founder_gender" text NOT NULL,
+        "founder_phone" text NOT NULL,
+        "founder_email" text NOT NULL,
+        "second_first_name" text,
+        "second_last_name" text,
+        "second_dob" text,
+        "second_gender" text,
+        "id_file_name" text NOT NULL,
+        "id_file_data" text NOT NULL,
+        "deck_file_name" text,
+        "deck_file_data" text,
+        "presence_commitment" boolean NOT NULL,
+        "data_consent" boolean NOT NULL,
+        "status" text NOT NULL DEFAULT 'pending',
+        "created_at" timestamp DEFAULT now()
+      )`
+        .then(() => undefined)
+        .catch((err) => {
+          investReadyTableEnsured = null;
+          throw err;
+        });
+    }
+    return investReadyTableEnsured;
+  }
+  ensureInvestReadyTable().catch((e) => console.error("ensureInvestReadyTable au démarrage:", e));
+
   // Au Tchad, des centaines d'utilisateurs mobiles partagent la même adresse IP
   // (NAT des opérateurs) : une limite trop basse bloque des candidats légitimes.
   const apiLimiter = rateLimit({
@@ -176,6 +220,9 @@ export async function registerRoutes(
       { url: "/", priority: "1.0", changefreq: "weekly" },
       { url: "/a-propos", priority: "0.8", changefreq: "monthly" },
       { url: "/programmes", priority: "0.8", changefreq: "monthly" },
+      { url: "/programmes/aws-restart", priority: "0.9", changefreq: "weekly" },
+      { url: "/programmes/invest-ready-tchad", priority: "0.9", changefreq: "weekly" },
+      { url: "/programmes/thunderbird", priority: "0.8", changefreq: "weekly" },
       { url: "/formations", priority: "0.8", changefreq: "weekly" },
       { url: "/evenements", priority: "0.7", changefreq: "weekly" },
       { url: "/actualites", priority: "0.9", changefreq: "daily" },
@@ -746,6 +793,68 @@ Motivation: ${application.motivation}`
       }
       console.error("Error creating AWS re/Start application:", error);
       res.status(500).json({ error: "Erreur lors de l'enregistrement de votre candidature." });
+    }
+  });
+
+  // ─── Invest Ready Tchad : candidatures start-ups ─────────────────────────────
+  app.post("/api/invest-ready-applications", applicationLimiter, async (req, res) => {
+    try {
+      if (new Date() >= INVEST_READY_DEADLINE) {
+        return res.status(403).json({ error: "Les candidatures sont closes" });
+      }
+      await ensureInvestReadyTable();
+      const validatedData = insertInvestReadyApplicationSchema.parse(req.body);
+
+      const existing = await storage.getInvestReadyApplicationByEmail(validatedData.founderEmail);
+      if (existing) {
+        return res.status(409).json({ error: "Une candidature a déjà été soumise avec cet email." });
+      }
+
+      const application = await storage.createInvestReadyApplication(validatedData);
+
+      sendNotificationEmail(
+        "Nouvelle Candidature Invest Ready Tchad",
+        `Nouvelle candidature Invest Ready Tchad.
+
+Start-up: ${application.startupName}
+Secteur: ${application.sector} | Stade: ${application.stage} | Créée en: ${application.foundingYear}
+Levée envisagée: ${application.fundingAmount} (échéance: ${application.fundingTimeline})
+Site/réseaux: ${application.website || "Non fourni"}
+
+Fondateur principal: ${application.founderFirstName} ${application.founderLastName} (${application.founderGender})
+Email: ${application.founderEmail} | WhatsApp: ${application.founderPhone}
+Deuxième participant: ${application.secondFirstName ? `${application.secondFirstName} ${application.secondLastName} (${application.secondGender})` : "Aucun"}
+
+Pièce d'identité: ${application.idFileName}
+Pitch deck: ${application.deckFileName || "Non fourni"}
+
+Description:
+${application.description}`
+      );
+
+      sendAutoReplyEmail(
+        application.founderEmail,
+        "Confirmation de réception : candidature Invest Ready Tchad",
+        `Bonjour ${application.founderFirstName},\n\nNous confirmons la bonne réception de la candidature de ${application.startupName} au bootcamp Invest Ready Tchad, organisé par le Smart Africa Youth Chapter Tchad avec le soutien de l'Ambassade de France au Tchad.\n\nLes 20 start-ups sélectionnées seront notifiées par email et WhatsApp.\n\nCordialement,\nL'équipe SAYC Tchad`
+      );
+
+      res.status(201).json({ success: true, id: application.id });
+    } catch (error: any) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors?.[0]?.message || "Données invalides", details: error.errors });
+      }
+      console.error("Error creating Invest Ready application:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi de la candidature" });
+    }
+  });
+
+  app.get("/api/admin/invest-ready-applications", requireAdmin, async (_req, res) => {
+    try {
+      await ensureInvestReadyTable();
+      res.json(await storage.getAllInvestReadyApplications());
+    } catch (error) {
+      console.error("Error fetching Invest Ready applications:", error);
+      res.status(500).json({ error: "Erreur serveur" });
     }
   });
 

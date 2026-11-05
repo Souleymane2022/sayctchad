@@ -15,12 +15,13 @@ import {
   type ElectionCandidate, type InsertCandidate,
   type ElectionVote, type InsertVote,
   type AwsRestartApplication, type InsertAwsRestartApplication,
+  type InvestReadyApplication, type InsertInvestReadyApplication,
   type PlanActivity, type InsertPlanActivity,
   type ActivityReport, type InsertActivityReport,
   users, members, contactMessages, newsletterSubscribers,
   opportunities, partners, trainings, newsArticles, events, achievements,
   thunderbirdApplications, electionCandidates, electionVotes,
-  awsRestartApplications, planActivities, activityReports
+  awsRestartApplications, investReadyApplications, planActivities, activityReports
 } from "../shared/schema";
 import { db, sql as neonSql } from "./db";
 import { eq, desc, asc, sql, or, isNull, isNotNull, and } from "drizzle-orm";
@@ -98,6 +99,9 @@ export interface IStorage {
   getAwsRestartApplicationByEmail(email: string): Promise<AwsRestartApplication | undefined>;
   getAllAwsRestartApplications(): Promise<AwsRestartApplication[]>;
   updateAwsRestartApplicationStatus(id: string, status: string): Promise<AwsRestartApplication | undefined>;
+  createInvestReadyApplication(application: InsertInvestReadyApplication): Promise<InvestReadyApplication>;
+  getInvestReadyApplicationByEmail(email: string): Promise<InvestReadyApplication | undefined>;
+  getAllInvestReadyApplications(): Promise<InvestReadyApplication[]>;
 
   createCandidate(candidate: InsertCandidate): Promise<ElectionCandidate>;
   getApprovedCandidates(): Promise<ElectionCandidate[]>;
@@ -466,6 +470,21 @@ export class DatabaseStorage implements IStorage {
       .where(eq(awsRestartApplications.id, id))
       .returning();
     return updated;
+  }
+
+  async createInvestReadyApplication(application: InsertInvestReadyApplication): Promise<InvestReadyApplication> {
+    const [newApp] = await db.insert(investReadyApplications).values(application).returning();
+    return newApp;
+  }
+
+  async getInvestReadyApplicationByEmail(email: string): Promise<InvestReadyApplication | undefined> {
+    const [app] = await db.select().from(investReadyApplications)
+      .where(sql`lower(${investReadyApplications.founderEmail}) = lower(${email})`);
+    return app;
+  }
+
+  async getAllInvestReadyApplications(): Promise<InvestReadyApplication[]> {
+    return db.select().from(investReadyApplications).orderBy(desc(investReadyApplications.createdAt));
   }
 
   private mapCandidateRow(row: any): ElectionCandidate {

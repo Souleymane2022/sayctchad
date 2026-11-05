@@ -38264,8 +38264,10 @@ var init_drizzle_zod = __esm({
 var schema_exports = {};
 __export(schema_exports, {
   AWS_RESTART_APPLICATION_DEADLINE: () => AWS_RESTART_APPLICATION_DEADLINE,
+  INVEST_READY_DEADLINE: () => INVEST_READY_DEADLINE,
   achievements: () => achievements,
   activityReports: () => activityReports,
+  ageFromDateOfBirth: () => ageFromDateOfBirth,
   awsRestartApplications: () => awsRestartApplications,
   contactMessages: () => contactMessages,
   electionCandidates: () => electionCandidates,
@@ -38277,6 +38279,7 @@ __export(schema_exports, {
   insertCandidateSchema: () => insertCandidateSchema,
   insertContactMessageSchema: () => insertContactMessageSchema,
   insertEventSchema: () => insertEventSchema,
+  insertInvestReadyApplicationSchema: () => insertInvestReadyApplicationSchema,
   insertMemberSchema: () => insertMemberSchema,
   insertNewsArticleSchema: () => insertNewsArticleSchema,
   insertNewsletterSubscriberSchema: () => insertNewsletterSubscriberSchema,
@@ -38287,6 +38290,7 @@ __export(schema_exports, {
   insertTrainingSchema: () => insertTrainingSchema,
   insertUserSchema: () => insertUserSchema,
   insertVoteSchema: () => insertVoteSchema,
+  investReadyApplications: () => investReadyApplications,
   members: () => members,
   newsArticles: () => newsArticles,
   newsletterSubscribers: () => newsletterSubscribers,
@@ -38297,7 +38301,16 @@ __export(schema_exports, {
   trainings: () => trainings,
   users: () => users
 });
-var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, AWS_RESTART_APPLICATION_DEADLINE, YOUTUBE_URL_REGEX, insertAwsRestartApplicationSchema, planActivities, insertPlanActivitySchema, activityReports, insertActivityReportSchema;
+function ageFromDateOfBirth(dob) {
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return -1;
+  const now = /* @__PURE__ */ new Date();
+  let age = now.getFullYear() - birth.getFullYear();
+  const m2 = now.getMonth() - birth.getMonth();
+  if (m2 < 0 || m2 === 0 && now.getDate() < birth.getDate()) age--;
+  return age;
+}
+var users, insertUserSchema, members, insertMemberSchema, contactMessages, insertContactMessageSchema, newsletterSubscribers, insertNewsletterSubscriberSchema, opportunities, insertOpportunitySchema, partners, insertPartnerSchema, trainings, insertTrainingSchema, newsArticles, insertNewsArticleSchema, events, insertEventSchema, achievements, insertAchievementSchema, thunderbirdApplications, insertThunderbirdApplicationSchema, electionCandidates, insertCandidateSchema, electionVotes, insertVoteSchema, awsRestartApplications, AWS_RESTART_APPLICATION_DEADLINE, YOUTUBE_URL_REGEX, insertAwsRestartApplicationSchema, INVEST_READY_DEADLINE, investReadyApplications, insertInvestReadyApplicationSchema, planActivities, insertPlanActivitySchema, activityReports, insertActivityReportSchema;
 var init_schema2 = __esm({
   "shared/schema.ts"() {
     "use strict";
@@ -38598,6 +38611,69 @@ var init_schema2 = __esm({
       photoUrl: z.string().min(1, "Votre photo d'identit\xE9 est requise").regex(/^data:image\//, "Format de photo invalide")
     }).omit({
       id: true,
+      createdAt: true
+    });
+    INVEST_READY_DEADLINE = /* @__PURE__ */ new Date("2026-11-11T23:00:00Z");
+    investReadyApplications = pgTable("invest_ready_applications", {
+      id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+      startupName: text("startup_name").notNull(),
+      sector: text("sector").notNull(),
+      foundingYear: text("founding_year").notNull(),
+      description: text("description").notNull(),
+      website: text("website"),
+      stage: text("stage").notNull(),
+      revenue12m: text("revenue_12m"),
+      fundingAmount: text("funding_amount").notNull(),
+      fundingTimeline: text("funding_timeline").notNull(),
+      founderFirstName: text("founder_first_name").notNull(),
+      founderLastName: text("founder_last_name").notNull(),
+      founderDob: text("founder_dob").notNull(),
+      founderGender: text("founder_gender").notNull(),
+      founderPhone: text("founder_phone").notNull(),
+      founderEmail: text("founder_email").notNull(),
+      secondFirstName: text("second_first_name"),
+      secondLastName: text("second_last_name"),
+      secondDob: text("second_dob"),
+      secondGender: text("second_gender"),
+      idFileName: text("id_file_name").notNull(),
+      idFileData: text("id_file_data").notNull(),
+      deckFileName: text("deck_file_name"),
+      deckFileData: text("deck_file_data"),
+      presenceCommitment: boolean("presence_commitment").notNull(),
+      dataConsent: boolean("data_consent").notNull(),
+      status: text("status").notNull().default("pending"),
+      createdAt: timestamp("created_at").defaultNow()
+    });
+    insertInvestReadyApplicationSchema = createInsertSchema(investReadyApplications, {
+      startupName: z.string().min(1, "Nom de la start-up requis"),
+      sector: z.string().min(1, "Secteur requis"),
+      foundingYear: z.string().min(4, "Ann\xE9e de cr\xE9ation requise"),
+      description: z.string().min(1, "Description requise").refine((v2) => v2.trim().split(/\s+/).filter(Boolean).length <= 300, "La description doit faire 300 mots maximum"),
+      stage: z.string().min(1, "Stade requis"),
+      fundingAmount: z.string().min(1, "Montant de lev\xE9e envisag\xE9 requis"),
+      fundingTimeline: z.string().min(1, "\xC9ch\xE9ance de lev\xE9e requise"),
+      founderFirstName: z.string().min(1, "Pr\xE9nom requis"),
+      founderLastName: z.string().min(1, "Nom requis"),
+      founderDob: z.string().min(1, "Date de naissance requise").refine((v2) => {
+        const age = ageFromDateOfBirth(v2);
+        return age >= 18 && age <= 35;
+      }, "Le fondateur principal doit avoir entre 18 et 35 ans au moment de la candidature"),
+      founderGender: z.string().min(1, "Sexe requis"),
+      founderPhone: z.string().min(6, "Num\xE9ro WhatsApp requis"),
+      founderEmail: z.string().email("Email invalide").min(1, "Email requis"),
+      secondDob: z.string().optional().nullable().refine((v2) => {
+        if (!v2) return true;
+        const age = ageFromDateOfBirth(v2);
+        return age >= 18 && age <= 35;
+      }, "Le deuxi\xE8me participant doit avoir entre 18 et 35 ans au moment de la candidature"),
+      idFileName: z.string().min(1, "La pi\xE8ce d'identit\xE9 du fondateur principal est requise"),
+      idFileData: z.string().min(1, "La pi\xE8ce d'identit\xE9 du fondateur principal est requise").regex(/^data:(image\/|application\/pdf)/, "La pi\xE8ce d'identit\xE9 doit \xEAtre une image ou un PDF").max(72e5, "La pi\xE8ce d'identit\xE9 d\xE9passe 5 Mo"),
+      deckFileData: z.string().optional().nullable().refine((v2) => !v2 || /^data:/.test(v2), "Fichier de pr\xE9sentation invalide").refine((v2) => !v2 || v2.length <= 143e5, "La pr\xE9sentation d\xE9passe 10 Mo"),
+      presenceCommitment: z.boolean().refine((v2) => v2 === true, "L'engagement de pr\xE9sence sur les trois jours est requis"),
+      dataConsent: z.boolean().refine((v2) => v2 === true, "Le consentement au traitement des donn\xE9es est requis")
+    }).omit({
+      id: true,
+      status: true,
       createdAt: true
     });
     planActivities = pgTable("plan_activities", {
@@ -64531,6 +64607,17 @@ var DatabaseStorage = class {
     const [updated] = await db.update(awsRestartApplications).set({ status }).where(eq(awsRestartApplications.id, id)).returning();
     return updated;
   }
+  async createInvestReadyApplication(application) {
+    const [newApp] = await db.insert(investReadyApplications).values(application).returning();
+    return newApp;
+  }
+  async getInvestReadyApplicationByEmail(email) {
+    const [app2] = await db.select().from(investReadyApplications).where(sql`lower(${investReadyApplications.founderEmail}) = lower(${email})`);
+    return app2;
+  }
+  async getAllInvestReadyApplications() {
+    return db.select().from(investReadyApplications).orderBy(desc(investReadyApplications.createdAt));
+  }
   mapCandidateRow(row) {
     return {
       id: row.id,
@@ -65921,6 +66008,46 @@ async function registerRoutes(httpServer2, app2) {
     }
   );
   ensureAwsVideoColumn().catch((e) => console.error("ensureAwsVideoColumn au d\xE9marrage:", e));
+  let investReadyTableEnsured = null;
+  function ensureInvestReadyTable() {
+    if (!investReadyTableEnsured) {
+      investReadyTableEnsured = sql2`CREATE TABLE IF NOT EXISTS "invest_ready_applications" (
+        "id" varchar PRIMARY KEY DEFAULT gen_random_uuid(),
+        "startup_name" text NOT NULL,
+        "sector" text NOT NULL,
+        "founding_year" text NOT NULL,
+        "description" text NOT NULL,
+        "website" text,
+        "stage" text NOT NULL,
+        "revenue_12m" text,
+        "funding_amount" text NOT NULL,
+        "funding_timeline" text NOT NULL,
+        "founder_first_name" text NOT NULL,
+        "founder_last_name" text NOT NULL,
+        "founder_dob" text NOT NULL,
+        "founder_gender" text NOT NULL,
+        "founder_phone" text NOT NULL,
+        "founder_email" text NOT NULL,
+        "second_first_name" text,
+        "second_last_name" text,
+        "second_dob" text,
+        "second_gender" text,
+        "id_file_name" text NOT NULL,
+        "id_file_data" text NOT NULL,
+        "deck_file_name" text,
+        "deck_file_data" text,
+        "presence_commitment" boolean NOT NULL,
+        "data_consent" boolean NOT NULL,
+        "status" text NOT NULL DEFAULT 'pending',
+        "created_at" timestamp DEFAULT now()
+      )`.then(() => void 0).catch((err) => {
+        investReadyTableEnsured = null;
+        throw err;
+      });
+    }
+    return investReadyTableEnsured;
+  }
+  ensureInvestReadyTable().catch((e) => console.error("ensureInvestReadyTable au d\xE9marrage:", e));
   const apiLimiter = rate_limit_default({
     windowMs: 15 * 60 * 1e3,
     // 15 minutes
@@ -65985,6 +66112,9 @@ async function registerRoutes(httpServer2, app2) {
       { url: "/", priority: "1.0", changefreq: "weekly" },
       { url: "/a-propos", priority: "0.8", changefreq: "monthly" },
       { url: "/programmes", priority: "0.8", changefreq: "monthly" },
+      { url: "/programmes/aws-restart", priority: "0.9", changefreq: "weekly" },
+      { url: "/programmes/invest-ready-tchad", priority: "0.9", changefreq: "weekly" },
+      { url: "/programmes/thunderbird", priority: "0.8", changefreq: "weekly" },
       { url: "/formations", priority: "0.8", changefreq: "weekly" },
       { url: "/evenements", priority: "0.7", changefreq: "weekly" },
       { url: "/actualites", priority: "0.9", changefreq: "daily" },
@@ -66528,6 +66658,67 @@ L'\xE9quipe SAYC Tchad`
       }
       console.error("Error creating AWS re/Start application:", error);
       res.status(500).json({ error: "Erreur lors de l'enregistrement de votre candidature." });
+    }
+  });
+  app2.post("/api/invest-ready-applications", applicationLimiter, async (req, res) => {
+    try {
+      if (/* @__PURE__ */ new Date() >= INVEST_READY_DEADLINE) {
+        return res.status(403).json({ error: "Les candidatures sont closes" });
+      }
+      await ensureInvestReadyTable();
+      const validatedData = insertInvestReadyApplicationSchema.parse(req.body);
+      const existing = await storage.getInvestReadyApplicationByEmail(validatedData.founderEmail);
+      if (existing) {
+        return res.status(409).json({ error: "Une candidature a d\xE9j\xE0 \xE9t\xE9 soumise avec cet email." });
+      }
+      const application = await storage.createInvestReadyApplication(validatedData);
+      sendNotificationEmail(
+        "Nouvelle Candidature Invest Ready Tchad",
+        `Nouvelle candidature Invest Ready Tchad.
+
+Start-up: ${application.startupName}
+Secteur: ${application.sector} | Stade: ${application.stage} | Cr\xE9\xE9e en: ${application.foundingYear}
+Lev\xE9e envisag\xE9e: ${application.fundingAmount} (\xE9ch\xE9ance: ${application.fundingTimeline})
+Site/r\xE9seaux: ${application.website || "Non fourni"}
+
+Fondateur principal: ${application.founderFirstName} ${application.founderLastName} (${application.founderGender})
+Email: ${application.founderEmail} | WhatsApp: ${application.founderPhone}
+Deuxi\xE8me participant: ${application.secondFirstName ? `${application.secondFirstName} ${application.secondLastName} (${application.secondGender})` : "Aucun"}
+
+Pi\xE8ce d'identit\xE9: ${application.idFileName}
+Pitch deck: ${application.deckFileName || "Non fourni"}
+
+Description:
+${application.description}`
+      );
+      sendAutoReplyEmail(
+        application.founderEmail,
+        "Confirmation de r\xE9ception : candidature Invest Ready Tchad",
+        `Bonjour ${application.founderFirstName},
+
+Nous confirmons la bonne r\xE9ception de la candidature de ${application.startupName} au bootcamp Invest Ready Tchad, organis\xE9 par le Smart Africa Youth Chapter Tchad avec le soutien de l'Ambassade de France au Tchad.
+
+Les 20 start-ups s\xE9lectionn\xE9es seront notifi\xE9es par email et WhatsApp.
+
+Cordialement,
+L'\xE9quipe SAYC Tchad`
+      );
+      res.status(201).json({ success: true, id: application.id });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: error.errors?.[0]?.message || "Donn\xE9es invalides", details: error.errors });
+      }
+      console.error("Error creating Invest Ready application:", error);
+      res.status(500).json({ error: "Erreur lors de l'envoi de la candidature" });
+    }
+  });
+  app2.get("/api/admin/invest-ready-applications", requireAdmin, async (_req, res) => {
+    try {
+      await ensureInvestReadyTable();
+      res.json(await storage.getAllInvestReadyApplications());
+    } catch (error) {
+      console.error("Error fetching Invest Ready applications:", error);
+      res.status(500).json({ error: "Erreur serveur" });
     }
   });
   app2.get("/api/admin/aws-restart-applications", requireAdmin, async (_req, res) => {

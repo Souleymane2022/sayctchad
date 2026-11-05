@@ -13,6 +13,7 @@ const getNavLinks = (t: any) => [
   { href: "/programmes", label: t("nav.programs") },
   { href: "/programmes/thunderbird", label: "Thunderbird" },
   { href: "/programmes/aws-restart", label: "AWS re/Start" },
+  { href: "/programmes/invest-ready-tchad", label: "Invest Ready" },
   { href: "/formations", label: t("nav.training") },
   { href: "/opportunites", label: t("nav.opportunities") },
   { href: "/evenements", label: "Événements" },

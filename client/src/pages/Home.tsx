@@ -418,7 +418,65 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Programmes phares */}
       <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4">
+              <Award className="w-3 h-3 mr-1" />
+              Programmes phares
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4">Nos appels à candidatures</h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Des opportunités concrètes pour les jeunes talents et les start-ups du Tchad.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <Card className="group hover-elevate transition-all duration-300 border-t-4 border-t-primary">
+              <CardHeader className="pb-3">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <CardTitle className="font-heading text-xl">AWS re/Start</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-sm leading-relaxed mb-4">
+                  Bootcamp cloud gratuit de 12 semaines à N'Djamena : 25 jeunes formés et préparés
+                  à la certification AWS Cloud Practitioner. Financé par l'Ambassade des États-Unis.
+                </CardDescription>
+                <Link href="/programmes/aws-restart">
+                  <Button variant="outline" size="sm">
+                    Découvrir
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+            <Card className="group hover-elevate transition-all duration-300 border-t-4 border-t-accent">
+              <CardHeader className="pb-3">
+                <div className="w-12 h-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center mb-3">
+                  <TrendingUp className="w-6 h-6" />
+                </div>
+                <CardTitle className="font-heading text-xl">Invest Ready Tchad</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription className="text-sm leading-relaxed mb-4">
+                  Bootcamp de 3 jours pour préparer 20 start-ups tchadiennes à la levée de fonds.
+                  Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026.
+                </CardDescription>
+                <Link href="/programmes/invest-ready-tchad">
+                  <Button variant="outline" size="sm">
+                    Postuler
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-gallery-tag">
