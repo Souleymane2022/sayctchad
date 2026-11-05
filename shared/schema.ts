@@ -374,6 +374,106 @@ export const insertAwsRestartApplicationSchema = createInsertSchema(awsRestartAp
 export type InsertAwsRestartApplication = z.infer<typeof insertAwsRestartApplicationSchema>;
 export type AwsRestartApplication = typeof awsRestartApplications.$inferSelect;
 
+// ─── Invest Ready Tchad : candidatures des start-ups ─────────────────────────
+// Clôture des candidatures : 11 novembre 2026 à minuit, heure de N'Djamena (UTC+1)
+export const INVEST_READY_DEADLINE = new Date("2026-11-11T23:00:00Z");
+
+export function ageFromDateOfBirth(dob: string): number {
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return -1;
+  const now = new Date();
+  let age = now.getFullYear() - birth.getFullYear();
+  const m = now.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) age--;
+  return age;
+}
+
+export const investReadyApplications = pgTable("invest_ready_applications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  startupName: text("startup_name").notNull(),
+  sector: text("sector").notNull(),
+  foundingYear: text("founding_year").notNull(),
+  description: text("description").notNull(),
+  website: text("website"),
+  stage: text("stage").notNull(),
+  revenue12m: text("revenue_12m"),
+  fundingAmount: text("funding_amount").notNull(),
+  fundingTimeline: text("funding_timeline").notNull(),
+  founderFirstName: text("founder_first_name").notNull(),
+  founderLastName: text("founder_last_name").notNull(),
+  founderDob: text("founder_dob").notNull(),
+  founderGender: text("founder_gender").notNull(),
+  founderPhone: text("founder_phone").notNull(),
+  founderEmail: text("founder_email").notNull(),
+  secondFirstName: text("second_first_name"),
+  secondLastName: text("second_last_name"),
+  secondDob: text("second_dob"),
+  secondGender: text("second_gender"),
+  idFileName: text("id_file_name").notNull(),
+  idFileData: text("id_file_data").notNull(),
+  deckFileName: text("deck_file_name"),
+  deckFileData: text("deck_file_data"),
+  presenceCommitment: boolean("presence_commitment").notNull(),
+  dataConsent: boolean("data_consent").notNull(),
+  status: text("status").notNull().default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertInvestReadyApplicationSchema = createInsertSchema(investReadyApplications, {
+  startupName: z.string().min(1, "Nom de la start-up requis"),
+  sector: z.string().min(1, "Secteur requis"),
+  foundingYear: z.string().min(4, "Année de création requise"),
+  description: z
+    .string()
+    .min(1, "Description requise")
+    .refine((v) => v.trim().split(/\s+/).filter(Boolean).length <= 300, "La description doit faire 300 mots maximum"),
+  stage: z.string().min(1, "Stade requis"),
+  fundingAmount: z.string().min(1, "Montant de levée envisagé requis"),
+  fundingTimeline: z.string().min(1, "Échéance de levée requise"),
+  founderFirstName: z.string().min(1, "Prénom requis"),
+  founderLastName: z.string().min(1, "Nom requis"),
+  founderDob: z
+    .string()
+    .min(1, "Date de naissance requise")
+    .refine((v) => {
+      const age = ageFromDateOfBirth(v);
+      return age >= 18 && age <= 35;
+    }, "Le fondateur principal doit avoir entre 18 et 35 ans au moment de la candidature"),
+  founderGender: z.string().min(1, "Sexe requis"),
+  founderPhone: z.string().min(6, "Numéro WhatsApp requis"),
+  founderEmail: z.string().email("Email invalide").min(1, "Email requis"),
+  secondDob: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((v) => {
+      if (!v) return true;
+      const age = ageFromDateOfBirth(v);
+      return age >= 18 && age <= 35;
+    }, "Le deuxième participant doit avoir entre 18 et 35 ans au moment de la candidature"),
+  idFileName: z.string().min(1, "La pièce d'identité du fondateur principal est requise"),
+  idFileData: z
+    .string()
+    .min(1, "La pièce d'identité du fondateur principal est requise")
+    .regex(/^data:(image\/|application\/pdf)/, "La pièce d'identité doit être une image ou un PDF")
+    .max(7_200_000, "La pièce d'identité dépasse 5 Mo"),
+  deckFileData: z
+    .string()
+    .optional()
+    .nullable()
+    .refine((v) => !v || /^data:/.test(v), "Fichier de présentation invalide")
+    .refine((v) => !v || v.length <= 14_300_000, "La présentation dépasse 10 Mo"),
+  presenceCommitment: z.boolean().refine((v) => v === true, "L'engagement de présence sur les trois jours est requis"),
+  dataConsent: z.boolean().refine((v) => v === true, "Le consentement au traitement des données est requis"),
+}).omit({
+  id: true,
+  status: true,
+  createdAt: true,
+});
+
+export type InsertInvestReadyApplication = z.infer<typeof insertInvestReadyApplicationSchema>;
+export type InvestReadyApplication = typeof investReadyApplications.$inferSelect;
+
 // ─── Plan Semestriel des Activités ────────────────────────────────────────────
 export const planActivities = pgTable("plan_activities", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

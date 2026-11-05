@@ -32,6 +32,7 @@ import BrandAssets from "@/pages/BrandAssets";
 import VotersAudit from "@/pages/elections/VotersAudit";
 import PlanActivites from "@/pages/PlanActivites";
 import AwsTracking from "@/pages/AwsTracking";
+import InvestReadyTchad from "@/pages/InvestReadyTchad";
 
 function Router() {
   return (
@@ -41,6 +42,7 @@ function Router() {
       <Route path="/programmes/thunderbird" component={ThunderbirdProgram} />
       <Route path="/programmes/thunderbird/resultats" component={ThunderbirdResults} />
       <Route path="/programmes/aws-restart" component={AwsRestartProgram} />
+      <Route path="/programmes/invest-ready-tchad" component={InvestReadyTchad} />
       <Route path="/aws-suivi" component={AwsTracking} />
       <Route path="/programmes" component={Programs} />
       <Route path="/opportunites" component={Opportunities} />
