@@ -27,7 +27,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Label } from "@/components/ui/label";
 import {
     Rocket, Send, CheckCircle2, Calendar, Users, Clock, TrendingUp, Target,
-    Lightbulb, Mic, Trophy, FileText, Upload, Mail, Phone, ArrowRight, Landmark,
+    Lightbulb, Mic, Trophy, FileText, Upload, ArrowRight, Landmark,
     PiggyBank, BarChart3, Presentation, Megaphone,
 } from "lucide-react";
 
@@ -742,20 +742,9 @@ export default function InvestReadyTchad() {
                         </Card>
                     )}
 
-                    {/* Contact + mise en œuvre */}
-                    <div className="mt-16 grid md:grid-cols-2 gap-8">
-                        <div className="p-8 rounded-2xl bg-primary/5 border border-border">
-                            <h4 className="font-bold text-xl mb-3 text-primary">Contact</h4>
-                            <p className="text-sm text-muted-foreground leading-relaxed flex items-center gap-2 mb-2">
-                                <Mail className="w-4 h-4 text-accent" />
-                                <a href="mailto:sayctchad@gmail.com" className="hover:underline">sayctchad@gmail.com</a>
-                            </p>
-                            <p className="text-sm text-muted-foreground leading-relaxed flex items-center gap-2">
-                                <Phone className="w-4 h-4 text-accent" />
-                                <a href="tel:+235920151111" className="hover:underline">+235 92 01 51 111</a>
-                            </p>
-                        </div>
-                        <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">
+                    {/* Bon à savoir */}
+                    <div className="mt-16 max-w-2xl mx-auto">
+                        <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10 text-center">
                             <h4 className="font-bold text-xl mb-3 text-green-700">Bon à savoir</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 Le bootcamp a lieu à N'Djamena dans le cadre du Novembre Numérique.
