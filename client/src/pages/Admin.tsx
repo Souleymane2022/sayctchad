@@ -1554,6 +1554,7 @@ interface InvestReadyRow {
   secondLastName: string | null;
   secondDob: string | null;
   secondGender: string | null;
+  videoUrl: string | null;
   idFileName: string;
   deckFileName: string | null;
   hasId: boolean;
@@ -1584,13 +1585,13 @@ function InvestReadyApplicationsTab() {
     const headers = [
       "Start-up", "Secteur", "Année", "Stade", "CA 12 mois (FCFA)", "Levée envisagée", "Échéance",
       "Fondateur", "Sexe", "Date de naissance", "Téléphone", "Email",
-      "2e participant", "Sexe 2e", "Site web", "Pièce d'identité", "Pitch deck", "Description", "Date candidature"
+      "2e participant", "Sexe 2e", "Site web", "Vidéo pitch (YouTube)", "Pièce d'identité", "Pitch deck", "Description", "Date candidature"
     ];
     const rows = applications.map(app => [
       app.startupName, app.sector, app.foundingYear, app.stage, app.revenue12m || "", app.fundingAmount, app.fundingTimeline,
       `${app.founderFirstName} ${app.founderLastName}`, app.founderGender, app.founderDob, app.founderPhone, app.founderEmail,
       app.secondFirstName ? `${app.secondFirstName} ${app.secondLastName}` : "", app.secondGender || "", app.website || "",
-      app.hasId ? "Oui" : "Non", app.hasDeck ? "Oui" : "Non", app.description,
+      app.videoUrl || "", app.hasId ? "Oui" : "Non", app.hasDeck ? "Oui" : "Non", app.description,
       app.createdAt ? new Date(app.createdAt).toLocaleString("fr-FR") : ""
     ]);
     const csv = [headers, ...rows]
@@ -1686,6 +1687,13 @@ function InvestReadyApplicationsTab() {
                           <div><Label className="text-xs text-muted-foreground">Email</Label><p className="text-sm font-medium break-all">{app.founderEmail}</p></div>
                           <div><Label className="text-xs text-muted-foreground">WhatsApp</Label><p className="text-sm font-medium">{app.founderPhone}</p></div>
                           <div className="md:col-span-2"><Label className="text-xs text-muted-foreground">Deuxième participant</Label><p className="text-sm font-medium">{app.secondFirstName ? `${app.secondFirstName} ${app.secondLastName} (${app.secondGender}) - né(e) le ${app.secondDob}` : "Aucun"}</p></div>
+                          <div className="md:col-span-2"><Label className="text-xs text-muted-foreground">Vidéo pitch (1-2 min)</Label>
+                            {app.videoUrl ? (
+                              <a href={app.videoUrl} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-blue-600 hover:underline break-all">{app.videoUrl}</a>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">Non fournie</p>
+                            )}
+                          </div>
                           <div className="md:col-span-2 space-y-1">
                             <Label className="text-xs text-muted-foreground font-bold">Description</Label>
                             <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed">{app.description}</div>

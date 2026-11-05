@@ -38635,6 +38635,7 @@ var init_schema2 = __esm({
       secondLastName: text("second_last_name"),
       secondDob: text("second_dob"),
       secondGender: text("second_gender"),
+      videoUrl: text("video_url"),
       idFileName: text("id_file_name").notNull(),
       idFileData: text("id_file_data").notNull(),
       deckFileName: text("deck_file_name"),
@@ -38666,6 +38667,7 @@ var init_schema2 = __esm({
         const age = ageFromDateOfBirth(v2);
         return age >= 18 && age <= 35;
       }, "Le deuxi\xE8me participant doit avoir entre 18 et 35 ans au moment de la candidature"),
+      videoUrl: z.string().min(1, "Le lien YouTube de votre vid\xE9o pitch est requis").regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)"),
       idFileName: z.string().min(1, "La pi\xE8ce d'identit\xE9 du fondateur principal est requise"),
       idFileData: z.string().min(1, "La pi\xE8ce d'identit\xE9 du fondateur principal est requise").regex(/^data:(image\/|application\/pdf)/, "La pi\xE8ce d'identit\xE9 doit \xEAtre une image ou un PDF").max(72e5, "La pi\xE8ce d'identit\xE9 d\xE9passe 5 Mo"),
       deckFileData: z.string().optional().nullable().refine((v2) => !v2 || /^data:/.test(v2), "Fichier de pr\xE9sentation invalide").refine((v2) => !v2 || v2.length <= 143e5, "La pr\xE9sentation d\xE9passe 10 Mo"),
@@ -66028,6 +66030,7 @@ async function registerRoutes(httpServer2, app2) {
         "founder_gender" text NOT NULL,
         "founder_phone" text NOT NULL,
         "founder_email" text NOT NULL,
+        "video_url" text,
         "second_first_name" text,
         "second_last_name" text,
         "second_dob" text,
@@ -66040,7 +66043,7 @@ async function registerRoutes(httpServer2, app2) {
         "data_consent" boolean NOT NULL,
         "status" text NOT NULL DEFAULT 'pending',
         "created_at" timestamp DEFAULT now()
-      )`.then(() => void 0).catch((err) => {
+      )`.then(() => sql2`ALTER TABLE "invest_ready_applications" ADD COLUMN IF NOT EXISTS "video_url" text`).then(() => void 0).catch((err) => {
         investReadyTableEnsured = null;
         throw err;
       });
@@ -66685,6 +66688,7 @@ Fondateur principal: ${application.founderFirstName} ${application.founderLastNa
 Email: ${application.founderEmail} | WhatsApp: ${application.founderPhone}
 Deuxi\xE8me participant: ${application.secondFirstName ? `${application.secondFirstName} ${application.secondLastName} (${application.secondGender})` : "Aucun"}
 
+Vid\xE9o pitch (YouTube): ${application.videoUrl || "Non fournie"}
 Pi\xE8ce d'identit\xE9: ${application.idFileName}
 Pitch deck: ${application.deckFileName || "Non fourni"}
 

@@ -104,6 +104,7 @@ export default function InvestReadyTchad() {
             founderGender: "",
             founderPhone: "",
             founderEmail: "",
+            videoUrl: "",
             secondFirstName: "",
             secondLastName: "",
             secondDob: "",
@@ -598,10 +599,52 @@ export default function InvestReadyTchad() {
                                             </div>
                                         </div>
 
-                                        {/* Section 4 : documents */}
+                                        {/* Section 4 : vidéo pitch */}
                                         <div className="space-y-8">
                                             <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
                                                 <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">4</span>
+                                                Vidéo Pitch (1 à 2 minutes)
+                                            </h3>
+                                            <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-6 space-y-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+                                                        <Mic className="w-6 h-6 text-red-600" />
+                                                    </div>
+                                                    <p className="text-sm text-foreground font-medium">
+                                                        Une vidéo pitch d'1 à 2 minutes est <strong>obligatoire</strong>. C'est elle qui permet au comité d'évaluer votre capacité à convaincre. Voici comment faire :
+                                                    </p>
+                                                </div>
+                                                <ol className="space-y-3 text-sm text-muted-foreground list-none">
+                                                    <li className="flex gap-3">
+                                                        <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">1</span>
+                                                        <span><strong className="text-foreground">Enregistrez une vidéo d'1 à 2 minutes</strong> avec votre téléphone : présentez votre start-up, le problème que vous résolvez, et ce que vous attendez de la levée de fonds.</span>
+                                                    </li>
+                                                    <li className="flex gap-3">
+                                                        <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">2</span>
+                                                        <span><strong className="text-foreground">Publiez-la sur YouTube</strong> en visibilité <strong className="text-foreground">« Non répertoriée »</strong> (seules les personnes ayant le lien peuvent la voir).</span>
+                                                    </li>
+                                                    <li className="flex gap-3">
+                                                        <span className="bg-red-500/10 text-red-700 w-6 h-6 rounded-full flex items-center justify-center shrink-0 font-bold text-xs">3</span>
+                                                        <span><strong className="text-foreground">Copiez le lien</strong> (bouton « Partager ») et collez-le ci-dessous.</span>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                            <FormField control={form.control} name="videoUrl" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-sm font-semibold">Lien YouTube de votre vidéo pitch <span className="text-destructive">*</span></FormLabel>
+                                                    <FormControl>
+                                                        <Input type="url" placeholder="https://youtu.be/votre-video" className={inputClass} {...field} value={field.value ?? ""} />
+                                                    </FormControl>
+                                                    <FormDescription>Formats acceptés : youtube.com/watch?v=..., youtu.be/..., youtube.com/shorts/...</FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                        </div>
+
+                                        {/* Section 5 : documents */}
+                                        <div className="space-y-8">
+                                            <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
+                                                <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">5</span>
                                                 Documents
                                             </h3>
                                             <div className="grid md:grid-cols-2 gap-8">
@@ -638,10 +681,10 @@ export default function InvestReadyTchad() {
                                             </div>
                                         </div>
 
-                                        {/* Section 5 : engagements */}
+                                        {/* Section 6 : engagements */}
                                         <div className="space-y-8">
                                             <h3 className="text-2xl font-bold flex items-center gap-3 border-b border-border pb-3 text-primary">
-                                                <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">5</span>
+                                                <span className="bg-accent text-accent-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-lg font-heading">6</span>
                                                 Engagements
                                             </h3>
                                             <div className="space-y-4">

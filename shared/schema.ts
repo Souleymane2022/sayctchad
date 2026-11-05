@@ -409,6 +409,7 @@ export const investReadyApplications = pgTable("invest_ready_applications", {
   secondLastName: text("second_last_name"),
   secondDob: text("second_dob"),
   secondGender: text("second_gender"),
+  videoUrl: text("video_url"),
   idFileName: text("id_file_name").notNull(),
   idFileData: text("id_file_data").notNull(),
   deckFileName: text("deck_file_name"),
@@ -451,6 +452,10 @@ export const insertInvestReadyApplicationSchema = createInsertSchema(investReady
       const age = ageFromDateOfBirth(v);
       return age >= 18 && age <= 35;
     }, "Le deuxième participant doit avoir entre 18 et 35 ans au moment de la candidature"),
+  videoUrl: z
+    .string()
+    .min(1, "Le lien YouTube de votre vidéo pitch est requis")
+    .regex(YOUTUBE_URL_REGEX, "Veuillez fournir un lien YouTube valide (ex: https://youtu.be/... ou https://www.youtube.com/watch?v=...)"),
   idFileName: z.string().min(1, "La pièce d'identité du fondateur principal est requise"),
   idFileData: z
     .string()
