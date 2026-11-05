@@ -812,7 +812,9 @@ Motivation: ${application.motivation}`
 
       const application = await storage.createInvestReadyApplication(validatedData);
 
-      sendNotificationEmail(
+      // En serverless, la fonction peut se figer dès la réponse envoyée :
+      // on attend la fin des envois d'emails avant de répondre.
+      await sendNotificationEmail(
         "Nouvelle Candidature Invest Ready Tchad",
         `Nouvelle candidature Invest Ready Tchad.
 
@@ -832,7 +834,7 @@ Description:
 ${application.description}`
       );
 
-      sendAutoReplyEmail(
+      await sendAutoReplyEmail(
         application.founderEmail,
         "Confirmation de réception : candidature Invest Ready Tchad",
         `Bonjour ${application.founderFirstName},\n\nNous confirmons la bonne réception de la candidature de ${application.startupName} au bootcamp Invest Ready Tchad, organisé par le Smart Africa Youth Chapter Tchad avec le soutien de l'Ambassade de France au Tchad.\n\nLes 20 start-ups sélectionnées seront notifiées par email et WhatsApp.\n\nCordialement,\nL'équipe SAYC Tchad`

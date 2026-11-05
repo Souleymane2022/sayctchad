@@ -371,7 +371,7 @@ Notre \xE9quipe examinera votre profil et vous tiendra inform\xE9(e) de la suite
 
 Cordialement,
 
-L'\xE9quipe SAYC Tchad`),p.status(201).json(b)}catch(h){if(h instanceof U.ZodError)return p.status(400).json({error:"Donn\xE9es invalides",details:h.errors});console.error("Error creating AWS re/Start application:",h),p.status(500).json({error:"Erreur lors de l'enregistrement de votre candidature."})}}),e.post("/api/invest-ready-applications",o,async(m,p)=>{try{if(new Date>=kv)return p.status(403).json({error:"Les candidatures sont closes"});await s();let h=Iv.parse(m.body);if(await z.getInvestReadyApplicationByEmail(h.founderEmail))return p.status(409).json({error:"Une candidature a d\xE9j\xE0 \xE9t\xE9 soumise avec cet email."});let b=await z.createInvestReadyApplication(h);ln("Nouvelle Candidature Invest Ready Tchad",`Nouvelle candidature Invest Ready Tchad.
+L'\xE9quipe SAYC Tchad`),p.status(201).json(b)}catch(h){if(h instanceof U.ZodError)return p.status(400).json({error:"Donn\xE9es invalides",details:h.errors});console.error("Error creating AWS re/Start application:",h),p.status(500).json({error:"Erreur lors de l'enregistrement de votre candidature."})}}),e.post("/api/invest-ready-applications",o,async(m,p)=>{try{if(new Date>=kv)return p.status(403).json({error:"Les candidatures sont closes"});await s();let h=Iv.parse(m.body);if(await z.getInvestReadyApplicationByEmail(h.founderEmail))return p.status(409).json({error:"Une candidature a d\xE9j\xE0 \xE9t\xE9 soumise avec cet email."});let b=await z.createInvestReadyApplication(h);await ln("Nouvelle Candidature Invest Ready Tchad",`Nouvelle candidature Invest Ready Tchad.
 
 Start-up: ${b.startupName}
 Secteur: ${b.sector} | Stade: ${b.stage} | Cr\xE9\xE9e en: ${b.foundingYear}
@@ -386,7 +386,7 @@ Pi\xE8ce d'identit\xE9: ${b.idFileName}
 Pitch deck: ${b.deckFileName||"Non fourni"}
 
 Description:
-${b.description}`),is(b.founderEmail,"Confirmation de r\xE9ception : candidature Invest Ready Tchad",`Bonjour ${b.founderFirstName},
+${b.description}`),await is(b.founderEmail,"Confirmation de r\xE9ception : candidature Invest Ready Tchad",`Bonjour ${b.founderFirstName},
 
 Nous confirmons la bonne r\xE9ception de la candidature de ${b.startupName} au bootcamp Invest Ready Tchad, organis\xE9 par le Smart Africa Youth Chapter Tchad avec le soutien de l'Ambassade de France au Tchad.
 

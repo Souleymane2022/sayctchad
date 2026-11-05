@@ -66672,7 +66672,7 @@ L'\xE9quipe SAYC Tchad`
         return res.status(409).json({ error: "Une candidature a d\xE9j\xE0 \xE9t\xE9 soumise avec cet email." });
       }
       const application = await storage.createInvestReadyApplication(validatedData);
-      sendNotificationEmail(
+      await sendNotificationEmail(
         "Nouvelle Candidature Invest Ready Tchad",
         `Nouvelle candidature Invest Ready Tchad.
 
@@ -66691,7 +66691,7 @@ Pitch deck: ${application.deckFileName || "Non fourni"}
 Description:
 ${application.description}`
       );
-      sendAutoReplyEmail(
+      await sendAutoReplyEmail(
         application.founderEmail,
         "Confirmation de r\xE9ception : candidature Invest Ready Tchad",
         `Bonjour ${application.founderFirstName},
