@@ -752,7 +752,7 @@ export default function InvestReadyTchad() {
                             </p>
                             <p className="text-sm text-muted-foreground leading-relaxed flex items-center gap-2">
                                 <Phone className="w-4 h-4 text-accent" />
-                                <a href="tel:+23566161753" className="hover:underline">+235 66 16 17 53</a>
+                                <a href="tel:+235920151111" className="hover:underline">+235 92 01 51 111</a>
                             </p>
                         </div>
                         <div className="p-8 rounded-2xl bg-green-500/5 border border-green-500/10">
