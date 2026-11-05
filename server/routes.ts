@@ -851,9 +851,39 @@ ${application.description}`
   app.get("/api/admin/invest-ready-applications", requireAdmin, async (_req, res) => {
     try {
       await ensureInvestReadyTable();
-      res.json(await storage.getAllInvestReadyApplications());
+      const apps = await storage.getAllInvestReadyApplications();
+      // Les fichiers (base64, lourds) sont servis individuellement via l'endpoint /file.
+      res.json(apps.map(({ idFileData, deckFileData, ...rest }) => ({
+        ...rest,
+        hasId: !!idFileData,
+        hasDeck: !!deckFileData,
+      })));
     } catch (error) {
       console.error("Error fetching Invest Ready applications:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.get("/api/admin/invest-ready-applications/:id/file", requireAdmin, async (req, res) => {
+    try {
+      await ensureInvestReadyTable();
+      const type = req.query.type === "deck" ? "deck" : "id";
+      // Une seule ligne, une seule colonne : pas de transfert inutile depuis Neon.
+      const rows = (type === "deck"
+        ? await sql`SELECT deck_file_data AS data, deck_file_name AS name FROM invest_ready_applications WHERE id = ${req.params.id} LIMIT 1`
+        : await sql`SELECT id_file_data AS data, id_file_name AS name FROM invest_ready_applications WHERE id = ${req.params.id} LIMIT 1`) as any[];
+      if (rows.length === 0) return res.status(404).json({ error: "Candidature introuvable" });
+      const data: string | null = rows[0].data;
+      const name: string = rows[0].name || `${type}.bin`;
+      if (!data || !data.startsWith("data:")) return res.status(404).json({ error: "Fichier introuvable" });
+      const parts = data.split(",");
+      const mime = parts[0].match(/:(.*?);/)?.[1] || "application/octet-stream";
+      const buffer = Buffer.from(parts[1], "base64");
+      res.setHeader("Content-Type", mime);
+      res.setHeader("Content-Disposition", `attachment; filename="${name.replace(/[^\w.\- ]/g, "_")}"`);
+      res.send(buffer);
+    } catch (error) {
+      console.error("Error serving Invest Ready file:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });

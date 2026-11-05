@@ -1533,6 +1533,195 @@ function AwsRestartApplicationsTab() {
   );
 }
 
+interface InvestReadyRow {
+  id: string;
+  startupName: string;
+  sector: string;
+  foundingYear: string;
+  description: string;
+  website: string | null;
+  stage: string;
+  revenue12m: string | null;
+  fundingAmount: string;
+  fundingTimeline: string;
+  founderFirstName: string;
+  founderLastName: string;
+  founderDob: string;
+  founderGender: string;
+  founderPhone: string;
+  founderEmail: string;
+  secondFirstName: string | null;
+  secondLastName: string | null;
+  secondDob: string | null;
+  secondGender: string | null;
+  idFileName: string;
+  deckFileName: string | null;
+  hasId: boolean;
+  hasDeck: boolean;
+  status: string;
+  createdAt: string | null;
+}
+
+function InvestReadyApplicationsTab() {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const { data: applications = [], isLoading } = useQuery<InvestReadyRow[]>({
+    queryKey: ["/api/admin", "invest-ready-applications"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/invest-ready-applications", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch");
+      return res.json();
+    },
+  });
+
+  const filteredApps = applications.filter(app =>
+    app.startupName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    app.founderEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    `${app.founderFirstName} ${app.founderLastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const exportToExcel = () => {
+    const headers = [
+      "Start-up", "Secteur", "Année", "Stade", "CA 12 mois (FCFA)", "Levée envisagée", "Échéance",
+      "Fondateur", "Sexe", "Date de naissance", "Téléphone", "Email",
+      "2e participant", "Sexe 2e", "Site web", "Pièce d'identité", "Pitch deck", "Description", "Date candidature"
+    ];
+    const rows = applications.map(app => [
+      app.startupName, app.sector, app.foundingYear, app.stage, app.revenue12m || "", app.fundingAmount, app.fundingTimeline,
+      `${app.founderFirstName} ${app.founderLastName}`, app.founderGender, app.founderDob, app.founderPhone, app.founderEmail,
+      app.secondFirstName ? `${app.secondFirstName} ${app.secondLastName}` : "", app.secondGender || "", app.website || "",
+      app.hasId ? "Oui" : "Non", app.hasDeck ? "Oui" : "Non", app.description,
+      app.createdAt ? new Date(app.createdAt).toLocaleString("fr-FR") : ""
+    ]);
+    const csv = [headers, ...rows]
+      .map(row => row.map(cell => `"${(cell || "").toString().replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Candidatures_InvestReady_${new Date().toISOString().split("T")[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (isLoading) return <LoadingTable />;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-700 rounded-lg flex items-center justify-center shadow-sm">
+            <span className="text-white font-black text-[9px]">INVEST</span>
+          </div>
+          <h2 className="text-lg font-semibold">
+            Candidatures Invest Ready ({filteredApps.length} / {applications.length})
+          </h2>
+        </div>
+        <Button variant="outline" onClick={exportToExcel} disabled={applications.length === 0}>
+          <Download className="h-4 w-4 mr-2" />
+          Exporter Excel (CSV)
+        </Button>
+      </div>
+
+      <div className="relative max-w-sm">
+        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Start-up, fondateur ou email..."
+          className="pl-8 h-9"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+      </div>
+
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Start-up</TableHead>
+              <TableHead>Secteur</TableHead>
+              <TableHead>Stade</TableHead>
+              <TableHead>Fondateur</TableHead>
+              <TableHead>Contact</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredApps.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                  Aucune candidature pour le moment (candidatures du 6 au 11 novembre 2026)
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredApps.map((app) => (
+                <TableRow key={app.id}>
+                  <TableCell className="font-medium">{app.startupName}</TableCell>
+                  <TableCell>{app.sector}</TableCell>
+                  <TableCell className="text-xs">{app.stage}</TableCell>
+                  <TableCell>{app.founderFirstName} {app.founderLastName} ({app.founderGender})</TableCell>
+                  <TableCell className="text-xs">{app.founderEmail}<br/>{app.founderPhone}</TableCell>
+                  <TableCell className="text-xs">{app.createdAt ? new Date(app.createdAt).toLocaleDateString("fr-FR") : ""}</TableCell>
+                  <TableCell>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">Détails</Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>Invest Ready - {app.startupName}</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+                          <div><Label className="text-xs text-muted-foreground">Secteur</Label><p className="text-sm font-medium">{app.sector}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Année de création</Label><p className="text-sm font-medium">{app.foundingYear}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Stade</Label><p className="text-sm font-medium">{app.stage}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">CA 12 derniers mois</Label><p className="text-sm font-medium">{app.revenue12m || "Non communiqué"}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Levée envisagée</Label><p className="text-sm font-medium">{app.fundingAmount}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Échéance</Label><p className="text-sm font-medium">{app.fundingTimeline}</p></div>
+                          <div className="md:col-span-2"><Label className="text-xs text-muted-foreground">Site web / réseaux</Label><p className="text-sm font-medium break-all">{app.website || "Non communiqué"}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Fondateur principal</Label><p className="text-sm font-medium">{app.founderFirstName} {app.founderLastName} ({app.founderGender})</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Date de naissance</Label><p className="text-sm font-medium">{app.founderDob}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">Email</Label><p className="text-sm font-medium break-all">{app.founderEmail}</p></div>
+                          <div><Label className="text-xs text-muted-foreground">WhatsApp</Label><p className="text-sm font-medium">{app.founderPhone}</p></div>
+                          <div className="md:col-span-2"><Label className="text-xs text-muted-foreground">Deuxième participant</Label><p className="text-sm font-medium">{app.secondFirstName ? `${app.secondFirstName} ${app.secondLastName} (${app.secondGender}) - né(e) le ${app.secondDob}` : "Aucun"}</p></div>
+                          <div className="md:col-span-2 space-y-1">
+                            <Label className="text-xs text-muted-foreground font-bold">Description</Label>
+                            <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed">{app.description}</div>
+                          </div>
+                          <div className="md:col-span-2 flex flex-wrap gap-3 pt-2">
+                            {app.hasId && (
+                              <a href={`/api/admin/invest-ready-applications/${app.id}/file?type=id`}>
+                                <Button variant="outline" size="sm">
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Pièce d'identité
+                                </Button>
+                              </a>
+                            )}
+                            {app.hasDeck && (
+                              <a href={`/api/admin/invest-ready-applications/${app.id}/file?type=deck`}>
+                                <Button variant="outline" size="sm">
+                                  <Download className="h-4 w-4 mr-2" />
+                                  Pitch deck
+                                </Button>
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+}
+
 function ThunderbirdApplicationsTab() {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -2404,6 +2593,7 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
               <TabsTrigger value="events" className="border">Événements</TabsTrigger>
               <TabsTrigger value="achievements" className="border">Réalisations</TabsTrigger>
               <TabsTrigger value="aws-restart" className="border text-orange-600 font-bold">AWS</TabsTrigger>
+              <TabsTrigger value="invest-ready" className="border text-blue-700 font-bold">Invest Ready</TabsTrigger>
               <TabsTrigger value="thunderbird" className="border">T-Bird</TabsTrigger>
               <TabsTrigger value="elections" className="border">Élections</TabsTrigger>
               <TabsTrigger value="members" className="border">Membres</TabsTrigger>
@@ -2423,6 +2613,9 @@ function AdminDashboard({ onLogout }: { onLogout: () => void }) {
 
           <TabsContent value="aws-restart">
             <AwsRestartApplicationsTab />
+          </TabsContent>
+          <TabsContent value="invest-ready">
+            <InvestReadyApplicationsTab />
           </TabsContent>
           <TabsContent value="thunderbird">
             <ThunderbirdApplicationsTab />
