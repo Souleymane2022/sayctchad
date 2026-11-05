@@ -121,6 +121,7 @@ export async function registerRoutes(
         "founder_gender" text NOT NULL,
         "founder_phone" text NOT NULL,
         "founder_email" text NOT NULL,
+        "video_url" text,
         "second_first_name" text,
         "second_last_name" text,
         "second_dob" text,
@@ -134,6 +135,7 @@ export async function registerRoutes(
         "status" text NOT NULL DEFAULT 'pending',
         "created_at" timestamp DEFAULT now()
       )`
+        .then(() => sql`ALTER TABLE "invest_ready_applications" ADD COLUMN IF NOT EXISTS "video_url" text`)
         .then(() => undefined)
         .catch((err) => {
           investReadyTableEnsured = null;
@@ -827,6 +829,7 @@ Fondateur principal: ${application.founderFirstName} ${application.founderLastNa
 Email: ${application.founderEmail} | WhatsApp: ${application.founderPhone}
 Deuxième participant: ${application.secondFirstName ? `${application.secondFirstName} ${application.secondLastName} (${application.secondGender})` : "Aucun"}
 
+Vidéo pitch (YouTube): ${application.videoUrl || "Non fournie"}
 Pièce d'identité: ${application.idFileName}
 Pitch deck: ${application.deckFileName || "Non fourni"}
 
