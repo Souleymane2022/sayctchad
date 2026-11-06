@@ -20,6 +20,26 @@
     ],
     "rewrites": [
         {
+            "source": "/",
+            "has": [{ "type": "header", "key": "user-agent", "value": ".*(facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|TelegramBot|Slackbot|Discordbot|SkypeUriPreview|Pinterestbot).*" }],
+            "destination": "/api"
+        },
+        {
+            "source": "/programmes",
+            "has": [{ "type": "header", "key": "user-agent", "value": ".*(facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|TelegramBot|Slackbot|Discordbot|SkypeUriPreview|Pinterestbot).*" }],
+            "destination": "/api"
+        },
+        {
+            "source": "/programmes/:slug",
+            "has": [{ "type": "header", "key": "user-agent", "value": ".*(facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|TelegramBot|Slackbot|Discordbot|SkypeUriPreview|Pinterestbot).*" }],
+            "destination": "/api"
+        },
+        {
+            "source": "/(a-propos|rejoindre|formations|actualites|evenements|opportunites|elections|contact|plan-activites|sayc-membres-galerie)",
+            "has": [{ "type": "header", "key": "user-agent", "value": ".*(facebookexternalhit|Facebot|Twitterbot|WhatsApp|LinkedInBot|TelegramBot|Slackbot|Discordbot|SkypeUriPreview|Pinterestbot).*" }],
+            "destination": "/api"
+        },
+        {
             "source": "/api/(.*)",
             "destination": "/api"
         },

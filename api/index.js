@@ -67638,6 +67638,80 @@ Fichier : ${report.fileName || "Aucun"}`
       res.status(500).json({ error: e.message });
     }
   });
+  if (isVercel) {
+    const BASE = "https://sayctchad.org";
+    const DEFAULT_META = {
+      title: "SAYC Tchad : Smart Africa Youth Chapter | Innovation Num\xE9rique",
+      description: "7e chapitre jeunesse de Smart Africa au Tchad : programmes, formations et opportunit\xE9s num\xE9riques pour la jeunesse tchadienne.",
+      image: `${BASE}/images/og-image.png`
+    };
+    const PAGE_META = {
+      "/programmes": {
+        title: "Nos Programmes | SAYC Tchad",
+        description: "AWS re/Start, Invest Ready Tchad, bourses Thunderbird : les programmes de SAYC Tchad pour la jeunesse tchadienne."
+      },
+      "/programmes/aws-restart": {
+        title: "AWS re/Start Tchad : Devenez Sp\xE9cialiste Cloud Junior | SAYC Tchad",
+        description: "Bootcamp cloud gratuit de 12 semaines \xE0 N'Djamena pour 25 jeunes, avec certification AWS Cloud Practitioner. Candidatures jusqu'au 13 novembre 2026.",
+        image: `${BASE}/images/og-aws-restart.png`
+      },
+      "/programmes/invest-ready-tchad": {
+        title: "Invest Ready Tchad : Bootcamp investissement start-ups | SAYC Tchad",
+        description: "Bootcamp de 3 jours \xE0 N'Djamena pour pr\xE9parer 20 start-ups tchadiennes \xE0 la lev\xE9e de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026.",
+        image: `${BASE}/images/og-invest-ready.png`
+      },
+      "/programmes/thunderbird": {
+        title: "Bourses Thunderbird x ASU | SAYC Tchad",
+        description: "Le programme 100 Million Learners de la Thunderbird School of Global Management (Arizona State University) avec SAYC Tchad."
+      }
+    };
+    const crawlerMeta = (req, res) => {
+      const meta = PAGE_META[req.path] || DEFAULT_META;
+      const image = meta.image || DEFAULT_META.image;
+      const url = `${BASE}${req.path === "/" ? "" : req.path}`;
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
+      res.send(`<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${meta.title}</title>
+<meta name="description" content="${meta.description}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SAYC Tchad">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:title" content="${meta.title}">
+<meta property="og:description" content="${meta.description}">
+<meta property="og:image" content="${image}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="${url}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${meta.title}">
+<meta name="twitter:description" content="${meta.description}">
+<meta name="twitter:image" content="${image}">
+<meta http-equiv="refresh" content="0;url=${url}">
+</head><body><p><a href="${url}">${meta.title}</a></p></body></html>`);
+    };
+    app2.get(
+      [
+        "/",
+        "/programmes",
+        "/programmes/:slug",
+        "/a-propos",
+        "/rejoindre",
+        "/formations",
+        "/actualites",
+        "/evenements",
+        "/opportunites",
+        "/elections",
+        "/contact",
+        "/plan-activites",
+        "/sayc-membres-galerie"
+      ],
+      crawlerMeta
+    );
+  }
   return httpServer2;
 }
 
