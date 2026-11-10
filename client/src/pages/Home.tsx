@@ -462,7 +462,7 @@ export default function Home() {
               <CardContent>
                 <CardDescription className="text-sm leading-relaxed mb-4">
                   Bootcamp de 3 jours pour préparer 20 start-ups tchadiennes à la levée de fonds.
-                  Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026.
+                  Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 10 au 20 novembre 2026.
                 </CardDescription>
                 <Link href="/programmes/invest-ready-tchad">
                   <Button variant="outline" size="sm">

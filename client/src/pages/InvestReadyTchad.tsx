@@ -188,7 +188,7 @@ export default function InvestReadyTchad() {
         <div className="flex flex-col min-h-screen font-sans">
             <SEOHead
                 title="Invest Ready Tchad : Bootcamp investissement start-ups | SAYC Tchad"
-                description="Invest Ready Tchad : bootcamp de 3 jours à N'Djamena pour préparer 20 start-ups tchadiennes à la levée de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026."
+                description="Invest Ready Tchad : bootcamp de 3 jours à N'Djamena pour préparer 20 start-ups tchadiennes à la levée de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 10 au 20 novembre 2026."
                 path="/programmes/invest-ready-tchad"
                 image="https://sayctchad.org/images/og-invest-ready.png"
             />
@@ -245,21 +245,21 @@ export default function InvestReadyTchad() {
                         <Calendar className="w-5 h-5" />
                         {applicationsClosed
                             ? "Les candidatures sont closes"
-                            : "Candidatures du 6 au 11 novembre 2026"}
+                            : "Candidatures du 10 au 20 novembre 2026"}
                     </div>
 
                     <div className="flex flex-wrap justify-center gap-4 mb-10">
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg max-w-[240px]">
-                            <h4 className="font-bold text-accent text-2xl mb-1">13 nov. 2026</h4>
-                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Lancement : 3 jours intensifs, N'Djamena, Novembre Numérique</p>
+                            <h4 className="font-bold text-accent text-2xl mb-1">25 au 27 nov.</h4>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Lancement le mercredi 25 : 3 jours intensifs, N'Djamena, Novembre Numérique</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg max-w-[240px]">
                             <h4 className="font-bold text-accent text-2xl mb-1">20</h4>
                             <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Start-ups sélectionnées</p>
                         </div>
                         <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-xl border border-white/20 shadow-lg max-w-[240px]">
-                            <h4 className="font-bold text-accent text-2xl mb-1">6 au 11 nov.</h4>
-                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Candidatures, clôture le 11 à minuit</p>
+                            <h4 className="font-bold text-accent text-2xl mb-1">10 au 20 nov.</h4>
+                            <p className="text-xs uppercase tracking-wider text-sidebar-foreground/70">Candidatures, clôture le 20 à minuit</p>
                         </div>
                     </div>
 
@@ -376,7 +376,7 @@ export default function InvestReadyTchad() {
                                 </div>
                                 <CardTitle className="text-4xl font-heading text-primary">Les candidatures sont closes</CardTitle>
                                 <CardDescription className="text-lg max-w-2xl mx-auto">
-                                    Les candidatures pour Invest Ready Tchad sont fermées depuis le 11 novembre 2026 à minuit.
+                                    Les candidatures pour Invest Ready Tchad sont fermées depuis le 20 novembre 2026 à minuit.
                                     Les 20 start-ups sélectionnées seront notifiées par email et WhatsApp. Merci à toutes les équipes qui ont postulé !
                                 </CardDescription>
                             </CardHeader>
@@ -389,7 +389,7 @@ export default function InvestReadyTchad() {
                                 </div>
                                 <CardTitle className="text-4xl font-heading text-primary">Formulaire de candidature</CardTitle>
                                 <CardDescription className="text-lg max-w-2xl mx-auto">
-                                    20 places. Candidatures ouvertes jusqu'au 11 novembre 2026 à minuit.
+                                    20 places. Candidatures ouvertes jusqu'au 20 novembre 2026 à minuit.
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -696,7 +696,7 @@ export default function InvestReadyTchad() {
                                                             </FormControl>
                                                             <div>
                                                                 <FormLabel className="text-base font-medium text-foreground cursor-pointer">
-                                                                    Nous nous engageons à être présents les trois jours du bootcamp, du 13 au 15 novembre 2026 à N'Djamena.
+                                                                    Nous nous engageons à être présents les trois jours du bootcamp, du 25 au 27 novembre 2026 à N'Djamena.
                                                                 </FormLabel>
                                                                 <FormMessage />
                                                             </div>
@@ -748,7 +748,7 @@ export default function InvestReadyTchad() {
                             <h4 className="font-bold text-xl mb-3 text-green-700">Bon à savoir</h4>
                             <p className="text-sm text-muted-foreground leading-relaxed">
                                 Le bootcamp a lieu à N'Djamena dans le cadre du Novembre Numérique.
-                                Les résultats de la sélection sont notifiés par email et WhatsApp avant le lancement du 13 novembre 2026.
+                                Les résultats de la sélection sont notifiés par email et WhatsApp avant le lancement du 25 novembre 2026.
                             </p>
                         </div>
                     </div>
