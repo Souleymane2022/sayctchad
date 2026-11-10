@@ -1851,7 +1851,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       },
       "/programmes/invest-ready-tchad": {
         title: "Invest Ready Tchad : Bootcamp investissement start-ups | SAYC Tchad",
-        description: "Bootcamp de 3 jours à N'Djamena pour préparer 20 start-ups tchadiennes à la levée de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026.",
+        description: "Bootcamp de 3 jours à N'Djamena pour préparer 20 start-ups tchadiennes à la levée de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 10 au 20 novembre 2026.",
         image: `${BASE}/images/og-invest-ready.png`,
       },
       "/programmes/thunderbird": {

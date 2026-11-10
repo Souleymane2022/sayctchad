@@ -375,8 +375,8 @@ export type InsertAwsRestartApplication = z.infer<typeof insertAwsRestartApplica
 export type AwsRestartApplication = typeof awsRestartApplications.$inferSelect;
 
 // ─── Invest Ready Tchad : candidatures des start-ups ─────────────────────────
-// Clôture des candidatures : 11 novembre 2026 à minuit, heure de N'Djamena (UTC+1)
-export const INVEST_READY_DEADLINE = new Date("2026-11-11T23:00:00Z");
+// Clôture des candidatures : 20 novembre 2026 à minuit, heure de N'Djamena (UTC+1)
+export const INVEST_READY_DEADLINE = new Date("2026-11-20T23:00:00Z");
 
 export function ageFromDateOfBirth(dob: string): number {
   const birth = new Date(dob);

@@ -38613,7 +38613,7 @@ var init_schema2 = __esm({
       id: true,
       createdAt: true
     });
-    INVEST_READY_DEADLINE = /* @__PURE__ */ new Date("2026-11-11T23:00:00Z");
+    INVEST_READY_DEADLINE = /* @__PURE__ */ new Date("2026-11-20T23:00:00Z");
     investReadyApplications = pgTable("invest_ready_applications", {
       id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
       startupName: text("startup_name").notNull(),
@@ -67657,7 +67657,7 @@ Fichier : ${report.fileName || "Aucun"}`
       },
       "/programmes/invest-ready-tchad": {
         title: "Invest Ready Tchad : Bootcamp investissement start-ups | SAYC Tchad",
-        description: "Bootcamp de 3 jours \xE0 N'Djamena pour pr\xE9parer 20 start-ups tchadiennes \xE0 la lev\xE9e de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 6 au 11 novembre 2026.",
+        description: "Bootcamp de 3 jours \xE0 N'Djamena pour pr\xE9parer 20 start-ups tchadiennes \xE0 la lev\xE9e de fonds. Avec le soutien de l'Ambassade de France au Tchad. Candidatures du 10 au 20 novembre 2026.",
         image: `${BASE}/images/og-invest-ready.png`
       },
       "/programmes/thunderbird": {
