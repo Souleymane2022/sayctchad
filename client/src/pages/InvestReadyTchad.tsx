@@ -68,7 +68,7 @@ const days = [
         icon: Trophy,
         day: "Jour 3",
         title: "Pitcher",
-        points: ["Pitch de 5 minutes devant un jury de financeurs", "Délibération", "Remise de trois prix de 50 000 FCFA", "Mise en relation"],
+        points: ["Pitch de 5 minutes devant un jury de financeurs", "Délibération", "Remise de trois prix", "Mise en relation"],
     },
 ];
 
