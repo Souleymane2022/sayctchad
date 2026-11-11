@@ -15,7 +15,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 // Imports des logos
-import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
+import logoSayc from "@assets/LOGO_SADA_OFFICIEL.png";
 import smartAfricaAllianceLogo from "@assets/SMART_AFRICA_LOGO_1770443171460.png";
 import sadaLogo from "@assets/SADA_1770443171461.jpg";
 

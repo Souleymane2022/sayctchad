@@ -12,7 +12,7 @@ import {
   Phone, 
   Mail 
 } from "lucide-react";
-import logoSayc from "@assets/LOGO_SAYC_1770103155971.jpg";
+import logoSayc from "@assets/LOGO_SADA_OFFICIEL.png";
 
 const footerLinks = {
   navigation: [
