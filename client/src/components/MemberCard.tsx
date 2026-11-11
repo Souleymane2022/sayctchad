@@ -101,7 +101,7 @@ export function MemberCard({ member }: MemberCardProps) {
                                 {/* Header */}
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3">
-                                        <img src="/favicon.png" alt="SAYC" className="w-10 h-10 bg-white rounded-lg p-1" />
+                                        <img src="/images/sada-icon.png" alt="SADA" className="w-10 h-10 bg-white rounded-lg p-1.5 object-contain" />
                                         <div>
                                             <h3 className="font-heading font-bold text-sm leading-tight">SMART AFRICA</h3>
                                             <p className="text-[10px] text-sayc-teal font-semibold tracking-widest uppercase">Youth Chapter Tchad</p>
@@ -153,7 +153,7 @@ export function MemberCard({ member }: MemberCardProps) {
                     <div className="absolute inset-0 backface-hidden rotate-y-180" id={`card-verso-${member.id}`}>
                         <Card className="w-full h-full overflow-hidden border-none bg-[#0f172a] text-white shadow-2xl relative">
                             <div className="absolute inset-0 opacity-10 flex items-center justify-center">
-                                <img src="/favicon.png" alt="SAYC watermark" className="w-32 h-32 grayscale invert" />
+                                <img src="/images/sada-icon.png" alt="SADA watermark" className="w-32 h-32 object-contain grayscale invert" />
                             </div>
 
                             <div className="relative h-full p-6 flex flex-col items-center justify-between text-center">
