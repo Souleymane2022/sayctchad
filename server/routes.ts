@@ -1006,13 +1006,78 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         motivation: a.motivation,
         createdAt: a.createdAt,
       }));
+      // ─── Pré-tri automatique des dossiers : catégorie A/B/C + signalements ───
+      const vidId = (u: string | null | undefined) => {
+        const m = /(?:youtu\.be\/|shorts\/|watch\?v=|live\/|embed\/)([\w-]{6,})/.exec((u || "").trim());
+        return m ? m[1] : null;
+      };
+      const normEmail = (e: string | null | undefined) => (e || "").trim().toLowerCase();
+      const normPhone = (p: string | null | undefined) => (p || "").replace(/\D/g, "").slice(-8);
+      const isNdjamena = (c: string | null | undefined) => {
+        const n = (c || "").toLowerCase().replace(/[^a-z]/g, "");
+        return n.includes("djam") || ["ndj", "njamena", "ndjamna", "ndjaman"].includes(n);
+      };
+      const BOOTCAMP_START = new Date("2026-11-23T00:00:00Z");
+      const ageOf = (dob: string | null | undefined): number | null => {
+        const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dob || ""));
+        if (!m) return null;
+        const y = Number(m[1]), mo = Number(m[2]), d = Number(m[3]);
+        if (!y || !mo || !d || mo > 12 || d > 31) return null;
+        let age = BOOTCAMP_START.getUTCFullYear() - y;
+        if (BOOTCAMP_START.getUTCMonth() + 1 < mo || (BOOTCAMP_START.getUTCMonth() + 1 === mo && BOOTCAMP_START.getUTCDate() < d)) age -= 1;
+        return age;
+      };
+      const tsOf = (r: { createdAt: Date | string | null }) => (r.createdAt ? new Date(r.createdAt).getTime() : 0);
+
+      // Double soumission : même email ou même téléphone -> seule la plus récente compte
+      const latestByKey = new Map<string, { id: string; ts: number }>();
+      for (const r of rows) {
+        for (const key of ["e:" + normEmail(r.email), "p:" + normPhone(r.phone)]) {
+          if (key.length <= 2) continue;
+          const cur = latestByKey.get(key);
+          if (!cur || tsOf(r) > cur.ts) latestByKey.set(key, { id: r.id, ts: tsOf(r) });
+        }
+      }
+      const superseded = new Set<string>();
+      for (const r of rows) {
+        const e = normEmail(r.email), p = normPhone(r.phone);
+        if ((e && latestByKey.get("e:" + e)?.id !== r.id) || (p && latestByKey.get("p:" + p)?.id !== r.id)) {
+          superseded.add(r.id);
+        }
+      }
+      // Vidéos partagées entre candidats différents (hors doubles soumissions)
+      const vidCount = new Map<string, number>();
+      for (const r of rows) {
+        if (superseded.has(r.id)) continue;
+        const v = vidId(r.videoUrl);
+        if (v) vidCount.set(v, (vidCount.get(v) || 0) + 1);
+      }
+      const applicationsTriees = rows.map((r) => {
+        const flags: string[] = [];
+        if (superseded.has(r.id)) flags.push("Double soumission : une candidature plus récente existe avec le même email ou téléphone");
+        const v = vidId(r.videoUrl);
+        if (!v) flags.push("Lien vidéo invalide");
+        else if (!superseded.has(r.id) && (vidCount.get(v) || 0) > 1) flags.push("Vidéo identique à celle d'un autre candidat");
+        const age = ageOf(r.dateOfBirth);
+        if (age === null || age < 5 || age > 90) flags.push("Date de naissance invalide");
+        else if (age < 18) flags.push(`Mineur (${age} ans au début du bootcamp)`);
+        else if (age > 35) flags.push(`Plus de 35 ans (${age} ans)`);
+        if (!isNdjamena(r.city)) flags.push(`Hors N'Djamena (${(r.city || "").trim()})`);
+        const mots = (r.motivation || "").trim().split(/\s+/).filter(Boolean).length;
+        if (mots < 10) flags.push("Motivation quasi vide");
+        const categorie = flags.length > 0 ? "C" : mots >= 50 ? "A" : "B";
+        return { ...r, age, categorie, signalements: flags };
+      });
       const stats = {
         total: rows.length,
         femmes: rows.filter((r) => r.gender === "F").length,
         hommes: rows.filter((r) => r.gender === "M").length,
         avecVideo: rows.filter((r) => !!r.videoUrl).length,
+        triA: applicationsTriees.filter((r) => r.categorie === "A").length,
+        triB: applicationsTriees.filter((r) => r.categorie === "B").length,
+        triC: applicationsTriees.filter((r) => r.categorie === "C").length,
       };
-      res.json({ stats, applications: rows });
+      res.json({ stats, applications: applicationsTriees });
     } catch (error) {
       console.error("Error in aws-tracking:", error);
       res.status(500).json({ error: "Erreur serveur" });
