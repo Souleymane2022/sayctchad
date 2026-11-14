@@ -16,6 +16,19 @@ const decisionBadge = (status: string) => {
     return <Badge variant="outline">En attente</Badge>;
 };
 
+const TRI_LABELS: Record<string, string> = {
+    A: "A — Dossier solide",
+    B: "B — Dossier correct",
+    C: "C — À vérifier",
+};
+
+const triBadge = (categorie?: string) => {
+    if (categorie === "A") return <Badge className="bg-green-500/15 text-green-700 border border-green-500/30 hover:bg-green-500/15">A</Badge>;
+    if (categorie === "B") return <Badge className="bg-yellow-500/15 text-yellow-700 border border-yellow-500/30 hover:bg-yellow-500/15">B</Badge>;
+    if (categorie === "C") return <Badge className="bg-red-500/10 text-red-700 border border-red-500/30 hover:bg-red-500/10">C</Badge>;
+    return null;
+};
+
 interface TrackingRow {
     id: string;
     fullName: string;
@@ -30,10 +43,13 @@ interface TrackingRow {
     hasPhoto: boolean;
     motivation: string;
     createdAt: string | null;
+    age?: number | null;
+    categorie?: "A" | "B" | "C";
+    signalements?: string[];
 }
 
 interface TrackingData {
-    stats: { total: number; femmes: number; hommes: number; avecVideo: number };
+    stats: { total: number; femmes: number; hommes: number; avecVideo: number; triA?: number; triB?: number; triC?: number };
     applications: TrackingRow[];
 }
 
@@ -60,6 +76,11 @@ export default function AwsTracking() {
 
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
     const [updatingId, setUpdatingId] = useState<string | null>(null);
+    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C">("all");
+
+    const visibleApplications = (data?.applications || []).filter(
+        (a) => triFilter === "all" || a.categorie === triFilter,
+    );
 
     const setDecision = async (id: string, status: "pending" | "approved" | "rejected") => {
         try {
@@ -80,10 +101,11 @@ export default function AwsTracking() {
 
     const exportToExcel = () => {
         if (!data) return;
-        const headers = ["Nom Complet", "Sexe", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "Photo", "Décision", "Motivation", "Date Candidature"];
+        const headers = ["Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "Photo", "Décision", "Motivation", "Date Candidature"];
         const decisionLabel = (s: string) => (s === "approved" ? "Favorable" : s === "rejected" ? "Défavorable" : "En attente");
-        const rows = data.applications.map((a) => [
-            a.fullName, a.gender, a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
+        const rows = visibleApplications.map((a) => [
+            a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
+            a.fullName, a.gender, a.age ?? "", a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
             a.videoUrl || "", a.hasPhoto ? "Oui" : "Non", decisionLabel(a.status), a.motivation,
             a.createdAt ? new Date(a.createdAt).toLocaleString("fr-FR") : "",
         ]);
@@ -170,7 +192,7 @@ export default function AwsTracking() {
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle>Liste des candidatures</CardTitle>
-                                    <CardDescription>Candidatures du 3 au 13 novembre 2026 — mise à jour en temps réel</CardDescription>
+                                    <CardDescription>Candidatures du 3 au 13 novembre 2026 — pré-tri automatique : A = dossier solide, B = correct, C = à vérifier</CardDescription>
                                 </div>
                                 <div className="flex gap-2">
                                     <Button variant="outline" size="sm" onClick={exportToExcel} disabled={data.applications.length === 0}>
@@ -184,12 +206,27 @@ export default function AwsTracking() {
                                 </div>
                             </CardHeader>
                             <CardContent>
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                    <Button variant={triFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("all")}>
+                                        Toutes ({data.stats.total})
+                                    </Button>
+                                    <Button variant={triFilter === "A" ? "default" : "outline"} size="sm" className={triFilter === "A" ? "bg-green-600 hover:bg-green-700" : "text-green-700 border-green-500/40"} onClick={() => setTriFilter("A")}>
+                                        A — Solides ({data.stats.triA ?? 0})
+                                    </Button>
+                                    <Button variant={triFilter === "B" ? "default" : "outline"} size="sm" className={triFilter === "B" ? "bg-yellow-600 hover:bg-yellow-700" : "text-yellow-700 border-yellow-500/40"} onClick={() => setTriFilter("B")}>
+                                        B — Corrects ({data.stats.triB ?? 0})
+                                    </Button>
+                                    <Button variant={triFilter === "C" ? "default" : "outline"} size="sm" className={triFilter === "C" ? "bg-red-600 hover:bg-red-700" : "text-red-700 border-red-500/40"} onClick={() => setTriFilter("C")}>
+                                        C — À vérifier ({data.stats.triC ?? 0})
+                                    </Button>
+                                </div>
                                 <div className="rounded-md border overflow-x-auto">
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
                                                 <TableHead>Photo</TableHead>
                                                 <TableHead>Nom complet</TableHead>
+                                                <TableHead>Tri</TableHead>
                                                 <TableHead>Sexe</TableHead>
                                                 <TableHead>Ville</TableHead>
                                                 <TableHead>Vidéo</TableHead>
@@ -199,14 +236,14 @@ export default function AwsTracking() {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {data.applications.length === 0 ? (
+                                            {visibleApplications.length === 0 ? (
                                                 <TableRow>
-                                                    <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
-                                                        Aucune candidature pour le moment — l'appel est ouvert du 3 au 13 novembre 2026.
+                                                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                                                        Aucune candidature dans cette catégorie.
                                                     </TableCell>
                                                 </TableRow>
                                             ) : (
-                                                data.applications.map((a) => (
+                                                visibleApplications.map((a) => (
                                                     <TableRow key={a.id}>
                                                         <TableCell>
                                                             {a.hasPhoto ? (
@@ -216,6 +253,7 @@ export default function AwsTracking() {
                                                             )}
                                                         </TableCell>
                                                         <TableCell className="font-medium">{a.fullName}</TableCell>
+                                                        <TableCell title={(a.signalements || []).join(" | ") || (a.categorie ? TRI_LABELS[a.categorie] : "")}>{triBadge(a.categorie)}</TableCell>
                                                         <TableCell>{a.gender}</TableCell>
                                                         <TableCell>{a.city}</TableCell>
                                                         <TableCell>
@@ -242,8 +280,20 @@ export default function AwsTracking() {
                                                                         </div>
                                                                     )}
                                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+                                                                        <div className="md:col-span-2 flex items-center gap-2 flex-wrap">
+                                                                            {triBadge(a.categorie)}
+                                                                            <span className="text-sm font-medium">{a.categorie ? TRI_LABELS[a.categorie] : ""}</span>
+                                                                        </div>
+                                                                        {(a.signalements || []).length > 0 && (
+                                                                            <div className="md:col-span-2 bg-red-500/5 border border-red-500/20 rounded-lg p-3">
+                                                                                <Label className="text-xs text-red-700 font-bold">Signalements du pré-tri automatique</Label>
+                                                                                <ul className="list-disc list-inside text-sm text-red-800 mt-1 space-y-0.5">
+                                                                                    {(a.signalements || []).map((s, i) => <li key={i}>{s}</li>)}
+                                                                                </ul>
+                                                                            </div>
+                                                                        )}
                                                                         <div><Label className="text-xs text-muted-foreground">Sexe</Label><p className="text-sm font-medium">{a.gender === "F" ? "Féminin" : "Masculin"}</p></div>
-                                                                        <div><Label className="text-xs text-muted-foreground">Date de naissance</Label><p className="text-sm font-medium">{a.dateOfBirth}</p></div>
+                                                                        <div><Label className="text-xs text-muted-foreground">Date de naissance</Label><p className="text-sm font-medium">{a.dateOfBirth}{typeof a.age === "number" ? ` (${a.age} ans)` : ""}</p></div>
                                                                         <div><Label className="text-xs text-muted-foreground">Ville</Label><p className="text-sm font-medium">{a.city}</p></div>
                                                                         <div><Label className="text-xs text-muted-foreground">Statut professionnel</Label><p className="text-sm font-medium">{a.professionalStatus}</p></div>
                                                                         <div><Label className="text-xs text-muted-foreground">Email</Label><p className="text-sm font-medium break-all">{a.email}</p></div>

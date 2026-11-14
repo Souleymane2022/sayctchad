@@ -66849,13 +66849,74 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         motivation: a2.motivation,
         createdAt: a2.createdAt
       }));
+      const vidId = (u) => {
+        const m2 = /(?:youtu\.be\/|shorts\/|watch\?v=|live\/|embed\/)([\w-]{6,})/.exec((u || "").trim());
+        return m2 ? m2[1] : null;
+      };
+      const normEmail = (e) => (e || "").trim().toLowerCase();
+      const normPhone = (p2) => (p2 || "").replace(/\D/g, "").slice(-8);
+      const isNdjamena = (c) => {
+        const n = (c || "").toLowerCase().replace(/[^a-z]/g, "");
+        return n.includes("djam") || ["ndj", "njamena", "ndjamna", "ndjaman"].includes(n);
+      };
+      const BOOTCAMP_START = /* @__PURE__ */ new Date("2026-11-23T00:00:00Z");
+      const ageOf = (dob) => {
+        const m2 = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dob || ""));
+        if (!m2) return null;
+        const y = Number(m2[1]), mo = Number(m2[2]), d2 = Number(m2[3]);
+        if (!y || !mo || !d2 || mo > 12 || d2 > 31) return null;
+        let age = BOOTCAMP_START.getUTCFullYear() - y;
+        if (BOOTCAMP_START.getUTCMonth() + 1 < mo || BOOTCAMP_START.getUTCMonth() + 1 === mo && BOOTCAMP_START.getUTCDate() < d2) age -= 1;
+        return age;
+      };
+      const tsOf = (r) => r.createdAt ? new Date(r.createdAt).getTime() : 0;
+      const latestByKey = /* @__PURE__ */ new Map();
+      for (const r of rows) {
+        for (const key of ["e:" + normEmail(r.email), "p:" + normPhone(r.phone)]) {
+          if (key.length <= 2) continue;
+          const cur = latestByKey.get(key);
+          if (!cur || tsOf(r) > cur.ts) latestByKey.set(key, { id: r.id, ts: tsOf(r) });
+        }
+      }
+      const superseded = /* @__PURE__ */ new Set();
+      for (const r of rows) {
+        const e = normEmail(r.email), p2 = normPhone(r.phone);
+        if (e && latestByKey.get("e:" + e)?.id !== r.id || p2 && latestByKey.get("p:" + p2)?.id !== r.id) {
+          superseded.add(r.id);
+        }
+      }
+      const vidCount = /* @__PURE__ */ new Map();
+      for (const r of rows) {
+        if (superseded.has(r.id)) continue;
+        const v2 = vidId(r.videoUrl);
+        if (v2) vidCount.set(v2, (vidCount.get(v2) || 0) + 1);
+      }
+      const applicationsTriees = rows.map((r) => {
+        const flags = [];
+        if (superseded.has(r.id)) flags.push("Double soumission : une candidature plus r\xE9cente existe avec le m\xEAme email ou t\xE9l\xE9phone");
+        const v2 = vidId(r.videoUrl);
+        if (!v2) flags.push("Lien vid\xE9o invalide");
+        else if (!superseded.has(r.id) && (vidCount.get(v2) || 0) > 1) flags.push("Vid\xE9o identique \xE0 celle d'un autre candidat");
+        const age = ageOf(r.dateOfBirth);
+        if (age === null || age < 5 || age > 90) flags.push("Date de naissance invalide");
+        else if (age < 18) flags.push(`Mineur (${age} ans au d\xE9but du bootcamp)`);
+        else if (age > 35) flags.push(`Plus de 35 ans (${age} ans)`);
+        if (!isNdjamena(r.city)) flags.push(`Hors N'Djamena (${(r.city || "").trim()})`);
+        const mots = (r.motivation || "").trim().split(/\s+/).filter(Boolean).length;
+        if (mots < 10) flags.push("Motivation quasi vide");
+        const categorie = flags.length > 0 ? "C" : mots >= 50 ? "A" : "B";
+        return { ...r, age, categorie, signalements: flags };
+      });
       const stats = {
         total: rows.length,
         femmes: rows.filter((r) => r.gender === "F").length,
         hommes: rows.filter((r) => r.gender === "M").length,
-        avecVideo: rows.filter((r) => !!r.videoUrl).length
+        avecVideo: rows.filter((r) => !!r.videoUrl).length,
+        triA: applicationsTriees.filter((r) => r.categorie === "A").length,
+        triB: applicationsTriees.filter((r) => r.categorie === "B").length,
+        triC: applicationsTriees.filter((r) => r.categorie === "C").length
       };
-      res.json({ stats, applications: rows });
+      res.json({ stats, applications: applicationsTriees });
     } catch (error) {
       console.error("Error in aws-tracking:", error);
       res.status(500).json({ error: "Erreur serveur" });
