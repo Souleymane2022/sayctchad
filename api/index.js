@@ -65951,7 +65951,7 @@ async function sendPersonalizedMemberEmails(membersList, subject, messageTemplat
 var awsVideoColumnEnsured = null;
 function ensureAwsVideoColumn() {
   if (!awsVideoColumnEnsured) {
-    awsVideoColumnEnsured = sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`.then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "photo_url" text`).then(() => void 0).catch((err) => {
+    awsVideoColumnEnsured = sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`.then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "photo_url" text`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "top_rank" integer`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "tri_score" real`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_status" text`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_channel" text`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_title" text`).then(() => sql2`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_note" text`).then(() => void 0).catch((err) => {
       awsVideoColumnEnsured = null;
       throw err;
     });
@@ -66834,6 +66834,8 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
       await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
+      const extraRows = await sql2`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`;
+      const extras = new Map(extraRows.map((e) => [e.id, e]));
       const rows = applications.map((a2) => ({
         id: a2.id,
         fullName: a2.fullName,
@@ -66905,7 +66907,19 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         const mots = (r.motivation || "").trim().split(/\s+/).filter(Boolean).length;
         if (mots < 10) flags.push("Motivation quasi vide");
         const categorie = flags.length > 0 ? "C" : mots >= 50 ? "A" : "B";
-        return { ...r, age, categorie, signalements: flags };
+        const ex = extras.get(r.id);
+        return {
+          ...r,
+          age,
+          categorie,
+          signalements: flags,
+          topRank: ex?.top_rank ?? null,
+          triScore: ex?.tri_score ?? null,
+          videoStatus: ex?.video_status ?? null,
+          videoChannel: ex?.video_channel ?? null,
+          videoTitle: ex?.video_title ?? null,
+          videoNote: ex?.video_note ?? null
+        };
       });
       const stats = {
         total: rows.length,
@@ -66985,6 +66999,39 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json({ success: true, candidature: rows[0] });
     } catch (error) {
       console.error("Error updating AWS video:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.post("/api/admin/aws-top100", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = req.query.key || req.body && req.body.key || "";
+      const authorized = req.session.isAdmin || adminPassword && key === adminPassword;
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autoris\xE9" });
+      }
+      const items = req.body && req.body.items;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 2e3) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] } (1 \xE0 2000 \xE9l\xE9ments)" });
+      }
+      await ensureAwsVideoColumn();
+      await sql2`UPDATE aws_restart_applications SET top_rank = NULL, tri_score = NULL, video_status = NULL, video_channel = NULL, video_title = NULL, video_note = NULL WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`;
+      let updated = 0;
+      for (const it2 of items) {
+        if (!it2 || typeof it2.id !== "string" || !it2.id) continue;
+        const rows = await sql2`UPDATE aws_restart_applications SET
+            top_rank = ${it2.rank ?? null},
+            tri_score = ${it2.score ?? null},
+            video_status = ${it2.videoStatus ?? null},
+            video_channel = ${it2.videoChannel ?? null},
+            video_title = ${it2.videoTitle ?? null},
+            video_note = ${it2.videoNote ?? null}
+          WHERE id = ${it2.id} RETURNING id`;
+        updated += rows.length;
+      }
+      res.json({ success: true, updated });
+    } catch (error) {
+      console.error("Error loading AWS top100:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });

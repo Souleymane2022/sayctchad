@@ -24,6 +24,12 @@ function ensureAwsVideoColumn(): Promise<void> {
   if (!awsVideoColumnEnsured) {
     awsVideoColumnEnsured = sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_url" text`
       .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "photo_url" text`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "top_rank" integer`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "tri_score" real`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_status" text`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_channel" text`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_title" text`)
+      .then(() => sql`ALTER TABLE "aws_restart_applications" ADD COLUMN IF NOT EXISTS "video_note" text`)
       .then(() => undefined)
       .catch((err) => {
         awsVideoColumnEnsured = null; // réessaiera à la prochaine candidature
@@ -990,6 +996,9 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
       await ensureAwsVideoColumn();
       const applications = await storage.getAllAwsRestartApplications();
+      // Classement Top 100 et vérification des vidéos (chargés via /api/admin/aws-top100)
+      const extraRows = (await sql`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`) as any[];
+      const extras = new Map<string, any>(extraRows.map((e) => [e.id, e]));
       // Lecture seule. Les photos (lourdes) sont servies individuellement via /api/aws-tracking/:id.
       const rows = applications.map((a) => ({
         id: a.id,
@@ -1066,7 +1075,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         const mots = (r.motivation || "").trim().split(/\s+/).filter(Boolean).length;
         if (mots < 10) flags.push("Motivation quasi vide");
         const categorie = flags.length > 0 ? "C" : mots >= 50 ? "A" : "B";
-        return { ...r, age, categorie, signalements: flags };
+        const ex = extras.get(r.id);
+        return {
+          ...r, age, categorie, signalements: flags,
+          topRank: ex?.top_rank ?? null,
+          triScore: ex?.tri_score ?? null,
+          videoStatus: ex?.video_status ?? null,
+          videoChannel: ex?.video_channel ?? null,
+          videoTitle: ex?.video_title ?? null,
+          videoNote: ex?.video_note ?? null,
+        };
       });
       const stats = {
         total: rows.length,
@@ -1153,6 +1171,46 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json({ success: true, candidature: rows[0] });
     } catch (error) {
       console.error("Error updating AWS video:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // ─── Chargement du classement Top 100 + vérification des vidéos ─────────────
+  // Reçoit la liste {id, rank, score, videoStatus, videoChannel, videoTitle, videoNote}
+  // et remplace l'ensemble des rangs existants. Protégé par le mot de passe admin.
+  app.post("/api/admin/aws-top100", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || (req.body && req.body.key) || "";
+      const authorized = req.session.isAdmin || (adminPassword && key === adminPassword);
+      if (!authorized) {
+        return res.status(401).json({ error: "Non autorisé" });
+      }
+      const items = (req.body && req.body.items) as Array<{
+        id: string; rank?: number | null; score?: number | null;
+        videoStatus?: string | null; videoChannel?: string | null; videoTitle?: string | null; videoNote?: string | null;
+      }>;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 2000) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] } (1 à 2000 éléments)" });
+      }
+      await ensureAwsVideoColumn();
+      await sql`UPDATE aws_restart_applications SET top_rank = NULL, tri_score = NULL, video_status = NULL, video_channel = NULL, video_title = NULL, video_note = NULL WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`;
+      let updated = 0;
+      for (const it of items) {
+        if (!it || typeof it.id !== "string" || !it.id) continue;
+        const rows = (await sql`UPDATE aws_restart_applications SET
+            top_rank = ${it.rank ?? null},
+            tri_score = ${it.score ?? null},
+            video_status = ${(it.videoStatus ?? null) as string | null},
+            video_channel = ${(it.videoChannel ?? null) as string | null},
+            video_title = ${(it.videoTitle ?? null) as string | null},
+            video_note = ${(it.videoNote ?? null) as string | null}
+          WHERE id = ${it.id} RETURNING id`) as any[];
+        updated += rows.length;
+      }
+      res.json({ success: true, updated });
+    } catch (error) {
+      console.error("Error loading AWS top100:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
