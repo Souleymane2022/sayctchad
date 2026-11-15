@@ -83,20 +83,38 @@ export default function AwsTracking() {
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
     const [updatingId, setUpdatingId] = useState<string | null>(null);
     const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente">("all");
+    const [search, setSearch] = useState("");
+    const [sortBy, setSortBy] = useState<"defaut" | "rang" | "score" | "nom" | "recent" | "ancien" | "age">("defaut");
 
     const nbTop = (data?.applications || []).filter((a) => (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100).length;
     const nbAttente = (data?.applications || []).filter((a) => (a.topRank ?? 0) > 100).length;
 
+    const normalize = (s: string | null | undefined) =>
+        (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    const q = normalize(search.trim());
+
     const visibleApplications = (data?.applications || [])
         .filter((a) => {
-            if (triFilter === "all") return true;
-            if (triFilter === "top") return (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100;
-            if (triFilter === "attente") return (a.topRank ?? 0) > 100;
-            return a.categorie === triFilter;
+            if (triFilter === "top" && !((a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100)) return false;
+            if (triFilter === "attente" && !((a.topRank ?? 0) > 100)) return false;
+            if ((triFilter === "A" || triFilter === "B" || triFilter === "C") && a.categorie !== triFilter) return false;
+            if (!q) return true;
+            return [a.fullName, a.email, a.phone, a.city, a.videoChannel, a.videoTitle, a.professionalStatus]
+                .some((f) => normalize(f).includes(q));
         })
         .sort((x, y) => {
-            if (triFilter === "top" || triFilter === "attente") return (x.topRank ?? 9999) - (y.topRank ?? 9999);
-            return 0;
+            const rank = (a: TrackingRow) => a.topRank ?? 9999;
+            switch (sortBy) {
+                case "rang": return rank(x) - rank(y);
+                case "score": return (y.triScore ?? -1) - (x.triScore ?? -1);
+                case "nom": return (x.fullName || "").localeCompare(y.fullName || "", "fr");
+                case "recent": return (y.createdAt || "").localeCompare(x.createdAt || "");
+                case "ancien": return (x.createdAt || "").localeCompare(y.createdAt || "");
+                case "age": return (x.age ?? 999) - (y.age ?? 999);
+                default:
+                    if (triFilter === "top" || triFilter === "attente") return rank(x) - rank(y);
+                    return 0;
+            }
         });
 
     const setDecision = async (id: string, status: "pending" | "approved" | "rejected") => {
@@ -224,6 +242,33 @@ export default function AwsTracking() {
                                 </div>
                             </CardHeader>
                             <CardContent>
+                                <div className="flex flex-col md:flex-row gap-3 mb-4">
+                                    <Input
+                                        placeholder="Rechercher : nom, email, téléphone, ville, chaîne YouTube…"
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        className="md:max-w-md"
+                                    />
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
+                                        className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                                        aria-label="Trier par"
+                                    >
+                                        <option value="defaut">Tri : par défaut</option>
+                                        <option value="rang">Tri : rang Top 100</option>
+                                        <option value="score">Tri : score décroissant</option>
+                                        <option value="nom">Tri : nom A → Z</option>
+                                        <option value="recent">Tri : plus récentes</option>
+                                        <option value="ancien">Tri : plus anciennes</option>
+                                        <option value="age">Tri : âge croissant</option>
+                                    </select>
+                                    {(q || sortBy !== "defaut") && (
+                                        <span className="text-sm text-muted-foreground self-center">
+                                            {visibleApplications.length} résultat{visibleApplications.length > 1 ? "s" : ""}
+                                        </span>
+                                    )}
+                                </div>
                                 <div className="flex flex-wrap gap-2 mb-4">
                                     <Button variant={triFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("all")}>
                                         Toutes ({data.stats.total})
