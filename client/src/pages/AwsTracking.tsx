@@ -46,6 +46,12 @@ interface TrackingRow {
     age?: number | null;
     categorie?: "A" | "B" | "C";
     signalements?: string[];
+    topRank?: number | null;
+    triScore?: number | null;
+    videoStatus?: string | null;
+    videoChannel?: string | null;
+    videoTitle?: string | null;
+    videoNote?: string | null;
 }
 
 interface TrackingData {
@@ -76,11 +82,22 @@ export default function AwsTracking() {
 
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C">("all");
+    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente">("all");
 
-    const visibleApplications = (data?.applications || []).filter(
-        (a) => triFilter === "all" || a.categorie === triFilter,
-    );
+    const nbTop = (data?.applications || []).filter((a) => (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100).length;
+    const nbAttente = (data?.applications || []).filter((a) => (a.topRank ?? 0) > 100).length;
+
+    const visibleApplications = (data?.applications || [])
+        .filter((a) => {
+            if (triFilter === "all") return true;
+            if (triFilter === "top") return (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100;
+            if (triFilter === "attente") return (a.topRank ?? 0) > 100;
+            return a.categorie === triFilter;
+        })
+        .sort((x, y) => {
+            if (triFilter === "top" || triFilter === "attente") return (x.topRank ?? 9999) - (y.topRank ?? 9999);
+            return 0;
+        });
 
     const setDecision = async (id: string, status: "pending" | "approved" | "rejected") => {
         try {
@@ -101,12 +118,13 @@ export default function AwsTracking() {
 
     const exportToExcel = () => {
         if (!data) return;
-        const headers = ["Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "Photo", "Décision", "Motivation", "Date Candidature"];
+        const headers = ["Rang Top 100", "Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "État Vidéo", "Chaîne YouTube", "Titre Vidéo", "Observation Vidéo", "Photo", "Décision", "Motivation", "Date Candidature"];
         const decisionLabel = (s: string) => (s === "approved" ? "Favorable" : s === "rejected" ? "Défavorable" : "En attente");
         const rows = visibleApplications.map((a) => [
-            a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
+            a.topRank ?? "", a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
             a.fullName, a.gender, a.age ?? "", a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
-            a.videoUrl || "", a.hasPhoto ? "Oui" : "Non", decisionLabel(a.status), a.motivation,
+            a.videoUrl || "", a.videoStatus || "", a.videoChannel || "", a.videoTitle || "", a.videoNote || "",
+            a.hasPhoto ? "Oui" : "Non", decisionLabel(a.status), a.motivation,
             a.createdAt ? new Date(a.createdAt).toLocaleString("fr-FR") : "",
         ]);
         const csv = [headers, ...rows]
@@ -219,6 +237,16 @@ export default function AwsTracking() {
                                     <Button variant={triFilter === "C" ? "default" : "outline"} size="sm" className={triFilter === "C" ? "bg-red-600 hover:bg-red-700" : "text-red-700 border-red-500/40"} onClick={() => setTriFilter("C")}>
                                         C — À vérifier ({data.stats.triC ?? 0})
                                     </Button>
+                                    {nbTop > 0 && (
+                                        <Button variant={triFilter === "top" ? "default" : "outline"} size="sm" className={triFilter === "top" ? "bg-accent text-accent-foreground hover:bg-accent/90" : "text-accent border-accent/40"} onClick={() => setTriFilter("top")}>
+                                            ⭐ Top 100 ({nbTop})
+                                        </Button>
+                                    )}
+                                    {nbAttente > 0 && (
+                                        <Button variant={triFilter === "attente" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("attente")}>
+                                            Liste d'attente ({nbAttente})
+                                        </Button>
+                                    )}
                                 </div>
                                 <div className="rounded-md border overflow-x-auto">
                                     <Table>
@@ -226,6 +254,7 @@ export default function AwsTracking() {
                                             <TableRow>
                                                 <TableHead>Photo</TableHead>
                                                 <TableHead>Nom complet</TableHead>
+                                                <TableHead>Rang</TableHead>
                                                 <TableHead>Tri</TableHead>
                                                 <TableHead>Sexe</TableHead>
                                                 <TableHead>Ville</TableHead>
@@ -238,7 +267,7 @@ export default function AwsTracking() {
                                         <TableBody>
                                             {visibleApplications.length === 0 ? (
                                                 <TableRow>
-                                                    <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                                                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                                                         Aucune candidature dans cette catégorie.
                                                     </TableCell>
                                                 </TableRow>
@@ -253,6 +282,13 @@ export default function AwsTracking() {
                                                             )}
                                                         </TableCell>
                                                         <TableCell className="font-medium">{a.fullName}</TableCell>
+                                                        <TableCell>
+                                                            {a.topRank && a.topRank <= 100 ? (
+                                                                <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15 whitespace-nowrap">⭐ {a.topRank}</Badge>
+                                                            ) : a.topRank ? (
+                                                                <Badge variant="outline" className="whitespace-nowrap" title="Liste d'attente">{a.topRank}</Badge>
+                                                            ) : null}
+                                                        </TableCell>
                                                         <TableCell title={(a.signalements || []).join(" | ") || (a.categorie ? TRI_LABELS[a.categorie] : "")}>{triBadge(a.categorie)}</TableCell>
                                                         <TableCell>{a.gender}</TableCell>
                                                         <TableCell>{a.city}</TableCell>
@@ -283,7 +319,20 @@ export default function AwsTracking() {
                                                                         <div className="md:col-span-2 flex items-center gap-2 flex-wrap">
                                                                             {triBadge(a.categorie)}
                                                                             <span className="text-sm font-medium">{a.categorie ? TRI_LABELS[a.categorie] : ""}</span>
+                                                                            {a.topRank && a.topRank <= 100 && <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15">⭐ Top 100 — rang {a.topRank}</Badge>}
+                                                                            {a.topRank && a.topRank > 100 && <Badge variant="outline">Liste d'attente — rang {a.topRank}</Badge>}
                                                                         </div>
+                                                                        {a.videoStatus && (
+                                                                            <div className={`md:col-span-2 rounded-lg p-3 border ${a.videoStatus === "En ligne" && (a.videoNote || "").startsWith("OK") ? "bg-green-500/5 border-green-500/20" : a.videoStatus !== "En ligne" || (a.videoNote || "").startsWith("PROBLÈME") ? "bg-red-500/5 border-red-500/20" : "bg-yellow-500/5 border-yellow-500/20"}`}>
+                                                                                <Label className="text-xs font-bold">Vérification de la vidéo</Label>
+                                                                                <div className="text-sm mt-1 space-y-0.5">
+                                                                                    <p><span className="text-muted-foreground">État :</span> {a.videoStatus}</p>
+                                                                                    {a.videoChannel && <p><span className="text-muted-foreground">Chaîne :</span> {a.videoChannel}</p>}
+                                                                                    {a.videoTitle && <p><span className="text-muted-foreground">Titre :</span> {a.videoTitle}</p>}
+                                                                                    {a.videoNote && <p className="font-medium">{a.videoNote}</p>}
+                                                                                </div>
+                                                                            </div>
+                                                                        )}
                                                                         {(a.signalements || []).length > 0 && (
                                                                             <div className="md:col-span-2 bg-red-500/5 border border-red-500/20 rounded-lg p-3">
                                                                                 <Label className="text-xs text-red-700 font-bold">Signalements du pré-tri automatique</Label>
