@@ -3,12 +3,16 @@ import { QueryClient, QueryFunction } from "@tanstack/react-query";
 async function throwIfResNotOk(res: Response) {
   if (!res.ok) {
     let errorData: any;
+    const raw = await res.text().catch(() => "");
     try {
-      errorData = await res.json();
+      errorData = JSON.parse(raw);
     } catch (e) {
-      errorData = { message: await res.text() || res.statusText };
+      errorData = { message: raw || res.statusText };
     }
-    
+    if (res.status === 413) {
+      errorData = { message: "Les fichiers joints sont trop lourds pour être envoyés. Réduisez la taille de votre pièce d'identité ou de votre pitch deck, puis réessayez." };
+    }
+
     const error = new Error(errorData.message || errorData.error || `${res.status}: ${res.statusText}`);
     (error as any).status = res.status;
     (error as any).code = errorData.code;

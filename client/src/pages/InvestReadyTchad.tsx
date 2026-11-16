@@ -150,20 +150,58 @@ export default function InvestReadyTchad() {
             reader.readAsDataURL(file);
         });
 
+    // L'hébergeur limite chaque requête à 4,5 Mo : les images sont compressées
+    // automatiquement et les PDF doivent rester légers.
+    const compressImage = (file: File, maxDim = 1600, quality = 0.75) =>
+        new Promise<string>((resolve, reject) => {
+            const img = new Image();
+            const url = URL.createObjectURL(file);
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.round(img.width * scale);
+                canvas.height = Math.round(img.height * scale);
+                const ctx = canvas.getContext("2d");
+                if (!ctx) return reject(new Error("canvas"));
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                let q = quality;
+                let out = canvas.toDataURL("image/jpeg", q);
+                while (out.length > 1_800_000 && q > 0.4) {
+                    q -= 0.1;
+                    out = canvas.toDataURL("image/jpeg", q);
+                }
+                resolve(out);
+            };
+            img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("image")); };
+            img.src = url;
+        });
+
+    const PDF_MAX_MO = 2.5;
+
     const handleFile = async (
         e: React.ChangeEvent<HTMLInputElement>,
         kind: "id" | "deck"
     ) => {
         const file = e.target.files?.[0];
         if (!file) return;
-        const maxMo = kind === "id" ? 5 : 10;
-        if (file.size > maxMo * 1024 * 1024) {
-            toast({ title: "Fichier trop lourd", description: `Le fichier doit faire moins de ${maxMo} Mo.`, variant: "destructive" });
+        const isImage = file.type.startsWith("image/");
+        if (!isImage && file.size > PDF_MAX_MO * 1024 * 1024) {
+            toast({
+                title: "PDF trop lourd",
+                description: `Un PDF doit faire moins de ${PDF_MAX_MO} Mo pour être envoyé. Compressez-le (par exemple sur ilovepdf.com) puis réessayez${kind === "deck" ? ", ou laissez le deck de côté : il est facultatif" : ""}.`,
+                variant: "destructive",
+            });
+            e.target.value = "";
+            return;
+        }
+        if (isImage && file.size > 15 * 1024 * 1024) {
+            toast({ title: "Image trop lourde", description: "L'image doit faire moins de 15 Mo.", variant: "destructive" });
             e.target.value = "";
             return;
         }
         try {
-            const dataUrl = await readFileAsDataUrl(file);
+            const dataUrl = isImage ? await compressImage(file) : await readFileAsDataUrl(file);
             if (kind === "id") {
                 form.setValue("idFileName", file.name, { shouldValidate: true });
                 form.setValue("idFileData", dataUrl, { shouldValidate: true });
@@ -179,6 +217,19 @@ export default function InvestReadyTchad() {
     };
 
     const onSubmit = (data: InsertInvestReadyApplication) => {
+        // Garde-fou : la requête complète doit rester sous la limite de l'hébergeur (4,5 Mo)
+        const payloadSize = JSON.stringify(data).length;
+        if (payloadSize > 4_000_000) {
+            const idSize = (data.idFileData || "").length;
+            const deckSize = (data.deckFileData || "").length;
+            const heavy = deckSize > idSize ? "votre pitch deck" : "votre pièce d'identité";
+            toast({
+                title: "Fichiers trop lourds",
+                description: `L'ensemble dépasse la taille maximale d'envoi. Allégez ${heavy} (PDF compressé ou photo) puis réessayez.`,
+                variant: "destructive",
+            });
+            return;
+        }
         mutation.mutate(data);
     };
 
@@ -653,7 +704,7 @@ export default function InvestReadyTchad() {
                                                         <FileText className="w-4 h-4 text-accent" />
                                                         Pièce d'identité du fondateur principal <span className="text-destructive">*</span>
                                                     </Label>
-                                                    <p className="text-xs text-muted-foreground">PDF ou image, 5 Mo maximum.</p>
+                                                    <p className="text-xs text-muted-foreground">Image (compressée automatiquement) ou PDF de 2,5 Mo maximum.</p>
                                                     <label className="flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-accent/30 bg-muted/30 cursor-pointer hover:border-accent/60 transition-colors">
                                                         <Upload className="w-5 h-5 text-accent shrink-0" />
                                                         <span className="text-sm text-foreground break-all">{idFileName || "Choisir le fichier..."}</span>
@@ -668,7 +719,7 @@ export default function InvestReadyTchad() {
                                                         <Presentation className="w-4 h-4 text-accent" />
                                                         Pitch deck ou présentation (facultatif)
                                                     </Label>
-                                                    <p className="text-xs text-muted-foreground">PDF, PowerPoint ou image, 10 Mo maximum.</p>
+                                                    <p className="text-xs text-muted-foreground">Facultatif. PDF de 2,5 Mo maximum ou image (compressée automatiquement).</p>
                                                     <label className="flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-border bg-muted/30 cursor-pointer hover:border-accent/60 transition-colors">
                                                         <Upload className="w-5 h-5 text-accent shrink-0" />
                                                         <span className="text-sm text-foreground break-all">{deckFileName || "Choisir le fichier..."}</span>
