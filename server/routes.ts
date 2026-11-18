@@ -38,6 +38,27 @@ function ensureAwsVideoColumn(): Promise<void> {
   }
   return awsVideoColumnEnsured;
 }
+// Table des avis d'évaluateurs sur les candidatures AWS (marquage 👍 / à revoir / non).
+let reviewTableEnsured: Promise<void> | null = null;
+function ensureReviewTable(): Promise<void> {
+  if (!reviewTableEnsured) {
+    reviewTableEnsured = sql`CREATE TABLE IF NOT EXISTS "aws_review_marks" (
+        "application_id" text NOT NULL,
+        "reviewer" text NOT NULL,
+        "mark" text NOT NULL,
+        "note" text,
+        "updated_at" timestamptz DEFAULT now(),
+        PRIMARY KEY ("application_id", "reviewer")
+      )`
+      .then(() => undefined)
+      .catch((err) => {
+        reviewTableEnsured = null;
+        throw err;
+      });
+  }
+  return reviewTableEnsured;
+}
+
 declare module "express-session" {
   interface SessionData {
     isAdmin: boolean;
@@ -995,7 +1016,16 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(401).json({ error: "Code d'accès invalide" });
       }
       await ensureAwsVideoColumn();
+      await ensureReviewTable();
       const applications = await storage.getAllAwsRestartApplications();
+      // Avis des évaluateurs (marquage par membre de l'équipe)
+      const markRows = (await sql`SELECT application_id, reviewer, mark FROM aws_review_marks`) as any[];
+      const marksByApp = new Map<string, { reviewer: string; mark: string }[]>();
+      for (const m of markRows) {
+        const list = marksByApp.get(m.application_id) || [];
+        list.push({ reviewer: m.reviewer, mark: m.mark });
+        marksByApp.set(m.application_id, list);
+      }
       // Classement Top 100 et vérification des vidéos (chargés via /api/admin/aws-top100)
       const extraRows = (await sql`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`) as any[];
       const extras = new Map<string, any>(extraRows.map((e) => [e.id, e]));
@@ -1084,6 +1114,7 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           videoChannel: ex?.video_channel ?? null,
           videoTitle: ex?.video_title ?? null,
           videoNote: ex?.video_note ?? null,
+          marks: marksByApp.get(r.id) || [],
         };
       });
       const stats = {
@@ -1120,6 +1151,38 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json({ success: true, id: updated.id, status: updated.status });
     } catch (error) {
       console.error("Error updating tracking status:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Avis d'un évaluateur sur un dossier (👍 bon / à revoir / non). Un avis par
+  // évaluateur et par dossier ; un mark vide retire l'avis.
+  app.post("/api/aws-tracking/:id/mark", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = (req.query.code as string) || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'accès invalide" });
+      }
+      const reviewer = String((req.body || {}).reviewer || "").trim().slice(0, 30);
+      const mark = String((req.body || {}).mark ?? "");
+      if (reviewer.length < 2) {
+        return res.status(400).json({ error: "Indiquez votre prénom d'évaluateur (2 caractères minimum)." });
+      }
+      if (!["bon", "revoir", "non", ""].includes(mark)) {
+        return res.status(400).json({ error: "Avis invalide" });
+      }
+      await ensureReviewTable();
+      if (mark === "") {
+        await sql`DELETE FROM aws_review_marks WHERE application_id = ${req.params.id} AND reviewer = ${reviewer}`;
+      } else {
+        await sql`INSERT INTO aws_review_marks (application_id, reviewer, mark, updated_at)
+          VALUES (${req.params.id}, ${reviewer}, ${mark}, now())
+          ON CONFLICT (application_id, reviewer) DO UPDATE SET mark = ${mark}, updated_at = now()`;
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error saving review mark:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
