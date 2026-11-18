@@ -65958,6 +65958,23 @@ function ensureAwsVideoColumn() {
   }
   return awsVideoColumnEnsured;
 }
+var reviewTableEnsured = null;
+function ensureReviewTable() {
+  if (!reviewTableEnsured) {
+    reviewTableEnsured = sql2`CREATE TABLE IF NOT EXISTS "aws_review_marks" (
+        "application_id" text NOT NULL,
+        "reviewer" text NOT NULL,
+        "mark" text NOT NULL,
+        "note" text,
+        "updated_at" timestamptz DEFAULT now(),
+        PRIMARY KEY ("application_id", "reviewer")
+      )`.then(() => void 0).catch((err) => {
+      reviewTableEnsured = null;
+      throw err;
+    });
+  }
+  return reviewTableEnsured;
+}
 function requireAdmin(req, res, next) {
   if (!req.session.isAdmin) {
     return res.status(401).json({ error: "Non autoris\xE9" });
@@ -66833,7 +66850,15 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
       }
       await ensureAwsVideoColumn();
+      await ensureReviewTable();
       const applications = await storage.getAllAwsRestartApplications();
+      const markRows = await sql2`SELECT application_id, reviewer, mark FROM aws_review_marks`;
+      const marksByApp = /* @__PURE__ */ new Map();
+      for (const m2 of markRows) {
+        const list = marksByApp.get(m2.application_id) || [];
+        list.push({ reviewer: m2.reviewer, mark: m2.mark });
+        marksByApp.set(m2.application_id, list);
+      }
       const extraRows = await sql2`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`;
       const extras = new Map(extraRows.map((e) => [e.id, e]));
       const rows = applications.map((a2) => ({
@@ -66918,7 +66943,8 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           videoStatus: ex?.video_status ?? null,
           videoChannel: ex?.video_channel ?? null,
           videoTitle: ex?.video_title ?? null,
-          videoNote: ex?.video_note ?? null
+          videoNote: ex?.video_note ?? null,
+          marks: marksByApp.get(r.id) || []
         };
       });
       const stats = {
@@ -66953,6 +66979,35 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.json({ success: true, id: updated.id, status: updated.status });
     } catch (error) {
       console.error("Error updating tracking status:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.post("/api/aws-tracking/:id/mark", async (req, res) => {
+    try {
+      const accessCode = process.env.EMBASSY_ACCESS_CODE;
+      const provided = req.query.code || "";
+      if (!req.session.isAdmin && (!accessCode || provided !== accessCode)) {
+        return res.status(401).json({ error: "Code d'acc\xE8s invalide" });
+      }
+      const reviewer = String((req.body || {}).reviewer || "").trim().slice(0, 30);
+      const mark = String((req.body || {}).mark ?? "");
+      if (reviewer.length < 2) {
+        return res.status(400).json({ error: "Indiquez votre pr\xE9nom d'\xE9valuateur (2 caract\xE8res minimum)." });
+      }
+      if (!["bon", "revoir", "non", ""].includes(mark)) {
+        return res.status(400).json({ error: "Avis invalide" });
+      }
+      await ensureReviewTable();
+      if (mark === "") {
+        await sql2`DELETE FROM aws_review_marks WHERE application_id = ${req.params.id} AND reviewer = ${reviewer}`;
+      } else {
+        await sql2`INSERT INTO aws_review_marks (application_id, reviewer, mark, updated_at)
+          VALUES (${req.params.id}, ${reviewer}, ${mark}, now())
+          ON CONFLICT (application_id, reviewer) DO UPDATE SET mark = ${mark}, updated_at = now()`;
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error saving review mark:", error);
       res.status(500).json({ error: "Erreur serveur" });
     }
   });

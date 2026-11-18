@@ -46,6 +46,7 @@ interface TrackingRow {
     age?: number | null;
     categorie?: "A" | "B" | "C";
     signalements?: string[];
+    marks?: { reviewer: string; mark: string }[];
     topRank?: number | null;
     triScore?: number | null;
     videoStatus?: string | null;
@@ -82,9 +83,56 @@ export default function AwsTracking() {
 
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente">("all");
+    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente" | "mesbons" | "mesrevoir">("all");
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState<"defaut" | "rang" | "score" | "nom" | "recent" | "ancien" | "age">("defaut");
+    const [lot, setLot] = useState(0); // 0 = tous, 1..10 = lot de 15 dossiers classés
+    const [reviewer, setReviewer] = useState<string>(() => {
+        try { return localStorage.getItem("aws_reviewer") || ""; } catch { return ""; }
+    });
+    const [reviewIndex, setReviewIndex] = useState<number | null>(null); // mode revue
+    const [savingMark, setSavingMark] = useState(false);
+
+    const saveReviewer = (name: string) => {
+        setReviewer(name);
+        try { localStorage.setItem("aws_reviewer", name); } catch { /* privé */ }
+    };
+
+    const myMark = (a: TrackingRow) =>
+        (a.marks || []).find((m) => m.reviewer.toLowerCase() === reviewer.trim().toLowerCase())?.mark || "";
+
+    const markCounts = (a: TrackingRow) => {
+        const c = { bon: 0, revoir: 0, non: 0 };
+        for (const m of a.marks || []) if (m.mark in c) c[m.mark as keyof typeof c]++;
+        return c;
+    };
+
+    const setMark = async (a: TrackingRow, mark: string) => {
+        if (reviewer.trim().length < 2) {
+            alert("Entrez d'abord votre prénom d'évaluateur (en haut de la liste).");
+            return;
+        }
+        const newMark = myMark(a) === mark ? "" : mark; // re-cliquer retire l'avis
+        try {
+            setSavingMark(true);
+            const res = await fetch(`/api/aws-tracking/${a.id}/mark?code=${encodeURIComponent(code)}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ reviewer: reviewer.trim(), mark: newMark }),
+            });
+            if (!res.ok) throw new Error();
+            await refetch();
+        } catch {
+            alert("Impossible d'enregistrer l'avis. Réessayez.");
+        } finally {
+            setSavingMark(false);
+        }
+    };
+
+    const videoEmbedId = (u: string | null | undefined) => {
+        const m = /(?:youtu\.be\/|shorts\/|watch\?v=|live\/|embed\/)([\w-]{6,})/.exec((u || "").trim());
+        return m ? m[1] : null;
+    };
 
     const nbTop = (data?.applications || []).filter((a) => (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100).length;
     const nbAttente = (data?.applications || []).filter((a) => (a.topRank ?? 0) > 100).length;
@@ -98,6 +146,12 @@ export default function AwsTracking() {
             if (triFilter === "top" && !((a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100)) return false;
             if (triFilter === "attente" && !((a.topRank ?? 0) > 100)) return false;
             if ((triFilter === "A" || triFilter === "B" || triFilter === "C") && a.categorie !== triFilter) return false;
+            if (triFilter === "mesbons" && myMark(a) !== "bon") return false;
+            if (triFilter === "mesrevoir" && myMark(a) !== "revoir") return false;
+            if (lot > 0) {
+                const r = a.topRank ?? 0;
+                if (r < (lot - 1) * 15 + 1 || r > lot * 15) return false;
+            }
             if (!q) return true;
             return [a.fullName, a.email, a.phone, a.city, a.videoChannel, a.videoTitle, a.professionalStatus]
                 .some((f) => normalize(f).includes(q));
@@ -112,7 +166,7 @@ export default function AwsTracking() {
                 case "ancien": return (x.createdAt || "").localeCompare(y.createdAt || "");
                 case "age": return (x.age ?? 999) - (y.age ?? 999);
                 default:
-                    if (triFilter === "top" || triFilter === "attente") return rank(x) - rank(y);
+                    if (triFilter === "top" || triFilter === "attente" || lot > 0) return rank(x) - rank(y);
                     return 0;
             }
         });
@@ -136,10 +190,10 @@ export default function AwsTracking() {
 
     const exportToExcel = () => {
         if (!data) return;
-        const headers = ["Rang Top 100", "Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "État Vidéo", "Chaîne YouTube", "Titre Vidéo", "Observation Vidéo", "Photo", "Décision", "Motivation", "Date Candidature"];
+        const headers = ["Rang Top 100", "Avis Équipe", "Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "État Vidéo", "Chaîne YouTube", "Titre Vidéo", "Observation Vidéo", "Photo", "Décision", "Motivation", "Date Candidature"];
         const decisionLabel = (s: string) => (s === "approved" ? "Favorable" : s === "rejected" ? "Défavorable" : "En attente");
         const rows = visibleApplications.map((a) => [
-            a.topRank ?? "", a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
+            a.topRank ?? "", (a.marks || []).map((m) => `${m.reviewer}: ${m.mark}`).join(" | "), a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
             a.fullName, a.gender, a.age ?? "", a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
             a.videoUrl || "", a.videoStatus || "", a.videoChannel || "", a.videoTitle || "", a.videoNote || "",
             a.hasPhoto ? "Oui" : "Non", decisionLabel(a.status), a.motivation,
@@ -242,6 +296,35 @@ export default function AwsTracking() {
                                 </div>
                             </CardHeader>
                             <CardContent>
+                                <div className="flex flex-col md:flex-row gap-3 mb-3 p-3 rounded-lg border bg-muted/20">
+                                    <div className="flex items-center gap-2">
+                                        <Label className="text-sm whitespace-nowrap font-bold">Évaluateur :</Label>
+                                        <Input
+                                            placeholder="Votre prénom"
+                                            value={reviewer}
+                                            onChange={(e) => saveReviewer(e.target.value)}
+                                            className="w-40"
+                                        />
+                                    </div>
+                                    <select
+                                        value={lot}
+                                        onChange={(e) => setLot(Number(e.target.value))}
+                                        className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+                                        aria-label="Mon lot"
+                                    >
+                                        <option value={0}>Lot : tous les dossiers</option>
+                                        {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                                            <option key={n} value={n}>Lot {n} — rangs {(n - 1) * 15 + 1} à {n * 15}</option>
+                                        ))}
+                                    </select>
+                                    <Button
+                                        className="bg-accent text-accent-foreground hover:bg-accent/90 font-bold"
+                                        disabled={visibleApplications.length === 0}
+                                        onClick={() => setReviewIndex(0)}
+                                    >
+                                        ▶ Mode revue ({visibleApplications.length})
+                                    </Button>
+                                </div>
                                 <div className="flex flex-col md:flex-row gap-3 mb-4">
                                     <Input
                                         placeholder="Rechercher : nom, email, téléphone, ville, chaîne YouTube…"
@@ -292,6 +375,16 @@ export default function AwsTracking() {
                                             Liste d'attente ({nbAttente})
                                         </Button>
                                     )}
+                                    {reviewer.trim().length >= 2 && (
+                                        <>
+                                            <Button variant={triFilter === "mesbons" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("mesbons")}>
+                                                👍 Mes bons profils
+                                            </Button>
+                                            <Button variant={triFilter === "mesrevoir" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("mesrevoir")}>
+                                                🤔 À revoir
+                                            </Button>
+                                        </>
+                                    )}
                                 </div>
                                 <div className="rounded-md border overflow-x-auto">
                                     <Table>
@@ -301,6 +394,7 @@ export default function AwsTracking() {
                                                 <TableHead>Nom complet</TableHead>
                                                 <TableHead>Rang</TableHead>
                                                 <TableHead>Tri</TableHead>
+                                                <TableHead>Avis</TableHead>
                                                 <TableHead>Sexe</TableHead>
                                                 <TableHead>Ville</TableHead>
                                                 <TableHead>Vidéo</TableHead>
@@ -312,7 +406,7 @@ export default function AwsTracking() {
                                         <TableBody>
                                             {visibleApplications.length === 0 ? (
                                                 <TableRow>
-                                                    <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
+                                                    <TableCell colSpan={11} className="text-center text-muted-foreground py-8">
                                                         Aucune candidature dans cette catégorie.
                                                     </TableCell>
                                                 </TableRow>
@@ -335,6 +429,20 @@ export default function AwsTracking() {
                                                             ) : null}
                                                         </TableCell>
                                                         <TableCell title={(a.signalements || []).join(" | ") || (a.categorie ? TRI_LABELS[a.categorie] : "")}>{triBadge(a.categorie)}</TableCell>
+                                                        <TableCell className="whitespace-nowrap text-sm">
+                                                            {(() => {
+                                                                const c = markCounts(a);
+                                                                const mine = myMark(a);
+                                                                return (
+                                                                    <span title={(a.marks || []).map((m) => `${m.reviewer} : ${m.mark === "bon" ? "👍" : m.mark === "revoir" ? "🤔" : "✖"}`).join(" · ")}>
+                                                                        {c.bon > 0 && <span className="mr-1">👍{c.bon}</span>}
+                                                                        {c.revoir > 0 && <span className="mr-1">🤔{c.revoir}</span>}
+                                                                        {c.non > 0 && <span className="mr-1">✖{c.non}</span>}
+                                                                        {mine && <Badge variant="outline" className="ml-0.5 px-1 text-[10px]">moi : {mine === "bon" ? "👍" : mine === "revoir" ? "🤔" : "✖"}</Badge>}
+                                                                    </span>
+                                                                );
+                                                            })()}
+                                                        </TableCell>
                                                         <TableCell>{a.gender}</TableCell>
                                                         <TableCell>{a.city}</TableCell>
                                                         <TableCell>
@@ -395,9 +503,29 @@ export default function AwsTracking() {
                                                                         {a.videoUrl && (
                                                                             <div className="md:col-span-2">
                                                                                 <Label className="text-xs text-muted-foreground">Vidéo de présentation (1 min)</Label>
-                                                                                <p><a href={a.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-red-600 hover:underline text-sm font-medium"><Youtube className="w-4 h-4" /> Regarder sur YouTube</a></p>
+                                                                                {videoEmbedId(a.videoUrl) && (
+                                                                                    <div className="mt-2 rounded-lg overflow-hidden border bg-black mx-auto" style={{ maxWidth: 320 }}>
+                                                                                        <iframe
+                                                                                            src={`https://www.youtube.com/embed/${videoEmbedId(a.videoUrl)}`}
+                                                                                            title={`Vidéo de ${a.fullName}`}
+                                                                                            className="w-full aspect-[9/16]"
+                                                                                            allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+                                                                                            allowFullScreen
+                                                                                        />
+                                                                                    </div>
+                                                                                )}
+                                                                                <p className="mt-1 text-center"><a href={a.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-red-600 hover:underline text-sm font-medium"><Youtube className="w-4 h-4" /> Ouvrir sur YouTube</a></p>
                                                                             </div>
                                                                         )}
+                                                                        <div className="md:col-span-2 border-t pt-3">
+                                                                            <Label className="text-xs text-muted-foreground font-bold">Mon avis d'évaluateur{reviewer.trim().length >= 2 ? ` (${reviewer.trim()})` : ""}</Label>
+                                                                            <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                                                                <Button size="sm" variant={myMark(a) === "bon" ? "default" : "outline"} className={myMark(a) === "bon" ? "bg-green-600 hover:bg-green-700" : ""} disabled={savingMark} onClick={() => setMark(a, "bon")}>👍 Bon profil</Button>
+                                                                                <Button size="sm" variant={myMark(a) === "revoir" ? "default" : "outline"} className={myMark(a) === "revoir" ? "bg-yellow-600 hover:bg-yellow-700" : ""} disabled={savingMark} onClick={() => setMark(a, "revoir")}>🤔 À revoir</Button>
+                                                                                <Button size="sm" variant={myMark(a) === "non" ? "default" : "outline"} className={myMark(a) === "non" ? "bg-red-600 hover:bg-red-700" : ""} disabled={savingMark} onClick={() => setMark(a, "non")}>✖ Non</Button>
+                                                                                <span className="text-xs text-muted-foreground">Re-cliquer retire l'avis. Avis de l'équipe : {(a.marks || []).length === 0 ? "aucun" : (a.marks || []).map((m) => `${m.reviewer} ${m.mark === "bon" ? "👍" : m.mark === "revoir" ? "🤔" : "✖"}`).join(" · ")}</span>
+                                                                            </div>
+                                                                        </div>
                                                                         <div className="md:col-span-2">
                                                                             <Label className="text-xs text-muted-foreground font-bold">Motivation</Label>
                                                                             <div className="text-sm bg-muted/30 p-4 rounded-lg border whitespace-pre-wrap leading-relaxed mt-1">{a.motivation}</div>
@@ -433,6 +561,60 @@ export default function AwsTracking() {
                                 </p>
                             </CardContent>
                         </Card>
+
+                        <Dialog open={reviewIndex !== null} onOpenChange={(open) => { if (!open) setReviewIndex(null); }}>
+                            <DialogContent className="max-w-3xl max-h-[95vh] overflow-y-auto">
+                                {reviewIndex !== null && visibleApplications[reviewIndex] && (() => {
+                                    const a = visibleApplications[reviewIndex];
+                                    const vid = videoEmbedId(a.videoUrl);
+                                    const next = () => setReviewIndex(Math.min(reviewIndex + 1, visibleApplications.length - 1));
+                                    const markAndNext = async (m: string) => { await setMark(a, m); if (reviewIndex < visibleApplications.length - 1) next(); };
+                                    return (
+                                        <>
+                                            <DialogHeader>
+                                                <DialogTitle className="flex items-center gap-2 flex-wrap">
+                                                    <span>Revue {reviewIndex + 1} / {visibleApplications.length}</span>
+                                                    {a.topRank && <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15">{a.topRank <= 100 ? `⭐ Rang ${a.topRank}` : `Attente ${a.topRank}`}</Badge>}
+                                                </DialogTitle>
+                                            </DialogHeader>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div>
+                                                    {vid ? (
+                                                        <div className="rounded-lg overflow-hidden border bg-black">
+                                                            <iframe
+                                                                key={a.id}
+                                                                src={`https://www.youtube.com/embed/${vid}?autoplay=1`}
+                                                                title={`Vidéo de ${a.fullName}`}
+                                                                className="w-full aspect-[9/16] max-h-[55vh]"
+                                                                allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+                                                                allowFullScreen
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <p className="text-sm text-destructive">Pas de vidéo lisible.</p>
+                                                    )}
+                                                    {a.videoNote && <p className={`text-xs mt-2 font-medium ${a.videoNote.startsWith("OK") ? "text-green-700" : "text-red-700"}`}>{a.videoNote}</p>}
+                                                </div>
+                                                <div className="space-y-2">
+                                                    <h3 className="text-lg font-bold">{a.fullName}</h3>
+                                                    <p className="text-sm text-muted-foreground">{a.gender === "F" ? "Femme" : "Homme"}{typeof a.age === "number" ? ` · ${a.age} ans` : ""} · {a.city} · {a.professionalStatus}</p>
+                                                    <div className="text-sm bg-muted/30 p-3 rounded-lg border whitespace-pre-wrap leading-relaxed max-h-[32vh] overflow-y-auto">{a.motivation}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center justify-between gap-2 flex-wrap border-t pt-3">
+                                                <Button variant="outline" size="sm" disabled={reviewIndex === 0} onClick={() => setReviewIndex(reviewIndex - 1)}>← Précédent</Button>
+                                                <div className="flex gap-2">
+                                                    <Button variant={myMark(a) === "bon" ? "default" : "outline"} className={myMark(a) === "bon" ? "bg-green-600 hover:bg-green-700" : ""} disabled={savingMark} onClick={() => markAndNext("bon")}>👍 Bon profil</Button>
+                                                    <Button variant={myMark(a) === "revoir" ? "default" : "outline"} className={myMark(a) === "revoir" ? "bg-yellow-600 hover:bg-yellow-700" : ""} disabled={savingMark} onClick={() => markAndNext("revoir")}>🤔 À revoir</Button>
+                                                    <Button variant={myMark(a) === "non" ? "default" : "outline"} className={myMark(a) === "non" ? "bg-red-600 hover:bg-red-700" : ""} disabled={savingMark} onClick={() => markAndNext("non")}>✖ Non</Button>
+                                                </div>
+                                                <Button variant="outline" size="sm" disabled={reviewIndex >= visibleApplications.length - 1} onClick={next}>Suivant →</Button>
+                                            </div>
+                                        </>
+                                    );
+                                })()}
+                            </DialogContent>
+                        </Dialog>
                     </>
                 )}
             </div>
