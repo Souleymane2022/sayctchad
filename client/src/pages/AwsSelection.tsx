@@ -153,7 +153,7 @@ export default function AwsSelection() {
                             <TableCell className="font-medium">{r.fullName}</TableCell>
                             <TableCell>{r.gender}</TableCell>
                             <TableCell className="text-sm">{r.professionalStatus}</TableCell>
-                            <TableCell>{r.topRank ? <Badge variant="outline">⭐ {r.topRank}</Badge> : <Badge className="bg-primary/10 text-primary border border-primary/30 hover:bg-primary/10 whitespace-nowrap">Choix du comité</Badge>}</TableCell>
+                            <TableCell>{r.topRank ? <Badge variant="outline">⭐ {r.topRank}</Badge> : "—"}</TableCell>
                             <TableCell className="font-mono">{r.scoreFinal ?? ""}</TableCell>
                             <TableCell className="text-xs">{marksLabel(r) || "—"}</TableCell>
                             <TableCell className="text-sm">{r.phone}</TableCell>
