@@ -67090,6 +67090,83 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
+  app2.post("/api/admin/aws-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = req.query.key || req.body && req.body.key || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autoris\xE9" });
+      }
+      const items = req.body && req.body.items;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 200) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] }" });
+      }
+      await sql2`CREATE TABLE IF NOT EXISTS "aws_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real
+      )`;
+      await sql2`DELETE FROM aws_selection`;
+      let inserted = 0;
+      for (const it2 of items) {
+        if (!it2 || typeof it2.id !== "string" || !["titulaire", "suppleant"].includes(it2.role)) continue;
+        await sql2`INSERT INTO aws_selection (application_id, role, position, score_final)
+          VALUES (${it2.id}, ${it2.role}, ${it2.position}, ${it2.score ?? null})
+          ON CONFLICT (application_id) DO UPDATE SET role = ${it2.role}, position = ${it2.position}, score_final = ${it2.score ?? null}`;
+        inserted++;
+      }
+      res.json({ success: true, inserted });
+    } catch (error) {
+      console.error("Error saving selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.get("/api/admin/aws-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = req.query.key || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Mot de passe administrateur invalide" });
+      }
+      await ensureAwsVideoColumn();
+      await ensureReviewTable();
+      const rows = await sql2`SELECT s.role, s.position, s.score_final,
+          a.id, a.full_name, a.gender, a.city, a.date_of_birth, a.email, a.phone,
+          a.professional_status, a.video_url, a.top_rank, a.tri_score
+        FROM aws_selection s JOIN aws_restart_applications a ON a.id = s.application_id
+        ORDER BY CASE s.role WHEN 'titulaire' THEN 0 ELSE 1 END, s.position`;
+      const markRows = await sql2`SELECT application_id, reviewer, mark FROM aws_review_marks`;
+      const marksByApp = /* @__PURE__ */ new Map();
+      for (const m2 of markRows) {
+        const list = marksByApp.get(m2.application_id) || [];
+        list.push({ reviewer: m2.reviewer, mark: m2.mark });
+        marksByApp.set(m2.application_id, list);
+      }
+      res.json({
+        selection: rows.map((r) => ({
+          id: r.id,
+          role: r.role,
+          position: r.position,
+          scoreFinal: r.score_final,
+          fullName: r.full_name,
+          gender: r.gender,
+          city: r.city,
+          dateOfBirth: r.date_of_birth,
+          email: r.email,
+          phone: r.phone,
+          professionalStatus: r.professional_status,
+          videoUrl: r.video_url,
+          topRank: r.top_rank,
+          triScore: r.tri_score,
+          marks: marksByApp.get(r.id) || []
+        }))
+      });
+    } catch (error) {
+      console.error("Error reading selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
   app2.get("/api/admin/emergency-migrate", async (req, res) => {
     try {
       const adminPassword = process.env.ADMIN_PASSWORD;

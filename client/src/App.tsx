@@ -32,6 +32,7 @@ import BrandAssets from "@/pages/BrandAssets";
 import VotersAudit from "@/pages/elections/VotersAudit";
 import PlanActivites from "@/pages/PlanActivites";
 import AwsTracking from "@/pages/AwsTracking";
+import AwsSelection from "@/pages/AwsSelection";
 import InvestReadyTchad from "@/pages/InvestReadyTchad";
 
 function Router() {
@@ -44,6 +45,7 @@ function Router() {
       <Route path="/programmes/aws-restart" component={AwsRestartProgram} />
       <Route path="/programmes/invest-ready-tchad" component={InvestReadyTchad} />
       <Route path="/aws-suivi" component={AwsTracking} />
+      <Route path="/aws-selection" component={AwsSelection} />
       <Route path="/programmes" component={Programs} />
       <Route path="/opportunites" component={Opportunities} />
       <Route path="/opportunites/:id" component={Opportunities} />

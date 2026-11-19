@@ -1278,6 +1278,76 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // ─── Sélection finale 25 + 5 : stockage et lecture privés (admin seulement) ──
+  app.post("/api/admin/aws-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || (req.body && req.body.key) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autorisé" });
+      }
+      const items = (req.body && req.body.items) as Array<{ id: string; role: string; position: number; score?: number | null }>;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 200) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] }" });
+      }
+      await sql`CREATE TABLE IF NOT EXISTS "aws_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real
+      )`;
+      await sql`DELETE FROM aws_selection`;
+      let inserted = 0;
+      for (const it of items) {
+        if (!it || typeof it.id !== "string" || !["titulaire", "suppleant"].includes(it.role)) continue;
+        await sql`INSERT INTO aws_selection (application_id, role, position, score_final)
+          VALUES (${it.id}, ${it.role}, ${it.position}, ${it.score ?? null})
+          ON CONFLICT (application_id) DO UPDATE SET role = ${it.role}, position = ${it.position}, score_final = ${it.score ?? null}`;
+        inserted++;
+      }
+      res.json({ success: true, inserted });
+    } catch (error) {
+      console.error("Error saving selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.get("/api/admin/aws-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Mot de passe administrateur invalide" });
+      }
+      await ensureAwsVideoColumn();
+      await ensureReviewTable();
+      const rows = (await sql`SELECT s.role, s.position, s.score_final,
+          a.id, a.full_name, a.gender, a.city, a.date_of_birth, a.email, a.phone,
+          a.professional_status, a.video_url, a.top_rank, a.tri_score
+        FROM aws_selection s JOIN aws_restart_applications a ON a.id = s.application_id
+        ORDER BY CASE s.role WHEN 'titulaire' THEN 0 ELSE 1 END, s.position`) as any[];
+      const markRows = (await sql`SELECT application_id, reviewer, mark FROM aws_review_marks`) as any[];
+      const marksByApp = new Map<string, { reviewer: string; mark: string }[]>();
+      for (const m of markRows) {
+        const list = marksByApp.get(m.application_id) || [];
+        list.push({ reviewer: m.reviewer, mark: m.mark });
+        marksByApp.set(m.application_id, list);
+      }
+      res.json({
+        selection: rows.map((r) => ({
+          id: r.id, role: r.role, position: r.position, scoreFinal: r.score_final,
+          fullName: r.full_name, gender: r.gender, city: r.city, dateOfBirth: r.date_of_birth,
+          email: r.email, phone: r.phone, professionalStatus: r.professional_status,
+          videoUrl: r.video_url, topRank: r.top_rank, triScore: r.tri_score,
+          marks: marksByApp.get(r.id) || [],
+        })),
+      });
+    } catch (error) {
+      console.error("Error reading selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   // ─── Outil temporaire : vider les anciennes candidatures AWS re/Start ────────
   // Protégé par le mot de passe admin. À SUPPRIMER après usage.
   // ─── Migration d'urgence : quota réseau Neon épuisé ──────────────────────────
