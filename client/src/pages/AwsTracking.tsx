@@ -134,6 +134,18 @@ export default function AwsTracking() {
         return m ? m[1] : null;
     };
 
+    // Lot d'évaluation (1-10), stable pour chaque dossier : les 150 classés
+    // gardent leurs blocs de 15 (rangs 1-15 = lot 1, etc.), tous les autres
+    // sont répartis équitablement d'après leur identifiant (même résultat
+    // sur tous les appareils).
+    const lotOf = (a: TrackingRow) => {
+        const r = a.topRank ?? 0;
+        if (r >= 1 && r <= 150) return Math.floor((r - 1) / 15) + 1;
+        let h = 0;
+        for (let i = 0; i < a.id.length; i++) h = (h * 31 + a.id.charCodeAt(i)) >>> 0;
+        return (h % 10) + 1;
+    };
+
     const nbTop = (data?.applications || []).filter((a) => (a.topRank ?? 0) >= 1 && (a.topRank ?? 0) <= 100).length;
     const nbAttente = (data?.applications || []).filter((a) => (a.topRank ?? 0) > 100).length;
 
@@ -148,10 +160,7 @@ export default function AwsTracking() {
             if ((triFilter === "A" || triFilter === "B" || triFilter === "C") && a.categorie !== triFilter) return false;
             if (triFilter === "mesbons" && myMark(a) !== "bon") return false;
             if (triFilter === "mesrevoir" && myMark(a) !== "revoir") return false;
-            if (lot > 0) {
-                const r = a.topRank ?? 0;
-                if (r < (lot - 1) * 15 + 1 || r > lot * 15) return false;
-            }
+            if (lot > 0 && lotOf(a) !== lot) return false;
             if (!q) return true;
             return [a.fullName, a.email, a.phone, a.city, a.videoChannel, a.videoTitle, a.professionalStatus]
                 .some((f) => normalize(f).includes(q));
@@ -314,7 +323,7 @@ export default function AwsTracking() {
                                     >
                                         <option value={0}>Lot : tous les dossiers</option>
                                         {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                                            <option key={n} value={n}>Lot {n} — rangs {(n - 1) * 15 + 1} à {n * 15}</option>
+                                            <option key={n} value={n}>Lot {n} — rangs {(n - 1) * 15 + 1}-{n * 15} + part des autres</option>
                                         ))}
                                     </select>
                                     <Button
@@ -346,7 +355,7 @@ export default function AwsTracking() {
                                         <option value="ancien">Tri : plus anciennes</option>
                                         <option value="age">Tri : âge croissant</option>
                                     </select>
-                                    {(q || sortBy !== "defaut") && (
+                                    {(q || sortBy !== "defaut" || lot > 0) && (
                                         <span className="text-sm text-muted-foreground self-center">
                                             {visibleApplications.length} résultat{visibleApplications.length > 1 ? "s" : ""}
                                         </span>
