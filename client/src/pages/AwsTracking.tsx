@@ -49,6 +49,8 @@ interface TrackingRow {
     marks?: { reviewer: string; mark: string }[];
     topRank?: number | null;
     triScore?: number | null;
+    selRole?: "titulaire" | "suppleant" | null;
+    selPosition?: number | null;
     videoStatus?: string | null;
     videoChannel?: string | null;
     videoTitle?: string | null;
@@ -83,7 +85,7 @@ export default function AwsTracking() {
 
     const photoSrc = (id: string) => `/api/aws-tracking/${id}/photo?code=${encodeURIComponent(code)}`;
     const [updatingId, setUpdatingId] = useState<string | null>(null);
-    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente" | "mesbons" | "mesrevoir">("all");
+    const [triFilter, setTriFilter] = useState<"all" | "A" | "B" | "C" | "top" | "attente" | "mesbons" | "mesrevoir" | "proposes">("all");
     const [search, setSearch] = useState("");
     const [sortBy, setSortBy] = useState<"defaut" | "rang" | "score" | "nom" | "recent" | "ancien" | "age">("defaut");
     const [lot, setLot] = useState(0); // 0 = tous, 1..10 = lot de 15 dossiers classés
@@ -160,6 +162,7 @@ export default function AwsTracking() {
             if ((triFilter === "A" || triFilter === "B" || triFilter === "C") && a.categorie !== triFilter) return false;
             if (triFilter === "mesbons" && myMark(a) !== "bon") return false;
             if (triFilter === "mesrevoir" && myMark(a) !== "revoir") return false;
+            if (triFilter === "proposes" && !a.selRole) return false;
             if (lot > 0 && lotOf(a) !== lot) return false;
             if (!q) return true;
             return [a.fullName, a.email, a.phone, a.city, a.videoChannel, a.videoTitle, a.professionalStatus]
@@ -175,6 +178,10 @@ export default function AwsTracking() {
                 case "ancien": return (x.createdAt || "").localeCompare(y.createdAt || "");
                 case "age": return (x.age ?? 999) - (y.age ?? 999);
                 default:
+                    if (triFilter === "proposes") {
+                        const ord = (a: TrackingRow) => (a.selRole === "titulaire" ? 0 : 1) * 1000 + (a.selPosition ?? 999);
+                        return ord(x) - ord(y);
+                    }
                     if (triFilter === "top" || triFilter === "attente" || lot > 0) return rank(x) - rank(y);
                     return 0;
             }
@@ -199,9 +206,10 @@ export default function AwsTracking() {
 
     const exportToExcel = () => {
         if (!data) return;
-        const headers = ["Rang Top 100", "Avis Équipe", "Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "État Vidéo", "Chaîne YouTube", "Titre Vidéo", "Observation Vidéo", "Photo", "Décision", "Motivation", "Date Candidature"];
+        const headers = ["Proposition", "Rang Top 100", "Avis Équipe", "Tri", "Signalements", "Nom Complet", "Sexe", "Âge", "Date de Naissance", "Ville", "Statut Professionnel", "Email", "Téléphone", "Vidéo (YouTube)", "État Vidéo", "Chaîne YouTube", "Titre Vidéo", "Observation Vidéo", "Photo", "Décision", "Motivation", "Date Candidature"];
         const decisionLabel = (s: string) => (s === "approved" ? "Favorable" : s === "rejected" ? "Défavorable" : "En attente");
         const rows = visibleApplications.map((a) => [
+            a.selRole === "titulaire" ? `Retenu n°${a.selPosition}` : a.selRole === "suppleant" ? `Suppléant n°${a.selPosition}` : "",
             a.topRank ?? "", (a.marks || []).map((m) => `${m.reviewer}: ${m.mark}`).join(" | "), a.categorie ? TRI_LABELS[a.categorie] : "", (a.signalements || []).join(" | "),
             a.fullName, a.gender, a.age ?? "", a.dateOfBirth, a.city, a.professionalStatus, a.email, a.phone,
             a.videoUrl || "", a.videoStatus || "", a.videoChannel || "", a.videoTitle || "", a.videoNote || "",
@@ -384,6 +392,11 @@ export default function AwsTracking() {
                                             Liste d'attente ({nbAttente})
                                         </Button>
                                     )}
+                                    {(data.applications || []).some((a) => a.selRole) && (
+                                        <Button variant={triFilter === "proposes" ? "default" : "outline"} size="sm" className={triFilter === "proposes" ? "bg-green-700 hover:bg-green-800" : "text-green-800 border-green-600/40"} onClick={() => setTriFilter("proposes")}>
+                                            📋 Liste proposée ({(data.applications || []).filter((a) => a.selRole).length})
+                                        </Button>
+                                    )}
                                     {reviewer.trim().length >= 2 && (
                                         <>
                                             <Button variant={triFilter === "mesbons" ? "default" : "outline"} size="sm" onClick={() => setTriFilter("mesbons")}>
@@ -431,11 +444,15 @@ export default function AwsTracking() {
                                                         </TableCell>
                                                         <TableCell className="font-medium">{a.fullName}</TableCell>
                                                         <TableCell>
-                                                            {a.topRank && a.topRank <= 100 ? (
-                                                                <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15 whitespace-nowrap">⭐ {a.topRank}</Badge>
-                                                            ) : a.topRank ? (
-                                                                <Badge variant="outline" className="whitespace-nowrap" title="Liste d'attente">{a.topRank}</Badge>
-                                                            ) : null}
+                                                            <div className="flex flex-col gap-1 items-start">
+                                                                {a.selRole === "titulaire" && <Badge className="bg-green-600/15 text-green-800 border border-green-600/40 hover:bg-green-600/15 whitespace-nowrap">Retenu n°{a.selPosition}</Badge>}
+                                                                {a.selRole === "suppleant" && <Badge className="bg-sky-500/15 text-sky-800 border border-sky-500/40 hover:bg-sky-500/15 whitespace-nowrap">Suppléant n°{a.selPosition}</Badge>}
+                                                                {a.topRank && a.topRank <= 100 ? (
+                                                                    <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15 whitespace-nowrap">⭐ {a.topRank}</Badge>
+                                                                ) : a.topRank ? (
+                                                                    <Badge variant="outline" className="whitespace-nowrap" title="Liste d'attente">{a.topRank}</Badge>
+                                                                ) : null}
+                                                            </div>
                                                         </TableCell>
                                                         <TableCell title={(a.signalements || []).join(" | ") || (a.categorie ? TRI_LABELS[a.categorie] : "")}>{triBadge(a.categorie)}</TableCell>
                                                         <TableCell className="whitespace-nowrap text-sm">

@@ -1029,6 +1029,12 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       // Classement Top 100 et vérification des vidéos (chargés via /api/admin/aws-top100)
       const extraRows = (await sql`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`) as any[];
       const extras = new Map<string, any>(extraRows.map((e) => [e.id, e]));
+      // Liste proposée à l'Ambassade (titulaires + suppléants), si chargée
+      const selMap = new Map<string, { role: string; position: number }>();
+      try {
+        const selRows = (await sql`SELECT application_id, role, position FROM aws_selection`) as any[];
+        for (const r of selRows) selMap.set(r.application_id, { role: r.role, position: r.position });
+      } catch { /* table absente tant que la liste n'est pas chargée */ }
       // Lecture seule. Les photos (lourdes) sont servies individuellement via /api/aws-tracking/:id.
       const rows = applications.map((a) => ({
         id: a.id,
@@ -1115,6 +1121,8 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           videoTitle: ex?.video_title ?? null,
           videoNote: ex?.video_note ?? null,
           marks: marksByApp.get(r.id) || [],
+          selRole: selMap.get(r.id)?.role ?? null,
+          selPosition: selMap.get(r.id)?.position ?? null,
         };
       });
       const stats = {
