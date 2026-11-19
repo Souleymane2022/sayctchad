@@ -66861,6 +66861,12 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
       const extraRows = await sql2`SELECT id, top_rank, tri_score, video_status, video_channel, video_title, video_note FROM aws_restart_applications WHERE top_rank IS NOT NULL OR video_status IS NOT NULL`;
       const extras = new Map(extraRows.map((e) => [e.id, e]));
+      const selMap = /* @__PURE__ */ new Map();
+      try {
+        const selRows = await sql2`SELECT application_id, role, position FROM aws_selection`;
+        for (const r of selRows) selMap.set(r.application_id, { role: r.role, position: r.position });
+      } catch {
+      }
       const rows = applications.map((a2) => ({
         id: a2.id,
         fullName: a2.fullName,
@@ -66944,7 +66950,9 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           videoChannel: ex?.video_channel ?? null,
           videoTitle: ex?.video_title ?? null,
           videoNote: ex?.video_note ?? null,
-          marks: marksByApp.get(r.id) || []
+          marks: marksByApp.get(r.id) || [],
+          selRole: selMap.get(r.id)?.role ?? null,
+          selPosition: selMap.get(r.id)?.position ?? null
         };
       });
       const stats = {
