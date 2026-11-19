@@ -1312,6 +1312,66 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // Choix personnels du Représentant National (⭐ mérite une place / à remplacer)
+  app.post("/api/admin/aws-choice", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || (req.body && req.body.key) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autorisé" });
+      }
+      const id = String((req.body || {}).id || "");
+      const choice = String((req.body || {}).choice ?? "");
+      if (!id) return res.status(400).json({ error: "id requis" });
+      if (!["in", "out", ""].includes(choice)) return res.status(400).json({ error: "choix invalide" });
+      await sql`CREATE TABLE IF NOT EXISTS "aws_owner_choice" (
+        "application_id" text PRIMARY KEY,
+        "choice" text NOT NULL,
+        "updated_at" timestamptz DEFAULT now()
+      )`;
+      if (choice === "") {
+        await sql`DELETE FROM aws_owner_choice WHERE application_id = ${id}`;
+      } else {
+        await sql`INSERT INTO aws_owner_choice (application_id, choice, updated_at)
+          VALUES (${id}, ${choice}, now())
+          ON CONFLICT (application_id) DO UPDATE SET choice = ${choice}, updated_at = now()`;
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error saving owner choice:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  // Recherche de candidats pour la page privée (admin seulement)
+  app.get("/api/admin/aws-candidates", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autorisé" });
+      }
+      const q = String(req.query.q || "").trim();
+      if (q.length < 2) return res.json({ candidates: [] });
+      await ensureAwsVideoColumn();
+      const like = `%${q}%`;
+      const rows = (await sql`SELECT id, full_name, gender, city, professional_status, top_rank, tri_score, video_url
+        FROM aws_restart_applications
+        WHERE full_name ILIKE ${like} OR email ILIKE ${like} OR phone ILIKE ${like}
+        ORDER BY top_rank NULLS LAST, full_name LIMIT 30`) as any[];
+      res.json({
+        candidates: rows.map((r) => ({
+          id: r.id, fullName: r.full_name, gender: r.gender, city: r.city,
+          professionalStatus: r.professional_status, topRank: r.top_rank,
+          triScore: r.tri_score, videoUrl: r.video_url,
+        })),
+      });
+    } catch (error) {
+      console.error("Error searching candidates:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   app.get("/api/admin/aws-selection", async (req, res) => {
     try {
       const adminPassword = process.env.ADMIN_PASSWORD;
@@ -1333,6 +1393,14 @@ Sitemap: ${baseUrl}/sitemap.xml`;
         list.push({ reviewer: m.reviewer, mark: m.mark });
         marksByApp.set(m.application_id, list);
       }
+      await sql`CREATE TABLE IF NOT EXISTS "aws_owner_choice" (
+        "application_id" text PRIMARY KEY,
+        "choice" text NOT NULL,
+        "updated_at" timestamptz DEFAULT now()
+      )`;
+      const choiceRows = (await sql`SELECT c.application_id, c.choice, a.full_name, a.gender, a.professional_status, a.top_rank
+        FROM aws_owner_choice c JOIN aws_restart_applications a ON a.id = c.application_id
+        ORDER BY c.updated_at DESC`) as any[];
       res.json({
         selection: rows.map((r) => ({
           id: r.id, role: r.role, position: r.position, scoreFinal: r.score_final,
@@ -1340,6 +1408,10 @@ Sitemap: ${baseUrl}/sitemap.xml`;
           email: r.email, phone: r.phone, professionalStatus: r.professional_status,
           videoUrl: r.video_url, topRank: r.top_rank, triScore: r.tri_score,
           marks: marksByApp.get(r.id) || [],
+        })),
+        choices: choiceRows.map((c) => ({
+          id: c.application_id, choice: c.choice, fullName: c.full_name,
+          gender: c.gender, professionalStatus: c.professional_status, topRank: c.top_rank,
         })),
       });
     } catch (error) {
