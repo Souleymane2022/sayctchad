@@ -108,6 +108,31 @@ export default function AwsSelection() {
     const marksLabel = (r: SelectionRow) =>
         r.marks.map((m) => `${m.reviewer} ${m.mark === "bon" ? "👍" : m.mark === "revoir" ? "🤔" : "✖"}`).join(" · ");
 
+    // Lien WhatsApp avec le message de notification pré-rempli
+    const waLink = (r: SelectionRow) => {
+        let num = (r.phone || "").replace(/\D/g, "");
+        if (num.length === 8) num = "235" + num;
+        if (num.startsWith("00")) num = num.slice(2);
+        const fem = r.gender === "F";
+        const texte = `🎉 Félicitations ${r.fullName.trim()} !
+
+Suite à ta candidature au programme AWS re/Start — Chad Cloud Talent N'Djamena 2026, nous avons le plaisir de te confirmer que tu fais partie des 25 candidats retenus.
+
+Merci de CONFIRMER par retour de ce message, avant le samedi 21 novembre à 18h :
+1️⃣ que tu es bien présent${fem ? "e" : ""} à N'Djamena et disponible à plein temps du 23 novembre 2026 au 19 février 2027 ;
+2️⃣ que tu disposes d'une pièce d'identité valide.
+Sans confirmation dans ce délai, ta place pourra être attribuée à un suppléant.
+
+⚠️ Consignes pour le premier jour (lundi 23 novembre 2026) :
+• Présence à 9h30 précises à la réception de l'Ambassade des États-Unis à N'Djamena (formalités de sécurité) ;
+• Pièce d'identité valide obligatoire ;
+• Téléphones et appareils électroniques interdits à l'intérieur : ils seront déposés à la réception pendant la durée du programme.
+
+Encore félicitations ! 🙌
+Smart Africa Youth Chapter Tchad — sayctchad.org`;
+        return `https://wa.me/${num}?text=${encodeURIComponent(texte)}`;
+    };
+
     const exportCsv = () => {
         if (!data) return;
         const headers = ["Rôle", "N°", "Nom complet", "Sexe", "Date de naissance", "Ville", "Statut", "Rang Top100", "Score /100", "Score final", "Avis équipe", "Email", "Téléphone", "Vidéo"];
@@ -142,6 +167,7 @@ export default function AwsSelection() {
                         <TableHead>Score final</TableHead>
                         <TableHead>Avis équipe</TableHead>
                         <TableHead>Téléphone</TableHead>
+                        <TableHead>Notifier</TableHead>
                         <TableHead>Vidéo</TableHead>
                         <TableHead>Mon choix</TableHead>
                     </TableRow>
@@ -157,6 +183,17 @@ export default function AwsSelection() {
                             <TableCell className="font-mono">{r.scoreFinal ?? ""}</TableCell>
                             <TableCell className="text-xs">{marksLabel(r) || "—"}</TableCell>
                             <TableCell className="text-sm">{r.phone}</TableCell>
+                            <TableCell>
+                                {r.role === "titulaire" ? (
+                                    <a href={waLink(r)} target="_blank" rel="noopener noreferrer">
+                                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white whitespace-nowrap">
+                                            📱 WhatsApp
+                                        </Button>
+                                    </a>
+                                ) : (
+                                    <span className="text-xs text-muted-foreground">Après désistement</span>
+                                )}
+                            </TableCell>
                             <TableCell>
                                 {r.videoUrl ? (
                                     <a href={r.videoUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-red-600 hover:underline text-sm">
