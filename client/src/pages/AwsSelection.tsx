@@ -123,12 +123,31 @@ Merci de CONFIRMER par retour de ce message, avant le samedi 21 novembre à 18h 
 2️⃣ que tu disposes d'une pièce d'identité valide.
 Sans confirmation dans ce délai, ta place pourra être attribuée à un suppléant.
 
-⚠️ Consignes pour le premier jour (lundi 23 novembre 2026) :
+⚠️ Consignes pour le premier jour (mardi 24 novembre 2026) :
 • Présence à 9h30 précises à la réception de l'Ambassade des États-Unis à N'Djamena (formalités de sécurité) ;
 • Pièce d'identité valide obligatoire ;
 • Téléphones et appareils électroniques interdits à l'intérieur : ils seront déposés à la réception pendant la durée du programme.
 
 Encore félicitations ! 🙌
+Smart Africa Youth Chapter Tchad — sayctchad.org`;
+        return `https://wa.me/${num}?text=${encodeURIComponent(texte)}`;
+    };
+
+    // Rectificatif : le rendez-vous est le mardi 24 novembre, pas le lundi 23
+    const waRectifLink = (r: SelectionRow) => {
+        let num = (r.phone || "").replace(/\D/g, "");
+        if (num.length === 8) num = "235" + num;
+        if (num.startsWith("00")) num = num.slice(2);
+        const texte = `⚠️ RECTIFICATIF IMPORTANT — AWS re/Start
+
+Bonjour ${r.fullName.trim()},
+
+Une correction concernant notre précédent message : le rendez-vous du premier jour aura lieu le MARDI 24 NOVEMBRE 2026 à 9h30 précises à la réception de l'Ambassade des États-Unis à N'Djamena — et NON le lundi 23 novembre.
+
+Les autres consignes restent inchangées (pièce d'identité valide, téléphones déposés à la réception).
+
+Merci de répondre « Bien reçu » pour confirmer.
+
 Smart Africa Youth Chapter Tchad — sayctchad.org`;
         return `https://wa.me/${num}?text=${encodeURIComponent(texte)}`;
     };
@@ -185,11 +204,18 @@ Smart Africa Youth Chapter Tchad — sayctchad.org`;
                             <TableCell className="text-sm">{r.phone}</TableCell>
                             <TableCell>
                                 {r.role === "titulaire" ? (
-                                    <a href={waLink(r)} target="_blank" rel="noopener noreferrer">
-                                        <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white whitespace-nowrap">
-                                            📱 WhatsApp
-                                        </Button>
-                                    </a>
+                                    <div className="flex flex-col gap-1">
+                                        <a href={waLink(r)} target="_blank" rel="noopener noreferrer">
+                                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white whitespace-nowrap w-full">
+                                                📱 WhatsApp
+                                            </Button>
+                                        </a>
+                                        <a href={waRectifLink(r)} target="_blank" rel="noopener noreferrer">
+                                            <Button size="sm" variant="outline" className="text-amber-700 border-amber-500/50 whitespace-nowrap w-full">
+                                                ⚠️ Rectif. 24 nov.
+                                            </Button>
+                                        </a>
+                                    </div>
                                 ) : (
                                     <span className="text-xs text-muted-foreground">Après désistement</span>
                                 )}
