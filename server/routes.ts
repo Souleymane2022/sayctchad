@@ -1239,12 +1239,19 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       }
       const id = (req.query.id as string) || "";
       const video = (req.query.video as string) || "";
+      const email = (req.query.email as string) || "";
       if (!id) return res.status(400).json({ error: "Paramètre id requis" });
-      if (!/^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i.test(video)) {
+      if (!video && !email) return res.status(400).json({ error: "Paramètre video ou email requis" });
+      if (video && !/^https?:\/\/(www\.|m\.)?(youtube\.com\/(watch\?v=|shorts\/|live\/)[\w-]{6,}|youtu\.be\/[\w-]{6,})/i.test(video)) {
         return res.status(400).json({ error: "Lien YouTube invalide" });
       }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+        return res.status(400).json({ error: "Adresse email invalide" });
+      }
       await ensureAwsVideoColumn();
-      const rows = (await sql`UPDATE aws_restart_applications SET video_url = ${video} WHERE id = ${id} RETURNING id, full_name, email, video_url`) as any[];
+      const rows = (video
+        ? await sql`UPDATE aws_restart_applications SET video_url = ${video} WHERE id = ${id} RETURNING id, full_name, email, video_url`
+        : await sql`UPDATE aws_restart_applications SET email = ${email} WHERE id = ${id} RETURNING id, full_name, email, video_url`) as any[];
       if (rows.length === 0) return res.status(404).json({ error: "Candidature introuvable" });
       res.json({ success: true, candidature: rows[0] });
     } catch (error) {
