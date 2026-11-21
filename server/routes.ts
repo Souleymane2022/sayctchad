@@ -880,7 +880,14 @@ ${application.description}`
     }
   });
 
-  app.get("/api/admin/invest-ready-applications", requireAdmin, async (_req, res) => {
+  // Session admin OU clé (les sessions ne survivent pas entre instances serverless)
+  const requireAdminOrKey = (req: Request, res: Response, next: NextFunction) => {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (req.session.isAdmin || (adminPassword && req.query.key === adminPassword)) return next();
+    return res.status(401).json({ error: "Non autorisé" });
+  };
+
+  app.get("/api/admin/invest-ready-applications", requireAdminOrKey, async (_req, res) => {
     try {
       await ensureInvestReadyTable();
       const apps = await storage.getAllInvestReadyApplications();
@@ -896,7 +903,7 @@ ${application.description}`
     }
   });
 
-  app.get("/api/admin/invest-ready-applications/:id/file", requireAdmin, async (req, res) => {
+  app.get("/api/admin/invest-ready-applications/:id/file", requireAdminOrKey, async (req, res) => {
     try {
       await ensureInvestReadyTable();
       const type = req.query.type === "deck" ? "deck" : "id";

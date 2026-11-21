@@ -66733,7 +66733,12 @@ L'\xE9quipe SAYC Tchad`
       res.status(500).json({ error: "Erreur lors de l'envoi de la candidature" });
     }
   });
-  app2.get("/api/admin/invest-ready-applications", requireAdmin, async (_req, res) => {
+  const requireAdminOrKey = (req, res, next) => {
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (req.session.isAdmin || adminPassword && req.query.key === adminPassword) return next();
+    return res.status(401).json({ error: "Non autoris\xE9" });
+  };
+  app2.get("/api/admin/invest-ready-applications", requireAdminOrKey, async (_req, res) => {
     try {
       await ensureInvestReadyTable();
       const apps = await storage.getAllInvestReadyApplications();
@@ -66747,7 +66752,7 @@ L'\xE9quipe SAYC Tchad`
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
-  app2.get("/api/admin/invest-ready-applications/:id/file", requireAdmin, async (req, res) => {
+  app2.get("/api/admin/invest-ready-applications/:id/file", requireAdminOrKey, async (req, res) => {
     try {
       await ensureInvestReadyTable();
       const type = req.query.type === "deck" ? "deck" : "id";
