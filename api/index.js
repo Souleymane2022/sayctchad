@@ -67262,6 +67262,73 @@ Sitemap: ${baseUrl}/sitemap.xml`;
       res.status(500).json({ error: "Erreur serveur" });
     }
   });
+  app2.post("/api/admin/invest-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = req.query.key || req.body && req.body.key || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autoris\xE9" });
+      }
+      const items = req.body && req.body.items;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 100) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] }" });
+      }
+      await sql2`CREATE TABLE IF NOT EXISTS "invest_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real,
+        "note" text
+      )`;
+      await sql2`DELETE FROM invest_selection`;
+      let inserted = 0;
+      for (const it2 of items) {
+        if (!it2 || typeof it2.id !== "string" || !["retenu", "attente"].includes(it2.role)) continue;
+        await sql2`INSERT INTO invest_selection (application_id, role, position, score_final, note)
+          VALUES (${it2.id}, ${it2.role}, ${it2.position}, ${it2.score ?? null}, ${it2.note ?? null})`;
+        inserted++;
+      }
+      res.json({ success: true, inserted });
+    } catch (error) {
+      console.error("Error saving invest selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+  app2.get("/api/admin/invest-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = req.query.key || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Mot de passe administrateur invalide" });
+      }
+      await ensureInvestReadyTable();
+      await sql2`CREATE TABLE IF NOT EXISTS "invest_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real,
+        "note" text
+      )`;
+      const selRows = await sql2`SELECT application_id, role, position, score_final, note FROM invest_selection`;
+      const selMap = new Map(selRows.map((r) => [r.application_id, r]));
+      const apps = await storage.getAllInvestReadyApplications();
+      const out = apps.filter((a2) => selMap.has(a2.id)).map(({ idFileData, deckFileData, ...rest }) => {
+        const s = selMap.get(rest.id);
+        return {
+          ...rest,
+          hasDeck: !!deckFileData,
+          role: s.role,
+          position: s.position,
+          scoreFinal: s.score_final,
+          note: s.note
+        };
+      }).sort((a2, b2) => a2.role === b2.role ? a2.position - b2.position : a2.role === "retenu" ? -1 : 1);
+      res.json({ selection: out });
+    } catch (error) {
+      console.error("Error reading invest selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
   app2.get("/api/admin/emergency-migrate", async (req, res) => {
     try {
       const adminPassword = process.env.ADMIN_PASSWORD;
