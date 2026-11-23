@@ -1442,6 +1442,76 @@ Sitemap: ${baseUrl}/sitemap.xml`;
     }
   });
 
+  // ─── Sélection Invest Ready : stockage et lecture privés (admin seulement) ──
+  app.post("/api/admin/invest-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || (req.body && req.body.key) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Non autorisé" });
+      }
+      const items = (req.body && req.body.items) as Array<{ id: string; role: string; position: number; score?: number | null; note?: string | null }>;
+      if (!Array.isArray(items) || items.length === 0 || items.length > 100) {
+        return res.status(400).json({ error: "Corps attendu : { items: [...] }" });
+      }
+      await sql`CREATE TABLE IF NOT EXISTS "invest_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real,
+        "note" text
+      )`;
+      await sql`DELETE FROM invest_selection`;
+      let inserted = 0;
+      for (const it of items) {
+        if (!it || typeof it.id !== "string" || !["retenu", "attente"].includes(it.role)) continue;
+        await sql`INSERT INTO invest_selection (application_id, role, position, score_final, note)
+          VALUES (${it.id}, ${it.role}, ${it.position}, ${it.score ?? null}, ${(it.note ?? null) as string | null})`;
+        inserted++;
+      }
+      res.json({ success: true, inserted });
+    } catch (error) {
+      console.error("Error saving invest selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
+  app.get("/api/admin/invest-selection", async (req, res) => {
+    try {
+      const adminPassword = process.env.ADMIN_PASSWORD;
+      const key = (req.query.key as string) || "";
+      if (!req.session.isAdmin && (!adminPassword || key !== adminPassword)) {
+        return res.status(401).json({ error: "Mot de passe administrateur invalide" });
+      }
+      await ensureInvestReadyTable();
+      await sql`CREATE TABLE IF NOT EXISTS "invest_selection" (
+        "application_id" text PRIMARY KEY,
+        "role" text NOT NULL,
+        "position" integer NOT NULL,
+        "score_final" real,
+        "note" text
+      )`;
+      const selRows = (await sql`SELECT application_id, role, position, score_final, note FROM invest_selection`) as any[];
+      const selMap = new Map(selRows.map((r) => [r.application_id, r]));
+      const apps = await storage.getAllInvestReadyApplications();
+      const out = apps
+        .filter((a) => selMap.has(a.id))
+        .map(({ idFileData, deckFileData, ...rest }) => {
+          const s = selMap.get(rest.id)!;
+          return {
+            ...rest,
+            hasDeck: !!deckFileData,
+            role: s.role, position: s.position, scoreFinal: s.score_final, note: s.note,
+          };
+        })
+        .sort((a, b) => (a.role === b.role ? a.position - b.position : a.role === "retenu" ? -1 : 1));
+      res.json({ selection: out });
+    } catch (error) {
+      console.error("Error reading invest selection:", error);
+      res.status(500).json({ error: "Erreur serveur" });
+    }
+  });
+
   // ─── Outil temporaire : vider les anciennes candidatures AWS re/Start ────────
   // Protégé par le mot de passe admin. À SUPPRIMER après usage.
   // ─── Migration d'urgence : quota réseau Neon épuisé ──────────────────────────
