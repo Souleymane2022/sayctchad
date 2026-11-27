@@ -66738,6 +66738,42 @@ L'\xE9quipe SAYC Tchad`
     if (req.session.isAdmin || adminPassword && req.query.key === adminPassword) return next();
     return res.status(401).json({ error: "Non autoris\xE9" });
   };
+  app2.post("/api/admin/news", requireAdminOrKey, async (req, res) => {
+    try {
+      const validatedData = insertNewsArticleSchema.parse(req.body);
+      const article = await storage.createNewsArticle(validatedData);
+      res.status(201).json(article);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
+      }
+      console.error("Error creating news article:", error);
+      res.status(500).json({ error: "Erreur lors de la cr\xE9ation de l'article" });
+    }
+  });
+  app2.put("/api/admin/news/:id", requireAdminOrKey, async (req, res) => {
+    try {
+      const validatedData = insertNewsArticleSchema.partial().parse(req.body);
+      const article = await storage.updateNewsArticle(String(req.params.id), validatedData);
+      if (!article) return res.status(404).json({ error: "Article introuvable" });
+      res.json(article);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Donn\xE9es invalides", details: error.errors });
+      }
+      console.error("Error updating news article:", error);
+      res.status(500).json({ error: "Erreur lors de la mise \xE0 jour de l'article" });
+    }
+  });
+  app2.delete("/api/admin/news/:id", requireAdminOrKey, async (req, res) => {
+    try {
+      await storage.deleteNewsArticle(String(req.params.id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting news article:", error);
+      res.status(500).json({ error: "Erreur lors de la suppression de l'article" });
+    }
+  });
   app2.get("/api/admin/invest-ready-applications", requireAdminOrKey, async (_req, res) => {
     try {
       await ensureInvestReadyTable();
