@@ -141,6 +141,11 @@ export default function InvestSelection() {
             <SEOHead title="Sélection Invest Ready (privé) | SAYC Tchad" description="Espace privé." path="/invest-selection" />
             <div className="container mx-auto px-4 max-w-5xl">
                 <div className="text-center mb-8">
+                    <img
+                        src="/images/invest-ready-logo.png"
+                        alt="Invest Ready Tchad"
+                        className="mx-auto w-28 md:w-36 rounded-2xl shadow-lg mb-4"
+                    />
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary border border-primary/30 mb-4">
                         <ShieldCheck className="w-5 h-5" />
                         <span className="text-sm font-bold uppercase tracking-wider">Espace privé — Représentant National</span>
