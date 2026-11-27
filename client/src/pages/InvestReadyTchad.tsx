@@ -286,9 +286,12 @@ export default function InvestReadyTchad() {
                         <Rocket className="w-5 h-5" />
                         <span className="text-sm font-bold uppercase tracking-wider">Appel à candidatures</span>
                     </div>
-                    <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
-                        Invest Ready <span className="text-accent underline decoration-2 underline-offset-8">Tchad</span>
-                    </h1>
+                    <h1 className="sr-only">Invest Ready Tchad</h1>
+                    <img
+                        src="/images/invest-ready-logo.png"
+                        alt="Invest Ready Tchad — Bootcamp"
+                        className="mx-auto w-48 md:w-64 rounded-2xl shadow-2xl ring-1 ring-white/20 mb-6"
+                    />
                     <p className="text-xl text-sidebar-foreground/80 max-w-3xl mx-auto leading-relaxed mb-6">
                         Bootcamp de préparation à l'investissement pour start-ups tchadiennes
                     </p>
