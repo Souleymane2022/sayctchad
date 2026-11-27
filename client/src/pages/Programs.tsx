@@ -44,6 +44,57 @@ const saycPillars = [
   },
 ];
 
+const flagshipProjects = [
+  {
+    logo: "/images/chad-cloud-talent-logo.png",
+    logoAlt: "Chad Cloud Talent",
+    title: "Chad Cloud Talent — AWS re/Start",
+    status: "En cours",
+    statusClass: "bg-green-600/15 text-green-700 border-green-600/40",
+    description:
+      "Première promotion AWS re/Start au Tchad : bootcamp gratuit de 12 semaines (420 h) à N'Djamena menant à la certification AWS Cloud Practitioner. Financé par l'Ambassade des États-Unis.",
+    stats: [
+      { value: "1 678", label: "Candidatures" },
+      { value: "25", label: "Sélectionnés" },
+      { value: "420h", label: "De formation" },
+    ],
+    href: "/programmes/aws-restart",
+    partner: "Ambassade des États-Unis",
+  },
+  {
+    logo: "/images/invest-ready-logo.png",
+    logoAlt: "Invest Ready Tchad",
+    title: "Invest Ready Tchad",
+    status: "Bootcamp réalisé",
+    statusClass: "bg-primary/10 text-primary border-primary/40",
+    description:
+      "Bootcamp de préparation à l'investissement pour start-ups tchadiennes : levée de fonds, modèle économique, storytelling investisseur et pitch. Financé par l'Ambassade de France au Tchad.",
+    stats: [
+      { value: "48", label: "Start-ups candidates" },
+      { value: "20", label: "Sélectionnées" },
+      { value: "3", label: "Jours intensifs" },
+    ],
+    href: "/programmes/invest-ready-tchad",
+    partner: "Ambassade de France au Tchad",
+  },
+  {
+    logo: "/images/partners/thunderbird-logo.png",
+    logoAlt: "Thunderbird School of Global Management",
+    title: "SAYC × Thunderbird",
+    status: "Réalisé",
+    statusClass: "bg-accent/15 text-accent-foreground border-accent/40",
+    description:
+      "Bourses de certification exécutive avec la Thunderbird School of Global Management (Arizona State University) : des jeunes tchadiens formés aux standards mondiaux du management.",
+    stats: [
+      { value: "100%", label: "Bourse complète" },
+      { value: "ASU", label: "Université partenaire" },
+      { value: "🎓", label: "Certification exécutive" },
+    ],
+    href: "/programmes/thunderbird",
+    partner: "Arizona State University",
+  },
+];
+
 const saycActivities = [
   { icon: BookOpen, title: "Développer vos compétences", description: "Programmes de formation via SADA et les partenaires de Smart Africa." },
   { icon: Handshake, title: "Programme de mentorat", description: "Accompagnement personnalisé par des mentors expérimentés." },
@@ -155,6 +206,65 @@ export default function Programs() {
       </section>
 
       <section className="py-16 md:py-24 bg-muted/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4" data-testid="badge-flagship">
+              <Rocket className="w-3 h-3 mr-1" />
+              Nos projets
+            </Badge>
+            <h2 className="font-heading text-3xl md:text-4xl font-bold mb-4" data-testid="text-flagship-title">
+              Nos Projets Phares
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Des programmes concrets, menés avec des partenaires internationaux, qui transforment
+              le parcours des jeunes et des start-ups du Tchad.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {flagshipProjects.map((project) => (
+              <Card key={project.title} className="flex flex-col overflow-hidden hover-elevate transition-all" data-testid={`card-flagship-${project.title}`}>
+                <div className="bg-white border-b flex items-center justify-center p-6 h-44">
+                  <img
+                    src={project.logo}
+                    alt={project.logoAlt}
+                    className="max-h-32 w-auto object-contain"
+                    loading="lazy"
+                  />
+                </div>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+                    <Badge variant="outline" className={`border ${project.statusClass}`}>{project.status}</Badge>
+                    <span className="text-[11px] text-muted-foreground">{project.partner}</span>
+                  </div>
+                  <CardTitle className="font-heading text-lg leading-snug">{project.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col flex-1">
+                  <CardDescription className="text-sm leading-relaxed mb-4">
+                    {project.description}
+                  </CardDescription>
+                  <div className="grid grid-cols-3 gap-2 mb-5 mt-auto">
+                    {project.stats.map((s) => (
+                      <div key={s.label} className="text-center bg-muted/50 rounded-lg py-2 px-1">
+                        <p className="font-bold text-primary text-lg leading-tight">{s.value}</p>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground leading-tight mt-0.5">{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <Link href={project.href}>
+                    <Button variant="outline" className="w-full">
+                      Découvrir le projet
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4" data-testid="badge-activities">

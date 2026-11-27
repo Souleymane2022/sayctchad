@@ -186,9 +186,18 @@ export default function AwsRestartProgram() {
             <section className="relative py-20 md:py-28 bg-gradient-to-br from-sidebar via-sidebar to-sidebar/95 text-sidebar-foreground overflow-hidden">
                 <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent" />
                 <div className="container mx-auto px-4 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30 mb-6">
-                        <Cloud className="w-5 h-5" />
-                        <span className="text-sm font-bold uppercase tracking-wider">Chad Cloud Talent — AWS re/Start {CURRENT_COHORT}</span>
+                    <div className="inline-block bg-white rounded-2xl px-6 py-4 shadow-2xl ring-1 ring-white/20 mb-6">
+                        <img
+                            src="/images/chad-cloud-talent-logo.png"
+                            alt="Chad Cloud Talent — N'Djamena 2026-2027"
+                            className="h-28 md:h-36 w-auto object-contain"
+                        />
+                    </div>
+                    <div className="flex justify-center mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/20 text-accent border border-accent/30">
+                            <Cloud className="w-5 h-5" />
+                            <span className="text-sm font-bold uppercase tracking-wider">Chad Cloud Talent — AWS re/Start {CURRENT_COHORT}</span>
+                        </div>
                     </div>
                     <h1 className="font-heading text-4xl md:text-6xl font-bold mb-6 leading-tight">
                         Devenez Spécialiste <br/>
